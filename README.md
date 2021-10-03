@@ -18,27 +18,47 @@ audit logging and SAML single sign-on.
 This module is intended to run in an AWS account with minimal preparation,
 however it does have the following pre-requisites:
 
+### Terrafom version >= 1
+
 ### Credentials / Permissions
 
 **AWS Services Used**
 
+- AWS Identity & Access Management (IAM)
 - AWS Key Management System (KMS)
 - Amazon Aurora MySQL
 - Amazon VPC
 - Amazon S3
+- Amazon Route53
+- Amazon Certificate Manager (ACM)
+- Amazon Elastic Loadbalancing (ALB)
+- Amazon Secrets Manager
 
 ### Public Hosted Zone
 
 If you are managing DNS via AWS Route53 the hosted zone entry is created
 automatically as part of your domain management.
 
-If you're managing DNS outside of Route53, please see the documentation on
-[creating a hosted zone for a
+If you're managing DNS outside of Route53, you will need to:
+
+1. Create a Route53 zone name `{subdomain}.{domain}` (e.g `test.wandb.ai`)
+2. Create a NS record in your parent system and point it to the newly created
+   Route53
+3. Enable the `is_subdomain_zone` option in this module
+
+You can learn more about [creating a hosted zone for a
 subdomain](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html),
 which you will need to do for the subdomain you are planning to use for your
-Terraform Enterprise installation. To create this hosted zone with Terraform,
-use [the `aws_route53_zone`
+Weights & Biases installation. To create this hosted zone with Terraform, use
+[the `aws_route53_zone`
 resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone).
+
+### ACM Certificate
+
+While this is not required, it is recommend to already have an existing ACM
+certification. Certificate validation can take up two hours, causing timeouts
+during module apply if the cert is generated as one of the resources contained
+in the module.
 
 ## How to Use This Module
 
@@ -70,4 +90,6 @@ module "wandb" {
 
 We have included documentation and reference examples for additional common
 installation scenarios for Weights & Biases, as well as examples for supporting
-resources that lack official modules
+resources that lack official modules.
+
+- [External DNS](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/dns-external)
