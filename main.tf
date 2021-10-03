@@ -37,6 +37,17 @@ module "networking" {
   network_public_subnet_cidrs  = var.network_public_subnet_cidrs
 }
 
+module "dns" {
+  source = "./modules/dns"
+
+  is_subdomain_zone = var.is_subdomain_zone
+
+  namespace           = var.namespace
+  domain_name         = var.domain_name
+  subdomain           = var.subdomain
+  acm_certificate_arn = var.acm_certificate_arn
+}
+
 locals {
   network_id              = var.deploy_vpc ? module.networking[0].network_id : var.network_id
   network_private_subnets = var.deploy_vpc ? module.networking[0].network_private_subnets : var.network_private_subnets
@@ -46,10 +57,12 @@ locals {
 module "application_load_balancer" {
   source = "./modules/application_load_balancer"
 
-  namespace = var.namespace
-  
+  namespace             = var.namespace
   load_balancing_scheme = var.load_balancing_scheme
+  acm_certificate_arn   = module.dns.acm_certificate_arn
+  zone_id               = module.dns.zone_id
 
+  fqdn                    = local.fqdn
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
   network_public_subnets  = local.network_public_subnets

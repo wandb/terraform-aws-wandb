@@ -1,12 +1,33 @@
 
 variable "namespace" {
   type        = string
-  description = "String used for prefix resources."
+  description = "(Required) String used for prefix resources."
+}
+
+variable "acm_certificate_arn" {
+  type        = string
+  description = "(Required) The ARN of an existing ACM certificate."
+}
+
+variable "ssl_policy" {
+  type        = string
+  default     = "ELBSecurityPolicy-2016-08"
+  description = "(Optional) SSL policy to use on ALB listener"
+}
+
+variable "zone_id" {
+  type        = string
+  description = "(Required) The zone ID of the route53 to create the application A record in."
+}
+
+variable "fqdn" {
+  type        = string
+  description = "(Required) Fully qualified domain name."
 }
 
 variable "load_balancing_scheme" {
   default     = "PRIVATE"
-  description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PUBLIC\"."
+  description = "(Optional) Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PUBLIC\"."
   type        = string
 
   validation {
@@ -27,6 +48,6 @@ variable "network_private_subnets" {
 
 variable "network_public_subnets" {
   default     = []
-  description = "A list of the identities of the public subnetworks in which resources will be deployed."
+  description = "(Optional) A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }

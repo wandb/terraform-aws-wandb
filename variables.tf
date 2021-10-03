@@ -6,6 +6,15 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
+##########################################
+# DNS                                    #
+##########################################
+variable "is_subdomain_zone" {
+  type        = bool
+  default     = false
+  description = "(Optional) Using Amazon Route 53 as the DNS service for only a subdomain of the parent."
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain for creating the Weights & Biases subdomain on."
@@ -17,7 +26,9 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI."
 }
 
-# Load Balancer
+##########################################
+# Load Balancer                          #
+##########################################
 variable "load_balancing_scheme" {
   default     = "PRIVATE"
   description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
@@ -27,6 +38,18 @@ variable "load_balancing_scheme" {
     condition     = contains(["PRIVATE", "PRIVATE_TCP", "PUBLIC"], var.load_balancing_scheme)
     error_message = "The load_balancer value must be one of: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
   }
+}
+
+variable "ssl_policy" {
+  type        = string
+  default     = "ELBSecurityPolicy-2016-08"
+  description = "SSL policy to use on ALB listener"
+}
+
+variable "acm_certificate_arn" {
+  type        = string
+  default     = null
+  description = "The ARN of an existing ACM certificate."
 }
 
 

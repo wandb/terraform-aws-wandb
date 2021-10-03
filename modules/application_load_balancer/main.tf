@@ -33,7 +33,7 @@ resource "aws_security_group" "outbound" {
   }
 }
 
-resource "aws_lb" "lb" {
+resource "aws_lb" "alb" {
   name               = "${var.namespace}-alb"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
@@ -43,7 +43,7 @@ resource "aws_lb" "lb" {
 
 # Redirect HTTP to HTTPS
 resource "aws_lb_listener" "listener_80" {
-  load_balancer_arn = aws_lb.lb.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -60,11 +60,11 @@ resource "aws_lb_listener" "listener_80" {
 
 # HTTPS listener
 resource "aws_lb_listener" "listener_443" {
-  load_balancer_arn = aws_lb.lb.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = var.ssl_policy
-  certificate_arn   = var.certificate_arn
+  certificate_arn   = var.acm_certificate_arn
 
   default_action {
     type             = "forward"
@@ -83,4 +83,13 @@ resource "aws_lb_target_group" "tg_443" {
     protocol = "HTTPS"
     matcher  = "200-399"
   }
+}
+
+# Create record for route53 zone.
+resource "aws_route53_record" "alb" {
+  zone_id = var.zone_id
+  name    = var.fqdn
+  type    = "CNAME"
+  ttl     = "60"
+  records = [aws_lb.alb.dns_name]
 }
