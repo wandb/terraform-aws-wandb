@@ -14,8 +14,8 @@ resource "random_string" "master_password" {
 }
 
 resource "aws_db_subnet_group" "default" {
-  name       = "${namespace}-db-subnets"
-  subnet_ids = var.network_subnets_private
+  name       = "${var.namespace}-db-subnets"
+  subnet_ids = var.network_private_subnets
 }
 
 resource "aws_rds_cluster" "default" {
@@ -23,7 +23,7 @@ resource "aws_rds_cluster" "default" {
   db_subnet_group_name = aws_db_subnet_group.default.name
 
   engine         = "aurora-mysql"
-  engine_version = "${major_mysql_version}.mysql_aurora.${aurora_mysql_version}"
+  engine_version = "${local.major_mysql_version}.mysql_aurora.${local.aurora_mysql_version}"
 
   preferred_backup_window      = var.db_backup_window
   preferred_maintenance_window = var.db_maintenance_window

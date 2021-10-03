@@ -24,5 +24,7 @@ module "vpc" {
 
   create_igw = true
 
-  manage_default_security_group = true
+  manage_default_security_group  = true
+  default_security_group_egress  = []
+  default_security_group_ingress = []
 }

@@ -14,7 +14,7 @@ variable "network_id" {
   type        = string
 }
 
-variable "network_subnets_private" {
+variable "network_private_subnets" {
   description = "(Required) A list of the identities of the private subnetworks in which the MySQL Aurora instances will be deployed."
   type        = list(string)
 }
