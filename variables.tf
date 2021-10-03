@@ -1,9 +1,21 @@
-# variable "subdomain" {
-#   type        = string
-#   description = "Subdomain for accessing the Terraform Enterprise UI."
-# }
+##########################################
+# Common                                 #
+##########################################
+variable "domain_name" {
+  type        = string
+  description = "Domain for creating the Weights & Biases subdomain on."
+}
 
-# KMS
+variable "subdomain" {
+  type        = string
+  default     = "wandb"
+  description = "Subdomain for accessing the Weights & Biases UI."
+}
+
+
+##########################################
+# KMS                                    #
+##########################################
 variable "kms_key_alias" {
   type        = string
   description = "KMS key alias for AWS KMS Customer managed key."
@@ -16,7 +28,10 @@ variable "kms_key_deletion_window" {
   default     = 7
 }
 
-# Network
+
+##########################################
+# Network                                #
+##########################################
 variable "deploy_vpc" {
   type        = bool
   description = "(Optional) Boolean indicating whether to deploy a VPC (true) or not (false)."

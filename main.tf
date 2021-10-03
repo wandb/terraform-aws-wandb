@@ -1,11 +1,5 @@
-
-provider "aws" {
-  region  = "us-east-1"
-  profile = "default"
-}
-
 locals {
-  namespace = "wandb-st"
+  fqdn = "${var.subdomain}.${var.domain_name}"
 }
 
 resource "aws_kms_key" "key" {
