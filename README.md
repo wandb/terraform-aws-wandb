@@ -1,6 +1,6 @@
 # Weights & Biases AWS Module
 
-IMPORTANT: You are viewing a beta version of the official module to install
+**IMPORTANT:** You are viewing a beta version of the official module to install
 Weights & Biases. This new version is incompatible with earlier versions, and it
 is not currently meant for production use. Please contact your Customer Success
 Manager for details before using.
@@ -58,12 +58,9 @@ provider "aws" {
   }
 }
 
-module "tfe_node" {
-  source                 = "<filepath to cloned module directory>"
-  friendly_name_prefix   = "<prefix for naming AWS resources>"
-  domain_name            = "<domain for creating the Terraform Enterprise subdomain on. >"
-  tfe_license_filepath   = "<filepath to your .rli file>"
-  acm_certificate_arn    = "<ARN for ACM cert to be used with load balancer>"
+module "wandb" {
+  source    = "<filepath to cloned module directory>"
+  namespace = "<prefix for naming AWS resources>"
 }
 ```
 
