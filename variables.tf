@@ -6,6 +6,18 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
+variable "local_version" {
+  description = "The version of Weights & Biases local to deploy."
+  type        = string
+  default     = "latest"
+}
+
+variable "local_license" {
+  description = "The license for deploying Weights & Biases local."
+  type        = string
+  default     = null
+}
+
 ##########################################
 # DNS                                    #
 ##########################################
@@ -52,6 +64,11 @@ variable "acm_certificate_arn" {
   description = "The ARN of an existing ACM certificate."
 }
 
+variable "allowed_inbound_cidr" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+}
 
 ##########################################
 # KMS                                    #
@@ -92,7 +109,7 @@ variable "network_private_subnets" {
 
 variable "network_public_subnets" {
   default     = []
-  description = "A list of the identities of the public subnetworks in which resources will be deployed."
+  description = "(Optional) A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }
 

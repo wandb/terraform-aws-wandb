@@ -5,7 +5,7 @@ output "kms_key_arn" {
 }
 
 output "kms_key_id" {
-  value       = aws_kms_key.tfe_key.key_id
+  value       = aws_kms_key.key.key_id
   description = "The identity of the KMS key used to encrypt data at rest."
 }
 
@@ -16,23 +16,18 @@ output "network_id" {
   sensitive   = true
 }
 
-output "private_subnet_ids" {
+output "network_private_subnets" {
   value       = local.network_private_subnets
   description = "The identities of the private subnetworks deployed within the VPC."
 
 }
 
-output "public_subnet_ids" {
+output "network_public_subnets" {
   value       = local.network_public_subnets
   description = "The identities of the public subnetworks deployed within the VPC."
 }
 
-output "network_private_subnet_cidrs" {
-  value       = local.network_private_subnet_cidrs
-  description = "The CIDR blocks of the private subnetworks deployed within the VPC."
-}
-
-output "website" {
-  value       = "https://${fqdn}"
+output "url" {
+  value       = "https://${local.fqdn}"
   description = "The URL to the W&B application"
 }

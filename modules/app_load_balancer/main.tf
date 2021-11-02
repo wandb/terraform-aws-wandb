@@ -8,7 +8,7 @@ resource "aws_security_group" "inbound" {
     to_port     = 443
     protocol    = "tcp"
     description = "Allow HTTPS (port 443) traffic inbound to W&B LB"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_inbound_cidr
   }
 
   ingress {
@@ -16,7 +16,7 @@ resource "aws_security_group" "inbound" {
     to_port     = 80
     protocol    = "tcp"
     description = "Allow HTTP (port 80) traffic inbound to W&B LB"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_inbound_cidr
   }
 }
 

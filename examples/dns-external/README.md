@@ -2,8 +2,8 @@
 
 ## About
 
-This exmaple is a minimal example of what is needed to deploy and instance of
-Weights & Biases.
+This exmaple is a minimal example of what is needed to deploy an instance of
+Weights & Biases that uses an external DNS.
 
 ## Module Prerequites
 
@@ -12,4 +12,4 @@ resources already exist:
 
 - Valid subdomain that uses Amazon Route 53 as the Dns services ([Learn more
   here](<(https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingNewSubdomain.html)>)
-- Valid W&B Local license (You get one at deploy.wandb.ai)
+- Valid W&B Local license (You get one at [here](https://deploy.wandb.ai))
