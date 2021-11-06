@@ -40,7 +40,7 @@ variable "bucket_region" {
   description = "Region where the bucket lives"
 }
 
-variable "database_endpoint" {
+variable "database_connection_string" {
   type = string
 }
 

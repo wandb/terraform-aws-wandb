@@ -13,3 +13,7 @@ variable "subdomain" {
   default     = "wandb"
   description = "Subdomain for accessing the Weights & Biases UI."
 }
+
+variable "license" {
+  type = string
+}

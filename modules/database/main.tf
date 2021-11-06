@@ -7,6 +7,16 @@ locals {
   aurora_mysql_version = "2.10.0"
 }
 
+resource "aws_security_group" "default" {
+  name        = "${var.namespace}-db-sg"
+  description = "Security group for RDS instance."
+  vpc_id      = var.network_id
+
+  tags = {
+    Name = "${var.namespace}-metadata-store"
+  }
+}
+
 # Random string to use as master password
 resource "random_string" "master_password" {
   length  = 20
@@ -24,6 +34,8 @@ resource "aws_rds_cluster" "default" {
 
   engine         = "aurora-mysql"
   engine_version = "${local.major_mysql_version}.mysql_aurora.${local.aurora_mysql_version}"
+
+  vpc_security_group_ids = [aws_security_group.default.id]
 
   skip_final_snapshot = true
 

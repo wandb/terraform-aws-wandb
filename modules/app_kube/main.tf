@@ -53,13 +53,13 @@ resource "kubernetes_deployment" "wandb" {
           }
           env {
             name  = "MYSQL"
-            value = "mysql://${var.database_endpoint}"
+            value = "mysql://${var.database_connection_string}"
           }
 
-          env {
-            name  = "AWS_S3_KMS_ID"
-            value = var.kms_key_arn
-          }
+          # env {
+          #   name  = "AWS_S3_KMS_ID"
+          #   value = var.kms_key_arn
+          # }
 
           port {
             name           = "http"

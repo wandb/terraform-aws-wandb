@@ -21,3 +21,7 @@ output "connection_string" {
 output "connection_string_reader" {
   value = "${local.master_username}:${local.master_password}@${aws_rds_cluster.default.reader_endpoint}/${local.database_name}"
 }
+
+output "security_group_id" {
+  value = aws_security_group.default.id
+}

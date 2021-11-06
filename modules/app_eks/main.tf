@@ -2,22 +2,22 @@ locals {
   arn_cluster_policy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   arn_service_policy = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
 }
-resource "aws_security_group" "ingress" {
-  name        = "${var.namespace}-eks-master"
-  description = "Cluster communication with worker nodes"
-  vpc_id      = var.network_id
+# resource "aws_security_group" "ingress" {
+#   name        = "${var.namespace}-eks-master"
+#   description = "Cluster communication with worker nodes"
+#   vpc_id      = var.network_id
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = {
-    Name = "${var.namespace}-eks-master"
-  }
-}
+#   tags = {
+#     Name = "${var.namespace}-eks-master"
+#   }
+# }
 
 # resource "aws_iam_role" "cluster" {
 #   name = "${var.namespace}-cluster"
@@ -163,16 +163,6 @@ module "eks" {
   #   }
   # ]
 
-  # worker_groups = [
-  #   {
-  #     name                 = "worker-group-1"
-  #     instance_type        = "t3.small"
-  #     asg_desired_capacity = 2
-  #   },
-  # ]
-
-  # default_iam_role_arn = aws_iam_role.node.arn
-
   node_groups = {
     primary = {
       desired_capacity = 1,
@@ -191,12 +181,22 @@ module "eks" {
   }
 }
 
-resource "aws_security_group_rule" "ingress" {
-  description              = "Allow comntainer NodePort service to receive load balancer traffic."
+resource "aws_security_group_rule" "lb" {
+  description              = "Allow container NodePort service to receive load balancer traffic."
   protocol                 = "tcp"
   security_group_id        = module.eks.cluster_primary_security_group_id
-  source_security_group_id = var.security_group_inbound_id
+  source_security_group_id = var.lb_security_group_inbound_id
   from_port                = 32543
   to_port                  = 32543
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "database" {
+  description              = "Allow inbound traffic from EKS workers to database"
+  from_port                = 3306
+  protocol                 = "tcp"
+  security_group_id        = var.database_security_group_id
+  source_security_group_id = module.eks.cluster_primary_security_group_id
+  to_port                  = 3306
   type                     = "ingress"
 }

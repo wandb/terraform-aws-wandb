@@ -138,10 +138,11 @@ module "app_eks" {
   bucket_arn           = module.file_storage.bucket_arn
   bucket_sqs_queue_arn = module.file_storage.bucket_queue_arn
 
-  security_group_inbound_id = module.app_load_balancer.security_group_inbound_id
-
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
+
+  lb_security_group_inbound_id = module.app_load_balancer.security_group_inbound_id
+  database_security_group_id   = module.database.security_group_id
 }
 
 data "aws_eks_cluster" "app_cluster" {
@@ -171,5 +172,6 @@ module "app_kube" {
   bucket_name       = module.file_storage.bucket_name
   bucket_region     = module.file_storage.bucket_region
   bucket_queue_name = module.file_storage.bucket_queue_name
-  database_endpoint = module.database.endpoint
+
+  database_connection_string = module.database.connection_string
 }

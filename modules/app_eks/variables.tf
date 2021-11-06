@@ -18,7 +18,7 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
-variable "security_group_inbound_id" {
+variable "lb_security_group_inbound_id" {
   type = string
 }
 
@@ -27,5 +27,9 @@ variable "bucket_arn" {
 }
 
 variable "bucket_sqs_queue_arn" {
+  type = string
+}
+
+variable "database_security_group_id" {
   type = string
 }

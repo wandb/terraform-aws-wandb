@@ -13,7 +13,6 @@ output "kms_key_id" {
 output "network_id" {
   value       = local.network_id
   description = "The identity of the VPC in which resources are deployed."
-  sensitive   = true
 }
 
 output "network_private_subnets" {
