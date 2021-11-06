@@ -1,5 +1,33 @@
+resource "aws_sqs_queue" "file_storage" {
+  name = "${var.namespace}-wandb-file-storage"
+
+  # Enable long-polling
+  receive_wait_time_seconds = 10
+
+  # kms_master_key_id = var.kms_key_arn
+}
+
+resource "aws_sqs_queue_policy" "file_storage" {
+  queue_url = aws_sqs_queue.file_storage.id
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : "*",
+        "Action" : ["sqs:SendMessage"],
+        "Resource" : "arn:aws:sqs:*:*:${aws_sqs_queue.file_storage.name}",
+        "Condition" : {
+          "ArnEquals" : { "aws:SourceArn" : "${aws_s3_bucket.file_storage.arn}" }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket" "file_storage" {
-  bucket = "${var.namespace}-wandb-files"
+  bucket = "${var.namespace}-wandb-file-storage"
   acl    = "private"
 
   cors_rule {
@@ -20,36 +48,13 @@ resource "aws_s3_bucket" "file_storage" {
   }
 
   force_destroy = true
+
+  # Configuration error of SQS does not exist
+  # https://aws.amazon.com/premiumsupport/knowledge-center/unable-validate-destination-s3/
+  depends_on = [aws_sqs_queue.file_storage]
 }
 
-resource "aws_sqs_queue" "file_storage" {
-  name = "${var.namespace}-wandb-queue"
-
-  # Enable long-polling
-  receive_wait_time_seconds = 10
-
-  kms_master_key_id = var.kms_key_arn
-
-  # Permission to access the s3 bucket notification
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:*:*:s3-event-notification-queue",
-      "Condition": {
-        "ArnEquals": { "aws:SourceArn": "${aws_s3_bucket.file_storage.arn}" }
-      }
-    }
-  ]
-}
-POLICY
-}
-
-resource "aws_s3_bucket_notification" "file_storage_notification" {
+resource "aws_s3_bucket_notification" "file_storage" {
   bucket = aws_s3_bucket.file_storage.id
 
   queue {

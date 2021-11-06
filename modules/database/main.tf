@@ -25,6 +25,8 @@ resource "aws_rds_cluster" "default" {
   engine         = "aurora-mysql"
   engine_version = "${local.major_mysql_version}.mysql_aurora.${local.aurora_mysql_version}"
 
+  skip_final_snapshot = true
+
   preferred_backup_window      = var.db_backup_window
   preferred_maintenance_window = var.db_maintenance_window
   backup_retention_period      = var.db_backup_retention

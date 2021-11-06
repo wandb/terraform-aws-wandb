@@ -2,12 +2,57 @@ locals {
   fqdn = "${var.subdomain}.${var.domain_name}"
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_kms_key" "key" {
   deletion_window_in_days = var.kms_key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
   enable_key_rotation     = false
   is_enabled              = true
   key_usage               = "ENCRYPT_DECRYPT"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Allow administration of the key",
+        "Effect" : "Allow",
+        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Action" : [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "Allow use of the key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : [
+            "s3.amazonaws.com",
+            "sqs.amazonaws.com",
+            "rds.amazonaws.com",
+            "eks.amazonaws.com"
+          ]
+        },
+        "Action" : [
+          "kms:GenerateDataKey",
+          "kms:Decrypt"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
 
   tags = {
     Name = "wandb-kms-key"
@@ -19,11 +64,16 @@ resource "aws_kms_alias" "key_alias" {
   target_key_id = aws_kms_key.key.key_id
 }
 
+
+locals {
+  kms_key_arn = aws_kms_key.key.arn
+}
+
 module "file_storage" {
   source = "./modules/file_storage"
 
   namespace   = var.namespace
-  kms_key_arn = aws_kms_key.key.arn
+  kms_key_arn = local.kms_key_arn
 }
 
 module "networking" {
@@ -73,7 +123,7 @@ module "database" {
   source = "./modules/database"
 
   namespace   = var.namespace
-  kms_key_arn = aws_kms_key.key.arn
+  kms_key_arn = local.kms_key_arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
@@ -83,7 +133,12 @@ module "app_eks" {
   source = "./modules/app_eks"
 
   namespace   = var.namespace
-  kms_key_arn = aws_kms_key.key.arn
+  kms_key_arn = local.kms_key_arn
+
+  bucket_arn           = module.file_storage.bucket_arn
+  bucket_sqs_queue_arn = module.file_storage.bucket_queue_arn
+
+  security_group_inbound_id = module.app_load_balancer.security_group_inbound_id
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
@@ -106,9 +161,12 @@ provider "kubernetes" {
 module "app_kube" {
   source = "./modules/app_kube"
 
-  namespace     = var.namespace
-  local_license = var.local_license
-  local_version = var.local_version
+  namespace   = var.namespace
+  kms_key_arn = var.kms_key_alias
+
+  wandb_image   = var.wandb_image
+  wandb_license = var.wandb_license
+  wandb_version = var.wandb_version
 
   bucket_name       = module.file_storage.bucket_name
   bucket_region     = module.file_storage.bucket_region

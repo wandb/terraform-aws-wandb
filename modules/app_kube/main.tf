@@ -1,8 +1,11 @@
+locals {
+  app_name = "wandb-local"
+}
 resource "kubernetes_deployment" "wandb" {
   metadata {
-    name = "wandb"
+    name = local.app_name
     labels = {
-      app = "wandb"
+      app = local.app_name
     }
   }
 
@@ -15,26 +18,26 @@ resource "kubernetes_deployment" "wandb" {
 
     selector {
       match_labels = {
-        app = "wandb"
+        app = local.app_name
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "wandb"
+          app = local.app_name
         }
       }
 
       spec {
         container {
-          name              = "wandb"
-          image             = "wandb/local:${var.local_version}"
+          name              = "wandb-local"
+          image             = "${var.wandb_image}:${var.wandb_version}"
           image_pull_policy = "Always"
 
           env {
             name  = "LICENSE"
-            value = var.local_license
+            value = var.wandb_license
           }
           env {
             name  = "BUCKET"
@@ -51,6 +54,11 @@ resource "kubernetes_deployment" "wandb" {
           env {
             name  = "MYSQL"
             value = "mysql://${var.database_endpoint}"
+          }
+
+          env {
+            name  = "AWS_S3_KMS_ID"
+            value = var.kms_key_arn
           }
 
           port {

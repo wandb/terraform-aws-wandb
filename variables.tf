@@ -6,16 +6,22 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
-variable "local_version" {
+variable "wandb_version" {
   description = "The version of Weights & Biases local to deploy."
   type        = string
   default     = "latest"
 }
 
-variable "local_license" {
+variable "wandb_license" {
   description = "The license for deploying Weights & Biases local."
   type        = string
   default     = null
+}
+
+variable "wandb_image" {
+  description = "Docker repository of to pull the wandb image from."
+  type        = string
+  default     = "wandb/local"
 }
 
 ##########################################

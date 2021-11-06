@@ -89,7 +89,11 @@ resource "aws_lb_target_group" "tg_443" {
 resource "aws_route53_record" "alb" {
   zone_id = var.zone_id
   name    = var.fqdn
-  type    = "CNAME"
-  ttl     = "60"
-  records = [aws_lb.alb.dns_name]
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
 }

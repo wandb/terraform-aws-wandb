@@ -1,5 +1,15 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
+
+  default_tags {
+    tags = {
+      GithubRepo = "terraform-aws-wandb"
+      GithubOrg  = "wandb"
+      Name       = "WandbLocalTerraform"
+      Enviroment = "Testing"
+      Example    = "DnsExternal"
+    }
+  }
 }
 
 module "standard" {
