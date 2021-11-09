@@ -39,10 +39,10 @@ resource "aws_kms_key" "key" {
         "Effect" : "Allow",
         "Principal" : {
           "Service" : [
+            "eks.amazonaws.com",
+            "rds.amazonaws.com",
             "s3.amazonaws.com",
             "sqs.amazonaws.com",
-            "rds.amazonaws.com",
-            "eks.amazonaws.com"
           ]
         },
         "Action" : [
@@ -91,6 +91,7 @@ locals {
   network_id              = var.deploy_vpc ? module.networking[0].vpc_id : var.network_id
   network_private_subnets = var.deploy_vpc ? module.networking[0].private_subnets : var.network_private_subnets
   network_public_subnets  = var.deploy_vpc ? module.networking[0].public_subnets : var.network_public_subnets
+  internal_app_port       = 32543
 }
 
 module "dns" {
@@ -102,21 +103,6 @@ module "dns" {
   domain_name         = var.domain_name
   subdomain           = var.subdomain
   acm_certificate_arn = var.acm_certificate_arn
-}
-
-module "app_load_balancer" {
-  source = "./modules/app_load_balancer"
-
-  namespace             = var.namespace
-  load_balancing_scheme = var.load_balancing_scheme
-  acm_certificate_arn   = module.dns.acm_certificate_arn
-  zone_id               = module.dns.zone_id
-
-  fqdn                    = local.fqdn
-  allowed_inbound_cidr    = var.allowed_inbound_cidr
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
 }
 
 module "database" {
@@ -143,6 +129,27 @@ module "app_eks" {
 
   lb_security_group_inbound_id = module.app_load_balancer.security_group_inbound_id
   database_security_group_id   = module.database.security_group_id
+}
+
+module "app_load_balancer" {
+  source = "./modules/app_load_balancer"
+
+  namespace             = var.namespace
+  load_balancing_scheme = var.load_balancing_scheme
+  acm_certificate_arn   = module.dns.acm_certificate_arn
+  zone_id               = module.dns.zone_id
+
+  fqdn                    = local.fqdn
+  allowed_inbound_cidr    = var.allowed_inbound_cidr
+  network_id              = local.network_id
+  network_private_subnets = local.network_private_subnets
+  network_public_subnets  = local.network_public_subnets
+}
+
+resource "aws_autoscaling_attachment" "autoscaling_attachment" {
+  for_each = module.app_eks.autoscaling_group_names
+  autoscaling_group_name = each.value
+  alb_target_group_arn   = module.app_load_balancer.tg_app_arn
 }
 
 data "aws_eks_cluster" "app_cluster" {

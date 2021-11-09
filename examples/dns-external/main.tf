@@ -21,4 +21,6 @@ module "standard" {
   subdomain         = var.subdomain
 
   wandb_license = var.license
+
+  load_balancing_scheme = "PUBLIC"
 }

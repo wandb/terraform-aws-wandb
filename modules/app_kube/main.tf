@@ -1,5 +1,5 @@
 locals {
-  app_name = "wandb-local"
+  app_name = "wandb"
 }
 resource "kubernetes_deployment" "wandb" {
   metadata {
@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "wandb" {
 
       spec {
         container {
-          name              = "wandb-local"
+          name              = local.app_name
           image             = "${var.wandb_image}:${var.wandb_version}"
           image_pull_policy = "Always"
 
@@ -98,13 +98,13 @@ resource "kubernetes_deployment" "wandb" {
 
 resource "kubernetes_service" "wandb_service" {
   metadata {
-    name = "wandb"
+    name = local.app_name
   }
 
   spec {
     type = "NodePort"
     selector = {
-      app = "wandb"
+      app = local.app_name
     }
     port {
       port      = 8080

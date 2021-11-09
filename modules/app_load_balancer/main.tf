@@ -1,21 +1,26 @@
+locals {
+  http_port  = 80
+  https_port = 443
+}
+
 resource "aws_security_group" "inbound" {
   name        = "${var.namespace}-alb-inbound"
   description = "Allow http(s) traffic to wandb"
   vpc_id      = var.network_id
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = local.https_port
+    to_port     = local.https_port
     protocol    = "tcp"
-    description = "Allow HTTPS (port 443) traffic inbound to W&B LB"
+    description = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
     cidr_blocks = var.allowed_inbound_cidr
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = local.http_port
+    to_port     = local.http_port
     protocol    = "tcp"
-    description = "Allow HTTP (port 80) traffic inbound to W&B LB"
+    description = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
     cidr_blocks = var.allowed_inbound_cidr
   }
 }
@@ -42,16 +47,16 @@ resource "aws_lb" "alb" {
 }
 
 # Redirect HTTP to HTTPS
-resource "aws_lb_listener" "listener_80" {
+resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = 80
+  port              = local.http_port
   protocol          = "HTTP"
 
   default_action {
     type = "redirect"
 
     redirect {
-      port        = 443
+      port        = local.https_port
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
@@ -59,29 +64,31 @@ resource "aws_lb_listener" "listener_80" {
 }
 
 # HTTPS listener
-resource "aws_lb_listener" "listener_443" {
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = 443
+  port              = local.https_port
   protocol          = "HTTPS"
   ssl_policy        = var.ssl_policy
   certificate_arn   = var.acm_certificate_arn
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.tg_443.arn
+    target_group_arn = aws_lb_target_group.app.arn
   }
 }
 
-resource "aws_lb_target_group" "tg_443" {
-  name     = "${var.namespace}-alb-tg-443"
-  port     = 443
-  protocol = "HTTPS"
+resource "aws_lb_target_group" "app" {
+  name     = "${var.namespace}-tg-app"
+  port     = 32543
+  protocol = "HTTP"
   vpc_id   = var.network_id
 
   health_check {
-    path     = "/healthz"
-    protocol = "HTTPS"
-    matcher  = "200-399"
+    path                = "/healthz"
+    protocol            = "HTTP"
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    matcher             = "200"
   }
 }
 

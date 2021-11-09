@@ -38,14 +38,14 @@ resource "aws_s3_bucket" "file_storage" {
     max_age_seconds = 3000
   }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = var.kms_key_arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
+  # server_side_encryption_configuration {
+  #   rule {
+  #     apply_server_side_encryption_by_default {
+  #       kms_master_key_id = var.kms_key_arn
+  #       sse_algorithm     = "aws:kms"
+  #     }
+  #   }
+  # }
 
   force_destroy = true
 

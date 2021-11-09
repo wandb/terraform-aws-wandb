@@ -1,45 +1,7 @@
 locals {
-  arn_cluster_policy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  arn_service_policy = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  mysql_port   = 3306
+  service_port = 32543
 }
-# resource "aws_security_group" "ingress" {
-#   name        = "${var.namespace}-eks-master"
-#   description = "Cluster communication with worker nodes"
-#   vpc_id      = var.network_id
-
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-
-#   tags = {
-#     Name = "${var.namespace}-eks-master"
-#   }
-# }
-
-# resource "aws_iam_role" "cluster" {
-#   name = "${var.namespace}-cluster"
-
-#   assume_role_policy = jsonencode({
-#     "Version" : "2012-10-17",
-#     "Statement" : [
-#       {
-#         "Effect" : "Allow",
-#         "Principal" : {
-#           "Service" : "eks.amazonaws.com"
-#         },
-#         "Action" : "sts:AssumeRole"
-#       }
-#     ]
-#   })
-
-#   managed_policy_arns = [
-#     local.arn_cluster_policy,
-#     local.arn_service_policy
-#   ]
-# }
 
 data "aws_iam_policy_document" "node" {
   statement {
@@ -51,22 +13,6 @@ data "aws_iam_policy_document" "node" {
     }
   }
 }
-
-# # Create cluster on VPC network
-# resource "aws_eks_cluster" "default" {
-#   name     = var.namespace
-#   role_arn = aws_iam_role.cluster.arn
-#   version  = "1.21"
-
-#   vpc_config {
-#     endpoint_private_access = true
-#     endpoint_public_access  = true
-#     security_group_ids      = [aws_security_group.this.id]
-#     subnet_ids              = var.network_private_subnets
-#   }
-
-#   depends_on = [aws_iam_role.cluster]
-# }
 
 # # Configure permissions required for nodes
 resource "aws_iam_role" "node" {
@@ -166,7 +112,7 @@ module "eks" {
   node_groups = {
     primary = {
       desired_capacity = 1,
-      max_capacity     = 1,
+      max_capacity     = 2,
       min_capacity     = 1,
       instance_type    = ["m5.xlarge"],
       iam_role_arn     = aws_iam_role.node.arn
@@ -186,17 +132,24 @@ resource "aws_security_group_rule" "lb" {
   protocol                 = "tcp"
   security_group_id        = module.eks.cluster_primary_security_group_id
   source_security_group_id = var.lb_security_group_inbound_id
-  from_port                = 32543
-  to_port                  = 32543
+  from_port                = local.service_port
+  to_port                  = local.service_port
   type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "database" {
   description              = "Allow inbound traffic from EKS workers to database"
-  from_port                = 3306
   protocol                 = "tcp"
   security_group_id        = var.database_security_group_id
   source_security_group_id = module.eks.cluster_primary_security_group_id
-  to_port                  = 3306
+  from_port                = local.mysql_port
+  to_port                  = local.mysql_port
   type                     = "ingress"
 }
+
+# resource "aws_iam_role_policy_attachment" "cluster_S3Access" {
+#   count = var.manage_cluster_iam_resources && var.create_eks ? 1 : 0
+
+#   policy_arn = "${local.policy_arn_prefix}/AmazonEKSVPCResourceController"
+#   role       = local.cluster_iam_role_name
+# }
