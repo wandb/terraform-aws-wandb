@@ -33,3 +33,8 @@ variable "bucket_sqs_queue_arn" {
 variable "database_security_group_id" {
   type = string
 }
+
+variable "service_port" {
+  type    = number
+  default = 32543
+}

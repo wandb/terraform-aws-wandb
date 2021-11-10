@@ -79,9 +79,9 @@ resource "aws_lb_listener" "https" {
 
 resource "aws_lb_target_group" "app" {
   name     = "${var.namespace}-tg-app"
-  port     = 32543
-  protocol = "HTTP"
+  port     = var.target_port
   vpc_id   = var.network_id
+  protocol = "HTTP"
 
   health_check {
     path                = "/healthz"

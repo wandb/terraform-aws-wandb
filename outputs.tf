@@ -26,7 +26,10 @@ output "network_public_subnets" {
   description = "The identities of the public subnetworks deployed within the VPC."
 }
 
+output "database_port" {
+  value = module.database.port
+}
 output "url" {
-  value       = "https://${local.fqdn}"
+  value       = local.url
   description = "The URL to the W&B application"
 }

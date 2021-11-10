@@ -1,6 +1,5 @@
 locals {
-  mysql_port   = 3306
-  service_port = 32543
+  mysql_port = 3306
 }
 
 data "aws_iam_policy_document" "node" {
@@ -8,13 +7,13 @@ data "aws_iam_policy_document" "node" {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
   }
 }
 
-# # Configure permissions required for nodes
+# Configure permissions required for nodes
 resource "aws_iam_role" "node" {
   name               = "${var.namespace}-node"
   assume_role_policy = data.aws_iam_policy_document.node.json
@@ -59,31 +58,30 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+
+  # Encrypt and decrypt with KMS
+  inline_policy {
+    name = "${var.namespace}-node-kms-policy"
+    policy = jsonencode({
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "kms:Encrypt",
+            "kms:Decrypt",
+            "kms:ReEncrypt*",
+            "kms:GenerateDataKey*",
+            "kms:DescribeKey"
+          ],
+          "Resource" : [
+            "${var.kms_key_arn}"
+          ]
+        }
+      ]
+    })
+  }
 }
-
-# # Create worker pool with permission to access S3 and SQS
-# resource "aws_eks_node_group" "primary" {
-#   cluster_name    = aws_eks_cluster.default.name
-#   node_group_name = "${var.namespace}-node-group"
-#   node_role_arn   = aws_iam_role.node.arn
-#   subnet_ids      = var.network_private_subnets
-
-#   scaling_config {
-#     desired_size = 1
-#     max_size     = 2
-#     min_size     = 1
-#   }
-
-#   instance_types = ["m5.xlarge"]
-
-#   # Ensure that IAM Role permissions are created before and deleted after EKS
-#   # Node Group handling. Otherwise, EKS will not be able to properly delete EC2
-#   # Instances and Elastic Network Interfaces.
-#   depends_on = [
-#     aws_eks_cluster.default,
-#     aws_iam_role.node
-#   ]
-# }
 
 locals {
   cluster_version = "1.20"
@@ -132,8 +130,8 @@ resource "aws_security_group_rule" "lb" {
   protocol                 = "tcp"
   security_group_id        = module.eks.cluster_primary_security_group_id
   source_security_group_id = var.lb_security_group_inbound_id
-  from_port                = local.service_port
-  to_port                  = local.service_port
+  from_port                = var.service_port
+  to_port                  = var.service_port
   type                     = "ingress"
 }
 
@@ -146,10 +144,3 @@ resource "aws_security_group_rule" "database" {
   to_port                  = local.mysql_port
   type                     = "ingress"
 }
-
-# resource "aws_iam_role_policy_attachment" "cluster_S3Access" {
-#   count = var.manage_cluster_iam_resources && var.create_eks ? 1 : 0
-
-#   policy_arn = "${local.policy_arn_prefix}/AmazonEKSVPCResourceController"
-#   role       = local.cluster_iam_role_name
-# }

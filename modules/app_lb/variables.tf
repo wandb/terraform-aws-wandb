@@ -57,3 +57,8 @@ variable "network_public_subnets" {
   description = "(Optional) A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }
+
+variable "target_port" {
+  type    = number
+  default = 32543
+}

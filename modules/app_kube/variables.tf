@@ -3,44 +3,56 @@ variable "namespace" {
   description = "(Required) The name prefix for all resources created."
 }
 
-variable "kms_key_arn" {
-  type        = string
-  description = " The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  default     = null
-}
-
 variable "wandb_version" {
-  description = "The version of Weights & Biases local to deploy."
+  description = "(Optional) The version of Weights & Biases local to deploy."
   type        = string
   default     = "latest"
 }
 
 variable "wandb_license" {
-  description = "The license for deploying Weights & Biases local."
+  description = "(Optional) The license for deploying Weights & Biases local."
   type        = string
   default     = null
 }
 
 variable "wandb_image" {
-  description = "Docker repository of to pull the wandb image from."
+  description = "(Optional) Docker repository of to pull the wandb image from."
   type        = string
   default     = "wandb/local"
 }
 
 variable "bucket_name" {
-  type = string
-}
-
-variable "bucket_queue_name" {
-  type = string
+  type        = string
+  description = "(Required) The S3 bucket for storing data"
 }
 
 variable "bucket_region" {
   type        = string
-  description = "Region where the bucket lives"
+  description = "(Required) Region where the bucket lives"
+}
+
+variable "bucket_kms_key_arn" {
+  description = "(Optional) The ARN for the KMS encryption key if one is required for storage descryption."
+  type        = string
+  default     = ""
+}
+
+variable "bucket_queue_name" {
+  type        = string
+  description = "(Required) The SQS queue for object creation events."
 }
 
 variable "database_connection_string" {
   type = string
 }
 
+variable "host" {
+  type        = string
+  description = "The FQD of your instance, i.e. https://my.domain.net"
+  default     = ""
+}
+
+variable "service_port" {
+  type    = number
+  default = 32543
+}

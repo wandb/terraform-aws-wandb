@@ -18,3 +18,7 @@
 # Editor files
 .vscode
 kubeconfig*
+cat.*
+test.py
+
+**/wandb/*

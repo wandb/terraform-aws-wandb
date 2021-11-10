@@ -24,6 +24,7 @@ variable "wandb_image" {
   default     = "wandb/local"
 }
 
+
 ##########################################
 # DNS                                    #
 ##########################################
@@ -43,6 +44,7 @@ variable "subdomain" {
   default     = "wandb"
   description = "Subdomain for accessing the Weights & Biases UI."
 }
+
 
 ##########################################
 # Load Balancer                          #
@@ -75,6 +77,7 @@ variable "allowed_inbound_cidr" {
   default     = ["0.0.0.0/0"]
   description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
 }
+
 
 ##########################################
 # KMS                                    #
@@ -135,4 +138,13 @@ variable "network_public_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of public subnet CIDR ranges to create in VPC."
   default     = ["10.0.0.0/20", "10.0.16.0/20"]
+}
+
+
+##########################################
+# Bring Your Own Bucket                  #
+##########################################
+variable "byob" {
+  type    = bool
+  default = false
 }

@@ -1,5 +1,6 @@
 locals {
   fqdn = "${var.subdomain}.${var.domain_name}"
+  url  = "https://${local.fqdn}"
 }
 
 data "aws_caller_identity" "current" {}
@@ -7,8 +8,6 @@ data "aws_caller_identity" "current" {}
 resource "aws_kms_key" "key" {
   deletion_window_in_days = var.kms_key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
-  enable_key_rotation     = false
-  is_enabled              = true
   key_usage               = "ENCRYPT_DECRYPT"
 
   policy = jsonencode({
@@ -18,39 +17,22 @@ resource "aws_kms_key" "key" {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
         "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
-        "Action" : [
-          "kms:Create*",
-          "kms:Describe*",
-          "kms:Enable*",
-          "kms:List*",
-          "kms:Put*",
-          "kms:Update*",
-          "kms:Revoke*",
-          "kms:Disable*",
-          "kms:Get*",
-          "kms:Delete*",
-          "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion"
-        ],
+        "Action" : "kms:*",
         "Resource" : "*"
       },
       {
         "Sid" : "Allow use of the key",
         "Effect" : "Allow",
-        "Principal" : {
-          "Service" : [
-            "eks.amazonaws.com",
-            "rds.amazonaws.com",
-            "s3.amazonaws.com",
-            "sqs.amazonaws.com",
-          ]
-        },
+        "Principal" : "*"
         "Action" : [
-          "kms:GenerateDataKey",
-          "kms:Decrypt"
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
         ],
         "Resource" : "*"
-      }
+      },
     ]
   })
 
@@ -67,6 +49,7 @@ resource "aws_kms_alias" "key_alias" {
 
 locals {
   kms_key_arn = aws_kms_key.key.arn
+  kms_key_id  = aws_kms_key.key.id
 }
 
 module "file_storage" {
@@ -91,7 +74,8 @@ locals {
   network_id              = var.deploy_vpc ? module.networking[0].vpc_id : var.network_id
   network_private_subnets = var.deploy_vpc ? module.networking[0].private_subnets : var.network_private_subnets
   network_public_subnets  = var.deploy_vpc ? module.networking[0].public_subnets : var.network_public_subnets
-  internal_app_port       = 32543
+
+  internal_app_port = 32543
 }
 
 module "dns" {
@@ -127,29 +111,31 @@ module "app_eks" {
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
 
-  lb_security_group_inbound_id = module.app_load_balancer.security_group_inbound_id
+  lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
   database_security_group_id   = module.database.security_group_id
 }
 
-module "app_load_balancer" {
-  source = "./modules/app_load_balancer"
+module "app_lb" {
+  source = "./modules/app_lb"
 
   namespace             = var.namespace
   load_balancing_scheme = var.load_balancing_scheme
   acm_certificate_arn   = module.dns.acm_certificate_arn
   zone_id               = module.dns.zone_id
 
-  fqdn                    = local.fqdn
-  allowed_inbound_cidr    = var.allowed_inbound_cidr
+  fqdn                 = local.fqdn
+  allowed_inbound_cidr = var.allowed_inbound_cidr
+  target_port          = local.internal_app_port
+
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
   network_public_subnets  = local.network_public_subnets
 }
 
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
-  for_each = module.app_eks.autoscaling_group_names
+  for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
-  alb_target_group_arn   = module.app_load_balancer.tg_app_arn
+  alb_target_group_arn   = module.app_lb.tg_app_arn
 }
 
 data "aws_eks_cluster" "app_cluster" {
@@ -166,19 +152,30 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 
+locals {
+  bucket_name        = ""
+  bucket_region      = ""
+  bucket_queue_name  = ""
+  bucket_kms_key_arn = ""
+}
+
 module "app_kube" {
   source = "./modules/app_kube"
 
-  namespace   = var.namespace
-  kms_key_arn = var.kms_key_alias
+  namespace = var.namespace
 
   wandb_image   = var.wandb_image
   wandb_license = var.wandb_license
   wandb_version = var.wandb_version
 
-  bucket_name       = module.file_storage.bucket_name
-  bucket_region     = module.file_storage.bucket_region
-  bucket_queue_name = module.file_storage.bucket_queue_name
+  host = local.url
+
+  bucket_name        = module.file_storage.bucket_name
+  bucket_region      = module.file_storage.bucket_region
+  bucket_queue_name  = module.file_storage.bucket_queue_name
+  bucket_kms_key_arn = local.kms_key_arn
 
   database_connection_string = module.database.connection_string
+
+  service_port = local.internal_app_port
 }

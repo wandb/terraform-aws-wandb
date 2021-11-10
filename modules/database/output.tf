@@ -14,6 +14,10 @@ output "endpoint" {
   value = aws_rds_cluster.default.endpoint
 }
 
+output "port" {
+  value = aws_rds_cluster.default.port
+}
+
 output "connection_string" {
   value = "${local.master_username}:${local.master_password}@${aws_rds_cluster.default.endpoint}/${local.database_name}"
 }

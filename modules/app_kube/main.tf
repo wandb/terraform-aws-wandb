@@ -56,10 +56,15 @@ resource "kubernetes_deployment" "wandb" {
             value = "mysql://${var.database_connection_string}"
           }
 
-          # env {
-          #   name  = "AWS_S3_KMS_ID"
-          #   value = var.kms_key_arn
-          # }
+          env {
+            name  = "AWS_S3_KMS_ID"
+            value = var.bucket_kms_key_arn
+          }
+
+          env {
+            name  = "HOST"
+            value = var.host
+          }
 
           port {
             name           = "http"
@@ -96,7 +101,7 @@ resource "kubernetes_deployment" "wandb" {
   }
 }
 
-resource "kubernetes_service" "wandb_service" {
+resource "kubernetes_service" "service" {
   metadata {
     name = local.app_name
   }
@@ -108,7 +113,7 @@ resource "kubernetes_service" "wandb_service" {
     }
     port {
       port      = 8080
-      node_port = 32543
+      node_port = var.service_port
     }
   }
 }
