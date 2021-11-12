@@ -18,6 +18,12 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
+variable "cluster_endpoint_public_access" {
+  type        = bool
+  description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  default     = true
+}
+
 variable "lb_security_group_inbound_id" {
   type = string
 }

@@ -44,7 +44,7 @@ If you're managing DNS outside of Route53, you will need to:
 1. Create a Route53 zone name `{subdomain}.{domain}` (e.g `test.wandb.ai`)
 2. Create a NS record in your parent system and point it to the newly created
    Route53
-3. Enable the `is_subdomain_zone` option in this module
+3. Enable the `external_dns` option in this module
 
 You can learn more about [creating a hosted zone for a
 subdomain](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html),

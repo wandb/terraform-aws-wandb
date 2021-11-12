@@ -1,6 +1,6 @@
 data "aws_route53_zone" "zone" {
-  name         = var.is_subdomain_zone ? "${var.subdomain}.${var.domain_name}" : var.domain_name
-  private_zone = false
+  name         = var.external_dns ? "${var.subdomain}.${var.domain_name}" : var.domain_name
+  private_zone = var.private_zone
 }
 
 resource "aws_acm_certificate" "certificate" {

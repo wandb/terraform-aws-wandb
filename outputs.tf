@@ -1,12 +1,7 @@
 # KMS
 output "kms_key_arn" {
-  value       = aws_kms_key.key.arn
+  value       = local.kms_key_arn
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
-}
-
-output "kms_key_id" {
-  value       = aws_kms_key.key.key_id
-  description = "The identity of the KMS key used to encrypt data at rest."
 }
 
 # Network

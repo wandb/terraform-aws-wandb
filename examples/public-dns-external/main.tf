@@ -5,9 +5,8 @@ provider "aws" {
     tags = {
       GithubRepo = "terraform-aws-wandb"
       GithubOrg  = "wandb"
-      Name       = "WandbLocalTerraform"
-      Enviroment = "Testing"
-      Example    = "DnsExternal"
+      Enviroment = "Example"
+      Example    = "PublicDnsExternal"
     }
   }
 }
@@ -15,13 +14,12 @@ provider "aws" {
 module "standard" {
   source = "../../"
 
-  external_dns  = true
   public_access = true
+  external_dns  = true
 
   namespace   = var.namespace
   domain_name = var.domain_name
   subdomain   = var.subdomain
 
   wandb_license = var.license
-
 }

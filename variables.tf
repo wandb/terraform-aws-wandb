@@ -28,7 +28,13 @@ variable "wandb_image" {
 ##########################################
 # DNS                                    #
 ##########################################
-variable "is_subdomain_zone" {
+variable "public_access" {
+  type        = bool
+  default     = false
+  description = "Is this instance accessable a public domain."
+}
+
+variable "external_dns" {
   type        = bool
   default     = false
   description = "(Optional) Using Amazon Route 53 as the DNS service for only a subdomain of the parent."
@@ -49,17 +55,6 @@ variable "subdomain" {
 ##########################################
 # Load Balancer                          #
 ##########################################
-variable "load_balancing_scheme" {
-  default     = "PRIVATE"
-  description = "Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
-  type        = string
-
-  validation {
-    condition     = contains(["PRIVATE", "PRIVATE_TCP", "PUBLIC"], var.load_balancing_scheme)
-    error_message = "The load_balancer value must be one of: \"PRIVATE\"; \"PRIVATE_TCP\"; \"PUBLIC\"."
-  }
-}
-
 variable "ssl_policy" {
   type        = string
   default     = "ELBSecurityPolicy-2016-08"
@@ -140,6 +135,15 @@ variable "network_public_subnet_cidrs" {
   default     = ["10.0.0.0/20", "10.0.16.0/20"]
 }
 
+
+##########################################
+# EKS Cluster                            #
+##########################################
+variable "kubernetes_public_access" {
+  type        = bool
+  description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  default     = true
+}
 
 ##########################################
 # Bring Your Own Bucket                  #

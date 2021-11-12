@@ -3,6 +3,12 @@ variable "namespace" {
   description = "(Required) String used for prefix resources."
 }
 
+variable "private_zone" {
+  type        = bool
+  description = "(Optional) Is Route53 zone a private hosted zone"
+  default     = false
+}
+
 variable "domain_name" {
   type        = string
   description = "(Required) Domain for creating the Weights & Biases subdomain on."
@@ -14,7 +20,7 @@ variable "subdomain" {
   description = "(Required) Subdomain for accessing the Weights & Biases UI."
 }
 
-variable "is_subdomain_zone" {
+variable "external_dns" {
   type        = bool
   default     = false
   description = "(Optional) Using Amazon Route 53 as the DNS service for only a subdomain of the parent."

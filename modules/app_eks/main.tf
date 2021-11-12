@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "node" {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
   }
@@ -98,7 +98,7 @@ module "eks" {
   subnets = var.network_private_subnets
 
   cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
   # cluster_encryption_config = [
   #   {

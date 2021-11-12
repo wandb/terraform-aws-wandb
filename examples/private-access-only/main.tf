@@ -5,9 +5,8 @@ provider "aws" {
     tags = {
       GithubRepo = "terraform-aws-wandb"
       GithubOrg  = "wandb"
-      Name       = "WandbLocalTerraform"
-      Enviroment = "Testing"
-      Example    = "DnsExternal"
+      Enviroment = "Example"
+      Example    = "PublicDnsExternal"
     }
   }
 }
@@ -15,13 +14,20 @@ provider "aws" {
 module "standard" {
   source = "../../"
 
-  external_dns  = true
-  public_access = true
+  public_access = false
 
   namespace   = var.namespace
   domain_name = var.domain_name
   subdomain   = var.subdomain
 
   wandb_license = var.license
+}
 
+# We'll need a private hosted zone for the domain
+resource "aws_route53_zone" "private" {
+  name = var.domain_name
+
+  vpc {
+    vpc_id = module.standard.network_id
+  }
 }
