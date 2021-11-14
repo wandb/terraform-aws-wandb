@@ -81,6 +81,12 @@ variable "allowed_inbound_cidr" {
   description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
 }
 
+variable "allowed_inbound_ipv6_cidr" {
+  type        = list(string)
+  default     = ["::/0"]
+  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+}
+
 
 ##########################################
 # KMS                                    #

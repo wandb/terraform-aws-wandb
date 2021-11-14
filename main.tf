@@ -96,9 +96,10 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                 = local.fqdn
-  allowed_inbound_cidr = var.allowed_inbound_cidr
-  target_port          = local.internal_app_port
+  fqdn                      = local.fqdn
+  allowed_inbound_cidr      = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
+  target_port               = local.internal_app_port
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
