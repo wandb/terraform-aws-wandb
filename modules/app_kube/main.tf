@@ -80,8 +80,9 @@ resource "kubernetes_deployment" "wandb" {
           }
           readiness_probe {
             http_get {
-              path = "/ready"
-              port = "http"
+              path           = "/ready"
+              port           = "http"
+              period_seconds = 600
             }
           }
 
