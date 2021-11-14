@@ -31,26 +31,34 @@ variable "wandb_image" {
 variable "public_access" {
   type        = bool
   default     = false
-  description = "Is this instance accessable a public domain."
+  description = "(Optional) Is this instance accessable a public domain."
 }
 
 variable "external_dns" {
   type        = bool
   default     = false
-  description = "(Optional) Using Amazon Route 53 as the DNS service for only a subdomain of the parent."
+  description = "(Optional) Using external DNS. A `subdomain` must also be specified if this value is true."
+}
+
+# Sometimes domain name and zone name dont match, so lets explicitly ask for
+# both. Also is just life easier to have both even though in most cause it may
+# be redundant info.
+# https://github.com/hashicorp/terraform-aws-terraform-enterprise/pull/41#issuecomment-563501858
+variable "zone_id" {
+  type        = string
+  description = "(Required) Domain for creating the Weights & Biases subdomain on."
 }
 
 variable "domain_name" {
   type        = string
-  description = "Domain for creating the Weights & Biases subdomain on."
+  description = "(Required) Domain for accessing the Weights & Biases UI."
 }
 
 variable "subdomain" {
   type        = string
-  default     = "wandb"
-  description = "Subdomain for accessing the Weights & Biases UI."
+  default     = null
+  description = "(Optional) Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
-
 
 ##########################################
 # Load Balancer                          #
@@ -93,7 +101,7 @@ variable "kms_key_deletion_window" {
 ##########################################
 # Network                                #
 ##########################################
-variable "deploy_vpc" {
+variable "create_vpc" {
   type        = bool
   description = "(Optional) Boolean indicating whether to deploy a VPC (true) or not (false)."
   default     = true
@@ -105,33 +113,21 @@ variable "network_id" {
   type        = string
 }
 
-variable "network_private_subnets" {
-  default     = []
-  description = "A list of the identities of the private subnetworks in which resources will be deployed."
-  type        = list(string)
-}
-
-variable "network_public_subnets" {
-  default     = []
-  description = "(Optional) A list of the identities of the public subnetworks in which resources will be deployed."
-  type        = list(string)
-}
-
 variable "network_cidr" {
   type        = string
   description = "(Optional) CIDR block for VPC."
   default     = "10.0.0.0/16"
 }
 
-variable "network_private_subnet_cidrs" {
+variable "network_private_subnets" {
   type        = list(string)
-  description = "(Optional) List of private subnet CIDR ranges to create in VPC."
+  description = "(Optional) A list of public subnets inside the VPC."
   default     = ["10.0.32.0/20", "10.0.48.0/20"]
 }
 
-variable "network_public_subnet_cidrs" {
+variable "network_public_subnets" {
   type        = list(string)
-  description = "(Optional) List of public subnet CIDR ranges to create in VPC."
+  description = "(Optional) A list of private subnets inside the VPC."
   default     = ["10.0.0.0/20", "10.0.16.0/20"]
 }
 

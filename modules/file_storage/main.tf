@@ -55,6 +55,8 @@ resource "aws_s3_bucket" "file_storage" {
 }
 
 resource "aws_s3_bucket_notification" "file_storage" {
+  depends_on = [aws_sqs_queue_policy.file_storage]
+
   bucket = aws_s3_bucket.file_storage.id
 
   queue {

@@ -3,9 +3,10 @@ variable "namespace" {
   description = "Name prefix used for resources"
 }
 
-variable "domain_name" {
+variable "domain" {
   type        = string
-  description = "Domain zone for creating the Weights & Biases subdomain on."
+  default     = "wandb"
+  description = "Subdomain for accessing the Weights & Biases UI."
 }
 
 variable "subdomain" {

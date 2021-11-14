@@ -19,37 +19,45 @@ module "file_storage" {
 }
 
 module "networking" {
-  count = var.deploy_vpc ? 1 : 0
+  source     = "./modules/networking"
+  namespace  = var.namespace
+  create_vpc = var.create_vpc
 
-  source = "./modules/networking"
-
-  namespace                    = var.namespace
-  network_cidr                 = var.network_cidr
-  network_private_subnet_cidrs = var.network_private_subnet_cidrs
-  network_public_subnet_cidrs  = var.network_public_subnet_cidrs
+  cidr            = var.network_cidr
+  private_subnets = var.network_private_subnets
+  public_subnets  = var.network_public_subnets
 }
 
 locals {
-  network_id              = var.deploy_vpc ? module.networking[0].vpc_id : var.network_id
-  network_private_subnets = var.deploy_vpc ? module.networking[0].private_subnets : var.network_private_subnets
-  network_public_subnets  = var.deploy_vpc ? module.networking[0].public_subnets : var.network_public_subnets
+  network_id              = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_private_subnets = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
+  network_public_subnets  = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
 
-  internal_app_port = 32543
+  create_certificate = var.public_access && var.acm_certificate_arn == null
 
-  fqdn = "${var.subdomain}.${var.domain_name}"
-  url  = "https://${local.fqdn}"
+  fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
 }
 
-module "dns" {
-  source = "./modules/dns"
+# Create SSL Ceritifcation if applicable
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 3.0"
 
-  external_dns = var.external_dns
-  private_zone = !var.public_access
+  create_certificate = local.create_certificate
 
-  namespace           = var.namespace
-  domain_name         = var.domain_name
-  subdomain           = var.subdomain
-  acm_certificate_arn = var.acm_certificate_arn
+  domain_name = var.external_dns ? local.fqdn : var.domain_name
+  zone_id     = var.zone_id
+
+  subject_alternative_names = [local.fqdn]
+
+  wait_for_validation = true
+}
+
+locals {
+  acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
+  url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
+
+  internal_app_port = 32543
 }
 
 module "database" {
@@ -85,8 +93,8 @@ module "app_lb" {
 
   namespace             = var.namespace
   load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"
-  acm_certificate_arn   = module.dns.acm_certificate_arn
-  zone_id               = module.dns.zone_id
+  acm_certificate_arn   = local.acm_certificate_arn
+  zone_id               = var.zone_id
 
   fqdn                 = local.fqdn
   allowed_inbound_cidr = var.allowed_inbound_cidr

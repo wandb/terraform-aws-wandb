@@ -9,19 +9,21 @@ resource "aws_security_group" "inbound" {
   vpc_id      = var.network_id
 
   ingress {
-    from_port   = local.https_port
-    to_port     = local.https_port
-    protocol    = "tcp"
-    description = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
-    cidr_blocks = var.allowed_inbound_cidr
+    from_port        = local.https_port
+    to_port          = local.https_port
+    protocol         = "tcp"
+    description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
+    cidr_blocks      = var.allowed_inbound_cidr
+    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
 
   ingress {
-    from_port   = local.http_port
-    to_port     = local.http_port
-    protocol    = "tcp"
-    description = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks = var.allowed_inbound_cidr
+    from_port        = local.http_port
+    to_port          = local.http_port
+    protocol         = "tcp"
+    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
+    cidr_blocks      = var.allowed_inbound_cidr
+    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
 }
 
@@ -46,34 +48,73 @@ resource "aws_lb" "alb" {
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 
-# Redirect HTTP to HTTPS
+locals {
+  https_enabled = var.acm_certificate_arn != null
+}
+
+# The acm_certificate_arn is conditionally created depending on other resources.
+# Terraform needs to know how many resources to create at apply time. Therefore,
+# we must always create a http and https listener.
+
+# Create http target group if http is not enabled
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
   port              = local.http_port
   protocol          = "HTTP"
 
-  default_action {
-    type = "redirect"
+  # HTTPS Enabled
+  dynamic "default_action" {
+    for_each = local.https_enabled ? [1] : []
+    content {
+      type = "redirect"
 
-    redirect {
-      port        = local.https_port
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+      redirect {
+        port        = local.https_port
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+  }
+
+  # HTTPS Disabled
+  dynamic "default_action" {
+    for_each = local.https_enabled ? [] : [1]
+    content {
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.app.arn
     }
   }
 }
 
-# HTTPS listener
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
   port              = local.https_port
-  protocol          = "HTTPS"
-  ssl_policy        = var.ssl_policy
-  certificate_arn   = var.acm_certificate_arn
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
+  protocol        = local.https_enabled ? "HTTPS" : "HTTP"
+  ssl_policy      = local.https_enabled ? var.ssl_policy : null
+  certificate_arn = local.https_enabled ? var.acm_certificate_arn : null
+
+  # HTTPS Enabled
+  dynamic "default_action" {
+    for_each = local.https_enabled ? [1] : []
+    content {
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.app.arn
+    }
+  }
+
+  # HTTPS Disabled
+  dynamic "default_action" {
+    for_each = local.https_enabled ? [] : [1]
+    content {
+      type = "redirect"
+
+      redirect {
+        port        = local.http_port
+        protocol    = "HTTP"
+        status_code = "HTTP_301"
+      }
+    }
   }
 }
 
