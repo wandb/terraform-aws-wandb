@@ -147,10 +147,3 @@ variable "kubernetes_public_access" {
   default     = true
 }
 
-##########################################
-# Bring Your Own Bucket                  #
-##########################################
-variable "byob" {
-  type    = bool
-  default = false
-}
