@@ -9,3 +9,7 @@ output:
     {{ .Content }}
 
     <!-- END_TF_DOCS -->
+
+sections:
+  hide:
+    - resources
