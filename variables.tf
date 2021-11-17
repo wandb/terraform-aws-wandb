@@ -31,13 +31,13 @@ variable "wandb_image" {
 variable "public_access" {
   type        = bool
   default     = false
-  description = "(Optional) Is this instance accessable a public domain."
+  description = "Is this instance accessable a public domain."
 }
 
 variable "external_dns" {
   type        = bool
   default     = false
-  description = "(Optional) Using external DNS. A `subdomain` must also be specified if this value is true."
+  description = "Using external DNS. A `subdomain` must also be specified if this value is true."
 }
 
 # Sometimes domain name and zone name dont match, so lets explicitly ask for
@@ -46,18 +46,18 @@ variable "external_dns" {
 # https://github.com/hashicorp/terraform-aws-terraform-enterprise/pull/41#issuecomment-563501858
 variable "zone_id" {
   type        = string
-  description = "(Required) Domain for creating the Weights & Biases subdomain on."
+  description = "Domain for creating the Weights & Biases subdomain on."
 }
 
 variable "domain_name" {
   type        = string
-  description = "(Required) Domain for accessing the Weights & Biases UI."
+  description = "Domain for accessing the Weights & Biases UI."
 }
 
 variable "subdomain" {
   type        = string
   default     = null
-  description = "(Optional) Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
+  description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
 ##########################################
@@ -78,13 +78,13 @@ variable "acm_certificate_arn" {
 variable "allowed_inbound_cidr" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  description = "Allow HTTP(S) traffic to W&B. Defaults to all connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
   type        = list(string)
   default     = ["::/0"]
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  description = "Allow HTTP(S) traffic to W&B. Defaults to all connections."
 }
 
 
@@ -99,7 +99,7 @@ variable "kms_key_alias" {
 
 variable "kms_key_deletion_window" {
   type        = number
-  description = "(Optional) Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days."
+  description = "Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days."
   default     = 7
 }
 
@@ -109,7 +109,7 @@ variable "kms_key_deletion_window" {
 ##########################################
 variable "create_vpc" {
   type        = bool
-  description = "(Optional) Boolean indicating whether to deploy a VPC (true) or not (false)."
+  description = "Boolean indicating whether to deploy a VPC (true) or not (false)."
   default     = true
 }
 
@@ -121,19 +121,19 @@ variable "network_id" {
 
 variable "network_cidr" {
   type        = string
-  description = "(Optional) CIDR block for VPC."
+  description = "CIDR block for VPC."
   default     = "10.0.0.0/16"
 }
 
 variable "network_private_subnets" {
   type        = list(string)
-  description = "(Optional) A list of public subnets inside the VPC."
+  description = "A list of public subnets inside the VPC."
   default     = ["10.0.32.0/20", "10.0.48.0/20"]
 }
 
 variable "network_public_subnets" {
   type        = list(string)
-  description = "(Optional) A list of private subnets inside the VPC."
+  description = "A list of private subnets inside the VPC."
   default     = ["10.0.0.0/20", "10.0.16.0/20"]
 }
 
@@ -143,7 +143,7 @@ variable "network_public_subnets" {
 ##########################################
 variable "kubernetes_public_access" {
   type        = bool
-  description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
   default     = true
 }
 
