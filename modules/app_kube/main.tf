@@ -10,11 +10,12 @@ resource "kubernetes_deployment" "wandb" {
   }
 
   spec {
+    replicas                  = 1
+    progress_deadline_seconds = 3600
+
     strategy {
       type = "RollingUpdate"
     }
-
-    replicas = 1
 
     selector {
       match_labels = {
@@ -80,8 +81,8 @@ resource "kubernetes_deployment" "wandb" {
           }
           readiness_probe {
             http_get {
-              path           = "/ready"
-              port           = "http"
+              path = "/ready"
+              port = "http"
             }
             period_seconds = 900
           }
