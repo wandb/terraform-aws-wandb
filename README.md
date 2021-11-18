@@ -146,6 +146,7 @@ resources that lack official modules.
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `"wandb-managed-kms"` | no |
 | <a name="input_kms_key_deletion_window"></a> [kms\_key\_deletion\_window](#input\_kms\_key\_deletion\_window) | Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days. | `number` | `7` | no |
 | <a name="input_kubernetes_public_access"></a> [kubernetes\_public\_access](#input\_kubernetes\_public\_access) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. | `bool` | `true` | no |
+| <a name="input_kubernetes_public_access_cidrs"></a> [kubernetes\_public\_access\_cidrs](#input\_kubernetes\_public\_access\_cidrs) | List of CIDR blocks which can access the Amazon EKS public API server endpoint. | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | String used for prefix resources. | `string` | n/a | yes |
 | <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | CIDR block for VPC. | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | The identity of the VPC in which resources will be deployed. | `string` | `""` | no |
