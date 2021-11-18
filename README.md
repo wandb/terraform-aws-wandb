@@ -153,7 +153,7 @@ resources that lack official modules.
 | <a name="input_network_private_subnets"></a> [network\_private\_subnets](#input\_network\_private\_subnets) | A list of public subnets inside the VPC. | `list(string)` | <pre>[<br>  "10.0.32.0/20",<br>  "10.0.48.0/20"<br>]</pre> | no |
 | <a name="input_network_public_subnets"></a> [network\_public\_subnets](#input\_network\_public\_subnets) | A list of private subnets inside the VPC. | `list(string)` | <pre>[<br>  "10.0.0.0/20",<br>  "10.0.16.0/20"<br>]</pre> | no |
 | <a name="input_public_access"></a> [public\_access](#input\_public\_access) | Is this instance accessable a public domain. | `bool` | `false` | no |
-| <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | SSL policy to use on ALB listener | `string` | `"ELBSecurityPolicy-2016-08"` | no |
+| <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | SSL policy to use on ALB listener | `string` | `"ELBSecurityPolicy-FS-1-2-Res-2020-10"` | no |
 | <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route. | `string` | `null` | no |
 | <a name="input_wandb_image"></a> [wandb\_image](#input\_wandb\_image) | Docker repository of to pull the wandb image from. | `string` | `"wandb/local"` | no |
 | <a name="input_wandb_license"></a> [wandb\_license](#input\_wandb\_license) | The license for deploying Weights & Biases local. | `string` | `null` | no |
