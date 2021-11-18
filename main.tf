@@ -85,7 +85,8 @@ module "app_eks" {
   lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
   database_security_group_id   = module.database.security_group_id
 
-  cluster_endpoint_public_access = var.kubernetes_public_access
+  cluster_endpoint_public_access       = var.kubernetes_public_access
+  cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 }
 
 module "app_lb" {

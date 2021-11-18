@@ -97,8 +97,9 @@ module "eks" {
   vpc_id  = var.network_id
   subnets = var.network_private_subnets
 
-  cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access      = true
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   # cluster_encryption_config = [
   #   {
