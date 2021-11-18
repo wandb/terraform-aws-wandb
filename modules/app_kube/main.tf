@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "wandb" {
               path           = "/ready"
               port           = "http"
             }
-            period_seconds = 600
+            period_seconds = 900
           }
 
           resources {
@@ -99,6 +99,12 @@ resource "kubernetes_deployment" "wandb" {
         }
       }
     }
+  }
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "10m"
   }
 }
 
