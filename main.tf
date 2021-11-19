@@ -1,7 +1,7 @@
 module "kms" {
   source = "./modules/kms"
 
-  key_alias           = var.kms_key_alias
+  key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
 
   iam_principal_arn = ""
@@ -47,8 +47,6 @@ module "acm" {
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
   zone_id     = var.zone_id
-
-  subject_alternative_names = [local.fqdn]
 
   wait_for_validation = true
 }
@@ -113,37 +111,37 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   alb_target_group_arn   = module.app_lb.tg_app_arn
 }
 
-data "aws_eks_cluster" "app_cluster" {
-  name = module.app_eks.cluster_id
-}
+# data "aws_eks_cluster" "app_cluster" {
+#   name = module.app_eks.cluster_id
+# }
 
-data "aws_eks_cluster_auth" "app_cluster" {
-  name = module.app_eks.cluster_id
-}
+# data "aws_eks_cluster_auth" "app_cluster" {
+#   name = module.app_eks.cluster_id
+# }
 
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.app_cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.app_cluster.token
-}
+# provider "kubernetes" {
+#   host                   = data.aws_eks_cluster.app_cluster.endpoint
+#   cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
+#   token                  = data.aws_eks_cluster_auth.app_cluster.token
+# }
 
-module "app_kube" {
-  source = "./modules/app_kube"
+# module "app_kube" {
+#   source = "./modules/app_kube"
 
-  namespace = var.namespace
+#   namespace = var.namespace
 
-  wandb_image   = var.wandb_image
-  wandb_license = var.wandb_license
-  wandb_version = var.wandb_version
+#   wandb_image   = var.wandb_image
+#   wandb_license = var.wandb_license
+#   wandb_version = var.wandb_version
 
-  host = local.url
+#   host = local.url
 
-  bucket_name        = module.file_storage.bucket_name
-  bucket_region      = module.file_storage.bucket_region
-  bucket_queue_name  = module.file_storage.bucket_queue_name
-  bucket_kms_key_arn = local.kms_key_arn
+#   bucket_name        = module.file_storage.bucket_name
+#   bucket_region      = module.file_storage.bucket_region
+#   bucket_queue_name  = module.file_storage.bucket_queue_name
+#   bucket_kms_key_arn = local.kms_key_arn
 
-  database_connection_string = module.database.connection_string
+#   database_connection_string = module.database.connection_string
 
-  service_port = local.internal_app_port
-}
+#   service_port = local.internal_app_port
+# }

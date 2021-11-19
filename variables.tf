@@ -6,25 +6,6 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
-variable "wandb_version" {
-  description = "The version of Weights & Biases local to deploy."
-  type        = string
-  default     = "latest"
-}
-
-variable "wandb_license" {
-  description = "The license for deploying Weights & Biases local."
-  type        = string
-  default     = null
-}
-
-variable "wandb_image" {
-  description = "Docker repository of to pull the wandb image from."
-  type        = string
-  default     = "wandb/local"
-}
-
-
 ##########################################
 # DNS                                    #
 ##########################################
@@ -94,7 +75,7 @@ variable "allowed_inbound_ipv6_cidr" {
 variable "kms_key_alias" {
   type        = string
   description = "KMS key alias for AWS KMS Customer managed key."
-  default     = "wandb-managed-kms"
+  default     = null
 }
 
 variable "kms_key_deletion_window" {

@@ -24,7 +24,32 @@ output "network_public_subnets" {
 output "database_port" {
   value = module.database.port
 }
+
+output "bucket_name" {
+  value = module.file_storage.bucket_name
+}
+
+output "bucket_region" {
+  value = module.file_storage.bucket_region
+}
+
+output "bucket_queue_name" {
+  value = module.file_storage.bucket_queue_name
+}
+
+output "database_connection_string" {
+  value = module.database.connection_string
+}
+
+output "cluster_id" {
+  value = module.app_eks.cluster_id
+}
+
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
+}
+
+output "internal_app_port" {
+  value = local.internal_app_port
 }
