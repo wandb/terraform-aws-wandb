@@ -42,12 +42,12 @@ module "wandb_app" {
 
   license = var.wandb_license
 
-  host                    = module.wandb_infra.url
-  bucket                  = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region       = module.wandb_infra.bucket_region
-  bucket_queue            = "sqs://${module.wandb_infra.bucket_queue_name}"
-  bucket_kms_key_arn      = module.wandb_infra.kms_key_arn
-  mysql_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
+  host                       = module.wandb_infra.url
+  bucket                     = "s3://${module.wandb_infra.bucket_name}"
+  bucket_aws_region          = module.wandb_infra.bucket_region
+  bucket_queue               = "sqs://${module.wandb_infra.bucket_queue_name}"
+  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
+  database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
 
   service_port = module.wandb_infra.internal_app_port
 
