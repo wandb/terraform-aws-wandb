@@ -18,6 +18,9 @@ module "wandb_infra" {
   public_access = true
   external_dns  = true
 
+  allowed_inbound_cidr      = ["0.0.0.0/0"]
+  allowed_inbound_ipv6_cidr = ["::/0"]
+
   domain_name = var.domain_name
   zone_id     = var.zone_id
   subdomain   = var.subdomain
