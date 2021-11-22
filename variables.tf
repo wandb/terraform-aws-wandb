@@ -129,7 +129,7 @@ variable "network_database_subnets" {
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
-  default     = "10.0.0.0/16"
+  default     = "10.10.0.0/16"
 }
 
 variable "network_public_subnet_cidrs" {
