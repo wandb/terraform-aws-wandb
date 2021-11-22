@@ -46,7 +46,7 @@ variable "subdomain" {
 ##########################################
 variable "ssl_policy" {
   type        = string
-  default     = "ELBSecurityPolicy-2016-08"
+  default     = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
   description = "SSL policy to use on ALB listener"
 }
 
