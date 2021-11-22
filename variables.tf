@@ -6,6 +6,14 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
+variable "deletion_protection" {
+  description = "If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`."
+  type        = bool
+  default     = true
+}
+
+
+
 ##########################################
 # DNS                                    #
 ##########################################

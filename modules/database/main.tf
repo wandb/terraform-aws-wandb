@@ -40,11 +40,12 @@ module "aurora" {
   autoscaling_min_capacity = 1
   autoscaling_max_capacity = 3
 
-  vpc_id = var.vpc_id
+  deletion_protection = var.deletion_protection
 
-  create_db_subnet_group = true
-  db_subnet_group_name   = "${var.namespace}-db"
-  subnets                = []
+  vpc_id                 = var.vpc_id
+  create_db_subnet_group = var.create_db_subnet_group
+  db_subnet_group_name   = var.db_subnet_group_name
+  subnets                = var.subnets
 
   create_security_group = true
   allowed_cidr_blocks   = var.allowed_cidr_blocks

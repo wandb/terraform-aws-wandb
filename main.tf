@@ -23,10 +23,10 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                 = var.network_cidr
-  private_subnet_cidrs = var.network_private_subnet_cidrs
-  public_subnet_cidrs  = var.network_public_subnet_cidrs
-  database_subnet_cids = var.network_database_subnet_cidrs
+  cidr                  = var.network_cidr
+  private_subnet_cidrs  = var.network_private_subnet_cidrs
+  public_subnet_cidrs   = var.network_public_subnet_cidrs
+  database_subnet_cidrs = var.network_database_subnet_cidrs
 }
 
 locals {
@@ -54,8 +54,7 @@ module "database" {
   db_subnet_group_name = local.network_database_subnet_group_name
   subnets              = local.network_database_subnets
 
-  create_security_group = true
-  allowed_cidr_blocks   = local.network_private_subnet_cidrs
+  allowed_cidr_blocks = local.network_private_subnet_cidrs
 }
 
 locals {

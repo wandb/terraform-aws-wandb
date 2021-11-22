@@ -14,6 +14,24 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "create_db_subnet_group" {
+  description = "Determines whether to create the databae subnet group or use existing"
+  type        = string
+  default     = true
+}
+
+variable "db_subnet_group_name" {
+  description = "The name of the subnet group name (existing or created)"
+  type        = string
+  default     = ""
+}
+
+variable "subnets" {
+  description = "List of subnet IDs used by database subnet group created."
+  type        = list(string)
+  default     = []
+}
+
 variable "instance_class" {
   description = "Instance type to use at master instance."
   type        = string

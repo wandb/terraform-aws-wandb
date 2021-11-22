@@ -84,7 +84,7 @@ resource "aws_iam_role" "node" {
 }
 
 locals {
-  cluster_version = "1.20"
+  cluster_version = "1.21"
 }
 
 module "eks" {
