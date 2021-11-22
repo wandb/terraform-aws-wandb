@@ -112,6 +112,12 @@ variable "network_public_subnets" {
   type        = list(string)
 }
 
+variable "network_database_subnets" {
+  default     = []
+  description = "A list of the identities of the database subnetworks in which resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
@@ -121,13 +127,19 @@ variable "network_cidr" {
 variable "network_public_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.1.0/24", "10.10.2.0/24"]
+  default     = ["10.10.0.0/24", "10.10.1.0/24"]
 }
 
 variable "network_private_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.4.0/24", "10.10.5.0/24"]
+  default     = ["10.10.10.0/24", "10.10.11.0/24"]
+}
+
+variable "network_database_subnet_cidrs" {
+  type        = list(string)
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.20.0/24", "10.10.21.0/24"]
 }
 
 

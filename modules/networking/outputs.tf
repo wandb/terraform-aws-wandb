@@ -28,6 +28,26 @@ output "private_subnet_cidrs" {
   description = "A list of the CIDR blocks which comprise the private subnetworks."
 }
 
+output "database_subnets" {
+  value       = module.vpc.database_subnets
+  description = "A list of the CIDR blocks which comprise the database subnetworks."
+}
+
+output "database_subnet_cidrs" {
+  value       = module.vpc.database_subnets_cidr_blocks
+  description = "A list of the CIDR blocks which comprise the database subnetworks."
+}
+
+output "database_subnet_group" {
+  value       = module.vpc.database_subnet_group
+  description = "ID of database subnet group."
+}
+
+output "database_subnet_group_name" {
+  value       = module.vpc.database_subnet_group_name
+  description = "Name of database subnet group."
+}
+
 output "private_route_table_ids" {
   value       = module.vpc.private_route_table_ids
   description = "List of IDs of private route tables"
