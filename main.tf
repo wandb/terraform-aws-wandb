@@ -23,15 +23,16 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr            = var.network_cidr
-  private_subnets = var.network_private_subnets
-  public_subnets  = var.network_public_subnets
+  cidr                 = var.network_cidr
+  private_subnet_cidrs = var.network_private_subnet_cidrs
+  public_subnet_cidrs  = var.network_public_subnet_cidrs
 }
 
 locals {
-  network_id              = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_private_subnets = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
-  network_public_subnets  = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
+  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
+  network_public_subnets       = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
+  network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
   create_certificate = var.public_access && var.acm_certificate_arn == null
 

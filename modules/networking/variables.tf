@@ -9,28 +9,28 @@ variable "namespace" {
   description = "(Required) The name prefix for all resources created."
 }
 
-variable "enable_vpn_gateway" {
-  type        = bool
-  description = "(Optional) Should be true if you want to create a new VPN Gateway resource and attach it to the VPC."
-  default     = false
-}
-
 variable "cidr" {
   type        = string
   description = "(Optional) CIDR block for VPC."
   default     = "10.0.0.0/16"
 }
 
-variable "private_subnets" {
+variable "private_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of private subnet CIDR ranges to create in VPC."
   default     = ["10.0.32.0/20", "10.0.48.0/20"]
 }
 
-variable "public_subnets" {
+variable "public_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of public subnet CIDR ranges to create in VPC."
   default     = ["10.0.0.0/20", "10.0.16.0/20"]
+}
+
+variable "enable_vpn_gateway" {
+  type        = bool
+  description = "(Optional) Should be true if you want to create a new VPN Gateway resource and attach it to the VPC."
+  default     = false
 }
 
 variable "customer_gateways" {

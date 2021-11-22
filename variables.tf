@@ -100,22 +100,34 @@ variable "network_id" {
   type        = string
 }
 
+variable "network_private_subnets" {
+  default     = []
+  description = "A list of the identities of the private subnetworks in which resources will be deployed."
+  type        = list(string)
+}
+
+variable "network_public_subnets" {
+  default     = []
+  description = "A list of the identities of the public subnetworks in which resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
   default     = "10.0.0.0/16"
 }
 
-variable "network_private_subnets" {
+variable "network_public_subnet_cidrs" {
   type        = list(string)
-  description = "A list of public subnets inside the VPC."
-  default     = ["10.0.32.0/20", "10.0.48.0/20"]
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.1.0/24", "10.10.2.0/24"]
 }
 
-variable "network_public_subnets" {
+variable "network_private_subnet_cidrs" {
   type        = list(string)
-  description = "A list of private subnets inside the VPC."
-  default     = ["10.0.0.0/20", "10.0.16.0/20"]
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.4.0/24", "10.10.5.0/24"]
 }
 
 
