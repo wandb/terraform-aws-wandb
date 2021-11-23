@@ -19,18 +19,15 @@ resource "aws_db_parameter_group" "default" {
   description = "${var.namespace}-aurora-db-57-parameter-group"
 
   parameter {
-    name  = "binlog_format"
-    value = "ROW"
+    name         = "performance_schema"
+    value        = "on"
+    apply_method = "pending-reboot"
   }
 
   parameter {
-    name  = "performance_schema"
-    value = "on"
-  }
-
-  parameter {
-    name  = "slow_query_log"
-    value = "on"
+    name         = "slow_query_log"
+    value        = "on"
+    apply_method = "pending-reboot"
   }
 
   parameter {
@@ -39,13 +36,9 @@ resource "aws_db_parameter_group" "default" {
   }
 
   parameter {
-    name  = "max_prepared_stmt_count"
-    value = "1048576"
-  }
-
-  parameter {
-    name  = "innodb_online_alter_log_max_size"
-    value = "268435456"
+    name         = "max_prepared_stmt_count"
+    value        = "1048576"
+    apply_method = "pending-reboot"
   }
 
   parameter {
@@ -58,6 +51,18 @@ resource "aws_rds_cluster_parameter_group" "default" {
   name        = "${var.namespace}-aurora-57-cluster-parameter-group"
   family      = "aurora-mysql5.7"
   description = "${var.namespace}-aurora-57-cluster-parameter-group"
+
+  parameter {
+    name         = "binlog_format"
+    value        = "ROW"
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name         = "innodb_online_alter_log_max_size"
+    value        = "268435456"
+    apply_method = "pending-reboot"
+  }
 }
 
 module "aurora" {
