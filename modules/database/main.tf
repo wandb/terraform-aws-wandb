@@ -34,7 +34,7 @@ module "aurora" {
   engine_version = "5.7.12"
 
   instance_class = var.instance_class
-  instances      = { one = {} }
+  instances      = { 1 = {} }
 
   autoscaling_enabled      = true
   autoscaling_min_capacity = 1
@@ -43,14 +43,16 @@ module "aurora" {
   deletion_protection = var.deletion_protection
 
   vpc_id                 = var.vpc_id
-  create_db_subnet_group = var.create_db_subnet_group
   db_subnet_group_name   = var.db_subnet_group_name
+  create_db_subnet_group = var.create_db_subnet_group
   subnets                = var.subnets
+
+  database_name = local.database_name
 
   create_security_group = true
   allowed_cidr_blocks   = var.allowed_cidr_blocks
 
-  iam_database_authentication_enabled = var.iam_database_authentication_enabled
+  iam_database_authentication_enabled = false
   master_username                     = local.master_username
   master_password                     = local.master_password
   create_random_password              = false

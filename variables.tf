@@ -157,7 +157,7 @@ variable "network_database_subnet_cidrs" {
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = true
+  default     = false
 }
 
 variable "kubernetes_public_access_cidrs" {

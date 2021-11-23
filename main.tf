@@ -16,6 +16,8 @@ module "file_storage" {
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
+
+  deletion_protection = var.deletion_protection
 }
 
 module "networking" {
@@ -36,9 +38,10 @@ locals {
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
-  network_database_subnets           = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
-  network_database_subnet_cidrs      = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
-  network_database_subnet_group_name = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
+  network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
+  network_database_create_subnet_group = !var.create_vpc
+  network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
 }
 
 
@@ -50,9 +53,10 @@ module "database" {
 
   deletion_protection = var.deletion_protection
 
-  vpc_id               = local.network_id
-  db_subnet_group_name = local.network_database_subnet_group_name
-  subnets              = local.network_database_subnets
+  vpc_id                 = local.network_id
+  create_db_subnet_group = local.network_database_create_subnet_group
+  db_subnet_group_name   = local.network_database_subnet_group_name
+  subnets                = local.network_database_subnets
 
   allowed_cidr_blocks = local.network_private_subnet_cidrs
 }

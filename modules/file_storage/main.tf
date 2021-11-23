@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "file_storage" {
     }
   }
 
-  force_destroy = true
+  force_destroy = !var.deletion_protection
 
   # Configuration error of SQS does not exist
   # https://aws.amazon.com/premiumsupport/knowledge-center/unable-validate-destination-s3/
