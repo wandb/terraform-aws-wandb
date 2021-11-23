@@ -39,14 +39,14 @@ variable "load_balancing_scheme" {
 
 variable "allowed_inbound_cidr" {
   type        = list(string)
-  default     = ["0.0.0.0/0"]
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  default     = []
+  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
   type        = list(string)
-  default     = ["::/0"]
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  default     = []
+  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "network_id" {

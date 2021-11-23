@@ -58,14 +58,14 @@ variable "acm_certificate_arn" {
 
 variable "allowed_inbound_cidr" {
   type        = list(string)
-  default     = ["0.0.0.0/0"]
-  description = "Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  default     = []
+  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
   type        = list(string)
-  default     = ["::/0"]
-  description = "Allow HTTP(S) traffic to W&B. Defaults to all connections."
+  default     = []
+  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 
@@ -131,5 +131,5 @@ variable "kubernetes_public_access" {
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = []
 }
