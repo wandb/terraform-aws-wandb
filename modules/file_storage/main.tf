@@ -54,6 +54,12 @@ resource "aws_s3_bucket" "file_storage" {
   depends_on = [aws_sqs_queue.file_storage]
 }
 
+resource "aws_s3_bucket_public_access_block" "example" {
+	bucket = aws_s3_bucket.file_storage.id
+	block_public_acls   = true
+	block_public_policy = true
+}
+
 resource "aws_s3_bucket_notification" "file_storage" {
   depends_on = [aws_sqs_queue_policy.file_storage]
 
