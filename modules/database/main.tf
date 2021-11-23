@@ -17,6 +17,41 @@ resource "aws_db_parameter_group" "default" {
   name        = "${var.namespace}-aurora-db-57-parameter-group"
   family      = "aurora-mysql5.7"
   description = "${var.namespace}-aurora-db-57-parameter-group"
+
+  parameter {
+    name  = "binlog_format"
+    value = "ROW"
+  }
+
+  parameter {
+    name  = "performance_schema"
+    value = "on"
+  }
+
+  parameter {
+    name  = "slow_query_log"
+    value = "on"
+  }
+
+  parameter {
+    name  = "long_query_time"
+    value = "4"
+  }
+
+  parameter {
+    name  = "max_prepared_stmt_count"
+    value = "1048576"
+  }
+
+  parameter {
+    name  = "innodb_online_alter_log_max_size"
+    value = "268435456"
+  }
+
+  parameter {
+    name  = "max_execution_time"
+    value = "60000"
+  }
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
@@ -31,7 +66,7 @@ module "aurora" {
 
   name           = var.namespace
   engine         = "aurora-mysql"
-  engine_version = "5.7.12"
+  engine_version = "5.7.34"
 
   instance_class = var.instance_class
   instances      = { 1 = {} }
