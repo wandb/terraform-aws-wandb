@@ -1,7 +1,6 @@
 variable "kms_key_arn" {
-  description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `storage_encrypted` needs to be set to `true`"
+  description = "The ARN for the KMS encryption key."
   type        = string
-  default     = null
 }
 
 variable "namespace" {
@@ -61,13 +60,6 @@ variable "preferred_maintenance_window" {
   type        = string
   default     = "sun:05:00-sun:06:00"
 }
-
-variable "storage_encrypted" {
-  description = "Specifies whether the database cluster is encrypted."
-  type        = bool
-  default     = true
-}
-
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
   type        = bool

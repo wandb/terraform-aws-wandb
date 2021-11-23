@@ -9,7 +9,7 @@ locals {
 
 # Random string to use as master password
 resource "random_string" "master_password" {
-  length  = 20
+  length  = 32
   special = false
 }
 
@@ -57,7 +57,7 @@ module "aurora" {
   master_password                     = local.master_password
   create_random_password              = false
 
-  storage_encrypted = var.storage_encrypted
+  storage_encrypted = true
   kms_key_id        = var.kms_key_arn
 
   apply_immediately   = true
