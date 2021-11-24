@@ -16,6 +16,8 @@ module "file_storage" {
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
+
+  deletion_protection = var.deletion_protection
 }
 
 module "networking" {
@@ -23,17 +25,43 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                 = var.network_cidr
-  private_subnet_cidrs = var.network_private_subnet_cidrs
-  public_subnet_cidrs  = var.network_public_subnet_cidrs
+  cidr                  = var.network_cidr
+  private_subnet_cidrs  = var.network_private_subnet_cidrs
+  public_subnet_cidrs   = var.network_public_subnet_cidrs
+  database_subnet_cidrs = var.network_database_subnet_cidrs
 }
 
 locals {
-  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
+
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
-  network_public_subnets       = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
+  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
+  network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
+  network_database_create_subnet_group = !var.create_vpc
+  network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+}
+
+
+module "database" {
+  source = "./modules/database"
+
+  namespace   = var.namespace
+  kms_key_arn = local.kms_key_arn
+
+  deletion_protection = var.deletion_protection
+
+  vpc_id                 = local.network_id
+  create_db_subnet_group = local.network_database_create_subnet_group
+  db_subnet_group_name   = local.network_database_subnet_group_name
+  subnets                = local.network_database_subnets
+
+  allowed_cidr_blocks = local.network_private_subnet_cidrs
+}
+
+locals {
   create_certificate = var.public_access && var.acm_certificate_arn == null
 
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
@@ -57,16 +85,6 @@ locals {
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
 
   internal_app_port = 32543
-}
-
-module "database" {
-  source = "./modules/database"
-
-  namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
-
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
 }
 
 module "app_eks" {

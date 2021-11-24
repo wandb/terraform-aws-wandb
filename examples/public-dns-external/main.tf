@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "us-east-1"
 
   default_tags {
     tags = {
@@ -18,8 +18,13 @@ module "wandb_infra" {
   public_access = true
   external_dns  = true
 
+  deletion_protection = false
+
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
+
+  kubernetes_public_access       = true
+  kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
   domain_name = var.domain_name
   zone_id     = var.zone_id
@@ -36,7 +41,7 @@ data "aws_eks_cluster_auth" "app_cluster" {
 
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.app_cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 

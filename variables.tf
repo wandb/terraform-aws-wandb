@@ -6,6 +6,14 @@ variable "namespace" {
   description = "String used for prefix resources."
 }
 
+variable "deletion_protection" {
+  description = "If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`."
+  type        = bool
+  default     = true
+}
+
+
+
 ##########################################
 # DNS                                    #
 ##########################################
@@ -112,22 +120,34 @@ variable "network_public_subnets" {
   type        = list(string)
 }
 
+variable "network_database_subnets" {
+  default     = []
+  description = "A list of the identities of the database subnetworks in which resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
-  default     = "10.0.0.0/16"
+  default     = "10.10.0.0/16"
 }
 
 variable "network_public_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.1.0/24", "10.10.2.0/24"]
+  default     = ["10.10.0.0/24", "10.10.1.0/24"]
 }
 
 variable "network_private_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.4.0/24", "10.10.5.0/24"]
+  default     = ["10.10.10.0/24", "10.10.11.0/24"]
+}
+
+variable "network_database_subnet_cidrs" {
+  type        = list(string)
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.20.0/24", "10.10.21.0/24"]
 }
 
 
@@ -137,7 +157,7 @@ variable "network_private_subnet_cidrs" {
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = true
+  default     = false
 }
 
 variable "kubernetes_public_access_cidrs" {
