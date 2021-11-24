@@ -12,7 +12,7 @@ variable "namespace" {
 variable "cidr" {
   type        = string
   description = "(Optional) CIDR block for VPC."
-  default     = "10.0.0.0/16"
+  default     = "10.10.0.0/16"
 }
 
 variable "private_subnet_cidrs" {
