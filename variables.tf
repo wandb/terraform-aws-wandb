@@ -173,12 +173,12 @@ variable "kubernetes_public_access_cidrs" {
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
 
-variable "bucket_arn" {
+variable "bucket_name" {
   type    = string
   default = ""
 }
 
-variable "bucket_queue_arn" {
+variable "bucket_queue_name" {
   type    = string
   default = ""
 }
