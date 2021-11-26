@@ -165,3 +165,20 @@ variable "kubernetes_public_access_cidrs" {
   type        = list(string)
   default     = []
 }
+
+
+##########################################
+# External Bucket                        #
+##########################################
+# Most users will not need these settings. They are ment for users who want a
+# bucket and sqs that are in a different account.
+
+variable "bucket_arn" {
+  type    = string
+  default = ""
+}
+
+variable "bucket_queue_arn" {
+  type    = string
+  default = ""
+}

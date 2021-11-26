@@ -2,12 +2,22 @@ variable "trusted_account_id" {
   type = string
 }
 
-# Bucket we would like to give access too
+variable "namespace" {
+  type = string
+}
+
 variable "bucket_arn" {
   type = string
 }
 
-# The SQS we would like to give access too
-variable "bucket_sqs_queue_arn" {
+variable "bucket_name" {
+  type = string
+}
+
+variable "bucket_queue_arn" {
+  type = string
+}
+
+variable "bucket_queue_name" {
   type = string
 }

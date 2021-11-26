@@ -8,18 +8,24 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn = module.kms.key.arn
+  kms_key_arn             = module.kms.key.arn
+  enable_external_storage = var.bucket_arn != "" && var.bucket_queue_arn != ""
 }
-
 module "file_storage" {
-  source = "./modules/file_storage"
+  count     = local.enable_external_storage ? 0 : 1
+  source    = "./modules/file_storage"
+  namespace = var.namespace
 
-  namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  sse_algorithm = "aws:kms"
+  kms_key_arn   = local.kms_key_arn
 
   deletion_protection = var.deletion_protection
 }
 
+locals {
+  bucket_arn       = local.enable_external_storage ? var.bucket_arn : module.file_storage.0.bucket_arn
+  bucket_queue_arn = local.enable_external_storage ? var.bucket_queue_arn : module.file_storage.0.bucket_queue_arn
+}
 module "networking" {
   source     = "./modules/networking"
   namespace  = var.namespace
