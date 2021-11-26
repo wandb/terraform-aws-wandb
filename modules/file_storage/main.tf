@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "file_storage" {
-  name = "${var.namespace}-wandb-file-storage"
+  name = "${var.namespace}-file-storage"
 
   # Enable long-polling
   receive_wait_time_seconds = 10
@@ -8,7 +8,7 @@ resource "aws_sqs_queue" "file_storage" {
 }
 
 resource "aws_s3_bucket" "file_storage" {
-  bucket = "${var.namespace}-wandb-file-storage"
+  bucket = "${var.namespace}-file-storage"
   acl    = "private"
 
   cors_rule {
@@ -59,6 +59,8 @@ resource "aws_sqs_queue_policy" "file_storage" {
 }
 
 resource "aws_s3_bucket_notification" "file_storage" {
+  depends_on = [aws_sqs_queue_policy.file_storage]
+
   bucket = aws_s3_bucket.file_storage.id
 
   queue {
