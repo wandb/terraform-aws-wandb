@@ -39,7 +39,8 @@ variable "bucket_arn" {
 }
 
 variable "bucket_sqs_queue_arn" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "database_security_group_id" {

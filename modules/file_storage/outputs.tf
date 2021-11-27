@@ -11,9 +11,9 @@ output "bucket_region" {
 }
 
 output "bucket_queue_name" {
-  value = aws_sqs_queue.file_storage.name
+  value = var.create_queue ? aws_sqs_queue.file_storage.0.name : null
 }
 
 output "bucket_queue_arn" {
-  value = aws_sqs_queue.file_storage.arn
+  value = var.create_queue ? aws_sqs_queue.file_storage.0.arn : null
 }

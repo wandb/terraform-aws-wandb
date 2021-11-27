@@ -9,13 +9,15 @@ module "kms" {
 
 locals {
   kms_key_arn             = module.kms.key.arn
-  enable_external_storage = var.bucket_name != "" && var.bucket_queue_name != ""
+  enable_external_storage = var.bucket_name != ""
 }
 
 module "file_storage" {
   count     = local.enable_external_storage ? 0 : 1
   source    = "./modules/file_storage"
   namespace = var.namespace
+
+  create_queue = !var.use_internal_queue
 
   sse_algorithm = "aws:kms"
   kms_key_arn   = local.kms_key_arn
@@ -25,14 +27,16 @@ module "file_storage" {
 
 locals {
   bucket_name       = local.enable_external_storage ? var.bucket_name : module.file_storage.0.bucket_name
-  bucket_queue_name = local.enable_external_storage ? var.bucket_queue_name : module.file_storage.0.bucket_queue_name
+  bucket_queue_name = var.use_internal_queue && local.enable_external_storage ? null : module.file_storage.0.bucket_queue_name
 }
 
 data "aws_s3_bucket" "file_storage" {
   depends_on = [module.file_storage]
   bucket     = local.bucket_name
 }
+
 data "aws_sqs_queue" "file_storage" {
+  count      = local.bucket_queue_name == null ? 0 : 1
   depends_on = [module.file_storage]
   name       = local.bucket_queue_name
 }
@@ -111,7 +115,7 @@ module "app_eks" {
   kms_key_arn = local.kms_key_arn
 
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
-  bucket_sqs_queue_arn = data.aws_sqs_queue.file_storage.arn
+  bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets

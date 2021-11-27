@@ -4,11 +4,11 @@ resource "aws_s3_bucket_policy" "default" {
 
   policy = jsonencode({
     "Version" : "2012-10-17",
-    "Id" : "WandBAccountAccess",
+    "Id" : "WandBAccess",
     "Statement" : [
       # Give account permission to do whatever it wants to the bucket.
       {
-        "Sid" : "1",
+        "Sid" : "WAndBAccountAccess",
         "Effect" : "Allow",
         "Principal" : { "AWS" : "arn:aws:iam::${var.trusted_account_id}:root" },
         "Action" : "s3:*",
@@ -35,7 +35,7 @@ resource "aws_sqs_queue_policy" "default" {
         "Effect" : "Allow",
         "Principal" : { "AWS" : "arn:aws:iam::${var.trusted_account_id}:root" },
         "Action" : "sqs:*",
-        "Resource" : "${var.bucket_queue_arn}",
+        "Resource" : var.bucket_queue_arn,
       },
       # Give the bucket permission to send messages onto the queue. Looks like
       # we overide this value.
@@ -43,8 +43,8 @@ resource "aws_sqs_queue_policy" "default" {
         "Sid" : "BucketAccess",
         "Effect" : "Allow",
         "Principal" : "*",
-        "Action" : ["sqs:SendMessage"],
-        "Resource" : "arn:aws:sqs:*:*:${var.bucket_queue_name}",
+        "Action" : "sqs:SendMessage",
+        "Resource" : var.bucket_queue_arn,
         "Condition" : {
           "ArnEquals" : { "aws:SourceArn" : "${var.bucket_arn}" }
         }

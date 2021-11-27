@@ -21,8 +21,14 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "create_queue" {
+  description = "Creates a SQS queue for the bucket"
+  type        = bool
+  default     = true
+}
+
 variable "create_queue_policy" {
-  description = "Attach a SQS policy for bucket access."
+  description = "Create a SQS policy for bucket access."
   type        = bool
   default     = true
 }

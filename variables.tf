@@ -12,6 +12,11 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "use_internal_queue" {
+  type    = bool
+  default = false
+}
+
 
 
 ##########################################
@@ -174,11 +179,6 @@ variable "kubernetes_public_access_cidrs" {
 # bucket and sqs that are in a different account.
 
 variable "bucket_name" {
-  type    = string
-  default = ""
-}
-
-variable "bucket_queue_name" {
   type    = string
   default = ""
 }

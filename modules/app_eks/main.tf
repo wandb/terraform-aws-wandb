@@ -42,21 +42,25 @@ resource "aws_iam_role" "node" {
     })
   }
 
-  # Policy to access SQS
-  inline_policy {
-    name = "${var.namespace}-node-sqs-policy"
-    policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : "sqs:*",
-          "Resource" : [
-            "${var.bucket_sqs_queue_arn}"
-          ]
-        }
-      ]
-    })
+  # Policy to access SQS. If we are using an internal queue, we dont need to set
+  # any permissions
+  dynamic "inline_policy" {
+    for_each = var.bucket_sqs_queue_arn == null ? [] : [1]
+    content {
+      name = "${var.namespace}-node-sqs-policy"
+      policy = jsonencode({
+        "Version" : "2012-10-17",
+        "Statement" : [
+          {
+            "Effect" : "Allow",
+            "Action" : "sqs:*",
+            "Resource" : [
+              "${var.bucket_sqs_queue_arn}"
+            ]
+          }
+        ]
+      })
+    }
   }
 
   # Encrypt and decrypt with KMS

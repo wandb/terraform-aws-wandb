@@ -12,17 +12,22 @@ provider "aws" {
 }
 
 locals {
-  namespace = "my-wandb-resources"
+  namespace = "wandb-resources-1"
 
   # Weights & Biases Deployment Account
-  wandb_deployment_account_id = "250180789729"
+  wandb_deployment_account_id = "830241207209"
+  # wandb_deployment_account_id = "250180789729"
 }
 
 module "resources" {
   source = "../../modules/file_storage"
 
-  namespace           = local.namespace
-  sse_algorithm       = "AES256"
+  namespace     = local.namespace
+  sse_algorithm = "AES256"
+
+  # We'll create our own custom policy so the trusted account can access these
+  # resources
+  create_queue        = false
   create_queue_policy = false
 
   deletion_protection = false
@@ -39,18 +44,17 @@ module "resources_access" {
   bucket_queue_name  = module.resources.bucket_queue_name
 }
 
-output "bucket_arn" {
-  value = module.resources.bucket_arn
-}
-
 output "bucket_name" {
   value = module.resources.bucket_name
 }
 
-output "bucket_queue_arn" {
-  value = module.resources.bucket_queue_arn
-}
-
 output "bucket_queue_name" {
   value = module.resources.bucket_queue_name
+}
+
+output "bucket_queue_url" {
+  value = module.resources.bucket_queue_url
+}
+output "bucket_queue_arn" {
+  value = module.resources.bucket_queue_arn
 }

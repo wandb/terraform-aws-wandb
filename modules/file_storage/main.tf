@@ -1,5 +1,6 @@
 resource "aws_sqs_queue" "file_storage" {
-  name = "${var.namespace}-file-storage"
+  count = var.create_queue ? 1 : 0
+  name  = "${var.namespace}-file-storage"
 
   # Enable long-polling
   receive_wait_time_seconds = 10
@@ -38,9 +39,9 @@ resource "aws_s3_bucket" "file_storage" {
 # Give the bucket permission to send messages onto the queue. Looks like we
 # overide this value.
 resource "aws_sqs_queue_policy" "file_storage" {
-  count = var.create_queue_policy ? 1 : 0
+  count = var.create_queue && var.create_queue_policy ? 1 : 0
 
-  queue_url = aws_sqs_queue.file_storage.id
+  queue_url = aws_sqs_queue.file_storage.0.id
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -49,7 +50,7 @@ resource "aws_sqs_queue_policy" "file_storage" {
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : ["sqs:SendMessage"],
-        "Resource" : "arn:aws:sqs:*:*:${aws_sqs_queue.file_storage.name}",
+        "Resource" : "arn:aws:sqs:*:*:${aws_sqs_queue.file_storage.0.name}",
         "Condition" : {
           "ArnEquals" : { "aws:SourceArn" : "${aws_s3_bucket.file_storage.arn}" }
         }
@@ -59,12 +60,14 @@ resource "aws_sqs_queue_policy" "file_storage" {
 }
 
 resource "aws_s3_bucket_notification" "file_storage" {
+  count = var.create_queue ? 1 : 0
+
   depends_on = [aws_sqs_queue_policy.file_storage]
 
   bucket = aws_s3_bucket.file_storage.id
 
   queue {
-    queue_arn = aws_sqs_queue.file_storage.arn
+    queue_arn = aws_sqs_queue.file_storage.0.arn
     events    = ["s3:ObjectCreated:*"]
   }
 }
