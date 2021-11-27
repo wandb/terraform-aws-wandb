@@ -40,8 +40,6 @@ module "resources_access" {
   trusted_account_id = local.wandb_deployment_account_id
   bucket_arn         = module.resources.bucket_arn
   bucket_name        = module.resources.bucket_name
-  bucket_queue_arn   = module.resources.bucket_queue_arn
-  bucket_queue_name  = module.resources.bucket_queue_name
 }
 
 output "bucket_name" {
@@ -52,9 +50,6 @@ output "bucket_queue_name" {
   value = module.resources.bucket_queue_name
 }
 
-output "bucket_queue_url" {
-  value = module.resources.bucket_queue_url
-}
 output "bucket_queue_arn" {
   value = module.resources.bucket_queue_arn
 }

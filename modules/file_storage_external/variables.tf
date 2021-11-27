@@ -13,11 +13,3 @@ variable "bucket_arn" {
 variable "bucket_name" {
   type = string
 }
-
-variable "bucket_queue_arn" {
-  type = string
-}
-
-variable "bucket_queue_name" {
-  type = string
-}
