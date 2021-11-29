@@ -20,13 +20,13 @@ resource "aws_db_parameter_group" "default" {
 
   parameter {
     name         = "performance_schema"
-    value        = "on"
+    value        = "1"
     apply_method = "pending-reboot"
   }
 
   parameter {
     name         = "slow_query_log"
-    value        = "on"
+    value        = "1"
     apply_method = "pending-reboot"
   }
 
