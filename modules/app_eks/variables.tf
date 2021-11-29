@@ -51,3 +51,29 @@ variable "service_port" {
   type    = number
   default = 32543
 }
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type        = list(string)
+  default     = []
+}
+
+variable "map_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
+
+variable "map_users" {
+  description = "Additional IAM users to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
