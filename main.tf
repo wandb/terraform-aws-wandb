@@ -112,7 +112,7 @@ module "app_eks" {
   source = "./modules/app_eks"
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  bucket_kms_key_arn = local.enable_external_storage ? var.bucket_kms_key_arn : local.kms_key_arn
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles

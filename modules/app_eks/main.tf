@@ -79,7 +79,7 @@ resource "aws_iam_role" "node" {
             "kms:DescribeKey"
           ],
           "Resource" : [
-            "${var.kms_key_arn}"
+            "${var.bucket_kms_key_arn}"
           ]
         }
       ]

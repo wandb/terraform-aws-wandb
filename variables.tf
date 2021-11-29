@@ -208,3 +208,9 @@ variable "bucket_name" {
   type    = string
   default = ""
 }
+
+variable "bucket_kms_key_arn" {
+  type        = string
+  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  default     = ""
+}
