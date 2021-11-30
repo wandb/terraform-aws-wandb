@@ -13,7 +13,6 @@ output "network_id" {
 output "network_private_subnets" {
   value       = local.network_private_subnets
   description = "The identities of the private subnetworks deployed within the VPC."
-
 }
 
 output "network_public_subnets" {
@@ -21,20 +20,16 @@ output "network_public_subnets" {
   description = "The identities of the public subnetworks deployed within the VPC."
 }
 
-output "database_port" {
-  value = module.database.port
-}
-
 output "bucket_name" {
-  value = module.file_storage.bucket_name
+  value = local.bucket_name
 }
 
 output "bucket_region" {
-  value = module.file_storage.bucket_region
+  value = data.aws_s3_bucket.file_storage.region
 }
 
 output "bucket_queue_name" {
-  value = module.file_storage.bucket_queue_name
+  value = local.bucket_queue_name
 }
 
 output "database_connection_string" {

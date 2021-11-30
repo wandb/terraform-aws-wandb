@@ -42,21 +42,25 @@ resource "aws_iam_role" "node" {
     })
   }
 
-  # Policy to access SQS
-  inline_policy {
-    name = "${var.namespace}-node-sqs-policy"
-    policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : "sqs:*",
-          "Resource" : [
-            "${var.bucket_sqs_queue_arn}"
-          ]
-        }
-      ]
-    })
+  # Policy to access SQS. If we are using an internal queue, we dont need to set
+  # any permissions
+  dynamic "inline_policy" {
+    for_each = var.bucket_sqs_queue_arn == null ? [] : [1]
+    content {
+      name = "${var.namespace}-node-sqs-policy"
+      policy = jsonencode({
+        "Version" : "2012-10-17",
+        "Statement" : [
+          {
+            "Effect" : "Allow",
+            "Action" : "sqs:*",
+            "Resource" : [
+              "${var.bucket_sqs_queue_arn}"
+            ]
+          }
+        ]
+      })
+    }
   }
 
   # Encrypt and decrypt with KMS
@@ -75,7 +79,7 @@ resource "aws_iam_role" "node" {
             "kms:DescribeKey"
           ],
           "Resource" : [
-            "${var.kms_key_arn}"
+            "${var.bucket_kms_key_arn}"
           ]
         }
       ]
@@ -84,7 +88,7 @@ resource "aws_iam_role" "node" {
 }
 
 locals {
-  cluster_version = "1.20"
+  cluster_version = "1.21"
 }
 
 module "eks" {
@@ -96,6 +100,10 @@ module "eks" {
 
   vpc_id  = var.network_id
   subnets = var.network_private_subnets
+
+  map_accounts = var.map_accounts
+  map_roles    = var.map_roles
+  map_users    = var.map_users
 
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access

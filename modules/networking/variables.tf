@@ -12,19 +12,25 @@ variable "namespace" {
 variable "cidr" {
   type        = string
   description = "(Optional) CIDR block for VPC."
-  default     = "10.0.0.0/16"
+  default     = "10.10.0.0/16"
 }
 
 variable "private_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.0.32.0/20", "10.0.48.0/20"]
+  default     = ["10.10.0.0/24", "10.10.1.0/24"]
 }
 
 variable "public_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of public subnet CIDR ranges to create in VPC."
-  default     = ["10.0.0.0/20", "10.0.16.0/20"]
+  default     = ["10.10.10.0/24", "10.10.11.0/24"]
+}
+
+variable "database_subnet_cidrs" {
+  type        = list(string)
+  description = "(Optional) List of database subnet CIDR ranges to create in VPC."
+  default     = ["10.10.20.0/24", "10.10.21.0/24"]
 }
 
 variable "enable_vpn_gateway" {

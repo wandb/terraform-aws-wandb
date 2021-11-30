@@ -8,14 +8,37 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn = module.kms.key.arn
+  kms_key_arn             = module.kms.key.arn
+  enable_external_storage = var.bucket_name != ""
 }
 
 module "file_storage" {
-  source = "./modules/file_storage"
+  count     = local.enable_external_storage ? 0 : 1
+  source    = "./modules/file_storage"
+  namespace = var.namespace
 
-  namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  create_queue = !var.use_internal_queue
+
+  sse_algorithm = "aws:kms"
+  kms_key_arn   = local.kms_key_arn
+
+  deletion_protection = var.deletion_protection
+}
+
+locals {
+  bucket_name       = local.enable_external_storage ? var.bucket_name : module.file_storage.0.bucket_name
+  bucket_queue_name = var.use_internal_queue && local.enable_external_storage ? null : module.file_storage.0.bucket_queue_name
+}
+
+data "aws_s3_bucket" "file_storage" {
+  depends_on = [module.file_storage]
+  bucket     = local.bucket_name
+}
+
+data "aws_sqs_queue" "file_storage" {
+  count      = local.bucket_queue_name == null ? 0 : 1
+  depends_on = [module.file_storage]
+  name       = local.bucket_queue_name
 }
 
 module "networking" {
@@ -23,17 +46,43 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                 = var.network_cidr
-  private_subnet_cidrs = var.network_private_subnet_cidrs
-  public_subnet_cidrs  = var.network_public_subnet_cidrs
+  cidr                  = var.network_cidr
+  private_subnet_cidrs  = var.network_private_subnet_cidrs
+  public_subnet_cidrs   = var.network_public_subnet_cidrs
+  database_subnet_cidrs = var.network_database_subnet_cidrs
 }
 
 locals {
-  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
+
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
-  network_public_subnets       = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
+  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
+  network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
+  network_database_create_subnet_group = !var.create_vpc
+  network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+}
+
+
+module "database" {
+  source = "./modules/database"
+
+  namespace   = var.namespace
+  kms_key_arn = local.kms_key_arn
+
+  deletion_protection = var.deletion_protection
+
+  vpc_id                 = local.network_id
+  create_db_subnet_group = local.network_database_create_subnet_group
+  db_subnet_group_name   = local.network_database_subnet_group_name
+  subnets                = local.network_database_subnets
+
+  allowed_cidr_blocks = local.network_private_subnet_cidrs
+}
+
+locals {
   create_certificate = var.public_access && var.acm_certificate_arn == null
 
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
@@ -59,24 +108,18 @@ locals {
   internal_app_port = 32543
 }
 
-module "database" {
-  source = "./modules/database"
-
-  namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
-
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-}
-
 module "app_eks" {
   source = "./modules/app_eks"
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  bucket_kms_key_arn = local.enable_external_storage ? var.bucket_kms_key_arn : local.kms_key_arn
 
-  bucket_arn           = module.file_storage.bucket_arn
-  bucket_sqs_queue_arn = module.file_storage.bucket_queue_arn
+  map_accounts = var.kubernetes_map_accounts
+  map_roles    = var.kubernetes_map_roles
+  map_users    = var.kubernetes_map_users
+
+  bucket_arn           = data.aws_s3_bucket.file_storage.arn
+  bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets

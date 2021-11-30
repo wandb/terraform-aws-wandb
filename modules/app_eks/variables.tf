@@ -3,11 +3,6 @@ variable "namespace" {
   description = "(Required) The name prefix for all resources created."
 }
 
-variable "kms_key_arn" {
-  description = "(Required) The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  type        = string
-}
-
 variable "network_id" {
   description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
   type        = string
@@ -27,7 +22,7 @@ variable "cluster_endpoint_public_access" {
 variable "cluster_endpoint_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = []
 }
 
 variable "lb_security_group_inbound_id" {
@@ -39,7 +34,13 @@ variable "bucket_arn" {
 }
 
 variable "bucket_sqs_queue_arn" {
-  type = string
+  type    = string
+  default = null
+}
+
+variable "bucket_kms_key_arn" {
+  description = "(Required) The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  type        = string
 }
 
 variable "database_security_group_id" {
@@ -49,4 +50,30 @@ variable "database_security_group_id" {
 variable "service_port" {
   type    = number
   default = 32543
+}
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type        = list(string)
+  default     = []
+}
+
+variable "map_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
+
+variable "map_users" {
+  description = "Additional IAM users to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
 }
