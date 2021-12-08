@@ -40,6 +40,14 @@ resource "aws_s3_bucket" "file_storage" {
   depends_on = [aws_sqs_queue.file_storage]
 }
 
+resource "aws_s3_bucket_public_access_block" "file_storage" {
+  bucket                  = aws_s3_bucket.file_storage.id
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
+}
+
 # Give the bucket permission to send messages onto the queue. Looks like we
 # overide this value.
 resource "aws_sqs_queue_policy" "file_storage" {
