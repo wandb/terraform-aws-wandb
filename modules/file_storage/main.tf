@@ -1,6 +1,10 @@
+resource "random_pet" "file_storage" {
+  length = 2
+}
+
 resource "aws_sqs_queue" "file_storage" {
   count = var.create_queue ? 1 : 0
-  name  = "${var.namespace}-file-storage"
+  name  = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
 
   # Enable long-polling
   receive_wait_time_seconds = 10

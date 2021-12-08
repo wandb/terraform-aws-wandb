@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 locals {
-  namespace = "wandb-kms-resources-2"
+  namespace = "wandb-kms-resources-3"
 
   # Weights & Biases Deployment Account
   wandb_deployment_account_id = "830241207209"
