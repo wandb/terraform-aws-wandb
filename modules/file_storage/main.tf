@@ -13,7 +13,7 @@ resource "aws_sqs_queue" "file_storage" {
 }
 
 resource "aws_s3_bucket" "file_storage" {
-  bucket = "${var.namespace}-file-storage"
+  bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
   acl    = "private"
 
   cors_rule {
