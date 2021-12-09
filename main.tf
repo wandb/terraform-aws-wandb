@@ -36,7 +36,7 @@ data "aws_s3_bucket" "file_storage" {
 }
 
 data "aws_sqs_queue" "file_storage" {
-  count      = local.bucket_queue_name == null ? 0 : 1
+  count      = var.use_internal_queue ? 0 : 1
   depends_on = [module.file_storage]
   name       = local.bucket_queue_name
 }
