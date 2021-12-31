@@ -71,7 +71,7 @@ module "aurora" {
 
   name           = var.namespace
   engine         = "aurora-mysql"
-  engine_version = "5.7.12"
+  engine_version = "5.7"
 
   instance_class = var.instance_class
   instances      = { 1 = {} }
