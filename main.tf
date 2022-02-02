@@ -8,12 +8,12 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn             = module.kms.key.arn
-  enable_external_storage = var.bucket_name != ""
+  kms_key_arn            = module.kms.key.arn
+  provision_file_storage = var.bucket_name == ""
 }
 
 module "file_storage" {
-  count     = local.enable_external_storage ? 0 : 1
+  count     = local.provision_file_storage ? 1 : 0
   source    = "./modules/file_storage"
   namespace = var.namespace
 
@@ -26,8 +26,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.enable_external_storage ? var.bucket_name : module.file_storage.0.bucket_name
-  bucket_queue_name = var.use_internal_queue && local.enable_external_storage ? null : module.file_storage.0.bucket_queue_name
+  bucket_name       = local.provision_file_storage ? module.file_storage.0.bucket_name : var.bucket_name
+  bucket_queue_name = !var.use_internal_queue && local.provision_file_storage ? module.file_storage.0.bucket_queue_name : null
 }
 
 data "aws_s3_bucket" "file_storage" {
@@ -112,7 +112,7 @@ module "app_eks" {
   source = "./modules/app_eks"
 
   namespace   = var.namespace
-  bucket_kms_key_arn = local.enable_external_storage ? var.bucket_kms_key_arn : local.kms_key_arn
+  bucket_kms_key_arn = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
@@ -153,4 +153,10 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
   alb_target_group_arn   = module.app_lb.tg_app_arn
+}
+
+module "redis" {
+  count  = var.use_internal_queue ? 1 : 0
+  source = "./modules/redis"
+  namespace = var.namespace
 }

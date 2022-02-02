@@ -48,3 +48,7 @@ output "url" {
 output "internal_app_port" {
   value = local.internal_app_port
 }
+
+output "elasticache_connection_string" {
+  value = var.use_internal_queue ? module.redis.0.connection_string : null
+}
