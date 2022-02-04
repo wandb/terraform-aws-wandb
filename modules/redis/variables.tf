@@ -8,3 +8,14 @@ variable "preferred_maintenance_window" {
   type        = string
   default     = "sun:03:00-sun:04:00"
 }
+
+variable "redis_subnet_group_name" {
+  description = "The name of the subnet group (existing)"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_id" {
+  description = "The identity of the VPC in which the security group attached to elasticache will be deployed."
+  type        = string
+}

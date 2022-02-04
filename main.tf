@@ -50,6 +50,7 @@ module "networking" {
   private_subnet_cidrs  = var.network_private_subnet_cidrs
   public_subnet_cidrs   = var.network_public_subnet_cidrs
   database_subnet_cidrs = var.network_database_subnet_cidrs
+  elasticache_subnet_cidrs = var.network_elasticache_subnet_cidrs
 }
 
 locals {
@@ -63,8 +64,9 @@ locals {
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
-}
 
+  network_elasticache_subnet_group_name = module.networking.elasticache_subnet_group_name
+}
 
 module "database" {
   source = "./modules/database"
@@ -124,8 +126,11 @@ module "app_eks" {
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
 
-  lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
-  database_security_group_id   = module.database.security_group_id
+  lb_security_group_inbound_id  = module.app_lb.security_group_inbound_id
+  database_security_group_id    = module.database.security_group_id
+
+  create_elasticache_security_group = var.create_elasticache
+  elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null
 
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
@@ -156,7 +161,10 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
 }
 
 module "redis" {
-  count  = var.use_internal_queue ? 1 : 0
-  source = "./modules/redis"
+  count     = var.create_elasticache ? 1 : 0
+  source    = "./modules/redis"
   namespace = var.namespace
+
+  vpc_id                  = local.network_id
+  redis_subnet_group_name = local.network_elasticache_subnet_group_name
 }

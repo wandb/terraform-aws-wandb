@@ -48,6 +48,11 @@ output "database_subnet_group_name" {
   description = "Name of database subnet group."
 }
 
+output "elasticache_subnet_group_name" {
+  value       = module.vpc.elasticache_subnet_group_name
+  description = "Name of elasticache subnet group."
+}
+
 output "private_route_table_ids" {
   value       = module.vpc.private_route_table_ids
   description = "List of IDs of private route tables"
