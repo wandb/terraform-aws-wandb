@@ -18,6 +18,10 @@ resource "aws_elasticache_replication_group" "default" {
 
   subnet_group_name             = var.redis_subnet_group_name
   security_group_ids            = [aws_security_group.redis.id]
+
+  kms_key_id                 = var.kms_key_arn
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
 }
 
 resource "aws_security_group" "redis" {
@@ -32,9 +36,9 @@ resource "aws_security_group" "redis" {
   }
 
   egress {
-    protocol         = "-1"
-    from_port        = 0
-    to_port          = 0
+    protocol         = "tcp"
+    from_port        = "6379"
+    to_port          = "6379"
     cidr_blocks      = var.vpc_subnets_cidr_blocks
   }
 }

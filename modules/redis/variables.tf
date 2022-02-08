@@ -25,3 +25,8 @@ variable "vpc_subnets_cidr_blocks" {
   type = list(string)
   default = []
 }
+
+variable "kms_key_arn" {
+  description = "The ARN for the KMS encryption key."
+  type        = string
+}
