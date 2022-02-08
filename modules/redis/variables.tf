@@ -19,3 +19,9 @@ variable "vpc_id" {
   description = "The identity of the VPC in which the security group attached to elasticache will be deployed."
   type        = string
 }
+
+variable "vpc_subnets_cidr_blocks" {
+  description = "A list of CIDR blocks which are allowed to access elasticache"
+  type = list(string)
+  default = []
+}

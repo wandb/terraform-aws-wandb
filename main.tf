@@ -167,4 +167,5 @@ module "redis" {
 
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
+  vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
 }

@@ -27,16 +27,14 @@ resource "aws_security_group" "redis" {
   ingress {
     protocol         = "tcp"
     from_port        = "6379"
-    to_port          =  "6379"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    to_port          = "6379"
+    cidr_blocks      = var.vpc_subnets_cidr_blocks
   }
 
   egress {
     protocol         = "-1"
     from_port        = 0
     to_port          = 0
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    cidr_blocks      = var.vpc_subnets_cidr_blocks
   }
 }
