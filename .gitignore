@@ -22,3 +22,4 @@ cat.*
 test.py
 
 **/wandb/*
+policy.json
