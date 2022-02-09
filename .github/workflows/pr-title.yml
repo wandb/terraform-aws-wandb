@@ -1,4 +1,4 @@
-name: "Validate PR title"
+name: "Validate PR Title"
 
 on:
   pull_request_target:
@@ -27,6 +27,7 @@ jobs:
             pref
             test
             build
+            ci
             chore
             revert
           requireScope: false
