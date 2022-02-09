@@ -33,6 +33,12 @@ variable "database_subnet_cidrs" {
   default     = ["10.10.20.0/24", "10.10.21.0/24"]
 }
 
+variable "elasticache_subnet_cidrs" {
+  type        = list(string)
+  description = "(Optional) List of redis subnet CIDR ranges to create in VPC."
+  default     = ["10.10.30.0/24", "10.10.31.0/24"]
+}
+
 variable "enable_vpn_gateway" {
   type        = bool
   description = "(Optional) Should be true if you want to create a new VPN Gateway resource and attach it to the VPC."

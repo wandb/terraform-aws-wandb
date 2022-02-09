@@ -155,6 +155,12 @@ variable "network_database_subnet_cidrs" {
   default     = ["10.10.20.0/24", "10.10.21.0/24"]
 }
 
+variable "network_elasticache_subnet_cidrs" {
+  type        = list(string)
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.30.0/24", "10.10.31.0/24"]
+}
+
 
 ##########################################
 # EKS Cluster                            #
@@ -213,4 +219,13 @@ variable "bucket_kms_key_arn" {
   type        = string
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
   default     = ""
+}
+
+##########################################
+# Redis                                  #
+##########################################
+variable "create_elasticache" {
+  type        = bool
+  description = "Boolean indicating whether to provision an elasticache instance (true) or not (false)."
+  default     = false
 }

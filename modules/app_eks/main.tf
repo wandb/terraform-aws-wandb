@@ -1,5 +1,6 @@
 locals {
   mysql_port = 3306
+  redis_port = 6379
 }
 
 data "aws_iam_policy_document" "node" {
@@ -153,3 +154,15 @@ resource "aws_security_group_rule" "database" {
   to_port                  = local.mysql_port
   type                     = "ingress"
 }
+
+resource "aws_security_group_rule" "elasticache" {
+  count                    = var.create_elasticache_security_group ? 1 : 0
+  description              = "Allow inbound traffic from EKS workers to elasticache"
+  protocol                 = "tcp"
+  security_group_id        = var.elasticache_security_group_id
+  source_security_group_id = module.eks.cluster_primary_security_group_id
+  from_port                = local.redis_port
+  to_port                  = local.redis_port
+  type                     = "ingress"
+}
+

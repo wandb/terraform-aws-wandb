@@ -47,6 +47,16 @@ variable "database_security_group_id" {
   type = string
 }
 
+variable "elasticache_security_group_id" {
+  type = string
+  default = null
+}
+
+variable "create_elasticache_security_group" {
+  type = bool
+  default = false
+}
+
 variable "service_port" {
   type    = number
   default = 32543

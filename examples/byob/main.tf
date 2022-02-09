@@ -59,7 +59,7 @@ module "resources" {
   sse_algorithm = "aws:kms"
   kms_key_arn   = aws_kms_key.key.arn
 
-  # Use internal queue
+  # Use redis queue
   create_queue = false
 
   deletion_protection = false

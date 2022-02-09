@@ -20,5 +20,6 @@
 kubeconfig*
 cat.*
 test.py
+.idea
 
 **/wandb/*
