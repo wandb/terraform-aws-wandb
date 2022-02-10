@@ -119,7 +119,7 @@ module "eks" {
 
   node_groups = {
     primary = {
-      desired_capacity = 1,
+      desired_capacity = 2,
       max_capacity     = 5,
       min_capacity     = 2,
       instance_type    = ["m5.xlarge"],
