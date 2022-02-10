@@ -22,8 +22,8 @@ variable "vpc_id" {
 
 variable "vpc_subnets_cidr_blocks" {
   description = "A list of CIDR blocks which are allowed to access elasticache"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "kms_key_arn" {
