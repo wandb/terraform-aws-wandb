@@ -120,8 +120,8 @@ module "eks" {
   node_groups = {
     primary = {
       desired_capacity = 1,
-      max_capacity     = 2,
-      min_capacity     = 1,
+      max_capacity     = 5,
+      min_capacity     = 2,
       instance_type    = ["m5.xlarge"],
       iam_role_arn     = aws_iam_role.node.arn
     }
