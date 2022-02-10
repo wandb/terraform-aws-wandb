@@ -21,7 +21,7 @@ jobs:
             docs
             style
             refactor
-            pref
+            perf
             test
             build
             ci
