@@ -18,7 +18,7 @@ module "vpc" {
   private_subnets     = var.private_subnet_cidrs
   public_subnets      = var.public_subnet_cidrs
   database_subnets    = var.database_subnet_cidrs
-  elasticache_subnets = var.elasticache_subnet_cidrs
+  elasticache_subnets = var.create_elasticache_subnet ? var.elasticache_subnet_cidrs : []
 
   enable_nat_gateway = true
   single_nat_gateway = false

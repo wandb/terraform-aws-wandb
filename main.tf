@@ -50,7 +50,8 @@ module "networking" {
   private_subnet_cidrs  = var.network_private_subnet_cidrs
   public_subnet_cidrs   = var.network_public_subnet_cidrs
   database_subnet_cidrs = var.network_database_subnet_cidrs
-  elasticache_subnet_cidrs = var.network_elasticache_subnet_cidrs
+  create_elasticache_subnet = var.create_elasticache
+  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
 }
 
 locals {
