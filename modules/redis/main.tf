@@ -8,16 +8,16 @@ resource "aws_elasticache_replication_group" "default" {
   number_cache_clusters         = 2
   port                          = 6379
 
-  node_type                     = "cache.t2.medium"
-  parameter_group_name          = "default.redis6.x"
-  engine_version                = local.redis_version
+  node_type            = "cache.t2.medium"
+  parameter_group_name = "default.redis6.x"
+  engine_version       = local.redis_version
 
-  automatic_failover_enabled    = true
-  multi_az_enabled              = true
-  maintenance_window            = var.preferred_maintenance_window
+  automatic_failover_enabled = true
+  multi_az_enabled           = true
+  maintenance_window         = var.preferred_maintenance_window
 
-  subnet_group_name             = var.redis_subnet_group_name
-  security_group_ids            = [aws_security_group.redis.id]
+  subnet_group_name  = var.redis_subnet_group_name
+  security_group_ids = [aws_security_group.redis.id]
 
   kms_key_id                 = var.kms_key_arn
   at_rest_encryption_enabled = true
@@ -29,16 +29,16 @@ resource "aws_security_group" "redis" {
   vpc_id = var.vpc_id
 
   ingress {
-    protocol         = "tcp"
-    from_port        = "6379"
-    to_port          = "6379"
-    cidr_blocks      = var.vpc_subnets_cidr_blocks
+    protocol    = "tcp"
+    from_port   = "6379"
+    to_port     = "6379"
+    cidr_blocks = var.vpc_subnets_cidr_blocks
   }
 
   egress {
-    protocol         = "tcp"
-    from_port        = "6379"
-    to_port          = "6379"
-    cidr_blocks      = var.vpc_subnets_cidr_blocks
+    protocol    = "tcp"
+    from_port   = "6379"
+    to_port     = "6379"
+    cidr_blocks = var.vpc_subnets_cidr_blocks
   }
 }

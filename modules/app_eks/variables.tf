@@ -48,12 +48,12 @@ variable "database_security_group_id" {
 }
 
 variable "elasticache_security_group_id" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "create_elasticache_security_group" {
-  type = bool
+  type    = bool
   default = false
 }
 
