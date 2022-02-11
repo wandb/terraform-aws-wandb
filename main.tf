@@ -46,12 +46,11 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                      = var.network_cidr
-  private_subnet_cidrs      = var.network_private_subnet_cidrs
-  public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
-  create_elasticache_subnet = var.create_elasticache
-  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
+  cidr                     = var.network_cidr
+  private_subnet_cidrs     = var.network_private_subnet_cidrs
+  public_subnet_cidrs      = var.network_public_subnet_cidrs
+  database_subnet_cidrs    = var.network_database_subnet_cidrs
+  elasticache_subnet_cidrs = var.network_elasticache_subnet_cidrs
 }
 
 locals {
@@ -114,13 +113,14 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  namespace          = var.namespace
-  bucket_kms_key_arn = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
+  namespace   = var.namespace
+  kms_key_arn = var.eks_kms_key_arn
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
 
+  bucket_kms_key_arn   = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 

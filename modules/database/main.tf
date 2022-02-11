@@ -7,10 +7,25 @@ locals {
   aurora_mysql_version = "2.10.0"
 }
 
-# Random string to use as master password
+# Random string to use as initial master password
 resource "random_string" "master_password" {
   length  = 32
   special = false
+}
+
+resource "aws_secretsmanager_secret" "default" {
+  name = "${var.namespace}-aurora-db-57-secret"
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+    ]
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "default" {
+  secret_id     = aws_secretsmanager_secret.default.id
+  secret_string = random_string.master_password.result
 }
 
 resource "aws_db_parameter_group" "default" {
@@ -65,6 +80,8 @@ resource "aws_rds_cluster_parameter_group" "default" {
   }
 }
 
+
+
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
   version = "6.1.3"
@@ -94,7 +111,7 @@ module "aurora" {
 
   iam_database_authentication_enabled = false
   master_username                     = local.master_username
-  master_password                     = local.master_password
+  master_password                     = aws_secretsmanager_secret_version.default.secret_string
   create_random_password              = false
 
   storage_encrypted = true

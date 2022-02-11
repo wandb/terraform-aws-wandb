@@ -203,6 +203,12 @@ variable "kubernetes_map_users" {
   default = []
 }
 
+variable "eks_kms_key_arn" {
+  type        = string
+  description = "The Amazon Resource Name of the KMS key with which kubernetes secrets will be encrypted."
+  default     = ""
+}
+
 
 ##########################################
 # External Bucket                        #
