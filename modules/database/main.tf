@@ -14,7 +14,8 @@ resource "random_string" "master_password" {
 }
 
 resource "aws_secretsmanager_secret" "default" {
-  name = "${var.namespace}-aurora-db-57-secret"
+  name       = "${var.namespace}-aurora-db-57-secret"
+  kms_key_id = var.kms_key_arn
 
   lifecycle {
     ignore_changes = [
