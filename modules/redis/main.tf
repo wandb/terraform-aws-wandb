@@ -27,18 +27,22 @@ resource "aws_elasticache_replication_group" "default" {
 resource "aws_security_group" "redis" {
   name   = "${var.namespace}-elasticache-security-group"
   vpc_id = var.vpc_id
+}
 
-  ingress {
-    protocol    = "tcp"
-    from_port   = "6379"
-    to_port     = "6379"
-    cidr_blocks = var.vpc_subnets_cidr_blocks
-  }
+resource "aws_security_group_rule" "ingress" {
+  type        = "ingress"
+  protocol    = "tcp"
+  from_port   = "6379"
+  to_port     = "6379"
+  cidr_blocks = var.vpc_subnets_cidr_blocks
+  security_group_id = aws_security_group.redis.id
+}
 
-  egress {
-    protocol    = "tcp"
-    from_port   = "6379"
-    to_port     = "6379"
-    cidr_blocks = var.vpc_subnets_cidr_blocks
-  }
+resource "aws_security_group_rule" "egress" {
+  type        = "egress"
+  protocol    = "tcp"
+  from_port   = "6379"
+  to_port     = "6379"
+  cidr_blocks = var.vpc_subnets_cidr_blocks
+  security_group_id = aws_security_group.redis.id
 }
