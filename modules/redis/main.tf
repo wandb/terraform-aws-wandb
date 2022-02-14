@@ -30,19 +30,19 @@ resource "aws_security_group" "redis" {
 }
 
 resource "aws_security_group_rule" "ingress" {
-  type        = "ingress"
-  protocol    = "tcp"
-  from_port   = "6379"
-  to_port     = "6379"
-  cidr_blocks = var.vpc_subnets_cidr_blocks
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = "6379"
+  to_port           = "6379"
+  cidr_blocks       = var.vpc_subnets_cidr_blocks
   security_group_id = aws_security_group.redis.id
 }
 
 resource "aws_security_group_rule" "egress" {
-  type        = "egress"
-  protocol    = "tcp"
-  from_port   = "6379"
-  to_port     = "6379"
-  cidr_blocks = var.vpc_subnets_cidr_blocks
+  type              = "egress"
+  protocol          = "tcp"
+  from_port         = "6379"
+  to_port           = "6379"
+  cidr_blocks       = var.vpc_subnets_cidr_blocks
   security_group_id = aws_security_group.redis.id
 }
