@@ -65,8 +65,6 @@ resource "aws_rds_cluster_parameter_group" "default" {
   }
 }
 
-
-
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
   version = "6.1.3"
