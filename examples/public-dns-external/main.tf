@@ -23,7 +23,6 @@ module "wandb_infra" {
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
 
-  eks_kms_key_arn                = module.wandb_infra.kms_key_arn
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
