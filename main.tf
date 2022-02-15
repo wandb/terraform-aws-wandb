@@ -46,11 +46,12 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                     = var.network_cidr
-  private_subnet_cidrs     = var.network_private_subnet_cidrs
-  public_subnet_cidrs      = var.network_public_subnet_cidrs
-  database_subnet_cidrs    = var.network_database_subnet_cidrs
-  elasticache_subnet_cidrs = var.network_elasticache_subnet_cidrs
+  cidr                      = var.network_cidr
+  private_subnet_cidrs      = var.network_private_subnet_cidrs
+  public_subnet_cidrs       = var.network_public_subnet_cidrs
+  database_subnet_cidrs     = var.network_database_subnet_cidrs
+  create_elasticache_subnet = var.create_elasticache
+  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
 }
 
 locals {
@@ -114,7 +115,7 @@ module "app_eks" {
   source = "./modules/app_eks"
 
   namespace   = var.namespace
-  kms_key_arn = var.eks_kms_key_arn
+  kms_key_arn = local.kms_key_arn
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
