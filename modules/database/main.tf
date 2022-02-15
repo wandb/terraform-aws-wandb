@@ -13,22 +13,6 @@ resource "random_string" "master_password" {
   special = false
 }
 
-resource "aws_secretsmanager_secret" "default" {
-  name       = "${var.namespace}-aurora-db-57-secret"
-  kms_key_id = var.kms_key_arn
-
-  lifecycle {
-    ignore_changes = [
-      tags,
-    ]
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "default" {
-  secret_id     = aws_secretsmanager_secret.default.id
-  secret_string = random_string.master_password.result
-}
-
 resource "aws_db_parameter_group" "default" {
   name        = "${var.namespace}-aurora-db-57-parameter-group"
   family      = "aurora-mysql5.7"
@@ -112,7 +96,7 @@ module "aurora" {
 
   iam_database_authentication_enabled = false
   master_username                     = local.master_username
-  master_password                     = aws_secretsmanager_secret_version.default.secret_string
+  master_password                     = local.master_password
   create_random_password              = false
 
   storage_encrypted = true
