@@ -7,7 +7,7 @@ locals {
   aurora_mysql_version = "2.10.0"
 }
 
-# Random string to use as master password
+# Random string to use as initial master password
 resource "random_string" "master_password" {
   length  = 32
   special = false

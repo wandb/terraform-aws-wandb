@@ -114,13 +114,14 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  namespace          = var.namespace
-  bucket_kms_key_arn = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
+  namespace   = var.namespace
+  kms_key_arn = local.kms_key_arn
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
 
+  bucket_kms_key_arn   = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
