@@ -19,13 +19,32 @@
 
 #### How does the W&B private cloud architecture look like?
 
-> The W&B private cloud architecture looks something like this:
-> [TODO] [Add link to the arch diagram]
-> Also, define what subnets we create and use (private/public) as part of the terraform plan.
+> The W&B private cloud architecture can be found here:
+> https://lucid.app/publicSegments/view/bad4a232-2b25-44ed-b9c1-baf8aab0e115
+
+#### What are the different subnets created as part of the W&B deployment?
+
+> The W&B AWS terraform spins up atleast two subnets, one per availability zone in a region to account for fail over. If the deployment is private, then W&B creates two public subnets and two private subnets.
 
 #### What permissions should be granted to the W&B deployment?
 
-> [TODO] [Add list of permissions]
+> The following permissions are required for the W&B deployment to AWS resources,
+
+```
+"ec2:*",
+"eks:*",
+"s3:*",
+"kms:*",
+"autoscaling:*",
+"iam:*",
+"logs:*",
+"sqs:*",
+"acm:*",
+"rds:*",
+"route53:*",
+"route53resolver:*",
+"elasticloadbalancing:*"
+```
 
 #### How are default keys encrypted?
 
@@ -130,14 +149,4 @@ And manually rotating keys:[https://docs.aws.amazon.com/kms/latest/developerguid
 
 #### Are there any service quotas w.r.t AWS?
 
-> All the default limits specified at the [AWS Service Quotas](https://docs.aws.amazon.com/general/latest/gr/eks.html) page would be the same defaults for W&B services.
-
-#### Kubernetes FAQs
-
-What is the upgrade process for the W&B instance when running via terraform?
-
-- [TODO] Add this question to the kubernetes terraform
-
-How does W&B check for the health and readiness of the application?
-
-- W&B leverages the readiness & liveness probes options from the Kubernetes API to check and maintain the health of the service. You can find this information in the code here:https://github.com/wandb/local/blob/main/terraform/aws/kube/kube.tf#L132-L143
+> All the default limits specified under the Service Quotas section here: https://docs.aws.amazon.com/general/latest/gr/eks.html would be the default for W&B services as well.
