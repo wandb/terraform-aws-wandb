@@ -64,7 +64,7 @@ You can supply your own KMS key to our terraform module via the **kms_key_alias*
 
 #### What are the billable services that are spun up as part of the deployment?
 
-> Most resources listed here are billable by AWS. To effectively calculate the pricing based on usage, [TODO] [AWS calculator link] aws calculator could be a good resource.
+> Most resources listed here are billable by AWS. To effectively calculate the pricing based on usage, [aws calculator](https://calculator.aws/) could be a good resource.
 
 #### Does the database & S3 storage need to be backed up?
 
@@ -130,7 +130,7 @@ And manually rotating keys:[https://docs.aws.amazon.com/kms/latest/developerguid
 
 #### Are there any service quotas w.r.t AWS?
 
-> All the default limits specified under the Service Quotas section here: https://docs.aws.amazon.com/general/latest/gr/eks.html would be the default for W&B services as well.
+> All the default limits specified at the [AWS Service Quotas](https://docs.aws.amazon.com/general/latest/gr/eks.html) page would be the same defaults for W&B services.
 
 #### Kubernetes FAQs
 
