@@ -4,7 +4,7 @@ module "kms" {
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
 
-  iam_principal_arn = ""
+  key_policy = var.kms_key_policy
 }
 
 locals {

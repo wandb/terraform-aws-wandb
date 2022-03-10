@@ -5,7 +5,7 @@ resource "aws_kms_key" "key" {
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
   key_usage               = "ENCRYPT_DECRYPT"
 
-  policy = jsonencode({
+  policy = var.key_policy != "" ? var.key_policy : jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {

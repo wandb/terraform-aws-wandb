@@ -97,6 +97,11 @@ variable "kms_key_deletion_window" {
   default     = 7
 }
 
+variable "kms_key_policy" {
+  type        = string
+  description = "The policy that will define the permissions for the kms key."
+  default     = ""
+}
 
 ##########################################
 # Network                                #
