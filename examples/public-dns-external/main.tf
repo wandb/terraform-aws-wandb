@@ -20,6 +20,8 @@ module "wandb_infra" {
 
   deletion_protection = false
 
+  database_engine_version = var.database_engine_version
+
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
 
@@ -45,24 +47,24 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 
-module "wandb_app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
+# module "wandb_app" {
+#   source = "github.com/wandb/terraform-kubernetes-wandb"
 
-  license = var.wandb_license
+#   license = var.wandb_license
 
-  host                       = module.wandb_infra.url
-  bucket                     = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region          = module.wandb_infra.bucket_region
-  bucket_queue               = "sqs://${module.wandb_infra.bucket_queue_name}"
-  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
-  database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
+#   host                       = module.wandb_infra.url
+#   bucket                     = "s3://${module.wandb_infra.bucket_name}"
+#   bucket_aws_region          = module.wandb_infra.bucket_region
+#   bucket_queue               = "sqs://${module.wandb_infra.bucket_queue_name}"
+#   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
+#   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
 
-  service_port = module.wandb_infra.internal_app_port
+#   service_port = module.wandb_infra.internal_app_port
 
-  # If we dont wait, tf will start trying to deploy while the work group is
-  # still spinning up
-  depends_on = [module.wandb_infra]
-}
+#   # If we dont wait, tf will start trying to deploy while the work group is
+#   # still spinning up
+#   depends_on = [module.wandb_infra]
+# }
 
 output "bucket_name" {
   value = module.wandb_infra.bucket_name
