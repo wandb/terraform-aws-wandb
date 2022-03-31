@@ -20,6 +20,8 @@ module "wandb_infra" {
 
   deletion_protection = false
 
+  database_engine_version = var.database_engine_version
+
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
 

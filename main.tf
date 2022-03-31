@@ -75,6 +75,8 @@ module "database" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
+  engine_version = var.database_engine_version
+
   deletion_protection = var.deletion_protection
 
   vpc_id                 = local.network_id
