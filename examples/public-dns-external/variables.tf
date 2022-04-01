@@ -33,3 +33,15 @@ variable "database_engine_version" {
     error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"."
   }
 }
+
+variable "wandb_version" {
+  description = "The version of Weights & Biases local to deploy."
+  type        = string
+  default     = "latest"
+}
+
+variable "wandb_image" {
+  description = "Docker repository of to pull the wandb image from."
+  type        = string
+  default     = "wandb/local"
+}

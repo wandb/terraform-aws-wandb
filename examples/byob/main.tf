@@ -16,14 +16,14 @@ locals {
   namespace = "wandb-kms-resources-3"
 
   # Weights & Biases Deployment Account
-  wandb_deployment_account_id = "830241207209"
+  wandb_deployment_account_id  = "830241207209"
   wandb_deployment_account_arn = "arn:aws:iam::${local.wandb_deployment_account_id}:root"
 }
 
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
-  key_usage = "ENCRYPT_DECRYPT"
+  key_usage   = "ENCRYPT_DECRYPT"
   description = "Managed key to encrypt and decrypt storage file"
 
   policy = jsonencode({

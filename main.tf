@@ -175,3 +175,26 @@ module "redis" {
 
   kms_key_arn = local.kms_key_arn
 }
+
+
+module "app" {
+  source = "github.com/wandb/terraform-kubernetes-wandb"
+
+  license       = var.wandb_license
+  wandb_image   = var.wandb_image
+  wandb_version = var.wandb_version
+
+  host                       = local.url
+  bucket                     = "s3://${local.bucket_name}"
+  bucket_queue               = var.use_internal_queue ? "internal://" : "sqs://${local.bucket_queue_name}"
+  bucket_aws_region          = data.aws_s3_bucket.file_storage.region
+  bucket_kms_key_arn         = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
+  database_connection_string = module.database.connection_string
+  redis_connection_string    = var.create_elasticache ? "redis://${module.redis.0.connection_string}?tls=true" : null
+
+  service_port = local.internal_app_port
+
+  # If we dont wait, tf will start trying to deploy while the work group is
+  # still spinning up
+  depends_on = [module.app_eks, module.database, module.redis]
+}

@@ -59,6 +59,9 @@ module "wandb_app" {
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
 
+  wandb_image   = var.wandb_image
+  wandb_version = var.wandb_version
+
   service_port = module.wandb_infra.internal_app_port
 
   # If we dont wait, tf will start trying to deploy while the work group is
