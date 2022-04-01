@@ -28,7 +28,7 @@
 
 #### What permissions should be granted to the W&B deployment?
 
-> # The following permissions are required for the W&B deployment to AWS resources,
+> The following permissions are required for the W&B deployment to AWS resources,
 >
 > The W&B private cloud architecture is located here:
 > https://lucid.app/publicSegments/view/bad4a232-2b25-44ed-b9c1-baf8aab0e115
