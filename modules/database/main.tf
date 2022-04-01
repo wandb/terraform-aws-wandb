@@ -7,16 +7,24 @@ locals {
   aurora_mysql_version = "2.10.0"
 }
 
-# Random string to use as master password
+# Random string to use as initial master password
 resource "random_string" "master_password" {
   length  = 32
   special = false
 }
 
+locals {
+  is_mysql_80 = var.engine_version == "8.0.mysql_aurora.3.01.0"
+  engine_version_tag = local.is_mysql_80 ? "80" : "57"
+  parameter_family = local.is_mysql_80 ? "aurora-mysql8.0" : "aurora-mysql5.7"
+  parameter_group_name = "${var.namespace}-aurora-db-${local.engine_version_tag}-parameter-group"
+  parameter_cluster_name = "${var.namespace}-aurora-${local.engine_version_tag}-cluster-parameter-group"
+}
+
 resource "aws_db_parameter_group" "default" {
-  name        = "${var.namespace}-aurora-db-57-parameter-group"
-  family      = "aurora-mysql5.7"
-  description = "${var.namespace}-aurora-db-57-parameter-group"
+  name        = local.parameter_group_name
+  family      = local.parameter_family
+  description = "Weights & Biases database parameter group for MySQL ${var.engine_version}"
 
   parameter {
     name         = "performance_schema"
@@ -45,12 +53,16 @@ resource "aws_db_parameter_group" "default" {
     name  = "max_execution_time"
     value = "60000"
   }
+
+  lifecycle {
+    ignore_changes = [description]
+  }
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  name        = "${var.namespace}-aurora-57-cluster-parameter-group"
-  family      = "aurora-mysql5.7"
-  description = "${var.namespace}-aurora-57-cluster-parameter-group"
+  name        = local.parameter_cluster_name
+  family      = local.parameter_family
+  description = "Weights & Biases cluster parameter group for MySQL ${var.engine_version}"
 
   parameter {
     name         = "binlog_format"
@@ -63,15 +75,21 @@ resource "aws_rds_cluster_parameter_group" "default" {
     value        = "268435456"
     apply_method = "pending-reboot"
   }
+
+  lifecycle {
+    ignore_changes = [description]
+  }
 }
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "6.1.3"
+  version = "6.2.0"
 
   name           = var.namespace
   engine         = "aurora-mysql"
-  engine_version = "5.7"
+  engine_version = var.engine_version
+
+  allow_major_version_upgrade = true
 
   instance_class = var.instance_class
   instances      = { 1 = {} }

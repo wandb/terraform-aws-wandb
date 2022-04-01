@@ -28,7 +28,15 @@
 
 #### What permissions should be granted to the W&B deployment?
 
-> The following permissions are required for the W&B deployment to AWS resources,
+> # The following permissions are required for the W&B deployment to AWS resources,
+>
+> The W&B private cloud architecture is located here:
+> https://lucid.app/publicSegments/view/bad4a232-2b25-44ed-b9c1-baf8aab0e115
+> Also, define what subnets we create and use (private/public) as part of the terraform plan.
+
+#### What permissions should be granted to the W&B deployment?
+
+W&B requires the following permissions granted to these resources
 
 ```
 "ec2:*",

@@ -43,6 +43,11 @@ variable "bucket_kms_key_arn" {
   type        = string
 }
 
+variable "kms_key_arn" {
+  description = "(Required) The Amazon Resource Name of the KMS key with which EKS secrets will be encrypted."
+  type        = string
+}
+
 variable "database_security_group_id" {
   type = string
 }

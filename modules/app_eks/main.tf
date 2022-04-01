@@ -110,12 +110,12 @@ module "eks" {
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
-  # cluster_encryption_config = [
-  #   {
-  #     provider_key_arn = var.kms_key_arn
-  #     resources        = ["secrets"]
-  #   }
-  # ]
+  cluster_encryption_config = var.kms_key_arn != "" ? [
+    {
+      provider_key_arn = var.kms_key_arn
+      resources        = ["secrets"]
+    }
+  ] : null
 
   node_groups = {
     primary = {
@@ -165,4 +165,3 @@ resource "aws_security_group_rule" "elasticache" {
   to_port                  = local.redis_port
   type                     = "ingress"
 }
-
