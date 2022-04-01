@@ -19,7 +19,6 @@
 
 #### How does the W&B private cloud architecture look like?
 
-<<<<<<< HEAD
 > The W&B private cloud architecture can be found here:
 > https://lucid.app/publicSegments/view/bad4a232-2b25-44ed-b9c1-baf8aab0e115
 
@@ -30,15 +29,6 @@
 #### What permissions should be granted to the W&B deployment?
 
 > The following permissions are required for the W&B deployment to AWS resources,
-=======
-> The W&B private cloud architecture is located here:
-> https://lucid.app/publicSegments/view/bad4a232-2b25-44ed-b9c1-baf8aab0e115
-> Also, define what subnets we create and use (private/public) as part of the terraform plan.
-
-#### What permissions should be granted to the W&B deployment?
-
-W&B requires the following permissions granted to these resources
->>>>>>> 7987822 (update)
 
 ```
 "ec2:*",
@@ -53,11 +43,7 @@ W&B requires the following permissions granted to these resources
 "rds:*",
 "route53:*",
 "route53resolver:*",
-<<<<<<< HEAD
-"elasticloadbalancing:*"
-=======
 "elasticloadbalancing:*",
->>>>>>> 7987822 (update)
 ```
 
 #### How are default keys encrypted?
