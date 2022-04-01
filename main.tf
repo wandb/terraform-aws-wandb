@@ -177,10 +177,12 @@ module "redis" {
 }
 
 
-module "app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
+module "eks_app" {
+  source  = "wandb/wandb/kubernetes"
+  version = "1.0.2"
 
-  license       = var.wandb_license
+  license = var.wandb_license
+
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
 
@@ -193,6 +195,10 @@ module "app" {
   redis_connection_string    = var.create_elasticache ? "redis://${module.redis.0.connection_string}?tls=true" : null
 
   service_port = local.internal_app_port
+
+  oidc_client_id   = var.oidc_client_id
+  oidc_issuer      = var.oidc_issuer
+  oidc_auth_method = var.oidc_auth_method
 
   # If we dont wait, tf will start trying to deploy while the work group is
   # still spinning up

@@ -17,6 +17,45 @@ variable "use_internal_queue" {
   default = false
 }
 
+variable "wandb_version" {
+  description = "The version of Weights & Biases local to deploy."
+  type        = string
+  default     = "latest"
+}
+
+variable "wandb_image" {
+  description = "Docker repository of to pull the wandb image from."
+  type        = string
+  default     = "wandb/local"
+}
+
+variable "license" {
+  type        = string
+  description = "Your wandb/local license"
+}
+
+variable "oidc_issuer" {
+  type        = string
+  description = "A url to your Open ID Connect identity provider, i.e. https://cognito-idp.us-east-1.amazonaws.com/us-east-1_uiIFNdacd"
+  default     = ""
+}
+
+variable "oidc_client_id" {
+  type        = string
+  description = "The Client ID of application in your identity provider"
+  default     = ""
+}
+
+variable "oidc_auth_method" {
+  type        = string
+  description = "OIDC auth method"
+  default     = "implicit"
+  validation {
+    condition     = contains(["pkce", "implicit"], var.oidc_auth_method)
+    error_message = "Invalid OIDC auth method."
+  }
+}
+
 ##########################################
 # Database                               #
 ##########################################
