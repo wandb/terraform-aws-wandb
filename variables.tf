@@ -31,6 +31,12 @@ variable "database_engine_version" {
   }
 }
 
+variable "database_instance_class" {
+  description = "Instance type to use by database master instance."
+  type        = string
+  default     = "db.r5.large"
+}
+
 
 ##########################################
 # DNS                                    #
