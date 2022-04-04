@@ -20,6 +20,7 @@ module "wandb_infra" {
 
   deletion_protection = false
 
+  database_instance_class = var.database_instance_class
   database_engine_version = var.database_engine_version
 
   allowed_inbound_cidr      = ["0.0.0.0/0"]
@@ -58,6 +59,9 @@ module "wandb_app" {
   bucket_queue               = "sqs://${module.wandb_infra.bucket_queue_name}"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
+
+  wandb_image   = var.wandb_image
+  wandb_version = var.wandb_version
 
   service_port = module.wandb_infra.internal_app_port
 
