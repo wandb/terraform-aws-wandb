@@ -33,7 +33,7 @@ resource "aws_iam_role" "node" {
       "Statement" : [
         {
           "Effect" : "Allow",
-          "Action" : "s3:*",
+          "Action" : ["s3:*"],
           "Resource" : [
             "${var.bucket_arn}",
             "${var.bucket_arn}/*"
@@ -82,6 +82,21 @@ resource "aws_iam_role" "node" {
           "Resource" : [
             "${var.bucket_kms_key_arn}"
           ]
+        }
+      ]
+    })
+  }
+
+  # Publish cloudwatch metrics
+  inline_policy {
+    name = "${var.namespace}-node-cloudwatch-policy"
+    policy = jsonencode({
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : ["cloudwatch:PutMetricData"],
+          "Resource" : "*"
         }
       ]
     })
