@@ -33,7 +33,7 @@ resource "aws_iam_role" "node" {
       "Statement" : [
         {
           "Effect" : "Allow",
-          "Action" : ["s3:*"],
+          "Action" : "s3:*",
           "Resource" : [
             "${var.bucket_arn}",
             "${var.bucket_arn}/*"
