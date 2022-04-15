@@ -86,6 +86,21 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+
+  # Publish cloudwatch metrics
+  inline_policy {
+    name = "${var.namespace}-node-cloudwatch-policy"
+    policy = jsonencode({
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : ["cloudwatch:PutMetricData"],
+          "Resource" : "*"
+        }
+      ]
+    })
+  }
 }
 
 locals {
