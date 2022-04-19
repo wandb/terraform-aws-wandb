@@ -1,29 +1,39 @@
+
+variable "bucket_prefix" {
+  type        = string
+  description = "Prefix of your bucket"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region the bucket will live in."
+}
+
 provider "aws" {
-  # region = "us-east-1"
-  region = "us-west-2"
+  region = var.region
 
   default_tags {
     tags = {
       GithubRepo = "terraform-aws-wandb"
       GithubOrg  = "wandb"
-      Enviroment = "Example"
-      Example    = "BringYourOwnBucket"
+      Enviroment = "BringYourOwnBucket"
+      Namespace  = "WeightsBiases"
     }
   }
 }
 
 locals {
-  namespace = "wandb-kms-resources-3"
+  namespace = var.bucket_prefix
 
   # Weights & Biases Deployment Account
-  wandb_deployment_account_id = "830241207209"
+  wandb_deployment_account_id  = "830241207209"
   wandb_deployment_account_arn = "arn:aws:iam::${local.wandb_deployment_account_id}:root"
 }
 
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
-  key_usage = "ENCRYPT_DECRYPT"
+  key_usage   = "ENCRYPT_DECRYPT"
   description = "Managed key to encrypt and decrypt storage file"
 
   policy = jsonencode({
