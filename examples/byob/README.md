@@ -9,7 +9,8 @@ for.
 ---
 
 When using bring your own bucket you will need to grant our account
-(`830241207209`) access to an S3 Bucket and KMS Key for encryption and description.
+(`830241207209`) access to an S3 Bucket and KMS Key for encryption and decryption.
+decryption
 
 ## Using Terraform
 
