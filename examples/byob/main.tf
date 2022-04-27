@@ -14,6 +14,11 @@ variable "bucket_name" {
   description = "AWS S3 bucket name"
 }
 
+variable "bucket_arn" {
+  type        = string
+  description = "AWS S3 bucket ARN"
+}
+
 provider "aws" {
   region = var.region
 
@@ -94,8 +99,8 @@ resource "aws_s3_bucket_policy" "default" {
         "Principal" : { "AWS" : "${local.wandb_deployment_account_arn}" },
         "Action" : "s3:*",
         "Resource" : [
-          "${module.resources.bucket_arn}",
-          "${module.resources.bucket_arn}/*",
+          "${var.bucket_arn}",
+          "${var.bucket_arn}/*",
         ]
       },
     ]
