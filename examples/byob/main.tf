@@ -1,12 +1,17 @@
 
-variable "bucket_prefix" {
-  type        = string
-  description = "Prefix of your bucket"
-}
+# variable "bucket_prefix" {
+#   type        = string
+#   description = "Prefix of your bucket"
+# }
 
 variable "region" {
   type        = string
   description = "AWS region the bucket will live in."
+}
+
+variable "bucket_name" {
+  type        = string
+  description = "AWS S3 bucket name"
 }
 
 provider "aws" {
@@ -23,7 +28,7 @@ provider "aws" {
 }
 
 locals {
-  namespace = var.bucket_prefix
+  # namespace = var.bucket_prefix
 
   # Weights & Biases Deployment Account
   wandb_deployment_account_id  = "830241207209"
@@ -76,7 +81,7 @@ module "resources" {
 }
 
 resource "aws_s3_bucket_policy" "default" {
-  bucket = module.resources.bucket_name
+  bucket = var.bucket_name
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -97,9 +102,9 @@ resource "aws_s3_bucket_policy" "default" {
   })
 }
 
-output "bucket_name" {
-  value = module.resources.bucket_name
-}
+# output "bucket_name" {
+#   value = module.resources.bucket_name
+# }
 
 output "bucket_kms_key_arn" {
   value = aws_kms_key.key.arn
