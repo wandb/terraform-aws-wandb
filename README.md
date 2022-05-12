@@ -124,6 +124,7 @@ resources that lack official modules.
 | <a name="module_file_storage"></a> [file_storage](#module_file_storage) | ./modules/file_storage        | n/a     |
 | <a name="module_kms"></a> [kms](#module_kms)                            | ./modules/kms                 | n/a     |
 | <a name="module_networking"></a> [networking](#module_networking)       | ./modules/networking          | n/a     |
+| <a name="module_redis"></a> [redis](#module_redis)                      | ./modules/redis               | n/a     |
 
 ## Resources
 
@@ -137,6 +138,7 @@ resources that lack official modules.
 | <a name="input_acm_certificate_arn"></a> [acm_certificate_arn](#input_acm_certificate_arn)                                  | The ARN of an existing ACM certificate.                                                                                       | `string`       | `null`                                                     |    no    |
 | <a name="input_allowed_inbound_cidr"></a> [allowed_inbound_cidr](#input_allowed_inbound_cidr)                               | Allow HTTP(S) traffic to W&B. Defaults to no connections.                                                                     | `list(string)` | `[]`                                                       |    no    |
 | <a name="input_allowed_inbound_ipv6_cidr"></a> [allowed_inbound_ipv6_cidr](#input_allowed_inbound_ipv6_cidr)                | Allow HTTP(S) traffic to W&B. Defaults to no connections.                                                                     | `list(string)` | `[]`                                                       |    no    |
+| <a name="input_create_elasticache"></a> [create_elasticache](#input_create_elasticache)                                     | Boolean indicating whether to create an elasticache instance (true) or not (false).                                           | `bool`         | `false`                                                    |    no    |
 | <a name="input_create_vpc"></a> [create_vpc](#input_create_vpc)                                                             | Boolean indicating whether to deploy a VPC (true) or not (false).                                                             | `bool`         | `true`                                                     |    no    |
 | <a name="input_deletion_protection"></a> [deletion_protection](#input_deletion_protection)                                  | If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`. | `bool`         | `true`                                                     |    no    |
 | <a name="input_domain_name"></a> [domain_name](#input_domain_name)                                                          | Domain for accessing the Weights & Biases UI.                                                                                 | `string`       | n/a                                                        |   yes    |
