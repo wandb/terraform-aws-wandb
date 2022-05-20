@@ -14,7 +14,21 @@ resource "aws_sqs_queue" "file_storage" {
 
 resource "aws_s3_bucket" "file_storage" {
   bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
+
+  force_destroy = !var.deletion_protection
+
+  # Configuration error if SQS does not exist
+  # https://aws.amazon.com/premiumsupport/knowledge-center/unable-validate-destination-s3/
+  depends_on = [aws_sqs_queue.file_storage]
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.file_storage.id
   acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "cors_configuration" {
+  bucket = aws_s3_bucket.file_storage.bucket
 
   cors_rule {
     allowed_headers = ["*"]
@@ -23,22 +37,18 @@ resource "aws_s3_bucket" "file_storage" {
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = var.kms_key_arn
-        sse_algorithm     = var.sse_algorithm
-      }
+resource "aws_s3_bucket_server_side_encryption_configuration" "server_side_encryption_configuration" {
+  bucket = aws_s3_bucket.file_storage.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.kms_key_arn
+      sse_algorithm     = var.sse_algorithm
     }
   }
-
-  force_destroy = !var.deletion_protection
-
-  # Configuration error if SQS does not exist
-  # https://aws.amazon.com/premiumsupport/knowledge-center/unable-validate-destination-s3/
-  depends_on = [aws_sqs_queue.file_storage]
-}
+} 
 
 resource "aws_s3_bucket_public_access_block" "file_storage" {
   bucket                  = aws_s3_bucket.file_storage.id
