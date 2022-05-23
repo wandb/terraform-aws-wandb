@@ -50,13 +50,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "server_side_encry
   }
 }
 
-resource "aws_s3_bucket_logging" "bucket_logging" {
-  bucket = aws_s3_bucket.file_storage.id
-
-  target_bucket = aws_s3_bucket.file_storage.id
-  target_prefix = "${bucket}-logs/"
-}
-
 resource "aws_s3_bucket_public_access_block" "file_storage" {
   bucket                  = aws_s3_bucket.file_storage.id
   block_public_acls       = true
