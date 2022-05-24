@@ -54,6 +54,11 @@ resource "aws_db_parameter_group" "default" {
     value = "60000"
   }
 
+  parameter {
+    name  = "sort_buffer_size"
+    value = "1048576"
+  }
+
   lifecycle {
     ignore_changes = [description]
   }
