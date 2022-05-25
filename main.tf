@@ -75,8 +75,9 @@ module "database" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
-  instance_class = var.database_instance_class
-  engine_version = var.database_engine_version
+  instance_class      = var.database_instance_class
+  engine_version      = var.database_engine_version
+  snapshot_identifier = var.database_snapshot_identifier
 
   deletion_protection = var.deletion_protection
 

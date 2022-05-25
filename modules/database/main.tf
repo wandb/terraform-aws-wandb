@@ -83,7 +83,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "6.2.0"
+  version = "7.1.0"
 
   name           = var.namespace
   engine         = "aurora-mysql"
@@ -104,6 +104,8 @@ module "aurora" {
   db_subnet_group_name   = var.db_subnet_group_name
   create_db_subnet_group = var.create_db_subnet_group
   subnets                = var.subnets
+
+  snapshot_identifier = var.snapshot_identifier
 
   database_name = local.database_name
 
