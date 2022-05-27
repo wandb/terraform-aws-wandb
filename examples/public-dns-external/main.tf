@@ -33,6 +33,9 @@ module "wandb_infra" {
   domain_name = var.domain_name
   zone_id     = var.zone_id
   subdomain   = var.subdomain
+
+  bucket_name        = var.bucket_name
+  bucket_kms_key_arn = var.bucket_kms_key_arn
 }
 
 data "aws_eks_cluster" "app_cluster" {
