@@ -58,7 +58,6 @@ variable "wandb_image" {
   default     = "wandb/local"
 }
 
-
 variable "bucket_name" {
   type    = string
   default = ""
