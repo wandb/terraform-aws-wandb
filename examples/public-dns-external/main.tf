@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-1"
 
   default_tags {
     tags = {
@@ -20,8 +20,9 @@ module "wandb_infra" {
 
   deletion_protection = false
 
-  database_instance_class = var.database_instance_class
-  database_engine_version = var.database_engine_version
+  database_instance_class      = var.database_instance_class
+  database_engine_version      = var.database_engine_version
+  database_snapshot_identifier = var.database_snapshot_identifier
 
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]

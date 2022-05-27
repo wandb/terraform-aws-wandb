@@ -83,7 +83,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "7.1.0"
+  version = "6.2.0"
 
   name           = var.namespace
   engine         = "aurora-mysql"
