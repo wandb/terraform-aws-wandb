@@ -12,6 +12,10 @@
 
 > W&B supports all the regions listed here and supported by Amazon's EKS: https://docs.aws.amazon.com/general/latest/gr/eks.html
 
+#### What SageMaker regions does W&B support?
+
+> W&B supports all the regions listed here and officially supported by Amazon's SageMaker: https://docs.aws.amazon.com/general/latest/gr/sagemaker.html
+
 #### Does the user running this terraform need specialized knowledge of AWS services?
 
 > Typically, to run terraform the user must know to configure awscli with the right credentials and run `terraform apply`. It is recommended
