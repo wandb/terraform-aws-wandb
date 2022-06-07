@@ -66,7 +66,7 @@ resource "aws_iam_role" "node" {
 
   # Encrypt and decrypt with KMS
   dynamic "inline_policy" {
-    for_each = var.bucket_kms_key_arn == null ? [] : [1]
+    for_each = var.bucket_kms_key_arn == "" ? [] : [1]
     content {
       name = "${var.namespace}-node-kms-policy"
       policy = jsonencode({
