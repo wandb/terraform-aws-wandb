@@ -39,7 +39,7 @@ variable "bucket_sqs_queue_arn" {
 }
 
 variable "bucket_kms_key_arn" {
-  description = "(Required) The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
   type        = string
 }
 
