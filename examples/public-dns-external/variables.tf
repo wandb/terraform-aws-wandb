@@ -40,6 +40,12 @@ variable "database_instance_class" {
   default     = "db.r5.large"
 }
 
+variable "database_snapshot_identifier" {
+  description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot"
+  type        = string
+  default     = null
+}
+
 variable "wandb_version" {
   description = "The version of Weights & Biases local to deploy."
   type        = string
@@ -50,4 +56,15 @@ variable "wandb_image" {
   description = "Docker repository of to pull the wandb image from."
   type        = string
   default     = "wandb/local"
+}
+
+variable "bucket_name" {
+  type    = string
+  default = ""
+}
+
+variable "bucket_kms_key_arn" {
+  type        = string
+  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  default     = ""
 }

@@ -110,6 +110,8 @@ module "aurora" {
   create_db_subnet_group = var.create_db_subnet_group
   subnets                = var.subnets
 
+  snapshot_identifier = var.snapshot_identifier
+
   database_name = local.database_name
 
   create_security_group = true

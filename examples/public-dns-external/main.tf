@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-1"
 
   default_tags {
     tags = {
@@ -20,8 +20,9 @@ module "wandb_infra" {
 
   deletion_protection = false
 
-  database_instance_class = var.database_instance_class
-  database_engine_version = var.database_engine_version
+  database_instance_class      = var.database_instance_class
+  database_engine_version      = var.database_engine_version
+  database_snapshot_identifier = var.database_snapshot_identifier
 
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
@@ -32,6 +33,10 @@ module "wandb_infra" {
   domain_name = var.domain_name
   zone_id     = var.zone_id
   subdomain   = var.subdomain
+
+  bucket_name        = var.bucket_name
+  bucket_kms_key_arn = var.bucket_kms_key_arn
+  use_internal_queue = true
 }
 
 data "aws_eks_cluster" "app_cluster" {
@@ -56,7 +61,7 @@ module "wandb_app" {
   host                       = module.wandb_infra.url
   bucket                     = "s3://${module.wandb_infra.bucket_name}"
   bucket_aws_region          = module.wandb_infra.bucket_region
-  bucket_queue               = "sqs://${module.wandb_infra.bucket_queue_name}"
+  bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
 

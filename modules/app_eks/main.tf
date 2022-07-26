@@ -65,26 +65,29 @@ resource "aws_iam_role" "node" {
   }
 
   # Encrypt and decrypt with KMS
-  inline_policy {
-    name = "${var.namespace}-node-kms-policy"
-    policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : [
-            "kms:Encrypt",
-            "kms:Decrypt",
-            "kms:ReEncrypt*",
-            "kms:GenerateDataKey*",
-            "kms:DescribeKey"
-          ],
-          "Resource" : [
-            "${var.bucket_kms_key_arn}"
-          ]
-        }
-      ]
-    })
+  dynamic "inline_policy" {
+    for_each = var.bucket_kms_key_arn == "" ? [] : [1]
+    content {
+      name = "${var.namespace}-node-kms-policy"
+      policy = jsonencode({
+        "Version" : "2012-10-17",
+        "Statement" : [
+          {
+            "Effect" : "Allow",
+            "Action" : [
+              "kms:Encrypt",
+              "kms:Decrypt",
+              "kms:ReEncrypt*",
+              "kms:GenerateDataKey*",
+              "kms:DescribeKey"
+            ],
+            "Resource" : [
+              "${var.bucket_kms_key_arn}"
+            ]
+          }
+        ]
+      })
+    }
   }
 
   # Publish cloudwatch metrics
