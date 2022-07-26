@@ -46,6 +46,12 @@ variable "database_snapshot_identifier" {
   default     = null
 }
 
+variable "database_sort_buffer_size" {
+  description = "Specifies the sort_buffer_size value to set for the database"
+  type        = number
+  default     = 262144
+}
+
 variable "wandb_version" {
   description = "The version of Weights & Biases local to deploy."
   type        = string

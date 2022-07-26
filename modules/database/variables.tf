@@ -88,3 +88,9 @@ variable "snapshot_identifier" {
   type        = string
   default     = null
 }
+
+variable "sort_buffer_size" {
+  description = "Specifies the sort_buffer_size value to set for the database"
+  type        = number
+  default     = 262144
+}

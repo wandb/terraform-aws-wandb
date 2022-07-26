@@ -78,6 +78,7 @@ module "database" {
   instance_class      = var.database_instance_class
   engine_version      = var.database_engine_version
   snapshot_identifier = var.database_snapshot_identifier
+  sort_buffer_size    = var.database_sort_buffer_size
 
   deletion_protection = var.deletion_protection
 
