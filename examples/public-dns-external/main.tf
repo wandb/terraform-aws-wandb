@@ -23,6 +23,7 @@ module "wandb_infra" {
   database_instance_class      = var.database_instance_class
   database_engine_version      = var.database_engine_version
   database_snapshot_identifier = var.database_snapshot_identifier
+  database_sort_buffer_size    = var.database_sort_buffer_size
 
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]

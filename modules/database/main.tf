@@ -2,9 +2,6 @@ locals {
   database_name   = "wandb_local"
   master_username = "wandb"
   master_password = random_string.master_password.result
-
-  major_mysql_version  = "5.7"
-  aurora_mysql_version = "2.10.0"
 }
 
 # Random string to use as initial master password
@@ -14,7 +11,7 @@ resource "random_string" "master_password" {
 }
 
 locals {
-  is_mysql_80            = var.engine_version == "8.0.mysql_aurora.3.01.0"
+  is_mysql_80            = var.engine_version == "8.0.mysql_aurora.3.02.0"
   engine_version_tag     = local.is_mysql_80 ? "80" : "57"
   parameter_family       = local.is_mysql_80 ? "aurora-mysql8.0" : "aurora-mysql5.7"
   parameter_group_name   = "${var.namespace}-aurora-db-${local.engine_version_tag}-parameter-group"
@@ -52,6 +49,11 @@ resource "aws_db_parameter_group" "default" {
   parameter {
     name  = "max_execution_time"
     value = "60000"
+  }
+
+  parameter {
+    name  = "sort_buffer_size"
+    value = var.sort_buffer_size
   }
 
   lifecycle {

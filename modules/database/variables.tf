@@ -19,8 +19,8 @@ variable "engine_version" {
   default     = "5.7"
 
   validation {
-    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0"], var.engine_version)
-    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"."
+    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0", "8.0.mysql_aurora.3.02.0"], var.engine_version)
+    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"; \"8.0.mysql_aurora.3.02.0\"."
   }
 }
 
@@ -87,4 +87,10 @@ variable "snapshot_identifier" {
   description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot"
   type        = string
   default     = null
+}
+
+variable "sort_buffer_size" {
+  description = "Specifies the sort_buffer_size value to set for the database"
+  type        = number
+  default     = 262144
 }
