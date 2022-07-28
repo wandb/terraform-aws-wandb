@@ -2,9 +2,6 @@ locals {
   database_name   = "wandb_local"
   master_username = "wandb"
   master_password = random_string.master_password.result
-
-  major_mysql_version  = "5.7"
-  aurora_mysql_version = "3.02.0"
 }
 
 # Random string to use as initial master password
