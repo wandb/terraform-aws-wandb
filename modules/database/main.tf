@@ -11,7 +11,7 @@ resource "random_string" "master_password" {
 }
 
 locals {
-  is_mysql_80            = length(regexall("^8.0", var.engine_version)) > 0 ? true : false
+  is_mysql_80            = length(regexall("^8.0", var.engine_version)) > 0
   engine_version_tag     = local.is_mysql_80 ? "80" : "57"
   parameter_family       = local.is_mysql_80 ? "aurora-mysql8.0" : "aurora-mysql5.7"
   parameter_group_name   = "${var.namespace}-aurora-db-${local.engine_version_tag}-parameter-group"
