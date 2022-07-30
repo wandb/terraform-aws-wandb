@@ -29,8 +29,8 @@ variable "database_engine_version" {
   default     = "8.0.mysql_aurora.3.01.0"
 
   validation {
-    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0"], var.database_engine_version)
-    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\""
+    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0", "8.0.mysql_aurora.3.02.0"], var.database_engine_version)
+    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"; \"8.0.mysql_aurora.3.02.0\"."
   }
 }
 
