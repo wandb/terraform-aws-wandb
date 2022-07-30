@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.5.2...v1.5.3) (2022-07-30)
+
+
+### Bug Fixes
+
+* Add regex check for db version ([#33](https://github.com/wandb/terraform-aws-wandb/issues/33)) ([124d988](https://github.com/wandb/terraform-aws-wandb/commit/124d988f4bccd94a93d6cfafa5553fb143d94de9))
+
 ### [1.5.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.5.1...v1.5.2) (2022-07-28)
 
 
