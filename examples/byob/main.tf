@@ -63,7 +63,8 @@ resource "aws_kms_alias" "key" {
 }
 
 module "resources" {
-  source = "../../modules/file_storage"
+  source  = "wandb/wandb/aws//modules/file_storage"
+  version = "1.5.3"
 
   namespace     = local.namespace
   sse_algorithm = "aws:kms"
