@@ -161,11 +161,12 @@ module "app_lb" {
   network_public_subnets  = local.network_public_subnets
 }
 
-resource "aws_autoscaling_attachment" "autoscaling_attachment" {
-  for_each               = module.app_eks.autoscaling_group_names
-  autoscaling_group_name = each.value
-  alb_target_group_arn   = module.app_lb.tg_app_arn
-}
+# disable autoscaling
+# resource "aws_autoscaling_attachment" "autoscaling_attachment" {
+#   for_each               = module.app_eks.autoscaling_group_names
+#   autoscaling_group_name = each.value
+#   alb_target_group_arn   = module.app_lb.tg_app_arn
+# }
 
 module "redis" {
   count     = var.create_elasticache ? 1 : 0
