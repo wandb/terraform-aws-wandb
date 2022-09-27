@@ -96,9 +96,7 @@ module "aurora" {
   instance_class = var.instance_class
   instances      = { 1 = {} }
 
-  autoscaling_enabled      = true
-  autoscaling_min_capacity = 1
-  autoscaling_max_capacity = 3
+  autoscaling_enabled      = false
 
   deletion_protection = var.deletion_protection
 
