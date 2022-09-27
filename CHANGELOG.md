@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.5.3...v1.6.0) (2022-09-27)
+
+
+### Features
+
+* Disable auto scaling for database ([#38](https://github.com/wandb/terraform-aws-wandb/issues/38)) ([8686fed](https://github.com/wandb/terraform-aws-wandb/commit/8686fed4fbba9e5de52368e8b5ef40d369aa0499))
+
 ### [1.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.5.2...v1.5.3) (2022-07-30)
 
 
