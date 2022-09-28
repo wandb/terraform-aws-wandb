@@ -177,5 +177,5 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
 
-  kms_key_arn = local.kms_key_arn
+  kms_key_arn = var.elasticache_enable_kms ? local.kms_key_arn : ""
 }

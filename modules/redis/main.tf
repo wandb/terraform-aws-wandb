@@ -19,7 +19,7 @@ resource "aws_elasticache_replication_group" "default" {
   subnet_group_name  = var.redis_subnet_group_name
   security_group_ids = [aws_security_group.redis.id]
 
-  kms_key_id                 = var.kms_key_arn
+  kms_key_id                 = var.kms_key_arn == "" ? null : var.kms_key_arn
   at_rest_encryption_enabled = true
   transit_encryption_enabled = true
 }

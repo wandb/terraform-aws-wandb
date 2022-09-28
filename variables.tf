@@ -265,3 +265,9 @@ variable "create_elasticache" {
   description = "Boolean indicating whether to provision an elasticache instance (true) or not (false)."
   default     = false
 }
+
+variable "elasticache_enable_kms" {
+  type        = bool
+  description = "Use a kms key for redis cache"
+  default     = true
+}

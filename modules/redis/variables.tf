@@ -29,4 +29,5 @@ variable "vpc_subnets_cidr_blocks" {
 variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key."
   type        = string
+  default     = ""
 }
