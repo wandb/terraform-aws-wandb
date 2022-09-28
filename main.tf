@@ -101,7 +101,7 @@ module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
 
-  create_certificate = local.create_certificate || var.zone_id == null
+  create_certificate = local.create_certificate || var.zone_id != null
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
   zone_id     = var.zone_id == null ? "" : var.zone_id
