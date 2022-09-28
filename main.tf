@@ -104,7 +104,7 @@ module "acm" {
   create_certificate = local.create_certificate
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
-  zone_id     = var.zone_id
+  zone_id     = var.zone_id == null ? "" : var.zone_id
 
   wait_for_validation = true
 }
