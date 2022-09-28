@@ -91,7 +91,7 @@ module "database" {
 }
 
 locals {
-  create_certificate = var.public_access && var.acm_certificate_arn == null
+  create_certificate = var.acm_certificate_arn == null
 
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
 }
@@ -101,7 +101,7 @@ module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
 
-  create_certificate = local.create_certificate || var.zone_id != null
+  create_certificate = local.create_certificate
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
   zone_id     = var.zone_id == null ? "" : var.zone_id
