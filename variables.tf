@@ -71,6 +71,7 @@ variable "external_dns" {
 variable "zone_id" {
   type        = string
   description = "Domain for creating the Weights & Biases subdomain on."
+  default     = null
 }
 
 variable "domain_name" {

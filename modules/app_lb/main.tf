@@ -136,6 +136,8 @@ resource "aws_lb_target_group" "app" {
 
 # Create record for route53 zone.
 resource "aws_route53_record" "alb" {
+  count = var.zone_id == null ? 0 : 1
+
   zone_id = var.zone_id
   name    = var.fqdn
   type    = "A"

@@ -19,6 +19,7 @@ variable "ssl_policy" {
 variable "zone_id" {
   type        = string
   description = "(Required) The zone ID of the route53 to create the application A record in."
+  default     = null
 }
 
 variable "fqdn" {
