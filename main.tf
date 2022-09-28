@@ -104,7 +104,7 @@ module "acm" {
   create_certificate = local.create_certificate
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
-  zone_id     = var.zone_id == null ? "" : var.zone_id
+  zone_id     = var.zone_id
 
   wait_for_validation = true
 }
@@ -167,13 +167,6 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   autoscaling_group_name = each.value
   alb_target_group_arn   = module.app_lb.tg_app_arn
 }
-
-# resource "aws_lb_target_group_attachment" "default" {
-#   for_each = module.app_eks
-#   target_group_arn = module.app_lb.tg_app_arn
-#   target_id        = aws_instance.test.id
-#   port             = 80
-# }
 
 module "redis" {
   count     = var.create_elasticache ? 1 : 0
