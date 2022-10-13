@@ -41,7 +41,7 @@ resource "aws_s3_bucket_versioning" "file_storage_version" {
 }
 
 resource "aws_s3_bucket_acl" "file_storage_acl" {
-  bucket = random_pet.file_storage.id
+  bucket = aws_s3_bucket.file_storage.id
   acl    = "private"
 }
 
