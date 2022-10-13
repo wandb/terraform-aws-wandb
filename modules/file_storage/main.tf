@@ -14,7 +14,7 @@ resource "aws_sqs_queue" "file_storage" {
 
 resource "aws_s3_bucket" "file_storage" {
   bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
-  
+
   force_destroy = !var.deletion_protection
 
   # Configuration error if SQS does not exist
@@ -22,12 +22,30 @@ resource "aws_s3_bucket" "file_storage" {
   depends_on = [aws_sqs_queue.file_storage]
 }
 
-resource "aws_s3_bucket_acl" "s3_acl" {
-  bucket = random_pet.file_storage.id
-  acl = "private"
+# Using the same bucket to store the bucket logs.
+# TODO: Add a new bucket for logs.
+resource "aws_s3_bucket_logging" "file_storage_log" {
+  bucket = aws_s3_bucket.file_storage.id
+
+  target_bucket = aws_s3_bucket.file_storage.id
+  target_prefix = "log/"
 }
 
-resource "aws_s3_bucket_cors_configuration" "cors" {
+# Enabling S3 versioning
+resource "aws_s3_bucket_versioning" "file_storage_version" {
+  bucket = aws_s3_bucket.file_storage.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_acl" "file_storage_acl" {
+  bucket = random_pet.file_storage.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "file_storage_cors" {
   bucket = aws_s3_bucket.file_storage.id
 
   cors_rule {
@@ -39,7 +57,7 @@ resource "aws_s3_bucket_cors_configuration" "cors" {
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "s3_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "file_storage_encryption" {
   bucket = aws_s3_bucket.file_storage.bucket
 
   rule {
