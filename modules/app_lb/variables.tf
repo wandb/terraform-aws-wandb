@@ -12,8 +12,8 @@ variable "acm_certificate_arn" {
 
 variable "ssl_policy" {
   type        = string
-  default     = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
-  description = "(Optional) SSL policy to use on ALB listener"
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  description = "(Optional) TLS policy to use on ALB listener"
 }
 
 variable "zone_id" {
