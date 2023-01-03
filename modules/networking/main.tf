@@ -4,7 +4,7 @@ data "aws_availability_zones" "available" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 3.0"
 
   create_vpc = var.create_vpc
 
