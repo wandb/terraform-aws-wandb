@@ -14,7 +14,6 @@ resource "aws_sqs_queue" "file_storage" {
 
 resource "aws_s3_bucket" "file_storage" {
   bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
-  acl    = "private"
 
   server_side_encryption_configuration {
     rule {
@@ -32,7 +31,7 @@ resource "aws_s3_bucket" "file_storage" {
   depends_on = [aws_sqs_queue.file_storage]
 }
 
-resource "aws_s3_bucket_cors_configuration" "example" {
+resource "aws_s3_bucket_cors_configuration" "file_storage" {
   bucket = aws_s3_bucket.file_storage.id
 
   cors_rule {
@@ -42,6 +41,11 @@ resource "aws_s3_bucket_cors_configuration" "example" {
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
+}
+
+resource "aws_s3_bucket_acl" "file_storage" {
+  bucket = aws_s3_bucket.file_storage.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "file_storage" {
