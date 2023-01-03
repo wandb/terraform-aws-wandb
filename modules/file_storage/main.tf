@@ -16,14 +16,6 @@ resource "aws_s3_bucket" "file_storage" {
   bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
   acl    = "private"
 
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET", "HEAD", "PUT"]
-    allowed_origins = ["*"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
-
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -38,6 +30,18 @@ resource "aws_s3_bucket" "file_storage" {
   # Configuration error if SQS does not exist
   # https://aws.amazon.com/premiumsupport/knowledge-center/unable-validate-destination-s3/
   depends_on = [aws_sqs_queue.file_storage]
+}
+
+resource "aws_s3_bucket_cors_configuration" "example" {
+  bucket = aws_s3_bucket.file_storage.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD", "PUT"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "file_storage" {
