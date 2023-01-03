@@ -5,7 +5,7 @@ locals {
 resource "aws_elasticache_replication_group" "default" {
   replication_group_id          = "${var.namespace}-rep-group"
   replication_group_description = "${var.namespace}-rep-group"
-  number_cache_clusters         = 2
+  num_cache_clusters            = 2
   port                          = 6379
 
   node_type            = "cache.t2.medium"
