@@ -92,3 +92,9 @@ variable "map_users" {
   }))
   default = []
 }
+
+variable "eks_policy" {
+  description = "Additional IAM policy to apply to the EKS cluster"
+  type        = string
+  default     = ""
+}

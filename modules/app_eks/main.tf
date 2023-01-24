@@ -104,6 +104,14 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+
+  dynamic inline_policy {
+    for_each = var.eks_policy == "" ? [] : [1]
+    content {
+      name = "${var.namespace}-node-custom-policy"
+      policy = var.eks_policy
+    }
+  }
 }
 
 locals {
