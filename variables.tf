@@ -200,6 +200,12 @@ variable "network_elasticache_subnet_cidrs" {
 ##########################################
 # EKS Cluster                            #
 ##########################################
+variable "eks_cluster_version" {
+  type        = number
+  description = "Indicates EKS cluster version"
+  default     = "1.21"
+}
+
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
