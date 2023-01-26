@@ -133,12 +133,14 @@ module "eks" {
 
   node_groups = {
     primary = {
-      version          = var.cluster_version
-      desired_capacity = 2,
-      max_capacity     = 5,
-      min_capacity     = 2,
-      instance_type    = ["m5.xlarge"],
-      iam_role_arn     = aws_iam_role.node.arn
+      version                = var.cluster_version
+      desired_capacity       = 2,
+      max_capacity           = 5,
+      min_capacity           = 2,
+      instance_type          = ["m5.xlarge"],
+      iam_role_arn           = aws_iam_role.node.arn
+      create_launch_template = true
+      metadata_http_tokens   = "required"
     }
   }
 
