@@ -14,7 +14,7 @@ variable "network_private_subnets" {
 }
 
 variable "cluster_version" {
-  description = "The AWS EKS cluster version"
+  description = "Indicates AWS EKS cluster version"
   type        = string
   default     = "1.21"
 }
