@@ -13,6 +13,12 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
+variable "cluster_version" {
+  description = "Indicates AWS EKS cluster version"
+  type        = string
+  default     = "1.21"
+}
+ 
 variable "cluster_endpoint_public_access" {
   type        = bool
   description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
