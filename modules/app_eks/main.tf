@@ -143,6 +143,7 @@ module "eks" {
       disk_encrypted         = var.encrypt_ebs_volume,
       disk_kms_key_id        = var.encrypt_ebs_volume ? var.kms_key_arn : "",
       force_update_version   = true
+      metadata_http_tokens   = "required"
     }
   }
 
