@@ -140,6 +140,8 @@ module "eks" {
       instance_type          = ["m5.xlarge"],
       iam_role_arn           = aws_iam_role.node.arn
       create_launch_template = true
+      disk_encrypted         = true
+      disk_kms_key_id        = var.kms_key_arn
       metadata_http_tokens   = "required"
     }
   }
