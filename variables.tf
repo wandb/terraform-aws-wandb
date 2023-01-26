@@ -201,7 +201,7 @@ variable "network_elasticache_subnet_cidrs" {
 # EKS Cluster                            #
 ##########################################
 variable "eks_cluster_version" {
-  type        = number
+  type        = string
   description = "Indicates EKS cluster version"
   default     = "1.21"
 }
