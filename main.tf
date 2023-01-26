@@ -139,6 +139,7 @@ module "app_eks" {
   create_elasticache_security_group = var.create_elasticache
   elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null
 
+  cluster_version                      = var.eks_cluster_version
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 }

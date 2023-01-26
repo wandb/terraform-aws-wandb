@@ -106,16 +106,12 @@ resource "aws_iam_role" "node" {
   }
 }
 
-locals {
-  cluster_version = "1.21"
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 17.23"
 
   cluster_name    = var.namespace
-  cluster_version = local.cluster_version
+  cluster_version = var.cluster_version
 
   vpc_id  = var.network_id
   subnets = var.network_private_subnets
@@ -137,6 +133,7 @@ module "eks" {
 
   node_groups = {
     primary = {
+      version          = var.cluster_version
       desired_capacity = 2,
       max_capacity     = 5,
       min_capacity     = 2,

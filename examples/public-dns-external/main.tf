@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-1"
+  region = "us-west-2"
 
   default_tags {
     tags = {
@@ -28,6 +28,7 @@ module "wandb_infra" {
   allowed_inbound_cidr      = ["0.0.0.0/0"]
   allowed_inbound_ipv6_cidr = ["::/0"]
 
+  eks_cluster_version            = "1.24"
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
