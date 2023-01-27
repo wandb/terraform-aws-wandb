@@ -54,12 +54,6 @@ variable "kms_key_arn" {
   type        = string
 }
 
-variable "encrypt_ebs_volume" {
-  description = "Indicates whether or not ebs volumes should be encrypted."
-  type        = bool
-  default     = false
-}
-
 variable "instance_types" {
   description = "EC2 Instance type for primary node group"
   type        = list(string)

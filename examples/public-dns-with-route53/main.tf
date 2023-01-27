@@ -24,8 +24,6 @@ module "wandb_infra" {
   domain_name = var.domain
   zone_id     = aws_route53_zone.public.zone_id
   subdomain   = var.subdomain
-  
-  kubernetes_encrypt_ebs_volume  = true
 }
 
 data "aws_eks_cluster" "app_cluster" {

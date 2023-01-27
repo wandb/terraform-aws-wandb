@@ -244,11 +244,6 @@ variable "kubernetes_map_users" {
   default = []
 }
 
-variable "kubernetes_encrypt_ebs_volume" {
-  description = "Indicates whether or not ebs volumes should be encrypted."
-  type        = bool
-  default     = false
-}
 
 variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group"

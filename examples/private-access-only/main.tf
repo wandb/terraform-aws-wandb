@@ -71,8 +71,6 @@ module "standard" {
   network_id              = module.networking.vpc_id
   network_private_subnets = module.networking.private_subnets
   network_public_subnets  = module.networking.public_subnets
-
-  kubernetes_encrypt_ebs_volume  = true
 }
 
 output "url" {
