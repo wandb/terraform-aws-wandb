@@ -145,7 +145,7 @@ module "eks" {
       disk_encrypted         = true
       disk_kms_key_id        = var.kms_key_arn
       force_update_version   = true
-      metadata_http_tokens   = "required"
+      # metadata_http_tokens   = "required"
     }
   }
 
