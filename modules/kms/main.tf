@@ -34,10 +34,12 @@ resource "aws_kms_key" "key" {
         "Resource" : "*"
       },
       {
-        "Sid" : "Allow access through EBS for all principals in the account that are authorized to use EBS",
+        "Sid" : "Allow use for EBS to node groups",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "*"
+          "AWS" : [
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          ]
         },
         "Action" : [
           "kms:Encrypt",
@@ -50,8 +52,10 @@ resource "aws_kms_key" "key" {
         "Resource" : "*",
         "Condition" : {
           "StringEquals" : {
-            "kms:ViaService" : "ec2.us-east-1.amazonaws.com",
-            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}"
+            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}",
+          },
+          "StringLike" : {
+            "kms:ViaService" : "ec2.*.amazonaws.com",
           }
         }
       }
