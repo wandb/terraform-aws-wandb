@@ -131,6 +131,8 @@ module "eks" {
     }
   ] : null
 
+  worker_additional_security_group_ids = [module.eks.cluster_primary_security_group_id]
+
   node_groups = {
     primary = {
       version                = var.cluster_version,
