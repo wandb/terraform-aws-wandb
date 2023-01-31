@@ -142,9 +142,9 @@ module "eks" {
       instance_types         = var.instance_types,
       iam_role_arn           = aws_iam_role.node.arn,
       create_launch_template = true,
-      disk_encrypted         = true
-      disk_kms_key_id        = var.kms_key_arn
-      force_update_version   = true
+      disk_encrypted         = true,
+      disk_kms_key_id        = var.kms_key_arn,
+      force_update_version   = true,
       # metadata_http_tokens   = "required"
     }
   }
