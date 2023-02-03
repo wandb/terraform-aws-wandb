@@ -60,6 +60,12 @@ variable "instance_types" {
   default     = ["m5.xlarge"]
 }
 
+variable "use_launch_template" {
+  description = "Enable launch template"
+  type        = bool
+  default     = true
+}
+
 variable "database_security_group_id" {
   type = string
 }
