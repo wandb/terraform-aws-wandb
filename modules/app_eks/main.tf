@@ -131,9 +131,9 @@ module "eks" {
     }
   ] : null
 
-  worker_additional_security_group_ids = var.use_launch_template ? [module.eks.cluster_primary_security_group_id] : []
+  worker_additional_security_group_ids = var.encrypt_ebs_volume ? [module.eks.cluster_primary_security_group_id] : []
 
-   node_groups = var.use_launch_template ? {
+   node_groups = var.encrypt_ebs_volume ? {
     primary = {
       version                = var.cluster_version,
       desired_capacity       = 2,

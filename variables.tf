@@ -245,13 +245,13 @@ variable "kubernetes_map_users" {
 }
 
 variable "kubernetes_instance_types" {
-  description = "EC2 Instance type for primary node group"
+  description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m5.xlarge"]
  }
 
-variable "kubernetes_use_launch_template" {
-  description = "Enable launch template"
+variable "kubernetes_encrypt_ebs_volume" {
+  description = "Enable Encrypted EBS volumes through the use of launch templates."
   type        = bool
   default     = true
 }
