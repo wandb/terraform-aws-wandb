@@ -123,7 +123,7 @@ module "app_eks" {
   kms_key_arn = local.kms_key_arn
 
   instance_types      = var.kubernetes_instance_types
-  use_launch_template = var.kubernetes_use_launch_template
+  encrypt_ebs_volume  = var.kubernetes_encrypt_ebs_volume
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
