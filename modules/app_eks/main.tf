@@ -133,34 +133,18 @@ module "eks" {
 
   worker_additional_security_group_ids = var.encrypt_ebs_volume ? [module.eks.cluster_primary_security_group_id] : []
 
-   node_groups = var.encrypt_ebs_volume ? {
+  node_groups = {
     primary = {
       version                = var.cluster_version,
       desired_capacity       = 2,
       max_capacity           = 5,
       min_capacity           = 2,
-      instance_types         = var.instance_types,
+      instance_types         = ["m4.large"],
       iam_role_arn           = aws_iam_role.node.arn,
-      create_launch_template = true,
-      disk_encrypted         = true,
+      create_launch_template = var.encrypt_ebs_volume,
+      disk_encrypted         = var.encrypt_ebs_volume,
       disk_kms_key_id        = var.kms_key_arn,
-      force_update_version   = true,
-      # metadata_http_tokens   = "required"
-      instance_type    = ["m5.xlarge"] #to be removed in future
-    }
-  } : {
-    primary = {
-      version          = var.cluster_version
-      desired_capacity = 2,
-      max_capacity     = 5,
-      min_capacity     = 2,
-      instance_type    = ["m5.xlarge"], # leaving instance_type broken to not impact exsisting instances or rollout of launch templates.
-      iam_role_arn     = aws_iam_role.node.arn
-      create_launch_template = false
-      disk_encrypted         = false, 
-      disk_kms_key_id        = "",
-      force_update_version   = false,
-      instance_types   = ["m4.large"], # this is the default value
+      force_update_version   = var.encrypt_ebs_volume,
     }
   }
 
