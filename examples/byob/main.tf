@@ -50,7 +50,13 @@ resource "aws_kms_key" "key" {
         "Sid" : "External",
         "Effect" : "Allow",
         "Principal" : { "AWS" : "${local.wandb_deployment_account_arn}" },
-        "Action" : "kms:*",
+        "Action" : [
+          "kms:Decrypt",
+          "kms:Describe*",
+          "kms:Encrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*"
+        ],
         "Resource" : "*"
       }
     ]
@@ -87,7 +93,17 @@ resource "aws_s3_bucket_policy" "default" {
         "Sid" : "WAndBAccountAccess",
         "Effect" : "Allow",
         "Principal" : { "AWS" : "${local.wandb_deployment_account_arn}" },
-        "Action" : "s3:*",
+        "Action" : [
+          "s3:GetObject*",
+          "s3:GetEncryptionConfiguration",
+          "s3:ListBucket",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions",
+          "s3:AbortMultipartUpload",
+          "s3:DeleteObject",
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ],
         "Resource" : [
           "${module.resources.bucket_arn}",
           "${module.resources.bucket_arn}/*",
