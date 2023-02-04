@@ -137,7 +137,7 @@ module "eks" {
       desired_capacity = 2,
       max_capacity     = 5,
       min_capacity     = 2,
-      instance_type    = ["m5.xlarge"],
+      instance_type    = var.instance_types,
       iam_role_arn     = aws_iam_role.node.arn
     }
   }
