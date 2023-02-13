@@ -101,7 +101,10 @@ resource "aws_s3_bucket_policy" "default" {
           "s3:ListBucketVersions",
           "s3:AbortMultipartUpload",
           "s3:DeleteObject",
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:GetBucketCORS",
+          "s3:GetBucketLocation",
+          "s3:GetBucketVersioning"
         ],
         "Resource" : [
           "${module.resources.bucket_arn}",
