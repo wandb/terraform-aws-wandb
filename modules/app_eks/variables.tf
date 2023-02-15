@@ -93,8 +93,8 @@ variable "map_users" {
   default = []
 }
 
-variable "eks_policy" {
+variable "eks_policy_arns" {
   description = "Additional IAM policy to apply to the EKS cluster"
-  type        = string
-  default     = ""
+  type        = list(string)
+  default     = []
 }

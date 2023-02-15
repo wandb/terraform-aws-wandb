@@ -238,10 +238,10 @@ variable "kubernetes_map_users" {
   default = []
 }
 
-variable "eks_policy" {
-  type        = string
+variable "eks_policy_arns" {
+  type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"
-  default     = ""
+  default     = []
 }
 
 ##########################################
