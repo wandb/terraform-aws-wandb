@@ -24,5 +24,5 @@ variable "deletion_protection" {
 variable "wandb_principal_arn" {
   description = "Wandb principal that can access the bucket"
   type        = string
-  default     = "arn:aws:iam::725579432336:role/TerraformWorkspacesRole"
+  default     = "arn:aws:iam::725579432336:role/WandbIntegration"
 }
