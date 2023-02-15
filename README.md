@@ -99,7 +99,13 @@ resources that lack official modules.
 
 ### A note on updating EKS cluster version
 
-Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.24` - you'd need to first update `1.21` to `1.22`, run `terraform apply`, then upgrade to `1.23`, run `tf apply` and finally to `1.24`, run `tf apply`. You will not be able to upgrade directly from `1.21` to `1.24`.
+Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.24` - you'd need to:
+
+- Update `1.21` to `1.22`, run `terraform apply`,
+- then upgrade to `1.23`, run `tf apply` and
+- finally to `1.24`, run `tf apply`.
+
+You will not be able to upgrade directly from `1.21` to `1.24`.
 
 <!-- BEGIN_TF_DOCS -->
 
