@@ -18,7 +18,7 @@ variable "cluster_version" {
   type        = string
   default     = "1.21"
 }
- 
+
 variable "cluster_endpoint_public_access" {
   type        = bool
   description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."

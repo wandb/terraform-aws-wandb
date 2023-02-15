@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
-  count = var.create_kms_key ? 1 : 0
+  count       = var.create_kms_key ? 1 : 0
   key_usage   = "ENCRYPT_DECRYPT"
   description = "Wandb managed key to encrypt and decrypt file storage"
 
