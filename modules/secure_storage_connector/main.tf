@@ -13,6 +13,7 @@ resource "aws_kms_key" "key" {
         "Effect" : "Allow",
         "Principal" : { "AWS" : data.aws_caller_identity.current.arn },
         "Action" : "kms:*",
+        "Resource" : "*"
       },
       {
         "Sid" : "External",
@@ -26,6 +27,7 @@ resource "aws_kms_key" "key" {
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*"
         ],
+        Resource: "*"
       }
     ]
   })
