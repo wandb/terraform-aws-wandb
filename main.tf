@@ -122,6 +122,8 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
+  instance_types = var.kubernetes_instance_types
+
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
