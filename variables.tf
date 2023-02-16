@@ -247,7 +247,7 @@ variable "kubernetes_map_users" {
 variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
-  default     = ["m5.xlarge"]
+  default     = ["m4.large"]
  }
 
 ##########################################
