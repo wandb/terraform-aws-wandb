@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.7.0...v1.8.0) (2023-02-16)
+
+
+### Features
+
+* New kubernetes_instance_types variable ([#51](https://github.com/wandb/terraform-aws-wandb/issues/51)) ([0a35ef0](https://github.com/wandb/terraform-aws-wandb/commit/0a35ef03f666775359eead0d2ace248e57405d6c))
+
 ## [1.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.6.0...v1.7.0) (2023-02-16)
 
 
