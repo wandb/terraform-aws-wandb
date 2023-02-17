@@ -250,6 +250,18 @@ variable "kubernetes_encrypt_ebs_volume" {
   default     = true
 }
 
+variable "kubernetes_instance_types" {
+  description = "EC2 Instance type for primary node group."
+  type        = list(string)
+  default     = ["m4.large"]
+ }
+
+variable "eks_policy_arns" {
+  type        = list(string)
+  description = "Additional IAM policy to apply to the EKS cluster"
+  default     = []
+}
+
 ##########################################
 # External Bucket                        #
 ##########################################

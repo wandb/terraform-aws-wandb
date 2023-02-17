@@ -123,6 +123,7 @@ module "app_eks" {
   kms_key_arn = local.kms_key_arn
 
   encrypt_ebs_volume = var.kubernetes_encrypt_ebs_volume
+  instance_types     = var.kubernetes_instance_types
 
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
@@ -144,6 +145,8 @@ module "app_eks" {
   cluster_version                      = var.eks_cluster_version
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
+
+  eks_policy_arns = var.eks_policy_arns
 }
 
 module "app_lb" {

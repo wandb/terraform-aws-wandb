@@ -60,6 +60,12 @@ variable "encrypt_ebs_volume" {
   default     = true
 }
 
+variable "instance_types" {
+  description = "EC2 Instance type for primary node group."
+  type        = list(string)
+  default     = ["m4.large"]
+}
+
 variable "database_security_group_id" {
   type = string
 }
@@ -103,4 +109,10 @@ variable "map_users" {
     groups   = list(string)
   }))
   default = []
+}
+
+variable "eks_policy_arns" {
+  description = "Additional IAM policy to apply to the EKS cluster"
+  type        = list(string)
+  default     = []
 }
