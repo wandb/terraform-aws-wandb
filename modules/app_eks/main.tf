@@ -131,7 +131,7 @@ module "eks" {
     }
   ] : null
 
-  worker_additional_security_group_ids = var.encrypt_ebs_volume ? [module.eks.cluster_primary_security_group_id] : []
+  worker_additional_security_group_ids = var.encrypt_ebs_volume ?  [aws_security_group.primary_workers.id] : []
 
   node_groups = {
     primary = {
@@ -156,10 +156,16 @@ module "eks" {
   }
 }
 
+resource "aws_security_group" "primary_workers" {
+  name = "${var.namespace}-primary-workers"
+  description = "EKS primary workers security group."
+  vpc_id = var.network_id
+}
+
 resource "aws_security_group_rule" "lb" {
   description              = "Allow container NodePort service to receive load balancer traffic."
   protocol                 = "tcp"
-  security_group_id        = module.eks.cluster_primary_security_group_id
+  security_group_id        = var.encrypt_ebs_volume ? aws_security_group.primary_workers.id : module.eks.cluster_primary_security_group_id
   source_security_group_id = var.lb_security_group_inbound_id
   from_port                = var.service_port
   to_port                  = var.service_port
@@ -170,7 +176,7 @@ resource "aws_security_group_rule" "database" {
   description              = "Allow inbound traffic from EKS workers to database"
   protocol                 = "tcp"
   security_group_id        = var.database_security_group_id
-  source_security_group_id = module.eks.cluster_primary_security_group_id
+  source_security_group_id = var.encrypt_ebs_volume ? aws_security_group.primary_workers.id : module.eks.cluster_primary_security_group_id
   from_port                = local.mysql_port
   to_port                  = local.mysql_port
   type                     = "ingress"
@@ -181,7 +187,7 @@ resource "aws_security_group_rule" "elasticache" {
   description              = "Allow inbound traffic from EKS workers to elasticache"
   protocol                 = "tcp"
   security_group_id        = var.elasticache_security_group_id
-  source_security_group_id = module.eks.cluster_primary_security_group_id
+  source_security_group_id = var.encrypt_ebs_volume ? aws_security_group.primary_workers.id : module.eks.cluster_primary_security_group_id
   from_port                = local.redis_port
   to_port                  = local.redis_port
   type                     = "ingress"
