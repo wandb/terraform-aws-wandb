@@ -54,12 +54,6 @@ variable "kms_key_arn" {
   type        = string
 }
 
-variable "encrypt_ebs_volume" {
-  description = "Enable Encrypted EBS volumes through the use of launch templates."
-  type        = bool
-  default     = true
-}
-
 variable "instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)

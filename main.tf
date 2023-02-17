@@ -122,7 +122,6 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
-  encrypt_ebs_volume = var.kubernetes_encrypt_ebs_volume
   instance_types     = var.kubernetes_instance_types
 
   map_accounts = var.kubernetes_map_accounts
