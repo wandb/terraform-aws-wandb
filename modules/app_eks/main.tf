@@ -143,7 +143,7 @@ module "eks" {
       desired_capacity       = 2,
       max_capacity           = 5,
       min_capacity           = 2,
-      instance_types         = ["m4.large"],
+      instance_types         = var.instance_types,
       iam_role_arn           = aws_iam_role.node.arn,
       create_launch_template = var.encrypt_ebs_volume,
       disk_encrypted         = var.encrypt_ebs_volume,
