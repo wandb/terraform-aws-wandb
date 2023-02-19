@@ -21,8 +21,7 @@ variable "deletion_protection" {
   default     = false
 }
 
-variable "wandb_principal_arn" {
-  description = "Wandb principal that can access the bucket"
+variable "aws_principal_arn" {
+  description = "AWS principal that can access the bucket"
   type        = string
-  default     = "arn:aws:iam::725579432336:role/WandbIntegration"
 }

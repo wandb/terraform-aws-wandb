@@ -1,8 +1,8 @@
 # Weights & Biases Secure Storage Connector Module
 
 This is a Terraform module for provisioning an s3 bucket to be used with Weights and Biases. 
-A KMS key used to encrypt S3 objects will also be created by default. All resources will be granted the necessary 
-permissions to be accessed by the Weights and Biases AWS account role.
+A KMS key used to encrypt S3 objects will also be created by default. To use this bucket with Weights and Biases
+multi-tenant cloud, pass `arn:aws:iam::725579432336:role/WandbIntegration` for the `aws_principal_arn` variable.
 
 ## AWS Services Used
 
@@ -11,6 +11,10 @@ permissions to be accessed by the Weights and Biases AWS account role.
 - Amazon S3
 
 ## How to Use This Module
+
+- Ensure account meets module pre-requisites from above.
+- Create a Terraform configuration that pulls in this module and specifies
+  values of the required variables:
 
 ```hcl
 provider "aws" {
@@ -21,7 +25,9 @@ provider "aws" {
 }
 
 module "secure_storage_connector" {
-  namespace = "<prefix for naming AWS resources>"
+  source            = "wandb/wandb/aws//modules/secure_storage_connector"
+  namespace         = "<prefix for naming AWS resources>"
+  aws_principal_arn = "<aws principal that will access the bucket>"
 }
 ```
 
@@ -44,13 +50,13 @@ module "secure_storage_connector" {
 
 ## Inputs
 
-| Name                                                                                       | Description                                                                                                                                    | Type     | Default                                           | Required |
-|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------|:--------:|
-| <a name="input_namespace"></a> [namespace](#input_namespace)                               | Prefix to use when creating resources.                                                                                                         | `string` | `null`                                            |   yes    |
-| <a name="input_create_kms_key"></a> [create_kms_key](#input_create_kms_key)                | If a KMS key should be created to encrypt S3 storage bucket objects. This can only be used when you set the value of sse_algorithm as aws:kms. | `bool`   | `true`                                            |    no    |
-| <a name="input_deletion_protection"></a> [deletion_protection](#input_deletion_protection) | If the bucket should have deletion protection enabled.                                                                                         | `bool`   | `false`                                           |    no    |
-| <a name="input_sse_algorithm"></a> [sse_algorithm](#input_sse_algorithm)                   | The server-side encryption algorithm to use. Valid values are `AES256` and `aws:kms`                                                           | `string` | `aws:kms`                                         |    no    |
-| <a name="input_wandb_principal_arn"></a> [wandb_principal_arn](#input_wandb_principal_arn) | Wandb principal that can access the bucket                                                                                                     | `string` | `arn:aws:iam::725579432336:role/WandbIntegration` |    no    |
+| Name                                                                                       | Description                                                                                                                                    | Type     | Default   | Required |
+|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------|:--------:|
+| <a name="input_namespace"></a> [namespace](#input_namespace)                               | Prefix to use when creating resources.                                                                                                         | `string` | `null`    |   yes    |
+| <a name="input_create_kms_key"></a> [create_kms_key](#input_create_kms_key)                | If a KMS key should be created to encrypt S3 storage bucket objects. This can only be used when you set the value of sse_algorithm as aws:kms. | `bool`   | `true`    |    no    |
+| <a name="input_deletion_protection"></a> [deletion_protection](#input_deletion_protection) | If the bucket should have deletion protection enabled.                                                                                         | `bool`   | `false`   |    no    |
+| <a name="input_sse_algorithm"></a> [sse_algorithm](#input_sse_algorithm)                   | The server-side encryption algorithm to use. Valid values are `AES256` and `aws:kms`                                                           | `string` | `aws:kms` |    no    |
+| <a name="input_aws_principal_arn"></a> [aws_principal_arn](#input_aws_principal_arn)       | AWS principal that can access the bucket                                                                                                       | `string` | `null`    |   yes    |
 
 ## Outputs
 

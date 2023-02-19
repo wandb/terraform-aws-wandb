@@ -18,7 +18,7 @@ resource "aws_kms_key" "key" {
       {
         "Sid" : "External",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : var.wandb_principal_arn },
+        "Principal" : { "AWS" : var.aws_principal_arn },
         "Action" : [
           # minimum permissions needed for wandb access
           "kms:Decrypt",
@@ -54,7 +54,7 @@ resource "aws_s3_bucket_policy" "s3_policy" {
       {
         "Sid" : "WandbAccountAccess",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : var.wandb_principal_arn },
+        "Principal" : { "AWS" : var.aws_principal_arn },
         "Action" : [
           # minimum permissions needed for wandb access
           "s3:GetObject*",
