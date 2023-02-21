@@ -107,7 +107,7 @@ Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
       "Sid": "WAndBAccountAccess",
       "Effect": "Allow",
       "Principal": { "AWS": "arn:aws:iam::830241207209:root" },
-       "Action" : [
+        "Action" : [
           "s3:GetObject*",
           "s3:GetEncryptionConfiguration",
           "s3:ListBucket",
@@ -116,7 +116,9 @@ Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
           "s3:AbortMultipartUpload",
           "s3:DeleteObject",
           "s3:PutObject",
-          "s3:PutObjectAcl"
+          "s3:GetBucketCORS",
+          "s3:GetBucketLocation",
+          "s3:GetBucketVersioning"
         ],
       "Resource": [
         "arn:aws:s3:::<WANDB_BUCKET>",
