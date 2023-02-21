@@ -51,18 +51,24 @@ purposes. It will require to have the following policy:
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Internal",
-      "Effect": "Allow",
-      "Principal": { "AWS": "<you account id>" },
-      "Action": "kms:*",
-      "Resource": "*"
+      "Sid" : "Internal",
+      "Effect" : "Allow",
+      "Principal" : { "AWS" : "<you account id>" },
+      "Action" : "kms:*",
+      "Resource" : "*"
     },
     {
-      "Sid": "External",
-      "Effect": "Allow",
-      "Principal": { "AWS": "arn:aws:iam::830241207209:root" },
-      "Action": "kms:*",
-      "Resource": "*"
+      "Sid" : "External",
+      "Effect" : "Allow",
+      "Principal" : { "AWS" : "arn:aws:iam::830241207209:root" },
+      "Action" : [
+        "kms:Decrypt",
+        "kms:Describe*",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource" : "*"
     }
   ]
 }
@@ -101,7 +107,17 @@ Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
       "Sid": "WAndBAccountAccess",
       "Effect": "Allow",
       "Principal": { "AWS": "arn:aws:iam::830241207209:root" },
-      "Action": "s3:*",
+       "Action" : [
+          "s3:GetObject*",
+          "s3:GetEncryptionConfiguration",
+          "s3:ListBucket",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions",
+          "s3:AbortMultipartUpload",
+          "s3:DeleteObject",
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ],
       "Resource": [
         "arn:aws:s3:::<WANDB_BUCKET>",
         "arn:aws:s3:::<WANDB_BUCKET>/*"
