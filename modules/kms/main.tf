@@ -16,18 +16,49 @@ resource "aws_kms_key" "key" {
         "Resource" : "*"
       },
       {
-        "Sid" : "Allow use of the key",
+        "Sid" : "Allow use of the key and metadata to the account",
         "Effect" : "Allow",
-        "Principal" : "*"
+        "Principal" : {
+          "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
         "Action" : [
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*",
-          "kms:DescribeKey"
+          "kms:Describe*",
+          "kms:Get*",
+          "kms:List*",
+          "kms:RevokeGrant"
         ],
         "Resource" : "*"
       },
+      {
+        "Sid" : "Allow use for EBS to node groups",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : [
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          ]
+        },
+        "Action" : [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:CreateGrant",
+          "kms:Describe*"
+        ],
+        "Resource" : "*",
+        "Condition" : {
+          "StringEquals" : {
+            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}",
+          },
+          "StringLike" : {
+            "kms:ViaService" : "ec2.*.amazonaws.com",
+          }
+        }
+      }
     ]
   })
 
