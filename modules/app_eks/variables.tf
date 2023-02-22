@@ -18,7 +18,7 @@ variable "cluster_version" {
   type        = string
   default     = "1.21"
 }
- 
+
 variable "cluster_endpoint_public_access" {
   type        = bool
   description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
@@ -52,6 +52,12 @@ variable "bucket_kms_key_arn" {
 variable "kms_key_arn" {
   description = "(Required) The Amazon Resource Name of the KMS key with which EKS secrets will be encrypted."
   type        = string
+}
+
+variable "instance_types" {
+  description = "EC2 Instance type for primary node group."
+  type        = list(string)
+  default     = ["m4.large"]
 }
 
 variable "database_security_group_id" {
@@ -97,4 +103,10 @@ variable "map_users" {
     groups   = list(string)
   }))
   default = []
+}
+
+variable "eks_policy_arns" {
+  description = "Additional IAM policy to apply to the EKS cluster"
+  type        = list(string)
+  default     = []
 }

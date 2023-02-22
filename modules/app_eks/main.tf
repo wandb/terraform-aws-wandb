@@ -14,16 +14,20 @@ data "aws_iam_policy_document" "node" {
   }
 }
 
+locals {
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+  ]
+}
+
 # Configure permissions required for nodes
 resource "aws_iam_role" "node" {
   name               = "${var.namespace}-node"
   assume_role_policy = data.aws_iam_policy_document.node.json
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  ]
+  managed_policy_arns = concat(local.managed_policy_arns, var.eks_policy_arns)
 
   # Policy to access S3
   inline_policy {
@@ -137,7 +141,7 @@ module "eks" {
       desired_capacity = 2,
       max_capacity     = 5,
       min_capacity     = 2,
-      instance_type    = ["m5.xlarge"],
+      instance_types    = var.instance_types,
       iam_role_arn     = aws_iam_role.node.arn
     }
   }
