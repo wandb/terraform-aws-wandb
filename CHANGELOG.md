@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.9.0...v1.10.0) (2023-02-22)
+
+
+### Features
+
+* Force ebs encrypt ([#55](https://github.com/wandb/terraform-aws-wandb/issues/55)) ([d43f8c7](https://github.com/wandb/terraform-aws-wandb/commit/d43f8c7dfb3e971c5548d0f4a54f6aec585986ee))
+
 ## [1.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.8.0...v1.9.0) (2023-02-22)
 
 
