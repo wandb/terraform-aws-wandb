@@ -122,11 +122,10 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
-  instance_types     = var.kubernetes_instance_types
-
-  map_accounts = var.kubernetes_map_accounts
-  map_roles    = var.kubernetes_map_roles
-  map_users    = var.kubernetes_map_users
+  instance_types = var.kubernetes_instance_types
+  map_accounts   = var.kubernetes_map_accounts
+  map_roles      = var.kubernetes_map_roles
+  map_users      = var.kubernetes_map_users
 
   bucket_kms_key_arn   = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
