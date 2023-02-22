@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.8.0...v1.9.0) (2023-02-22)
+
+
+### Features
+
+* Least Access Privilege iam BYOB ([#50](https://github.com/wandb/terraform-aws-wandb/issues/50)) ([3ed0179](https://github.com/wandb/terraform-aws-wandb/commit/3ed01795723ba10b9ce3a7164644694d6a1181f2))
+
 ## [1.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.7.0...v1.8.0) (2023-02-16)
 
 
