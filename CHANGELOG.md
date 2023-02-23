@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.0...v1.10.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* Deploy the aws-ebs-csi-driver so 1.23 k8s upgrade is possible ([#56](https://github.com/wandb/terraform-aws-wandb/issues/56)) ([f6c7ced](https://github.com/wandb/terraform-aws-wandb/commit/f6c7ceda586acaa59948d5078afcf7fa393202d6))
+
 ## [1.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.9.0...v1.10.0) (2023-02-22)
 
 
