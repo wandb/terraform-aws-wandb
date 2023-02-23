@@ -15,6 +15,11 @@ data "aws_iam_policy_document" "node" {
   }
 }
 
+resource "aws_eks_addon" "eks" {
+  cluster_name = var.namespace
+  addon_name   = "aws-ebs-csi-driver"
+}
+
 locals {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
