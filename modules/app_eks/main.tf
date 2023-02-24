@@ -15,6 +15,11 @@ data "aws_iam_policy_document" "node" {
   }
 }
 
+resource "aws_eks_addon" "eks" {
+  cluster_name = var.namespace
+  addon_name   = "aws-ebs-csi-driver"
+}
+
 locals {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
@@ -109,6 +114,24 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+  inline_policy {
+    name = "IMDsv2-policy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect   = "Allow"
+          Action   = "ec2:DescribeInstanceAttribute"
+          Resource = "*"
+        },
+        {
+          Effect   = "Allow"
+          Action   = "ec2:PutInstanceMetadata"
+          Resource = "*"
+        }
+      ]
+    })
+  }
 }
 
 module "eks" {
@@ -150,6 +173,8 @@ module "eks" {
       disk_encrypted         = local.encrypt_ebs_volume,
       disk_kms_key_id        = var.kms_key_arn,
       force_update_version   = local.encrypt_ebs_volume,
+      # IMDsv2
+      metadata_http_tokens                  = "required",
     }
   }
 
@@ -164,7 +189,7 @@ module "eks" {
 resource "aws_security_group" "primary_workers" {
   name = "${var.namespace}-primary-workers"
   description = "EKS primary workers security group."
-  vpc_id = var.network_id
+  vpc_id      = var.network_id
 }
 
 resource "aws_security_group_rule" "lb" {
