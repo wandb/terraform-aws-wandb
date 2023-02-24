@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.10.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.2...v1.10.3) (2023-02-24)
+
+
+### Bug Fixes
+
+* Update metadata hop limit and fix race condition ([#58](https://github.com/wandb/terraform-aws-wandb/issues/58)) ([96e8ddb](https://github.com/wandb/terraform-aws-wandb/commit/96e8ddb8834c6e26bf58d5b2049c1dedd4702df1))
+
 ### [1.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.1...v1.10.2) (2023-02-24)
 
 
