@@ -114,6 +114,8 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+
+  # Enable IMDsv2 
   inline_policy {
     name = "IMDsv2-policy"
     policy = jsonencode({
