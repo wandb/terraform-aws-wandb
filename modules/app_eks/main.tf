@@ -1,6 +1,6 @@
 locals {
-  mysql_port = 3306
-  redis_port = 6379
+  mysql_port         = 3306
+  redis_port         = 6379
   encrypt_ebs_volume = true
 }
 
@@ -174,7 +174,7 @@ module "eks" {
       disk_kms_key_id        = var.kms_key_arn,
       force_update_version   = local.encrypt_ebs_volume,
       # IMDsv2
-      metadata_http_tokens                  = "required",
+      metadata_http_tokens = "required",
     }
   }
 
@@ -187,7 +187,7 @@ module "eks" {
 }
 
 resource "aws_security_group" "primary_workers" {
-  name = "${var.namespace}-primary-workers"
+  name        = "${var.namespace}-primary-workers"
   description = "EKS primary workers security group."
   vpc_id      = var.network_id
 }
