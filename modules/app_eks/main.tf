@@ -18,8 +18,8 @@ data "aws_iam_policy_document" "node" {
 resource "aws_eks_addon" "eks" {
   cluster_name = var.namespace
   addon_name   = "aws-ebs-csi-driver"
-    depends_on = [
-      module.eks
+  depends_on = [
+    module.eks
   ]
 }
 
@@ -120,7 +120,7 @@ resource "aws_iam_role" "node" {
 
   # Enable IMDsv2 
   inline_policy {
-    name = "IMDsv2-policy"
+    name = "${var.namespace}-node-IMDsv2-policy"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
@@ -179,7 +179,7 @@ module "eks" {
       disk_kms_key_id        = var.kms_key_arn,
       force_update_version   = local.encrypt_ebs_volume,
       # IMDsv2
-      metadata_http_tokens = "required",
+      metadata_http_tokens                 = "required",
       metadata_http_put_response_hop_limit = 2
     }
   }
