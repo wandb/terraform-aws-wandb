@@ -176,7 +176,8 @@ module "eks" {
       disk_kms_key_id        = var.kms_key_arn,
       force_update_version   = local.encrypt_ebs_volume,
       # IMDsv2
-      metadata_http_tokens = "required",
+      metadata_http_tokens                 = "required",
+      metadata_http_put_response_hop_limit = 2
     }
   }
 
