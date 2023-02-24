@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.10.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.3...v1.10.4) (2023-02-24)
+
+
+### Bug Fixes
+
+* Update IMDsv2 policy name and format ([#59](https://github.com/wandb/terraform-aws-wandb/issues/59)) ([b1db83f](https://github.com/wandb/terraform-aws-wandb/commit/b1db83f3b71d3a78480fd6b2b6cfeabed71e37fc))
+
 ### [1.10.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.2...v1.10.3) (2023-02-24)
 
 
