@@ -18,6 +18,9 @@ data "aws_iam_policy_document" "node" {
 resource "aws_eks_addon" "eks" {
   cluster_name = var.namespace
   addon_name   = "aws-ebs-csi-driver"
+    depends_on = [
+      module.eks
+  ]
 }
 
 locals {
@@ -177,6 +180,7 @@ module "eks" {
       force_update_version   = local.encrypt_ebs_volume,
       # IMDsv2
       metadata_http_tokens = "required",
+      metadata_http_put_response_hop_limit = 2
     }
   }
 
