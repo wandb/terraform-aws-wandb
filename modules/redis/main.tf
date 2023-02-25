@@ -15,6 +15,7 @@ resource "aws_elasticache_replication_group" "default" {
   automatic_failover_enabled = true
   multi_az_enabled           = true
   maintenance_window         = var.preferred_maintenance_window
+  snapshot_retention_limit   = 1
 
   subnet_group_name  = var.redis_subnet_group_name
   security_group_ids = [aws_security_group.redis.id]
