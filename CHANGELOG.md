@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.10.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.4...v1.10.5) (2023-02-25)
+
+
+### Bug Fixes
+
+* Security ElastiCache.1 ([#60](https://github.com/wandb/terraform-aws-wandb/issues/60)) ([c5d7fe8](https://github.com/wandb/terraform-aws-wandb/commit/c5d7fe81352e32f8e3fcfe364791bf2397be4544))
+
 ### [1.10.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.3...v1.10.4) (2023-02-24)
 
 
