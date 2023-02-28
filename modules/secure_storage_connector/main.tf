@@ -77,3 +77,7 @@ resource "aws_s3_bucket_policy" "s3_policy" {
     ]
   })
 }
+
+data "aws_s3_bucket" "file_storage" {
+  bucket     = module.file_storage.bucket_name
+}
