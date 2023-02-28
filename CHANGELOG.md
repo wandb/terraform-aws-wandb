@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.5...v1.11.0) (2023-02-28)
+
+
+### Features
+
+* Add module for Secure Storage Connector ([#52](https://github.com/wandb/terraform-aws-wandb/issues/52)) ([8f07c99](https://github.com/wandb/terraform-aws-wandb/commit/8f07c9972ff503ee6169060422a00cbbb0d013e3))
+
 ### [1.10.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.4...v1.10.5) (2023-02-25)
 
 
