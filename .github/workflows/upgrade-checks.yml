@@ -31,7 +31,7 @@ jobs:
         run: python scripts/set_variable_default.py eks_cluster_version ${{ steps.eks.outputs.LATEST_VERSION }}
 
       - name: Set EKS Version
-        run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} scripts/app_eks/variables.tf
+        run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} modules/app_eks/variables.tf
 
       - name: Update terraform docs
         uses: terraform-docs/gh-actions@main
@@ -63,7 +63,7 @@ jobs:
 
       - id: mysql
         name: Get latest MySQL version
-        run: python scripts/get_latest_mysql_version.py
+        run: python scripts/get_latest_rds_version.py
 
       - name: Set MySQL Version
         run: python scripts/set_variable_default.py database_engine_version ${{ steps.mysql.outputs.LATEST_VERSION }}
