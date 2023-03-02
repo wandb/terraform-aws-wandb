@@ -17,11 +17,6 @@ variable "engine_version" {
   description = "Version for MySQL Auora to use"
   type        = string
   default     = "5.7"
-
-  validation {
-    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0", "8.0.mysql_aurora.3.02.0"], var.engine_version)
-    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"; \"8.0.mysql_aurora.3.02.0\"."
-  }
 }
 
 variable "create_db_subnet_group" {
