@@ -10,6 +10,44 @@ on:
       - ".github/workflows/upgrade-checks.yml"
 
 jobs:
+  kubernetes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          check-latest: true
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - id: eks
+        name: Get latest Kubernetes version
+        run: python scripts/get_latest_eks_version.py
+
+      - name: Set EKS Version
+        run: python scripts/set_variable_default.py eks_cluster_version ${{ steps.eks.outputs.LATEST_VERSION }}
+
+      - name: Set EKS Version
+        run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} scripts/app_eks/variables.tf
+
+      - name: Update terraform docs
+        uses: terraform-docs/gh-actions@main
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: "fix: Set EKS default version to ${{ steps.eks.outputs.LATEST_VERSION }}"
+          commit-message: "fix: Set EKS default version to ${{ steps.eks.outputs.LATEST_VERSION }}"
+          delete-branch: true
+          branch: ci/upgrade-eks
+
   mysql:
     runs-on: ubuntu-latest
     steps:
