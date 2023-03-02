@@ -23,7 +23,7 @@ variable "use_internal_queue" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.01.0"
+  default     = "8.0.mysql_aurora.3.03.0"
 }
 
 variable "database_instance_class" {
