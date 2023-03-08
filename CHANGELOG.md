@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.11.1...v1.12.0) (2023-03-08)
+
+
+### Features
+
+* DB migration support ([#64](https://github.com/wandb/terraform-aws-wandb/issues/64)) ([d8b9634](https://github.com/wandb/terraform-aws-wandb/commit/d8b96342e2c752783e398c0e3b4a9fc8e87d1eca))
+
 ### [1.11.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.11.0...v1.11.1) (2023-03-06)
 
 
