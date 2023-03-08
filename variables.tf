@@ -44,6 +44,18 @@ variable "database_sort_buffer_size" {
   default     = 262144
 }
 
+variable "database_name" {
+  description = "Specifies the name of the database"
+  type        = string
+  default     = "wandb_local"
+}
+
+variable "database_master_username" {
+  description = "Specifies the master_username value to set for the database"
+  type        = string
+  default     = "wandb"
+}
+
 ##########################################
 # DNS                                    #
 ##########################################

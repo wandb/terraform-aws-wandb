@@ -1,5 +1,5 @@
 output "username" {
-  value = local.master_username
+  value = var.master_username
 }
 
 output "password" {
@@ -7,7 +7,7 @@ output "password" {
 }
 
 output "database_name" {
-  value = local.database_name
+  value = var.database_name
 }
 
 output "endpoint" {
@@ -21,11 +21,11 @@ output "reader_endpoint" {
 }
 
 output "connection_string" {
-  value = "${local.master_username}:${local.master_password}@${module.aurora.cluster_endpoint}/${local.database_name}"
+  value = "${var.master_username}:${local.master_password}@${module.aurora.cluster_endpoint}/${var.database_name}"
 }
 
 output "connection_string_reader" {
-  value = "${local.master_username}:${local.master_password}@${module.aurora.cluster_reader_endpoint}/${local.database_name}"
+  value = "${var.master_username}:${local.master_password}@${module.aurora.cluster_reader_endpoint}/${var.database_name}"
 }
 
 output "security_group_id" {

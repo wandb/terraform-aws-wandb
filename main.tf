@@ -75,6 +75,9 @@ module "database" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
+  database_name   = var.database_name
+  master_username = var.database_master_username
+
   instance_class      = var.database_instance_class
   engine_version      = var.database_engine_version
   snapshot_identifier = var.database_snapshot_identifier

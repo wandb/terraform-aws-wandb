@@ -1,6 +1,4 @@
 locals {
-  database_name   = "wandb_local"
-  master_username = "wandb"
   master_password = random_string.master_password.result
 }
 
@@ -107,13 +105,13 @@ module "aurora" {
 
   snapshot_identifier = var.snapshot_identifier
 
-  database_name = local.database_name
+  database_name = var.database_name
 
   create_security_group = true
   allowed_cidr_blocks   = var.allowed_cidr_blocks
 
   iam_database_authentication_enabled = false
-  master_username                     = local.master_username
+  master_username                     = var.master_username
   master_password                     = local.master_password
   create_random_password              = false
 
