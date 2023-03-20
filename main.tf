@@ -96,7 +96,8 @@ module "database" {
 locals {
   create_certificate = var.public_access && var.acm_certificate_arn == null
 
-  fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
+  fqdn     = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
+  api_fqdn = var.subdomain == null ? "api.${var.domain_name}" : "api.${var.subdomain}.${var.domain_name}"
 }
 
 # Create SSL Ceritifcation if applicable
@@ -107,6 +108,7 @@ module "acm" {
   create_certificate = local.create_certificate
 
   domain_name = var.external_dns ? local.fqdn : var.domain_name
+  subject_alternative_names = [local.api_fqdn]
   zone_id     = var.zone_id
 
   wait_for_validation = true
@@ -159,6 +161,7 @@ module "app_lb" {
   zone_id               = var.zone_id
 
   fqdn                      = local.fqdn
+  api_fqdn                  = local.api_fqdn
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
   target_port               = local.internal_app_port
