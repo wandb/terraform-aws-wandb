@@ -102,38 +102,37 @@ resources that lack official modules.
 Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.24` - you'd need to first update `1.21` to `1.22`, run `terraform apply`, then upgrade to `1.23`, run `tf apply` and finally to `1.24`, run `tf apply`. You will not be able to upgrade directly from `1.21` to `1.24`.
 
 <!-- BEGIN_TF_DOCS -->
-
 ## Requirements
 
-| Name                                                                        | Version |
-| --------------------------------------------------------------------------- | ------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement_terraform)    | ~> 1.0  |
-| <a name="requirement_aws"></a> [aws](#requirement_aws)                      | ~> 3.60 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement_kubernetes) | ~> 2.6  |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.60 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.6 |
 
 ## Providers
 
-| Name                                             | Version |
-| ------------------------------------------------ | ------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 3.60 |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.60 |
 
 ## Modules
 
-| Name                                                                    | Source                        | Version |
-| ----------------------------------------------------------------------- | ----------------------------- | ------- |
-| <a name="module_acm"></a> [acm](#module_acm)                            | terraform-aws-modules/acm/aws | ~> 3.0  |
-| <a name="module_app_eks"></a> [app_eks](#module_app_eks)                | ./modules/app_eks             | n/a     |
-| <a name="module_app_lb"></a> [app_lb](#module_app_lb)                   | ./modules/app_lb              | n/a     |
-| <a name="module_database"></a> [database](#module_database)             | ./modules/database            | n/a     |
-| <a name="module_file_storage"></a> [file_storage](#module_file_storage) | ./modules/file_storage        | n/a     |
-| <a name="module_kms"></a> [kms](#module_kms)                            | ./modules/kms                 | n/a     |
-| <a name="module_networking"></a> [networking](#module_networking)       | ./modules/networking          | n/a     |
-| <a name="module_redis"></a> [redis](#module_redis)                      | ./modules/redis               | n/a     |
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | ~> 3.0 |
+| <a name="module_app_eks"></a> [app\_eks](#module\_app\_eks) | ./modules/app_eks | n/a |
+| <a name="module_app_lb"></a> [app\_lb](#module\_app\_lb) | ./modules/app_lb | n/a |
+| <a name="module_database"></a> [database](#module\_database) | ./modules/database | n/a |
+| <a name="module_file_storage"></a> [file\_storage](#module\_file\_storage) | ./modules/file_storage | n/a |
+| <a name="module_kms"></a> [kms](#module\_kms) | ./modules/kms | n/a |
+| <a name="module_networking"></a> [networking](#module\_networking) | ./modules/networking | n/a |
+| <a name="module_redis"></a> [redis](#module\_redis) | ./modules/redis | n/a |
 
 ## Resources
 
-| Name                                                                                                                   | Type        |
-| ---------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Name | Type |
+|------|------|
 | [aws_s3_bucket.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_sqs_queue.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
 
@@ -184,21 +183,21 @@ Users can update the EKS cluster version to the latest version offered by AWS. T
 | <a name="input_use_internal_queue"></a> [use_internal_queue](#input_use_internal_queue)                                           | n/a                                                                                                                                                                                 | `bool`                                                                                                | `false`                                                    |    no    |
 | <a name="input_zone_id"></a> [zone_id](#input_zone_id)                                                                            | Domain for creating the Weights & Biases subdomain on.                                                                                                                              | `string`                                                                                              | n/a                                                        |   yes    |
 
+
 ## Outputs
 
-| Name                                                                                                                       | Description                                                           |
-| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| <a name="output_bucket_name"></a> [bucket_name](#output_bucket_name)                                                       | n/a                                                                   |
-| <a name="output_bucket_queue_name"></a> [bucket_queue_name](#output_bucket_queue_name)                                     | n/a                                                                   |
-| <a name="output_bucket_region"></a> [bucket_region](#output_bucket_region)                                                 | n/a                                                                   |
-| <a name="output_cluster_id"></a> [cluster_id](#output_cluster_id)                                                          | n/a                                                                   |
-| <a name="output_database_connection_string"></a> [database_connection_string](#output_database_connection_string)          | n/a                                                                   |
-| <a name="output_elasticache_connection_string"></a> [elasticache_connection_string](#output_elasticache_connection_string) | n/a                                                                   |
-| <a name="output_internal_app_port"></a> [internal_app_port](#output_internal_app_port)                                     | n/a                                                                   |
-| <a name="output_kms_key_arn"></a> [kms_key_arn](#output_kms_key_arn)                                                       | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
-| <a name="output_network_id"></a> [network_id](#output_network_id)                                                          | The identity of the VPC in which resources are deployed.              |
-| <a name="output_network_private_subnets"></a> [network_private_subnets](#output_network_private_subnets)                   | The identities of the private subnetworks deployed within the VPC.    |
-| <a name="output_network_public_subnets"></a> [network_public_subnets](#output_network_public_subnets)                      | The identities of the public subnetworks deployed within the VPC.     |
-| <a name="output_url"></a> [url](#output_url)                                                                               | The URL to the W&B application                                        |
-
+| Name | Description |
+|------|-------------|
+| <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | n/a |
+| <a name="output_bucket_queue_name"></a> [bucket\_queue\_name](#output\_bucket\_queue\_name) | n/a |
+| <a name="output_bucket_region"></a> [bucket\_region](#output\_bucket\_region) | n/a |
+| <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | n/a |
+| <a name="output_database_connection_string"></a> [database\_connection\_string](#output\_database\_connection\_string) | n/a |
+| <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
+| <a name="output_internal_app_port"></a> [internal\_app\_port](#output\_internal\_app\_port) | n/a |
+| <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
+| <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The identity of the VPC in which resources are deployed. |
+| <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
+| <a name="output_network_public_subnets"></a> [network\_public\_subnets](#output\_network\_public\_subnets) | The identities of the public subnetworks deployed within the VPC. |
+| <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
 <!-- END_TF_DOCS -->
