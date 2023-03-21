@@ -26,6 +26,11 @@ variable "fqdn" {
   description = "(Required) Fully qualified domain name."
 }
 
+variable "extra_fqdn" {
+  type    = list(string)
+  default = []
+}
+
 variable "load_balancing_scheme" {
   default     = "PRIVATE"
   description = "(Optional) Load Balancing Scheme. Supported values are: \"PRIVATE\"; \"PUBLIC\"."

@@ -91,6 +91,11 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
+variable "extra_fqdn" {
+  type    = list(string)
+  default = []
+}
+
 ##########################################
 # Load Balancer                          #
 ##########################################

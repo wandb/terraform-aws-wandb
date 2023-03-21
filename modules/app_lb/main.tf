@@ -146,3 +146,16 @@ resource "aws_route53_record" "alb" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "extra" {
+  for_each = toset(var.extra_fqdn)
+  zone_id = var.zone_id
+  name    = each.value
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
+}
