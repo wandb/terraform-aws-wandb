@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.12.1...v1.13.0) (2023-03-22)
+
+
+### Features
+
+* Support for extra fqdn ([#67](https://github.com/wandb/terraform-aws-wandb/issues/67)) ([55c1b2c](https://github.com/wandb/terraform-aws-wandb/commit/55c1b2c5781ee7c569609e1fc8f56c6e05e447fb))
+
 ### [1.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.12.0...v1.12.1) (2023-03-22)
 
 
