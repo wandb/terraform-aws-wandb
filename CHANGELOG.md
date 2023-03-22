@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.12.0...v1.12.1) (2023-03-22)
+
+
+### Bug Fixes
+
+* KMS least access privilege ([#68](https://github.com/wandb/terraform-aws-wandb/issues/68)) ([ef6e85a](https://github.com/wandb/terraform-aws-wandb/commit/ef6e85ad5fd8d3818e1e3c2c54d64a2cc92ab7a0))
+
 ## [1.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.11.1...v1.12.0) (2023-03-08)
 
 
