@@ -52,7 +52,7 @@ resource "aws_kms_key_policy" "key_policy" {
       {
         "Sid" : "External",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : "${local.wandb_deployment_node_role_account_arn}" },
+        "Principal" : { "AWS" : "${local.wandb_deployment_account_arn}" },
         "Action" : [
           "kms:Decrypt",
           "kms:Describe*",
