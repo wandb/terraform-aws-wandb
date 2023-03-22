@@ -35,7 +35,10 @@ data "aws_caller_identity" "current" {}
 resource "aws_kms_key" "key" {
   key_usage   = "ENCRYPT_DECRYPT"
   description = "Managed key to encrypt and decrypt storage file"
+}
 
+resource "aws_kms_key_policy" "key_policy" {
+  key_id = aws_kms_key.key.key_id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -44,7 +47,7 @@ resource "aws_kms_key" "key" {
         "Effect" : "Allow",
         "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
         "Action" : "kms:*",
-        "Resource" : "*"
+        "Resource" : aws_kms_key.key.arn
       },
       {
         "Sid" : "External",
@@ -57,7 +60,7 @@ resource "aws_kms_key" "key" {
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*"
         ],
-        "Resource" : "*"
+        "Resource" : aws_kms_key.key.arn
       }
     ]
   })
