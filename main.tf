@@ -106,6 +106,8 @@ module "acm" {
 
   create_certificate = local.create_certificate
 
+  subject_alternative_names = var.extra_fqdn
+
   domain_name = var.external_dns ? local.fqdn : var.domain_name
   zone_id     = var.zone_id
 
@@ -159,6 +161,7 @@ module "app_lb" {
   zone_id               = var.zone_id
 
   fqdn                      = local.fqdn
+  extra_fqdn                = var.extra_fqdn
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
   target_port               = local.internal_app_port
