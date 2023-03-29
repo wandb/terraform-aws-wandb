@@ -75,7 +75,7 @@ purposes. It will require to have the following policy:
 ```
 
 This policy gives access to your internal account, a swell while also providing
-our service account with the requires permissions. Please keep a record of the
+our service account with the required permissions. Please keep a record of the
 KMS ARN as we will need that during the deployment.
 
 ### Creating S3 Bucket
