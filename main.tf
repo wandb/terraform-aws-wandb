@@ -10,7 +10,6 @@ module "kms" {
 locals {
   kms_key_arn         = module.kms.key.arn
   use_external_bucket = var.bucket_name != ""
-
 }
 
 module "file_storage" {
