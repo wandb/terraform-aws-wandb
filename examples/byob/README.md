@@ -55,7 +55,7 @@ purposes. It will require to have the following policy:
       "Effect" : "Allow",
       "Principal" : { "AWS" : "<you account id>" },
       "Action" : "kms:*",
-      "Resource" : "*"
+      "Resource" : "<aws_kms_key.key.arn>"
     },
     {
       "Sid" : "External",
@@ -68,7 +68,7 @@ purposes. It will require to have the following policy:
         "kms:ReEncrypt*",
         "kms:GenerateDataKey*"
       ],
-      "Resource" : "*"
+      "Resource" : "<aws_kms_key.key.arn>"
     }
   ]
 }
