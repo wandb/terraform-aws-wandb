@@ -263,7 +263,7 @@ variable "kubernetes_instance_types" {
  }
 
 variable "eks_policy_arns" {
-  type        = list(string)
+  type        = set(string)
   description = "Additional IAM policy to apply to the EKS cluster"
   default     = []
 }
