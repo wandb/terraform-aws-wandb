@@ -100,19 +100,14 @@ resource "aws_kms_key_policy" "key_policy" {
       {
         "Sid" : "Internal",
         "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : [
-            "${data.aws_caller_identity.current.arn}",
-            "${local.current_account_root_arn}"
-          ]
-        },
+        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
         "Action" : "kms:*",
         "Resource" : aws_kms_key.key.arn
       },
       {
         "Sid" : "External",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : local.final_arns },
+        "Principal" : { "AWS" : "${local.wandb_deployment_account_arn}" },
         "Action" : [
           "kms:Decrypt",
           "kms:Describe*",
