@@ -36,7 +36,7 @@ resource "aws_iam_role" "node" {
   name               = "${var.namespace}-node"
   assume_role_policy = data.aws_iam_policy_document.node.json
 
-  managed_policy_arns = concat(local.managed_policy_arns, var.eks_policy_arns)
+  managed_policy_arns = local.managed_policy_arns
 
   # Policy to access S3
   inline_policy {
@@ -137,6 +137,12 @@ resource "aws_iam_role" "node" {
       ]
     })
   }
+}
+
+resource "aws_iam_role_policy_attachment" "node" {
+    for_each   =  var.eks_policy_arns
+    role       = aws_iam_role.node.name
+    policy_arn = each.value
 }
 
 module "eks" {
