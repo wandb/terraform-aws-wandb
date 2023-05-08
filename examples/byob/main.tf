@@ -30,7 +30,6 @@ locals {
   wandb_deployment_account_arn = "arn:aws:iam::${local.wandb_deployment_account_id}:root"
 }
 
-
 module "secure_storage_connector" {
   source            = "wandb/wandb/aws//modules/secure_storage_connector"
   namespace         = local.namespace
