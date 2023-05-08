@@ -25,7 +25,6 @@ resource "aws_security_group_rule" "https_ingress" {
   protocol         = "tcp"
   description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
   cidr_blocks      = try(each.value,[])
-  # ipv6_cidr_blocks = local.allowed_inbound_ipv6_cidr_chunks[each.key]
   ipv6_cidr_blocks = try(local.allowed_inbound_ipv6_cidr_chunks[each.key], [])
 }
 
@@ -40,7 +39,6 @@ resource "aws_security_group_rule" "http_ingress" {
   protocol         = "tcp"
   description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
   cidr_blocks      = try(each.value,[])
-  # ipv6_cidr_blocks = local.allowed_inbound_ipv6_cidr_chunks[each.key]
   ipv6_cidr_blocks = try(local.allowed_inbound_ipv6_cidr_chunks[each.key], [])
 }
 
