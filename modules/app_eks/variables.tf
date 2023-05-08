@@ -31,8 +31,8 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = []
 }
 
-variable "lb_security_group_inbound_id" {
-  type = string
+variable "lb_security_group_inbound_ids" {
+  type = list(string)
 }
 
 variable "bucket_arn" {

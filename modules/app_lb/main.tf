@@ -3,28 +3,45 @@ locals {
   https_port = 443
 }
 
+locals {
+  allowed_inbound_cidr_chunks = chunklist(var.allowed_inbound_cidr, 29)
+  allowed_inbound_ipv6_cidr_chunks = chunklist(var.allowed_inbound_ipv6_cidr, 29)
+}
+
 resource "aws_security_group" "inbound" {
-  name        = "${var.namespace}-alb-inbound"
+  for_each = { for index, chunk in local.allowed_inbound_cidr_chunks : index => chunk }
+  name        = "${var.namespace}-alb-inbound-${each.key}"
   description = "Allow http(s) traffic to wandb"
   vpc_id      = var.network_id
+}
 
-  ingress {
-    from_port        = local.https_port
-    to_port          = local.https_port
-    protocol         = "tcp"
-    description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
-  }
+resource "aws_security_group_rule" "https_ingress" {
+  for_each = { for index, chunk in local.allowed_inbound_cidr_chunks : index => chunk }
+  security_group_id = aws_security_group.inbound[each.key].id
 
-  ingress {
-    from_port        = local.http_port
-    to_port          = local.http_port
-    protocol         = "tcp"
-    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
-  }
+  type             = "ingress"
+  from_port        = local.https_port
+  to_port          = local.https_port
+  protocol         = "tcp"
+  description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
+  cidr_blocks      = try(each.value,[])
+  # ipv6_cidr_blocks = local.allowed_inbound_ipv6_cidr_chunks[each.key]
+  ipv6_cidr_blocks = try(local.allowed_inbound_ipv6_cidr_chunks[each.key], [])
+}
+
+
+resource "aws_security_group_rule" "http_ingress" {
+  for_each = { for index, chunk in local.allowed_inbound_cidr_chunks : index => chunk }
+  security_group_id = aws_security_group.inbound[each.key].id
+
+  type             = "ingress"
+  from_port        = local.http_port
+  to_port          = local.http_port
+  protocol         = "tcp"
+  description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
+  cidr_blocks      = try(each.value,[])
+  # ipv6_cidr_blocks = local.allowed_inbound_ipv6_cidr_chunks[each.key]
+  ipv6_cidr_blocks = try(local.allowed_inbound_ipv6_cidr_chunks[each.key], [])
 }
 
 resource "aws_security_group" "outbound" {
@@ -42,10 +59,12 @@ resource "aws_security_group" "outbound" {
 }
 
 resource "aws_lb" "alb" {
-  name               = "${var.namespace}-alb"
+  # Force replacement of ALB if the number of SG's changes. 
+  # this allows SG's to be deleted if rules get removed.
+  name               = "${var.namespace}-alb-${length(local.allowed_inbound_cidr_chunks)}"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.inbound.id, aws_security_group.outbound.id]
+  security_groups    = concat([for sg in aws_security_group.inbound : sg.id], [aws_security_group.outbound.id])
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 

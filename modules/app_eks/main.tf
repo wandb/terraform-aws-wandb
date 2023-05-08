@@ -204,11 +204,20 @@ resource "aws_security_group" "primary_workers" {
   vpc_id      = var.network_id
 }
 
+locals {
+  lb_security_group_inbound_map = {
+    for idx, sg_id in var.lb_security_group_inbound_ids :
+    idx => sg_id
+  }
+}
+
 resource "aws_security_group_rule" "lb" {
+  for_each = local.lb_security_group_inbound_map
+
   description              = "Allow container NodePort service to receive load balancer traffic."
   protocol                 = "tcp"
   security_group_id        = aws_security_group.primary_workers.id
-  source_security_group_id = var.lb_security_group_inbound_id
+  source_security_group_id = each.value
   from_port                = var.service_port
   to_port                  = var.service_port
   type                     = "ingress"
