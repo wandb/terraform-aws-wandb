@@ -40,6 +40,10 @@ output "cluster_id" {
   value = module.app_eks.cluster_id
 }
 
+output "cluster_node_role" {
+  value = module.app_eks.node_role
+}
+
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
