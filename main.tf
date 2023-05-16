@@ -26,8 +26,9 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket == "" ? var.bucket_name : module.file_storage.0.bucket_name 
-  bucket_queue_name = !var.use_internal_queue && !local.use_external_bucket ? module.file_storage.0.bucket_queue_name : null
+  is_bucket_set     = var.bucket_name != ""
+  bucket_name       = local.is_bucket_set ? var.bucket_name : module.file_storage.0.bucket_name 
+  bucket_queue_name = var.use_internal_queue && !local.is_bucket_set ? module.file_storage.0.bucket_queue_name : null
 }
 
 data "aws_s3_bucket" "file_storage" {
