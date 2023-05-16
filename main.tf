@@ -8,12 +8,12 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn            = module.kms.key.arn
-  provision_file_storage = var.bucket_name == ""
+  kms_key_arn         = module.kms.key.arn
+  use_external_bucket = var.bucket_name != ""
 }
 
 module "file_storage" {
-  count     = local.provision_file_storage ? 1 : 0
+  count     = var.create_bucket ? 1 : 0
   source    = "./modules/file_storage"
   namespace = var.namespace
 
@@ -26,8 +26,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.provision_file_storage ? module.file_storage.0.bucket_name : var.bucket_name
-  bucket_queue_name = !var.use_internal_queue && local.provision_file_storage ? module.file_storage.0.bucket_queue_name : null
+  bucket_name       = local.use_external_bucket == "" ? var.bucket_name : module.file_storage.0.bucket_name 
+  bucket_queue_name = !var.use_internal_queue && !local.use_external_bucket ? module.file_storage.0.bucket_queue_name : null
 }
 
 data "aws_s3_bucket" "file_storage" {
@@ -132,7 +132,7 @@ module "app_eks" {
   map_roles      = var.kubernetes_map_roles
   map_users      = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
+  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
