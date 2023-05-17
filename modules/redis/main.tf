@@ -8,7 +8,7 @@ resource "aws_elasticache_replication_group" "default" {
   number_cache_clusters         = 2
   port                          = 6379
 
-  node_type            = "cache.t2.medium"
+  node_type            = var.node_type
   parameter_group_name = "default.redis6.x"
   engine_version       = local.redis_version
 

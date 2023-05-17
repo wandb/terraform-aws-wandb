@@ -30,3 +30,8 @@ variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key."
   type        = string
 }
+
+variable "node_type" {
+  description = "The type of the redis node to deploy"
+  type        = string
+}
