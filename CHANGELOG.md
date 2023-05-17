@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.13.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.2...v1.13.3) (2023-05-17)
+
+
+### Bug Fixes
+
+* Always use internal queue ([#81](https://github.com/wandb/terraform-aws-wandb/issues/81)) ([0e878dd](https://github.com/wandb/terraform-aws-wandb/commit/0e878dd9721a5e270a7916934174e67455091221))
+
 ### [1.13.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.1...v1.13.2) (2023-05-16)
 
 
