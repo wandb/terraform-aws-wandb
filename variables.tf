@@ -295,5 +295,5 @@ variable "bucket_kms_key_arn" {
 variable "create_elasticache" {
   type        = bool
   description = "Boolean indicating whether to provision an elasticache instance (true) or not (false)."
-  default     = false
+  default     = true
 }
