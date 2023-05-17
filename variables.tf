@@ -301,4 +301,5 @@ variable "create_elasticache" {
 variable "elasticache_node_type" {
   description = "The type of the redis cache node to deploy"
   type        = string
+  default     = "cache.t2.medium"
 }
