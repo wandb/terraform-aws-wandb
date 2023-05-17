@@ -10,7 +10,7 @@ module "kms" {
 locals {
   kms_key_arn         = module.kms.key.arn
   use_external_bucket = var.bucket_name != ""
-  use_internal_queue  = var.use_external_bucket || var.use_internal_queue
+  use_internal_queue  = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
