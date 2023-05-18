@@ -297,3 +297,9 @@ variable "create_elasticache" {
   description = "Boolean indicating whether to provision an elasticache instance (true) or not (false)."
   default     = true
 }
+
+variable "elasticache_node_type" {
+  description = "The type of the redis cache node to deploy"
+  type        = string
+  default     = "cache.t2.medium"
+}

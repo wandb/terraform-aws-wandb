@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.3...v1.14.0) (2023-05-18)
+
+
+### Features
+
+* Add redis node type as variable ([#84](https://github.com/wandb/terraform-aws-wandb/issues/84)) ([fee5a85](https://github.com/wandb/terraform-aws-wandb/commit/fee5a85e4f7a76226a879e03aeb961587545e8fb))
+
+
+### Bug Fixes
+
+* Create LICENSE ([#79](https://github.com/wandb/terraform-aws-wandb/issues/79)) ([8a074ab](https://github.com/wandb/terraform-aws-wandb/commit/8a074ab46acc28ebdc4d87c704352a2eb0d4242e))
+
+### [1.13.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.2...v1.13.3) (2023-05-17)
+
+
+### Bug Fixes
+
+* Always use internal queue ([#81](https://github.com/wandb/terraform-aws-wandb/issues/81)) ([0e878dd](https://github.com/wandb/terraform-aws-wandb/commit/0e878dd9721a5e270a7916934174e67455091221))
+
+### [1.13.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.1...v1.13.2) (2023-05-16)
+
+
+### Bug Fixes
+
+* Bucket creation ([#80](https://github.com/wandb/terraform-aws-wandb/issues/80)) ([6a2be55](https://github.com/wandb/terraform-aws-wandb/commit/6a2be551765d6c43cc92ac849a112e7adaf7b5b6))
+
 ### [1.13.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.0...v1.13.1) (2023-05-16)
 
 
