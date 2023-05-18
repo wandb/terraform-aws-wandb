@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.14.0...v1.14.1) (2023-05-18)
+
+
+### Bug Fixes
+
+* Bucket creation ([#83](https://github.com/wandb/terraform-aws-wandb/issues/83)) ([98baa19](https://github.com/wandb/terraform-aws-wandb/commit/98baa190007ed9c97f31892c4ecb30c4a1d8015f))
+
 ## [1.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.13.3...v1.14.0) (2023-05-18)
 
 
