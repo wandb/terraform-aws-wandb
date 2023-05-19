@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.14.1...v1.15.0) (2023-05-19)
+
+
+### Features
+
+* Output cluster node role ([#78](https://github.com/wandb/terraform-aws-wandb/issues/78)) ([248e44d](https://github.com/wandb/terraform-aws-wandb/commit/248e44df548611e2be3d09d55ff8dae7c82a7729))
+
 ### [1.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.14.0...v1.14.1) (2023-05-18)
 
 
