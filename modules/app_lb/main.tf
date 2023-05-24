@@ -148,7 +148,7 @@ resource "aws_route53_record" "alb" {
 }
 
 resource "aws_route53_record" "extra" {
-  for_each = toset(var.extra_fqdn)
+  for_each = distinct(var.extra_fqdn)
   zone_id = var.zone_id
   name    = each.value
   type    = "A"
