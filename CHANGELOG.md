@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.0...v1.15.1) (2023-05-26)
+
+
+### Bug Fixes
+
+* ToSet required here ([#86](https://github.com/wandb/terraform-aws-wandb/issues/86)) ([0638e75](https://github.com/wandb/terraform-aws-wandb/commit/0638e75b78b28317c9e13576dd9d235608d17515))
+
 ## [1.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.14.1...v1.15.0) (2023-05-19)
 
 
