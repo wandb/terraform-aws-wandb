@@ -88,8 +88,11 @@ Lastly, you'll need to create the S3 bucket. Make sure to enable CORS access. Yo
 <CORSRule>
     <AllowedOrigin>*</AllowedOrigin>
     <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
     <AllowedMethod>PUT</AllowedMethod>
     <AllowedHeader>*</AllowedHeader>
+    <ExposeHeader>ETag</ExposeHeader>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
 </CORSRule>
 </CORSConfiguration>
 ```
