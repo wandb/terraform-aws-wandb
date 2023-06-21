@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.3...v1.15.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* Put rules for inbound HTTP/HTTPS into their own security groups ([#93](https://github.com/wandb/terraform-aws-wandb/issues/93)) ([66c8e7d](https://github.com/wandb/terraform-aws-wandb/commit/66c8e7d6061b7f5f92cae0f559c8b3fc51b122e2))
+
 ### [1.15.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.2...v1.15.3) (2023-06-21)
 
 
