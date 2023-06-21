@@ -14,8 +14,8 @@ locals {
 // -> george.scott@wandb.com :: 2023-06-20
 ////////////////////////////////////////////////////////////////////////////////////////////
 resource "aws_security_group" "inbound-http" {
-  name        = "${var.namespace}-alb-inbound"
-  description = "Allow http(s) traffic to wandb"
+  name        = "${var.namespace}-alb-inbound-http"
+  description = "Allow http traffic to wandb"
   vpc_id      = var.network_id
 
  ingress {
@@ -29,8 +29,8 @@ resource "aws_security_group" "inbound-http" {
 }
 
 resource "aws_security_group" "inbound-https" {
-  name        = "${var.namespace}-alb-inbound"
-  description = "Allow http(s) traffic to wandb"
+  name        = "${var.namespace}-alb-inbound-https"
+  description = "Allow https traffic to wandb"
   vpc_id      = var.network_id
 
   ingress {
