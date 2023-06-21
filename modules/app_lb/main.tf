@@ -3,9 +3,34 @@ locals {
   https_port = 443
 }
 
-resource "aws_security_group" "inbound" {
-  name        = "${var.namespace}-alb-inbound"
-  description = "Allow http(s) traffic to wandb"
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// the following security group definitions are created to handle a situation where 
+// we need to assign a large number of ips to a SG, such as is the case in 
+// https://wandb.atlassian.net/browse/WB-14096.
+// althought the quota for max # of security group rules per security group has been raised
+// to 100 as of 2023-06-20, if we don't separate HTTP/HTTPS, the sum number of rules
+// can easily exceed 100. 
+// -> george.scott@wandb.com :: 2023-06-20
+////////////////////////////////////////////////////////////////////////////////////////////
+resource "aws_security_group" "inbound-http" {
+  name        = "${var.namespace}-alb-inbound-http"
+  description = "Allow http traffic to wandb"
+  vpc_id      = var.network_id
+
+ ingress {
+    from_port        = local.http_port
+    to_port          = local.http_port
+    protocol         = "tcp"
+    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
+    cidr_blocks      = var.allowed_inbound_cidr
+    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
+  }
+}
+
+resource "aws_security_group" "inbound-https" {
+  name        = "${var.namespace}-alb-inbound-https"
+  description = "Allow https traffic to wandb"
   vpc_id      = var.network_id
 
   ingress {
@@ -16,16 +41,9 @@ resource "aws_security_group" "inbound" {
     cidr_blocks      = var.allowed_inbound_cidr
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
-
-  ingress {
-    from_port        = local.http_port
-    to_port          = local.http_port
-    protocol         = "tcp"
-    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
-  }
 }
+
+
 
 resource "aws_security_group" "outbound" {
   name        = "${var.namespace}-alb-outbound"
@@ -45,7 +63,7 @@ resource "aws_lb" "alb" {
   name               = "${var.namespace}-alb"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.inbound.id, aws_security_group.outbound.id]
+  security_groups    = [aws_security_group.aws_security_group.inbound-https.id, aws_security_group.inbound-http.id, aws_security_group.outbound.id]
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 
