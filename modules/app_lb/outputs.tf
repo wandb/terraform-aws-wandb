@@ -4,7 +4,7 @@ output "dns_name" {
 
 
 output "inbound_security_group_ids" {
-  value = tolist([aws_security_group.inbound-http.id, aws_security_group.inbound-https.id])
+  value = tolist([aws_security_group.inbound_http.id, aws_security_group.inbound_https.id])
 }
 
 
@@ -14,12 +14,12 @@ output "lb_arn" {
 
 
 output "security_group_inbound_http_id" {
-  value = aws_security_group.inbound-http.id
+  value = aws_security_group.inbound_http.id
 }
 
 
 output "security_group_inbound_https_id" {
-  value = aws_security_group.inbound-https.id
+  value = aws_security_group.inbound_https.id
 }
 
 

@@ -13,8 +13,8 @@ locals {
 // can easily exceed 100. 
 // -> george.scott@wandb.com :: 2023-06-20
 ////////////////////////////////////////////////////////////////////////////////////////////
-resource "aws_security_group" "inbound-http" {
-  name        = "${var.namespace}-alb-inbound-http"
+resource "aws_security_group" "inbound_http" {
+  name        = "${var.namespace}-alb-inbound_http"
   description = "Allow http traffic to wandb"
   vpc_id      = var.network_id
 
@@ -28,8 +28,8 @@ resource "aws_security_group" "inbound-http" {
   }
 }
 
-resource "aws_security_group" "inbound-https" {
-  name        = "${var.namespace}-alb-inbound-https"
+resource "aws_security_group" "inbound_https" {
+  name        = "${var.namespace}-alb-inbound_https"
   description = "Allow https traffic to wandb"
   vpc_id      = var.network_id
 
@@ -63,7 +63,7 @@ resource "aws_lb" "alb" {
   name               = "${var.namespace}-alb"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.inbound-https.id, aws_security_group.inbound-http.id, aws_security_group.outbound.id]
+  security_groups    = [aws_security_group.inbound_https.id, aws_security_group.inbound_http.id, aws_security_group.outbound.id]
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 
