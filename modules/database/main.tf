@@ -60,8 +60,6 @@ resource "aws_db_parameter_group" "default" {
     value = "128"
   }
 
-  innodb_lru_scan_depth = 128
-
   lifecycle {
     ignore_changes = [description]
   }
