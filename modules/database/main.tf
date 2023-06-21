@@ -16,6 +16,7 @@ locals {
   parameter_cluster_name = "${var.namespace}-aurora-${local.engine_version_tag}-cluster-parameter-group"
 }
 
+#https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html#AuroraMySQL.Reference.Parameters.Instance
 resource "aws_db_parameter_group" "default" {
   name        = local.parameter_group_name
   family      = local.parameter_family
@@ -54,11 +55,19 @@ resource "aws_db_parameter_group" "default" {
     value = var.sort_buffer_size
   }
 
+  parameter {
+    name  = "innodb_lru_scan_depth"
+    value = "128"
+  }
+
+  innodb_lru_scan_depth = 128
+
   lifecycle {
     ignore_changes = [description]
   }
 }
 
+# https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html#AuroraMySQL.Reference.Parameters.Cluster
 resource "aws_rds_cluster_parameter_group" "default" {
   name        = local.parameter_cluster_name
   family      = local.parameter_family
@@ -73,6 +82,12 @@ resource "aws_rds_cluster_parameter_group" "default" {
   parameter {
     name         = "innodb_online_alter_log_max_size"
     value        = "268435456"
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name         = "binlog_row_image"
+    value        = "minimal"
     apply_method = "pending-reboot"
   }
 
