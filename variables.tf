@@ -113,7 +113,8 @@ variable "acm_certificate_arn" {
 
 variable "allowed_inbound_cidr" {
   type        = list(string)
-  default     = []
+  default     = ["0.0.0.0/0"]
+  nullable    = false
   description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
@@ -260,7 +261,7 @@ variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m4.large"]
- }
+}
 
 variable "eks_policy_arns" {
   type        = list(string)

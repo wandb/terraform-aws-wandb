@@ -18,7 +18,7 @@ resource "aws_security_group" "inbound-http" {
   description = "Allow http traffic to wandb"
   vpc_id      = var.network_id
 
- ingress {
+  ingress {
     from_port        = local.http_port
     to_port          = local.http_port
     protocol         = "tcp"
@@ -63,7 +63,7 @@ resource "aws_lb" "alb" {
   name               = "${var.namespace}-alb"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.aws_security_group.inbound-https.id, aws_security_group.inbound-http.id, aws_security_group.outbound.id]
+  security_groups    = [aws_security_group.inbound-https.id, aws_security_group.inbound-http.id, aws_security_group.outbound.id]
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 
@@ -167,9 +167,9 @@ resource "aws_route53_record" "alb" {
 
 resource "aws_route53_record" "extra" {
   for_each = toset(var.extra_fqdn)
-  zone_id = var.zone_id
-  name    = each.value
-  type    = "A"
+  zone_id  = var.zone_id
+  name     = each.value
+  type     = "A"
 
   alias {
     name                   = aws_lb.alb.dns_name
