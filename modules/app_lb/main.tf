@@ -6,11 +6,7 @@ locals {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // the following security group definitions are created to handle a situation where 
-// we need to assign a large number of ips to a SG, such as is the case in 
-// https://wandb.atlassian.net/browse/WB-14096.
-// althought the quota for max # of security group rules per security group has been raised
-// to 100 as of 2023-06-20, if we don't separate HTTP/HTTPS, the sum number of rules
-// can easily exceed 100. 
+// we need to assign a large number of rules to a SG. Dependent on AWS quotas.
 // -> george.scott@wandb.com :: 2023-06-20
 ////////////////////////////////////////////////////////////////////////////////////////////
 resource "aws_security_group" "inbound-http" {
