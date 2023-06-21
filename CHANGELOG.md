@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.1...v1.15.2) (2023-06-21)
+
+
+### Bug Fixes
+
+* Separate HTTP and HTTPS rule creation ([#90](https://github.com/wandb/terraform-aws-wandb/issues/90)) ([98b0159](https://github.com/wandb/terraform-aws-wandb/commit/98b0159d30e204dfa3c9345c0ea3777baa0361d0))
+
 ### [1.15.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.0...v1.15.1) (2023-05-26)
 
 
