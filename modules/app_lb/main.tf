@@ -10,9 +10,10 @@ locals {
 // -> george.scott@wandb.com :: 2023-06-20
 ////////////////////////////////////////////////////////////////////////////////////////////
 resource "aws_security_group" "inbound_http" {
-  name        = "${var.namespace}-alb-inbound_http"
-  description = "Allow http traffic to wandb"
-  vpc_id      = var.network_id
+  name                   = "${var.namespace}-alb-inbound_http"
+  description            = "Allow http traffic to wandb"
+  revoke_rules_on_delete = true
+  vpc_id                 = var.network_id
 
   ingress {
     from_port        = local.http_port
@@ -22,12 +23,21 @@ resource "aws_security_group" "inbound_http" {
     cidr_blocks      = var.allowed_inbound_cidr
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  timeouts {
+    delete = "3m"
+  }
 }
 
 resource "aws_security_group" "inbound_https" {
-  name        = "${var.namespace}-alb-inbound_https"
-  description = "Allow https traffic to wandb"
-  vpc_id      = var.network_id
+  name                   = "${var.namespace}-alb-inbound_https"
+  description            = "Allow https traffic to wandb"
+  revoke_rules_on_delete = true
+  vpc_id                 = var.network_id
 
   ingress {
     from_port        = local.https_port
@@ -36,6 +46,14 @@ resource "aws_security_group" "inbound_https" {
     description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
     cidr_blocks      = var.allowed_inbound_cidr
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  timeouts {
+    delete = "3m"
   }
 }
 
