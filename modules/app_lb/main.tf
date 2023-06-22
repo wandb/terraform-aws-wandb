@@ -29,7 +29,7 @@ resource "aws_security_group" "inbound_http" {
   }
 
   timeouts {
-    delete = "2m"
+    delete = "3m"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_security_group" "inbound_https" {
   }
 
   timeouts {
-    delete = "2m"
+    delete = "3m"
   }
 }
 
