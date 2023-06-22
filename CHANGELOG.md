@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.4...v1.15.5) (2023-06-22)
+
+
+### Bug Fixes
+
+* Add lifecycle rules to SG definitions to allow SG deletion ([#94](https://github.com/wandb/terraform-aws-wandb/issues/94)) ([3000b24](https://github.com/wandb/terraform-aws-wandb/commit/3000b244e150870e89db651d8f16ef34fe0a262a))
+
 ### [1.15.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.3...v1.15.4) (2023-06-21)
 
 
