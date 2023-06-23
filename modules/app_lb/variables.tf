@@ -43,15 +43,17 @@ variable "load_balancing_scheme" {
 }
 
 variable "allowed_inbound_cidr" {
+  default     = [ "0.0.0.0/0" ]
+  description = "Allow HTTPS traffic to W&B. Defaults to allow all."
+  nullable = false
   type        = list(string)
-  default     = []
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
+  default     = [ "::/0" ]
+  description = "Allow HTTPS traffic to W&B. Defaults to allow all."
+  nullable = false
   type        = list(string)
-  default     = []
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "network_id" {
