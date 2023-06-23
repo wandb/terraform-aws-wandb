@@ -25,12 +25,12 @@ module "wandb_infra" {
   database_snapshot_identifier = var.database_snapshot_identifier
   database_sort_buffer_size    = var.database_sort_buffer_size
 
-  allowed_inbound_cidr      = ["0.0.0.0/0"]
-  allowed_inbound_ipv6_cidr = ["::/0"]
+  allowed_inbound_cidr      = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
 
   eks_cluster_version            = "1.24"
   kubernetes_public_access       = true
-  kubernetes_public_access_cidrs = ["0.0.0.0/0"]
+  kubernetes_public_access_cidrs = var.allowed_inbound_cidr
 
   domain_name = var.domain_name
   zone_id     = var.zone_id
