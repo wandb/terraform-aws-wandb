@@ -7,38 +7,12 @@ resource "aws_security_group" "inbound" {
   name        = "${var.namespace}-alb-inbound"
   description = "Allow http(s) traffic to wandb"
   vpc_id      = var.network_id
-
-  ingress {
-    from_port        = local.https_port
-    to_port          = local.https_port
-    protocol         = "tcp"
-    description      = "Allow HTTPS (port ${local.https_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
-  }
-
-  ingress {
-    from_port        = local.http_port
-    to_port          = local.http_port
-    protocol         = "tcp"
-    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
-  }
 }
 
 resource "aws_security_group" "outbound" {
   name        = "${var.namespace}-alb-outbound"
   vpc_id      = var.network_id
   description = "Allow all traffic outbound from W&B"
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
 }
 
 resource "aws_lb" "alb" {
