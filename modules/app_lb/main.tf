@@ -24,10 +24,6 @@ resource "aws_security_group" "inbound_http" {
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   timeouts {
     delete = "3m"
   }
@@ -46,10 +42,6 @@ resource "aws_security_group" "inbound_https" {
     description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 
   timeouts {
