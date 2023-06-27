@@ -1,33 +1,17 @@
-variable "bucket_arn" {
-  type = string
+variable "namespace" {
+  type        = string
+  description = "(Required) The name prefix for all resources created."
 }
 
-
-variable "bucket_kms_key_arn" {
-  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+variable "network_id" {
+  description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
   type        = string
 }
 
-
-variable "bucket_sqs_queue_arn" {
-  type    = string
-  default = null
-}
-
-
-variable "cluster_endpoint_public_access" {
-  type        = bool
-  description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = true
-}
-
-
-variable "cluster_endpoint_public_access_cidrs" {
-  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
+variable "network_private_subnets" {
+  description = "(Required) A list of the identities of the private subnetworks in which the MySQL Aurora instances will be deployed."
   type        = list(string)
-  default     = []
 }
-
 
 variable "cluster_version" {
   description = "Indicates AWS EKS cluster version"
@@ -35,30 +19,40 @@ variable "cluster_version" {
   default     = "1.21"
 }
 
-
-variable "create_elasticache_security_group" {
-  type    = bool
-  default = false
+variable "cluster_endpoint_public_access" {
+  type        = bool
+  description = "(Optional) Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  default     = true
 }
 
-
-variable "database_security_group_id" {
-  type = string
-}
-
-
-variable "eks_policy_arns" {
-  description = "Additional IAM policy to apply to the EKS cluster"
-  type        = set(string)
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
+  type        = list(string)
   default     = []
 }
 
+variable "lb_security_group_inbound_id" {
+  type = string
+}
 
-variable "elasticache_security_group_id" {
+variable "bucket_arn" {
+  type = string
+}
+
+variable "bucket_sqs_queue_arn" {
   type    = string
   default = null
 }
 
+variable "bucket_kms_key_arn" {
+  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  type        = string
+}
+
+variable "kms_key_arn" {
+  description = "(Required) The Amazon Resource Name of the KMS key with which EKS secrets will be encrypted."
+  type        = string
+}
 
 variable "instance_types" {
   description = "EC2 Instance type for primary node group."
@@ -66,26 +60,30 @@ variable "instance_types" {
   default     = ["m4.large"]
 }
 
-
-variable "kms_key_arn" {
-  description = "(Required) The Amazon Resource Name of the KMS key with which EKS secrets will be encrypted."
-  type        = string
+variable "database_security_group_id" {
+  type = string
 }
 
-
-variable "lb_inbound_security_group_ids" {
-  description = "IDs of security groups to be associated with the loadbalancer."
-  nullable    = false
-  type        = list(string)
+variable "elasticache_security_group_id" {
+  type    = string
+  default = null
 }
 
+variable "create_elasticache_security_group" {
+  type    = bool
+  default = false
+}
+
+variable "service_port" {
+  type    = number
+  default = 32543
+}
 
 variable "map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
   type        = list(string)
   default     = []
 }
-
 
 variable "map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
@@ -97,7 +95,6 @@ variable "map_roles" {
   default = []
 }
 
-
 variable "map_users" {
   description = "Additional IAM users to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
   type = list(object({
@@ -108,28 +105,8 @@ variable "map_users" {
   default = []
 }
 
-
-variable "namespace" {
-  type        = string
-  description = "(Required) The name prefix for all resources created."
+variable "eks_policy_arns" {
+  description = "Additional IAM policy to apply to the EKS cluster"
+  type        = set(string)
+  default     = []
 }
-
-
-variable "network_id" {
-  description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
-  type        = string
-}
-
-
-variable "network_private_subnets" {
-  description = "(Required) A list of the identities of the private subnetworks in which the MySQL Aurora instances will be deployed."
-  type        = list(string)
-}
-
-
-variable "service_port" {
-  type    = number
-  default = 32543
-}
-
-
