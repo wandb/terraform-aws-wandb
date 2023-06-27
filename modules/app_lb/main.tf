@@ -3,10 +3,41 @@ locals {
   https_port = 443
 }
 
-resource "aws_security_group" "inbound" {
-  name        = "${var.namespace}-alb-inbound"
-  description = "Allow http(s) traffic to wandb"
-  vpc_id      = var.network_id
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// the following security group definitions are created to handle a situation where 
+// we need to assign a large number of rules to a SG. Dependent on AWS quotas.
+// -> george.scott@wandb.com :: 2023-06-20
+////////////////////////////////////////////////////////////////////////////////////////////
+resource "aws_security_group" "inbound_http" {
+  name                   = "${var.namespace}-alb-inbound_http"
+  description            = "Allow http traffic to wandb"
+  revoke_rules_on_delete = true
+  vpc_id                 = var.network_id
+
+  ingress {
+    from_port        = local.http_port
+    to_port          = local.http_port
+    protocol         = "tcp"
+    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
+    cidr_blocks      = var.allowed_inbound_cidr
+    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  timeouts {
+    delete = "3m"
+  }
+}
+
+resource "aws_security_group" "inbound_https" {
+  name                   = "${var.namespace}-alb-inbound_https"
+  description            = "Allow https traffic to wandb"
+  revoke_rules_on_delete = true
+  vpc_id                 = var.network_id
 
   ingress {
     from_port        = local.https_port
@@ -17,15 +48,16 @@ resource "aws_security_group" "inbound" {
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
 
-  ingress {
-    from_port        = local.http_port
-    to_port          = local.http_port
-    protocol         = "tcp"
-    description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  timeouts {
+    delete = "3m"
   }
 }
+
+
 
 resource "aws_security_group" "outbound" {
   name        = "${var.namespace}-alb-outbound"
@@ -45,7 +77,7 @@ resource "aws_lb" "alb" {
   name               = "${var.namespace}-alb"
   internal           = (var.load_balancing_scheme == "PRIVATE")
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.inbound.id, aws_security_group.outbound.id]
+  security_groups    = [aws_security_group.inbound_https.id, aws_security_group.inbound_http.id, aws_security_group.outbound.id]
   subnets            = var.load_balancing_scheme == "PRIVATE" ? var.network_private_subnets : var.network_public_subnets
 }
 
@@ -149,9 +181,9 @@ resource "aws_route53_record" "alb" {
 
 resource "aws_route53_record" "extra" {
   for_each = toset(var.extra_fqdn)
-  zone_id = var.zone_id
-  name    = each.value
-  type    = "A"
+  zone_id  = var.zone_id
+  name     = each.value
+  type     = "A"
 
   alias {
     name                   = aws_lb.alb.dns_name

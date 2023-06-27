@@ -41,7 +41,7 @@ variable "database_snapshot_identifier" {
 variable "database_sort_buffer_size" {
   description = "Specifies the sort_buffer_size value to set for the database"
   type        = number
-  default     = 262144
+  default     = 67108864
 }
 
 variable "database_name" {
@@ -116,6 +116,10 @@ variable "allowed_inbound_cidr" {
   description = "Allow HTTPS traffic to W&B. Defaults to allow all."
   nullable = false
   type        = list(string)
+  default     = ["0.0.0.0/0"]
+  nullable    = false
+  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
+
 }
 
 variable "allowed_inbound_ipv6_cidr" {
@@ -262,7 +266,7 @@ variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m4.large"]
- }
+}
 
 variable "eks_policy_arns" {
   type        = list(string)

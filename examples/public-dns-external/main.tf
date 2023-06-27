@@ -28,6 +28,7 @@ module "wandb_infra" {
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
 
+
   eks_cluster_version            = "1.24"
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = [ "0.0.0.0/0" ]
@@ -66,6 +67,7 @@ module "wandb_app" {
   bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
+  redis_connection_string    = "redis://${module.wandb_infra.elasticache_connection_string}?tls=true&ttlInSeconds=604800"
 
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
