@@ -205,11 +205,10 @@ resource "aws_security_group" "primary_workers" {
 }
 
 resource "aws_security_group_rule" "lb" {
-  count                    = length(var.lb_inbound_security_group_ids)
   description              = "Allow container NodePort service to receive load balancer traffic."
   protocol                 = "tcp"
   security_group_id        = aws_security_group.primary_workers.id
-  source_security_group_id = var.lb_inbound_security_group_ids[count.index]
+  source_security_group_id = var.lb_security_group_inbound_id
   from_port                = var.service_port
   to_port                  = var.service_port
   type                     = "ingress"

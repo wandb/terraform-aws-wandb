@@ -140,7 +140,7 @@ module "app_eks" {
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
 
-  lb_inbound_security_group_ids = module.app_lb.inbound_security_group_ids
+  lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
   database_security_group_id    = module.database.security_group_id
 
   create_elasticache_security_group = var.create_elasticache

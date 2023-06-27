@@ -43,15 +43,15 @@ variable "load_balancing_scheme" {
 }
 
 variable "allowed_inbound_cidr" {
+  description = "CIDRs allowed to access wandb-server."
   type        = list(string)
-  default     = []
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
+  nullable    = false
 }
 
 variable "allowed_inbound_ipv6_cidr" {
+  description = "CIDRs allowed to access wandb-server."
   type        = list(string)
-  default     = []
-  description = "(Optional) Allow HTTP(S) traffic to W&B. Defaults to no connections."
+  nullable    = false
 }
 
 variable "network_id" {
