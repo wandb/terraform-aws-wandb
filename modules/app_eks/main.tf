@@ -140,9 +140,9 @@ resource "aws_iam_role" "node" {
 }
 
 resource "aws_iam_role_policy_attachment" "node" {
-    for_each   =  var.eks_policy_arns
-    role       = aws_iam_role.node.name
-    policy_arn = each.value
+  for_each   = var.eks_policy_arns
+  role       = aws_iam_role.node.name
+  policy_arn = each.value
 }
 
 module "eks" {

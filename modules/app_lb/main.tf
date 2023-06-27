@@ -22,8 +22,8 @@ resource "aws_security_group" "inbound" {
     to_port          = local.http_port
     protocol         = "tcp"
     description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
-    ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 }
 
@@ -149,9 +149,9 @@ resource "aws_route53_record" "alb" {
 
 resource "aws_route53_record" "extra" {
   for_each = toset(var.extra_fqdn)
-  zone_id = var.zone_id
-  name    = each.value
-  type    = "A"
+  zone_id  = var.zone_id
+  name     = each.value
+  type     = "A"
 
   alias {
     name                   = aws_lb.alb.dns_name

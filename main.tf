@@ -27,8 +27,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name 
-  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name 
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
 data "aws_s3_bucket" "file_storage" {
@@ -186,7 +186,7 @@ module "redis" {
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
-  node_type              = var.elasticache_node_type
+  node_type               = var.elasticache_node_type
 
   kms_key_arn = local.kms_key_arn
 }
