@@ -20,7 +20,7 @@ resource "aws_security_group" "inbound_http" {
     to_port          = local.http_port
     protocol         = "tcp"
     description      = "Allow HTTP (port ${local.http_port}) traffic inbound to W&B LB"
-    cidr_blocks      = var.allowed_inbound_cidr
+    cidr_blocks      = [ "0.0.0.0/0" ]
     ipv6_cidr_blocks = var.allowed_inbound_ipv6_cidr
   }
   timeouts {
