@@ -80,7 +80,7 @@ module "wandb_app" {
 
 output "bucket_name" {
   value = module.wandb_infra.bucket_name
-}
+}g
 
 output "bucket_queue_name" {
   value = module.wandb_infra.bucket_queue_name
