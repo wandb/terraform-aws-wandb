@@ -140,8 +140,8 @@ module "app_eks" {
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
 
-  lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
-  database_security_group_id   = module.database.security_group_id
+  lb_inbound_security_group_ids = module.app_lb.inbound_security_group_ids
+  database_security_group_id    = module.database.security_group_id
 
   create_elasticache_security_group = var.create_elasticache
   elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null

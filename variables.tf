@@ -41,7 +41,7 @@ variable "database_snapshot_identifier" {
 variable "database_sort_buffer_size" {
   description = "Specifies the sort_buffer_size value to set for the database"
   type        = number
-  default     = 262144
+  default     = 67108864
 }
 
 variable "database_name" {
@@ -113,14 +113,14 @@ variable "acm_certificate_arn" {
 
 variable "allowed_inbound_cidr" {
   description = "CIDRs allowed to access wandb-server."
-  type        = list(string)
   nullable    = false
+  type        = list(string)
 }
 
 variable "allowed_inbound_ipv6_cidr" {
   description = "CIDRs allowed to access wandb-server."
-  type        = list(string)
   nullable    = false
+  type        = list(string)
 }
 
 
