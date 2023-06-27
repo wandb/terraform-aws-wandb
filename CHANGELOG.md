@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.5...v1.15.6) (2023-06-27)
+
+
+### Bug Fixes
+
+* Set SG rules for HTTPS only ([#96](https://github.com/wandb/terraform-aws-wandb/issues/96)) ([d842560](https://github.com/wandb/terraform-aws-wandb/commit/d8425608bc1f03d3e7c1cf0cbb1e914c8f90587e))
+
 ### [1.15.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.4...v1.15.5) (2023-06-22)
 
 
