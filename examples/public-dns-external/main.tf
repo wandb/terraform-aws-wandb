@@ -31,7 +31,7 @@ module "wandb_infra" {
 
   eks_cluster_version            = "1.24"
   kubernetes_public_access       = true
-  kubernetes_public_access_cidrs = [ "0.0.0.0/0" ]
+  kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
   domain_name = var.domain_name
   zone_id     = var.zone_id
