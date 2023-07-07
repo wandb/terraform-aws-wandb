@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.7](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.6...v1.15.7) (2023-07-07)
+
+
+### Bug Fixes
+
+* Add new AWS Aurora RDS config parameters ([#91](https://github.com/wandb/terraform-aws-wandb/issues/91)) ([9e47438](https://github.com/wandb/terraform-aws-wandb/commit/9e47438c0f9981a0a6ca1e3f445df6f7a6a342eb))
+
 ### [1.15.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.5...v1.15.6) (2023-06-27)
 
 
