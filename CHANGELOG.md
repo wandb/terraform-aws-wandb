@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.15.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.5...v1.15.6) (2023-06-27)
+
+
+### Bug Fixes
+
+* Set SG rules for HTTPS only ([#96](https://github.com/wandb/terraform-aws-wandb/issues/96)) ([d842560](https://github.com/wandb/terraform-aws-wandb/commit/d8425608bc1f03d3e7c1cf0cbb1e914c8f90587e))
+
+### [1.15.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.4...v1.15.5) (2023-06-22)
+
+
+### Bug Fixes
+
+* Add lifecycle rules to SG definitions to allow SG deletion ([#94](https://github.com/wandb/terraform-aws-wandb/issues/94)) ([3000b24](https://github.com/wandb/terraform-aws-wandb/commit/3000b244e150870e89db651d8f16ef34fe0a262a))
+
+### [1.15.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.3...v1.15.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* Put rules for inbound HTTP/HTTPS into their own security groups ([#93](https://github.com/wandb/terraform-aws-wandb/issues/93)) ([66c8e7d](https://github.com/wandb/terraform-aws-wandb/commit/66c8e7d6061b7f5f92cae0f559c8b3fc51b122e2))
+
+### [1.15.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.2...v1.15.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* Revert separate HTTP and HTTPS rule creation ([#92](https://github.com/wandb/terraform-aws-wandb/issues/92)) ([dae476a](https://github.com/wandb/terraform-aws-wandb/commit/dae476a270819df99c62b81e7bac9f822d770941))
+
+### [1.15.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.1...v1.15.2) (2023-06-21)
+
+
+### Bug Fixes
+
+* Separate HTTP and HTTPS rule creation ([#90](https://github.com/wandb/terraform-aws-wandb/issues/90)) ([98b0159](https://github.com/wandb/terraform-aws-wandb/commit/98b0159d30e204dfa3c9345c0ea3777baa0361d0))
+
 ### [1.15.1](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.0...v1.15.1) (2023-05-26)
 
 

@@ -112,15 +112,15 @@ variable "acm_certificate_arn" {
 }
 
 variable "allowed_inbound_cidr" {
+  description = "CIDRs allowed to access wandb-server."
+  nullable    = false
   type        = list(string)
-  default     = []
-  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
+  description = "CIDRs allowed to access wandb-server."
+  nullable    = false
   type        = list(string)
-  default     = []
-  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 
@@ -260,7 +260,7 @@ variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m4.large"]
- }
+}
 
 variable "eks_policy_arns" {
   type        = list(string)
