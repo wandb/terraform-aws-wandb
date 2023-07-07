@@ -102,3 +102,17 @@ variable "master_username" {
   default     = "wandb"
 }
 
+# DB Instance Parameters
+variable "innodb_lru_scan_depth" {
+  description = "Specifies the innodb_lru_scan_depth value to set for the database"
+  type        = number
+  default     = 128
+}
+
+
+# Cluster parametes
+variable "binlog_row_image" {
+  description = "Value for binlog_row_image"
+  type        = string
+  default     = "minimal"
+}
