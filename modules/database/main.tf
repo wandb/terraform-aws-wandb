@@ -57,7 +57,7 @@ resource "aws_db_parameter_group" "default" {
 
   parameter {
     name  = "innodb_lru_scan_depth"
-    value = "128"
+    value = var.innodb_lru_scan_depth
   }
 
   lifecycle {
@@ -85,7 +85,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 
   parameter {
     name         = "binlog_row_image"
-    value        = "minimal"
+    value        = var.binlog_row_image
     apply_method = "pending-reboot"
   }
 

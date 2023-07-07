@@ -148,14 +148,16 @@ You will not be able to upgrade directly from `1.21` to `1.24`.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_acm_certificate_arn"></a> [acm\_certificate\_arn](#input\_acm\_certificate\_arn) | The ARN of an existing ACM certificate. | `string` | `null` | no |
-| <a name="input_allowed_inbound_cidr"></a> [allowed\_inbound\_cidr](#input\_allowed\_inbound\_cidr) | Allow HTTP(S) traffic to W&B. Defaults to no connections. | `list(string)` | `[]` | no |
-| <a name="input_allowed_inbound_ipv6_cidr"></a> [allowed\_inbound\_ipv6\_cidr](#input\_allowed\_inbound\_ipv6\_cidr) | Allow HTTP(S) traffic to W&B. Defaults to no connections. | `list(string)` | `[]` | no |
+| <a name="input_allowed_inbound_cidr"></a> [allowed\_inbound\_cidr](#input\_allowed\_inbound\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
+| <a name="input_allowed_inbound_ipv6_cidr"></a> [allowed\_inbound\_ipv6\_cidr](#input\_allowed\_inbound\_ipv6\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
 | <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted. | `string` | `""` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
+| <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
 | <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.03.0"` | no |
+| <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
 | <a name="input_database_master_username"></a> [database\_master\_username](#input\_database\_master\_username) | Specifies the master\_username value to set for the database | `string` | `"wandb"` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Specifies the name of the database | `string` | `"wandb_local"` | no |
