@@ -10,7 +10,7 @@ variable "region" {
 }
 
 variable "eks_node_role" {
-  type = string
+  type        = string
   description = "EKS node role for cross account access."
 }
 
