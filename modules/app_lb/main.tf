@@ -149,9 +149,9 @@ resource "aws_route53_record" "alb" {
 
 resource "aws_route53_record" "extra" {
   for_each = toset(var.extra_fqdn)
-  zone_id = var.zone_id
-  name    = each.value
-  type    = "A"
+  zone_id  = var.zone_id
+  name     = each.value
+  type     = "A"
 
   alias {
     name                   = aws_lb.alb.dns_name
