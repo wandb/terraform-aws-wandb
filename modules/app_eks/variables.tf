@@ -107,6 +107,6 @@ variable "map_users" {
 
 variable "eks_policy_arns" {
   description = "Additional IAM policy to apply to the EKS cluster"
-  type        = set(string)
+  type        = list(string)
   default     = []
 }

@@ -24,11 +24,11 @@ resource "aws_eks_addon" "eks" {
 }
 
 locals {
-  managed_policy_arns = [
+  managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ]
+  ], var.eks_policy_arns)
 }
 
 # Configure permissions required for nodes
@@ -138,7 +138,7 @@ resource "aws_iam_role" "node" {
 }
 
 resource "aws_iam_role_policy_attachment" "node" {
-    for_each   =  concat(var.eks_policy_arns, local.managed_policy_arns)
+    for_each   = toset(distinct(local.managed_policy_arns))
     role       = aws_iam_role.node.name
     policy_arn = each.value
 }
