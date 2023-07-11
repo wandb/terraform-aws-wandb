@@ -74,3 +74,16 @@ variable "bucket_kms_key_arn" {
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
   default     = ""
 }
+
+variable "external_bucket" {
+  description = "String to configure a non AWS bucket (s3://user:pass@bucket)"
+  type        = string
+  default     = ""
+}
+
+variable "external_bucket_region" {
+  description = "When using external bucket the Region is mandatory"
+  type        = string
+  default     = ""
+}
+

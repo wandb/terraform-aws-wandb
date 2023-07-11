@@ -38,6 +38,7 @@ module "wandb_infra" {
 
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
+  
   use_internal_queue = true
 }
 
@@ -61,10 +62,10 @@ module "wandb_app" {
   license = var.wandb_license
 
   host                       = module.wandb_infra.url
-  bucket                     = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region          = module.wandb_infra.bucket_region
+  bucket                     = var.external_bucket != "" ? var.external_bucket : "s3://${module.wandb_infra.bucket_name}"
+  bucket_aws_region          = var.external_bucket_region != "" ? var.external_bucket_region : module.wandb_infra.bucket_region
   bucket_queue               = "internal://"
-  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
+  bucket_kms_key_arn         = var.external_bucket != "" ? "" : module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
 
   wandb_image   = var.wandb_image
