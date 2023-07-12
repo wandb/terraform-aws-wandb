@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.7...v1.16.0) (2023-07-11)
+
+
+### Features
+
+* Support team level buckets by using the direct node role ARN ([#100](https://github.com/wandb/terraform-aws-wandb/issues/100)) ([e09d5d2](https://github.com/wandb/terraform-aws-wandb/commit/e09d5d282a8eba98c5c5c5ec2020c7254d2834b0))
+
+### [1.15.7](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.6...v1.15.7) (2023-07-07)
+
+
+### Bug Fixes
+
+* Add new AWS Aurora RDS config parameters ([#91](https://github.com/wandb/terraform-aws-wandb/issues/91)) ([9e47438](https://github.com/wandb/terraform-aws-wandb/commit/9e47438c0f9981a0a6ca1e3f445df6f7a6a342eb))
+
 ### [1.15.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.5...v1.15.6) (2023-06-27)
 
 
