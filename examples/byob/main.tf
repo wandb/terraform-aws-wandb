@@ -9,6 +9,11 @@ variable "region" {
   description = "AWS region the bucket will live in."
 }
 
+variable "eks_node_role" {
+  type        = string
+  description = "EKS node role for cross account access."
+}
+
 provider "aws" {
   region = var.region
 
@@ -27,7 +32,7 @@ locals {
 
   # Weights & Biases Deployment Account
   wandb_deployment_account_id  = "830241207209"
-  wandb_deployment_account_arn = "arn:aws:iam::${local.wandb_deployment_account_id}:root"
+  wandb_deployment_account_arn = var.eks_node_role == "" ? "arn:aws:iam::${local.wandb_deployment_account_id}:root" : var.eks_node_role
 }
 
 module "secure_storage_connector" {
