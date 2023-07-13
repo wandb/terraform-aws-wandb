@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.4...v1.16.5) (2023-07-13)
+
+
+### Bug Fixes
+
+* Managed arns ([#109](https://github.com/wandb/terraform-aws-wandb/issues/109)) ([701b886](https://github.com/wandb/terraform-aws-wandb/commit/701b886376007ca2726be3811e3e4037e21ee22d))
+
 ### [1.16.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.3...v1.16.4) (2023-07-13)
 
 
