@@ -4,7 +4,6 @@ resource "aws_iam_policy" "node_cloudwatch" {
   lifecycle {
     create_before_destroy = false
   }
-
 }
 
 resource "aws_iam_policy" "node_IMDSv2" {
@@ -22,7 +21,6 @@ resource "aws_iam_policy" "node_kms" {
   lifecycle {
     create_before_destroy = false
   }
-
 }
 
 resource "aws_iam_policy" "node_sqs" {
@@ -31,7 +29,6 @@ resource "aws_iam_policy" "node_sqs" {
   lifecycle {
     create_before_destroy = false
   }
-
 }
 
 resource "aws_iam_policy" "node_s3" {
