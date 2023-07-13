@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "node_kms" {
 
 //////////////////////////////////////////////////
 // because terraform vomits when we send a policy
-// doucment with noe resources defined, so 
+// doucment with noe resources defined, i'm 
 // fudging and using the arn of the caller id
 // if var.bucket_sqs_queue_arn is empty
 //////////////////////////////////////////////////
