@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.1...v1.16.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* Removed inline policies from eks_app ([#106](https://github.com/wandb/terraform-aws-wandb/issues/106)) ([bb34c7b](https://github.com/wandb/terraform-aws-wandb/commit/bb34c7b94b487edb09f71dfb0715ec4b7740dc19))
+
 ## [1.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.7...v1.16.0) (2023-07-11)
 
 
