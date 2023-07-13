@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.2...v1.16.3) (2023-07-13)
+
+
+### Bug Fixes
+
+* Change policy names ([#107](https://github.com/wandb/terraform-aws-wandb/issues/107)) ([cfc5083](https://github.com/wandb/terraform-aws-wandb/commit/cfc50832fa35d9d6b0c5068e092b1bd4f0b5203e))
+
 ### [1.16.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.1...v1.16.2) (2023-07-13)
 
 
