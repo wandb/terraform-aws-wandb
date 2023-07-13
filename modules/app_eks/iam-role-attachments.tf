@@ -25,16 +25,16 @@ resource "aws_iam_role_policy_attachment" "node_s3" {
 
 resource "aws_iam_role_policy_attachment" "eks_cni" {
   role       = aws_iam_role.node.name
-  policy_arn = data.aws_iam_policy.eks_cni
+  policy_arn = data.aws_iam_policy.eks_cni.arn
 }
 
 resource "aws_iam_role_policy_attachment" "eks_worker_node" {
   role       = aws_iam_role.node.name
-  policy_arn = data.aws_iam_policy.eks_cni
+  policy_arn = data.aws_iam_policy.eks_cni.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_container_registry" {
   role       = aws_iam_role.node.name
-  policy_arn = data.aws_iam_policy.ec2_container_registry
+  policy_arn = data.aws_iam_policy.ec2_container_registry.arn
 }
 
