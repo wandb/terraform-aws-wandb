@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.3...v1.16.4) (2023-07-13)
+
+
+### Bug Fixes
+
+* Bridge for missing bucket key arn ([#108](https://github.com/wandb/terraform-aws-wandb/issues/108)) ([7ae06b1](https://github.com/wandb/terraform-aws-wandb/commit/7ae06b1bab8111e433bbaecabc416c77a1b445d5))
+
 ### [1.16.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.2...v1.16.3) (2023-07-13)
 
 
