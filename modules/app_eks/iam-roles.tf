@@ -3,5 +3,6 @@ resource "aws_iam_role" "node" {
   assume_role_policy = data.aws_iam_policy_document.node_assume.json
 
   inline_policy {}
+
 }
 

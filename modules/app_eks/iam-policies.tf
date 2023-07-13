@@ -40,5 +40,4 @@ resource "aws_iam_policy" "node_s3" {
   lifecycle {
     create_before_destroy = false
   }
-
 }
