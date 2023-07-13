@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "node_cloudwatch_policy" {
+data "aws_iam_policy_document" "node_cloudwatch" {
   statement {
     sid       = "bb2"
     actions   = ["cloudwatch:PutMetricData"]
@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "node_cloudwatch_policy" {
 }
 
 
-data "aws_iam_policy_document" "node_IMDSv2_policy" {
+data "aws_iam_policy_document" "node_IMDSv2" {
   statement {
     sid       = "cc3"
     actions   = ["ec2:DescribeInstanceAttribute"]
@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "node_IMDSv2_policy" {
 }
 
 
-data "aws_iam_policy_document" "node_kms_policy" {
+data "aws_iam_policy_document" "node_kms" {
   statement {
     sid = "dd4"
     actions = [
@@ -36,11 +36,11 @@ data "aws_iam_policy_document" "node_kms_policy" {
 
 //////////////////////////////////////////////////
 // because terraform vomits when we send a policy
-// doucment with noe resources defined, i'm 
+// doucment with noe resources defined, so 
 // fudging and using the arn of the caller id
 // if var.bucket_sqs_queue_arn is empty
 //////////////////////////////////////////////////
-data "aws_iam_policy_document" "node_sqs_policy" {
+data "aws_iam_policy_document" "node_sqs" {
   statement {
     sid       = "ee5"
     actions   = ["sqs:*"]
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "node_sqs_policy" {
 }
 
 
-data "aws_iam_policy_document" "node_s3_policy" {
+data "aws_iam_policy_document" "node_s3" {
   statement {
     sid     = "ff6"
     actions = ["s3:*"]
