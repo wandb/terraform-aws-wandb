@@ -9,9 +9,10 @@ variable "region" {
   description = "AWS region the bucket will live in."
 }
 
-variable "eks_node_role" {
+variable "eks_node_role_arn" {
   type        = string
   description = "EKS node role for cross account access."
+  default     = ""
 }
 
 provider "aws" {
@@ -32,7 +33,7 @@ locals {
 
   # Weights & Biases Deployment Account
   wandb_deployment_account_id  = "830241207209"
-  wandb_deployment_account_arn = var.eks_node_role == "" ? "arn:aws:iam::${local.wandb_deployment_account_id}:root" : var.eks_node_role
+  wandb_deployment_account_arn = var.eks_node_role_arn == "" ? "arn:aws:iam::${local.wandb_deployment_account_id}:root" : var.eks_node_role_arn
 }
 
 module "secure_storage_connector" {
@@ -48,4 +49,3 @@ output "bucket_name" {
 output "bucket_kms_key_arn" {
   value = module.secure_storage_connector.bucket_kms_key.arn
 }
-

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.5...v1.16.6) (2023-07-14)
+
+
+### Bug Fixes
+
+* Remove surreptitious managed_arns [] ([#110](https://github.com/wandb/terraform-aws-wandb/issues/110)) ([4e21ad2](https://github.com/wandb/terraform-aws-wandb/commit/4e21ad2fc50303eaf59351fbce53eefa4f1637f4))
+
+### [1.16.5](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.4...v1.16.5) (2023-07-13)
+
+
+### Bug Fixes
+
+* Managed arns ([#109](https://github.com/wandb/terraform-aws-wandb/issues/109)) ([701b886](https://github.com/wandb/terraform-aws-wandb/commit/701b886376007ca2726be3811e3e4037e21ee22d))
+
+### [1.16.4](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.3...v1.16.4) (2023-07-13)
+
+
+### Bug Fixes
+
+* Bridge for missing bucket key arn ([#108](https://github.com/wandb/terraform-aws-wandb/issues/108)) ([7ae06b1](https://github.com/wandb/terraform-aws-wandb/commit/7ae06b1bab8111e433bbaecabc416c77a1b445d5))
+
+### [1.16.3](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.2...v1.16.3) (2023-07-13)
+
+
+### Bug Fixes
+
+* Change policy names ([#107](https://github.com/wandb/terraform-aws-wandb/issues/107)) ([cfc5083](https://github.com/wandb/terraform-aws-wandb/commit/cfc50832fa35d9d6b0c5068e092b1bd4f0b5203e))
+
+### [1.16.2](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.1...v1.16.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* Removed inline policies from eks_app ([#106](https://github.com/wandb/terraform-aws-wandb/issues/106)) ([bb34c7b](https://github.com/wandb/terraform-aws-wandb/commit/bb34c7b94b487edb09f71dfb0715ec4b7740dc19))
+
 ## [1.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.15.7...v1.16.0) (2023-07-11)
 
 
