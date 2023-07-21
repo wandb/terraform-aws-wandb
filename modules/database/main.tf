@@ -141,4 +141,5 @@ module "aurora" {
   storage_encrypted                     = true
   subnets                               = var.subnets
   vpc_id                                = var.vpc_id
+  
 }
