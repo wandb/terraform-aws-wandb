@@ -140,6 +140,7 @@ module "aurora" {
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = true
   subnets                               = var.subnets
+  tags                                  = { "Namespace" : "${var.namespace}" }
   vpc_id                                = var.vpc_id
 
   
