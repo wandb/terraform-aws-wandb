@@ -12,6 +12,11 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "tags" {
+  nullable = false
+  type = map(string)
+}
+
 variable "use_internal_queue" {
   type    = bool
   default = false
