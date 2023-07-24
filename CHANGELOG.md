@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.8](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.7...v1.16.8) (2023-07-24)
+
+
+### Bug Fixes
+
+* Resolve duplicate tags issue ([#112](https://github.com/wandb/terraform-aws-wandb/issues/112)) ([d27061e](https://github.com/wandb/terraform-aws-wandb/commit/d27061e2e000643c08c6a8997b4b9e3ace5db576))
+
 ### [1.16.6](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.5...v1.16.6) (2023-07-14)
 
 
