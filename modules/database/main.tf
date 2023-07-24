@@ -103,7 +103,6 @@ module "aurora" {
   apply_immediately                     = true
   autoscaling_enabled                   = false
   backup_retention_period               = var.backup_retention_period
-  cluster_tags                          = { "Namespace" : "${var.namespace}" }
   create_db_subnet_group                = var.create_db_subnet_group
   create_random_password                = false
   create_security_group                 = true
