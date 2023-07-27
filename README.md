@@ -1,5 +1,9 @@
 # Weights & Biases AWS Module
 
+## BREAKING CHANGE ##
+This version upgrades key terraform providers. Existing installations _must_ be upgraded the v1.16.8
+BEFORE upgrading to this version.
+
 **IMPORTANT:** You are viewing a beta version of the official module to install
 Weights & Biases. This new version is incompatible with earlier versions, and it
 is not currently meant for production use. Please contact your Customer Success
