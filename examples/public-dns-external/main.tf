@@ -26,6 +26,10 @@ module "wandb_infra" {
   database_sort_buffer_size    = var.database_sort_buffer_size
 
   allowed_inbound_cidr      = var.allowed_inbound_cidr
+  /////////////////////////////////////////////////////////////
+  // this defaults to all, which allows the ELB to reached
+  // by IPv6 from any origin. to block IPv6, set this to "::/1".
+  ////////////////////////////////////////////////////////////
   allowed_inbound_ipv6_cidr = ["::/0"]
 
   eks_cluster_version            = "1.24"
