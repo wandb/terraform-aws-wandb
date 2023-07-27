@@ -150,7 +150,8 @@ module "app_eks" {
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 
-  eks_policy_arns = var.eks_policy_arns
+  eks_policy_arns            = var.eks_policy_arns
+  customer_managed_s3_policy = var.customer_managed_s3_policy
 }
 
 module "app_lb" {

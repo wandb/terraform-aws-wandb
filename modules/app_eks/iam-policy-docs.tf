@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "node_sqs" {
   }
 }
 
-
+# WovenJP: Does this need to be fetched?
 data "aws_iam_policy_document" "node_s3" {
   statement {
     sid     = "ff6"

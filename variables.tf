@@ -280,6 +280,12 @@ variable "eks_policy_arns" {
   default     = []
 }
 
+variable "customer_managed_s3_policy" {
+  type        = string
+  description = "optional variable to allow customers bring their own S3 policy"
+  default     = null
+}
+
 ##########################################
 # External Bucket                        #
 ##########################################

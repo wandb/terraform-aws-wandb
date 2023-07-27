@@ -31,6 +31,7 @@ resource "aws_iam_policy" "node_sqs" {
   }
 }
 
+# WovenJP: Does this need to be created?
 resource "aws_iam_policy" "node_s3" {
   name   = "${var.namespace}-s3"
   policy = data.aws_iam_policy_document.node_s3.json

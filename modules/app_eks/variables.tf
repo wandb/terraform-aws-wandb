@@ -112,3 +112,7 @@ variable "service_port" {
   default = 32543
 }
 
+variable "customer_managed_s3_policy" {
+  type = string
+  description= "Optional setting to use a customer managed S3 policy if they prefer"
+}

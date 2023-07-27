@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "node_sqs" {
 
 resource "aws_iam_role_policy_attachment" "node_s3" {
   role       = aws_iam_role.node.name
-  policy_arn = aws_iam_policy.node_s3.arn
+  policy_arn = var.customer_managed_s3_policy == "" || var.customer_managed_s3_policy == null ? aws_iam_policy.node_s3.arn : var.customer_managed_s3_policy // WovenJP: change this to support external account s3 policies
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cni" {
