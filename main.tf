@@ -103,7 +103,7 @@ locals {
 # Create SSL Ceritifcation if applicable
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
-  version = "~> 3.0"
+  version = ">= 3.0"
 
   create_certificate = local.create_certificate
 
