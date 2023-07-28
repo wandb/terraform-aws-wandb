@@ -130,7 +130,7 @@ module "aurora" {
   // incurs a per-vcpu cost. so we can keep them for 7 days and they're free
   ////////////////////////////////////////////////////////////////////////////////////////
   performance_insights_enabled          = true
-  performance_insights_kms_key_id       = var.performance_insights_kms_key_arn == "" ? var.kms_key_arn : var.database_performance_insights_kms_key_arn
+  performance_insights_kms_key_id       = (var.performance_insights_kms_key_arn == "" || var.performance_insights_kms_key_arn == null) ? var.kms_key_arn : var.performance_insights_kms_key_arn
   performance_insights_retention_period = 7
   preferred_backup_window               = var.preferred_backup_window
   preferred_maintenance_window          = var.preferred_maintenance_window

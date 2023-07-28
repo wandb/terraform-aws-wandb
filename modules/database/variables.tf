@@ -3,6 +3,11 @@ variable "kms_key_arn" {
   type        = string
 }
 
+variable "performance_insights_kms_key_arn" {
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  type        = string
+}
+
 variable "namespace" {
   type        = string
   description = "The name prefix for all resources created."
