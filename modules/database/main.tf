@@ -98,32 +98,32 @@ module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
   version = "6.2.0"
 
-  allow_major_version_upgrade           = true
-  allowed_cidr_blocks                   = var.allowed_cidr_blocks
-  apply_immediately                     = true
-  autoscaling_enabled                   = false
-  backup_retention_period               = var.backup_retention_period
-  create_db_subnet_group                = var.create_db_subnet_group
-  create_random_password                = false
-  create_security_group                 = true
-  database_name                         = var.database_name
-  db_cluster_parameter_group_name       = aws_rds_cluster_parameter_group.default.id
-  db_parameter_group_name               = aws_db_parameter_group.default.id
-  db_subnet_group_name                  = var.db_subnet_group_name
-  deletion_protection                   = var.deletion_protection
-  enabled_cloudwatch_logs_exports       = ["audit", "error", "general", "slowquery"]
-  engine                                = "aurora-mysql"
-  engine_version                        = var.engine_version
-  iam_database_authentication_enabled   = false
-  iam_role_force_detach_policies        = true
-  iam_role_name                         = "${var.namespace}-aurora-monitoring"
-  instance_class                        = var.instance_class
-  instances                             = { 1 = {} }
-  kms_key_id                            = var.kms_key_arn
-  master_password                       = local.master_password
-  master_username                       = var.master_username
-  monitoring_interval                   = 15
-  name                                  = var.namespace
+  allow_major_version_upgrade         = true
+  allowed_cidr_blocks                 = var.allowed_cidr_blocks
+  apply_immediately                   = true
+  autoscaling_enabled                 = false
+  backup_retention_period             = var.backup_retention_period
+  create_db_subnet_group              = var.create_db_subnet_group
+  create_random_password              = false
+  create_security_group               = true
+  database_name                       = var.database_name
+  db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.default.id
+  db_parameter_group_name             = aws_db_parameter_group.default.id
+  db_subnet_group_name                = var.db_subnet_group_name
+  deletion_protection                 = var.deletion_protection
+  enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
+  engine                              = "aurora-mysql"
+  engine_version                      = var.engine_version
+  iam_database_authentication_enabled = false
+  iam_role_force_detach_policies      = true
+  iam_role_name                       = "${var.namespace}-aurora-monitoring"
+  instance_class                      = var.instance_class
+  instances                           = { 1 = {} }
+  kms_key_id                          = var.kms_key_arn
+  master_password                     = local.master_password
+  master_username                     = var.master_username
+  monitoring_interval                 = 15
+  name                                = var.namespace
   ////////////////////////////////////////////////////////////////////////////////////////
   // !!! note on performance insights !!!
   // AWS offers 7 days of performance insights free. keeping them after this period
@@ -141,5 +141,5 @@ module "aurora" {
   subnets                               = var.subnets
   vpc_id                                = var.vpc_id
 
-  
+
 }
