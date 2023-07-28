@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.10](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.9...v1.16.10) (2023-07-28)
+
+
+### Bug Fixes
+
+* Support performance insights existing kms key arn ([#115](https://github.com/wandb/terraform-aws-wandb/issues/115)) ([9385c01](https://github.com/wandb/terraform-aws-wandb/commit/9385c013cecbe9c3520b717e8386a4a0948aeba8))
+
 ### [1.16.9](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.8...v1.16.9) (2023-07-28)
 
 
