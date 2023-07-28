@@ -68,6 +68,11 @@ variable "database_innodb_lru_scan_depth" {
   default     = 128
 }
 
+variable "database_performance_insights_kms_key_arn" {
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  type        = string
+}
+
 ##########################################
 # DNS                                    #
 ##########################################

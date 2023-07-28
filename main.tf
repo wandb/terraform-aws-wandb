@@ -75,6 +75,7 @@ module "database" {
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
+  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn_kms_key_arn
 
   database_name   = var.database_name
   master_username = var.database_master_username
