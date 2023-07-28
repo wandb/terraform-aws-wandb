@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.16.9](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.8...v1.16.9) (2023-07-28)
+
+
+### Bug Fixes
+
+* Add support for out-of-band Performance Insight's being added ([#114](https://github.com/wandb/terraform-aws-wandb/issues/114)) ([210237d](https://github.com/wandb/terraform-aws-wandb/commit/210237d13914514511d0821aadd979cf60b2e047))
+
 ### [1.16.8](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.7...v1.16.8) (2023-07-24)
 
 
