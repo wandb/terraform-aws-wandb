@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.10...v2.0.0) (2023-07-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* AWS Provider Upgrade (#116)
+
+### Features
+
+* AWS Provider Upgrade ([#116](https://github.com/wandb/terraform-aws-wandb/issues/116)) ([9d1688f](https://github.com/wandb/terraform-aws-wandb/commit/9d1688f85b9a29b54a9793ad7ef1b24976e98aba))
+
 ### [1.16.10](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.9...v1.16.10) (2023-07-28)
 
 
