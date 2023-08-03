@@ -29,7 +29,6 @@ variable "cluster_version" {
   description = "Indicates AWS EKS cluster version"
   nullable    = false
   type        = string
-
 }
 
 variable "create_elasticache_security_group" {
