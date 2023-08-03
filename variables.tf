@@ -233,9 +233,10 @@ variable "network_elasticache_subnet_cidrs" {
 # EKS Cluster                            #
 ##########################################
 variable "eks_cluster_version" {
-  type        = string
-  description = "Indicates EKS cluster version"
   default     = "1.25"
+  description = "EKS cluster kubernetes version"
+  nullable    = false
+  type        = string
 }
 
 variable "kubernetes_public_access" {
