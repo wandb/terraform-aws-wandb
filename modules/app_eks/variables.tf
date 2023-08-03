@@ -28,7 +28,7 @@ variable "cluster_endpoint_public_access_cidrs" {
 variable "cluster_version" {
   description = "Indicates AWS EKS cluster version"
   type        = string
-  default     = "1.21"
+  default     = "1.25"
 }
 
 variable "create_elasticache_security_group" {
