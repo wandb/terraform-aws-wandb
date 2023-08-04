@@ -52,10 +52,10 @@ resource "aws_kms_key" "key" {
         "Resource" : "*",
         "Condition" : {
           "StringEquals" : {
-            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}",
+            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}"
           },
           "StringLike" : {
-            "kms:ViaService" : "ec2.*.amazonaws.com",
+            "kms:ViaService" : "ec2.*.amazonaws.com"
           }
         }
       }
