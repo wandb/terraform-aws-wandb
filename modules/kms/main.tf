@@ -1,11 +1,11 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
-  deletion_window_in_days = var.key_deletion_window
+  deletion_window_in_days = local.key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
   key_usage               = "ENCRYPT_DECRYPT"
 
-  policy = var.key_policy != "" ? var.key_policy : jsonencode({
+  policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -33,7 +33,7 @@ resource "aws_kms_key" "key" {
         ],
         "Resource" : "*"
       },
-      {
+       {
         "Sid" : "Allow use for EBS to node groups",
         "Effect" : "Allow",
         "Principal" : {
@@ -68,7 +68,7 @@ resource "aws_kms_key" "key" {
 }
 
 resource "aws_kms_alias" "key" {
-  name          = "alias/${var.key_alias}"
+  name          = "alias/${local.key_alias}"
   target_key_id = aws_kms_key.key.key_id
 }
 
