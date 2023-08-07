@@ -38,7 +38,7 @@ module "file_storage" {
 
   namespace     = var.namespace
   sse_algorithm = "aws:kms"
-  kms_key_arn   = var.create_kms_key ? aws_kms_key.key[0].arn : null
+  kms_key_arn   = var.create_kms_key ? aws_kms_key.key[0].arn : var.kms_key_arn
 
   create_queue = false
 

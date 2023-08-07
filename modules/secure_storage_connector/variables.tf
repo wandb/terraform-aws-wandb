@@ -6,7 +6,7 @@ variable "namespace" {
 variable "create_kms_key" {
   description = "If a KMS key should be created to encrypt S3 storage bucket objects. This can only be used when you set the value of sse_algorithm as aws:kms."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "sse_algorithm" {
@@ -24,4 +24,10 @@ variable "deletion_protection" {
 variable "aws_principal_arn" {
   description = "AWS principal that can access the bucket"
   type        = string
+}
+
+variable "kms_key_arn" {
+  description = "KMS Key to use if key creation is disabled."
+  type        = string
+  default     = ""
 }
