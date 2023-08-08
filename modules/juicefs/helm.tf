@@ -1,10 +1,10 @@
 locals {
   objectstore_url = "https://${data.aws_s3_bucket.juicefs.bucket_domain_name}/juicefs"
-  metastore_url   = "redis://${aws_elasticache_user.juicefs.user_name}:${aws_elasticache_user.juicefs.passwords}@${ aws_elasticache_replication_group.juicefs.configuration_endpoint_address}/1"
+  metastore_url   = "redis://${aws_elasticache_user.juicefs.user_name}:${aws_elasticache_user.juicefs.passwords}@${aws_elasticache_replication_group.juicefs.configuration_endpoint_address}/1"
 }
 
 resource "helm_release" "juicefs" {
-  depends_on = [ kubernetes_secret.juicefs ]
+  depends_on = [kubernetes_secret.juicefs]
 
   name          = "my-redis-release"
   repository    = "https://juicedata.github.io/charts/"

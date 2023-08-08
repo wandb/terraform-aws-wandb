@@ -6,8 +6,8 @@ data "kubernetes_namespace" "juicefs" {
 
 
 resource "kubernetes_secret" "juicefs" {
-  depends_on = [ kubernetes_namespace.juicefs ]
-  
+  depends_on = [kubernetes_namespace.juicefs]
+
   metadata {
     name      = "juicefs-secret"
     namespace = "juicefs"

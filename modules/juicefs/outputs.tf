@@ -20,7 +20,7 @@ output "redis_url" {
 
 output "s3_access_key" {
   description = "Account access key used to access objectstore"
-  value      = aws_iam_access_key.juicefs.id
+  value       = aws_iam_access_key.juicefs.id
 }
 
 output "s3_password" {

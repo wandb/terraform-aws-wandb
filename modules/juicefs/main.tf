@@ -9,13 +9,13 @@ resource "kubernetes_manifest" "juicefs" {
       namespace = "juicefs"
     }
     spec = {
-        accessModes = ["ReadWriteMany"]
-        resources = {
-            requests = {
-                storage = "100Gi"
-            }
+      accessModes = ["ReadWriteMany"]
+      resources = {
+        requests = {
+          storage = "100Gi"
         }
-        storageClassName : "juicefs-sc"
+      }
+      storageClassName : "juicefs-sc"
     }
   }
 }
