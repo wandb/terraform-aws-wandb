@@ -3,7 +3,6 @@ resource "aws_elasticache_replication_group" "juicefs" {
   at_rest_encryption_enabled    = true
   auto_minor_version_upgrade    = true
   automatic_failover_enabled    = true
-  cluster_enabled = true
   engine                        = "redis"
   engine_version                = "7.0"
   maintenance_window            = "sun:05:00-sun:09:00"
@@ -15,6 +14,7 @@ resource "aws_elasticache_replication_group" "juicefs" {
   replication_group_description = "${var.namespace}-juicefs-metadatastore"
   replication_group_id          = "${var.namespace}-juicefs-metadatastore"
   security_group_ids            = var.security_group_ids
+  subnet_group_name             = aws_elasticache_subnet_group.juicefs.name
   snapshot_retention_limit      = 7
   transit_encryption_enabled    = true
 }
@@ -23,9 +23,23 @@ resource "aws_elasticache_parameter_group" "juicefs" {
   name   = "${var.namespace}-juicefs"
   family = "redis7"
 
+  parameter {
+    name  = "activedefrag"
+    value = "yes"
+  }
+
+  parameter {
+    name  = "cluster-enabled"
+    value = "on"
+  }
 
   parameter {
     name  = "maxmemory-policy"
     value = "noeviction"
   }
+}
+
+resource "aws_elasticache_subnet_group" "juicefs" {
+  name       = "${var.namespace}-juicefs-metadatastore"
+  subnet_ids = var.subnet_ids
 }

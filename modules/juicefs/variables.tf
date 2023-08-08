@@ -10,6 +10,12 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
+variable "subnet_ids" {
+  description = "A list of subnet ids where the cluster will be deployed"
+  nullable    = false
+  type        = list(string)
+}
+
 variable "s3_bucket_name" {
   description = "The name of the S3 bucket used to store chunk data"
   nullable    = false

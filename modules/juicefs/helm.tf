@@ -7,17 +7,17 @@ locals {
 resource "helm_release" "juicefs" {
   depends_on = [kubernetes_secret.juicefs]
 
-  atomic = true
-  chart         = "juicefs"
-  cleanup_on_fail = true
+  atomic           = true
+  chart            = "juicefs"
+  cleanup_on_fail  = true
   create_namespace = false
-  force_update  = true
-  name          = "juicefs"
-  namespace     = "juicefs"
-  recreate_pods = true
-  repository    = "https://juicedata.github.io/charts/"
-  version       = "0.17.2"
-  wait_for_jobs = true
+  force_update     = true
+  name             = "juicefs"
+  namespace        = "juicefs"
+  recreate_pods    = true
+  repository       = "https://juicedata.github.io/charts/"
+  version          = "0.17.2"
+  wait_for_jobs    = true
 
   set {
     name  = "controller.leaderElection.leaderElectionNamespace"
