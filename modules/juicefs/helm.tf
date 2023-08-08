@@ -6,7 +6,7 @@ locals {
 resource "helm_release" "juicefs" {
   depends_on = [kubernetes_secret.juicefs]
 
-  name          = "my-redis-release"
+  name          = "juicefs"
   repository    = "https://juicedata.github.io/charts/"
   chart         = "juicefs"
   namespace     = "juicefs"
