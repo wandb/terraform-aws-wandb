@@ -1,14 +1,35 @@
-output "arn" {
+output "elasticache_arn" {
   description = "The ARN of the redis cluster"
-  value       = aws_elasticache_cluster.arn
+  value       = aws_elasticache_replication_group.juicefs.arn
 }
 
-output "cache_nodes" {
-  description = "A list of all of the cache nodes"
-  value       = aws_elasticache_cluster.cache_nodes
+output "elasticache_password" {
+  description = "The REDIS username used to access the JuiceFS metadatastore"
+  value       = aws_elasticache_user.juicefs.passwords
 }
 
-output "engine_version" {
-  description = "The ARN of the redis cluster"
-  value       = aws_elasticache_cluster.engine_version_actual
+output "elasticache_user" {
+  description = "User used to access the JuiceF metadatastore"
+  value       = aws_elasticache_user.juicefs.user_name
 }
+
+output "redis_url" {
+  description = "URL of the Elasticache cluster"
+  value       = aws_elasticache_replication_group.juicefs.configuration_endpoint_address
+}
+
+output "s3_access_key" {
+  description = "Account access key used to access objectstore"
+  value      = aws_iam_access_key.juicefs.id
+}
+
+output "s3_password" {
+  description = "Password used to access objectstore"
+  value       = aws_iam_access_key.juicefs.encrypted_secret
+}
+
+output "s3_user" {
+  description = "User used to access objectstore"
+  value       = aws_iam_user.juicefs.name
+}
+

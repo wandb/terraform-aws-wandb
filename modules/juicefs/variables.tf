@@ -1,23 +1,23 @@
 variable "namespace" {
-  type        = string
-  nullable    = false
   description = "The name prefix for all resources created"
-}
-
-variable "source_security_group_id" {
+  nullable    = false
   type        = string
-  nullable    = false
-  description = "Id of security group to be added to the rules of the elasticache sg created by the juicefs module"
 }
 
-variable "subnet_ids" {
-  type        = list(string)
+variable "security_group_ids" {
+  description = "SGs to be added to this cluster"
   nullable    = false
-  description = "IDs of subnets which comprise the subnet group"
+  type        = list(string)
+}
+
+variable "s3_bucket_name" {
+  description = "The name of the S3 bucket used to store chunk data"
+  nullable    = false
+  type        = string
 }
 
 variable "vpc_id" {
-  type        = string
-  nullable    = false
   description = "VPC id"
+  nullable    = false
+  type        = string
 }
