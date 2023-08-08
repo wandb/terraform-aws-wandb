@@ -1,18 +1,23 @@
 locals {
   objectstore_url = "https://${data.aws_s3_bucket.juicefs.bucket_domain_name}/juicefs"
-  metastore_url   = "redis://${aws_elasticache_user.juicefs.user_name}:${aws_elasticache_user.juicefs.passwords}@${aws_elasticache_replication_group.juicefs.configuration_endpoint_address}/1"
+  metastore_url   = "redis://${aws_elasticache_user.juicefs.user_name}:${random_password.juicefs.result}@${aws_elasticache_replication_group.juicefs.configuration_endpoint_address}/1"
+
 }
 
 resource "helm_release" "juicefs" {
   depends_on = [kubernetes_secret.juicefs]
 
-  name          = "juicefs"
-  repository    = "https://juicedata.github.io/charts/"
+  atomic = true
   chart         = "juicefs"
-  namespace     = "juicefs"
-  version       = "0.17.2"
+  cleanup_on_fail = true
+  create_namespace = false
   force_update  = true
+  name          = "juicefs"
+  namespace     = "juicefs"
   recreate_pods = true
+  repository    = "https://juicedata.github.io/charts/"
+  version       = "0.17.2"
+  wait_for_jobs = true
 
   set {
     name  = "controller.leaderElection.leaderElectionNamespace"

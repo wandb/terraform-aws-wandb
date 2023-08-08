@@ -1,4 +1,5 @@
 module "juicefs" {
+  depends_on = [module.wandb_infra]
   source = "../../modules/juicefs"
 
   namespace          = var.namespace
