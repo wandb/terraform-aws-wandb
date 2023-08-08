@@ -1,4 +1,4 @@
-data "kubernetes_namespace" "juicefs" {
+resource "kubernetes_namespace" "juicefs" {
   metadata {
     name = "juicefs"
   }
