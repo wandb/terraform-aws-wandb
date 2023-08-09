@@ -14,7 +14,7 @@ resource "aws_elasticache_replication_group" "juicefs" {
   replication_group_description = "${var.namespace}-juicefs-metadatastore"
   replication_group_id          = "${var.namespace}-juicefs-metadatastore"
   security_group_ids            = var.security_group_ids
-  subnet_group_name             = aws_elasticache_subnet_group.juicefs.name
+  subnet_group_name             = var.subnet_group_name
   snapshot_retention_limit      = 7
   transit_encryption_enabled    = true
 }
@@ -30,11 +30,11 @@ resource "aws_elasticache_parameter_group" "juicefs" {
 
   parameter {
     name  = "cluster-enabled"
-    value = "on"
+    value = "yes"
   }
 
   parameter {
-    name = "list-compress-depth"
+    name  = "list-compress-depth"
     value = 1
   }
 
@@ -44,7 +44,3 @@ resource "aws_elasticache_parameter_group" "juicefs" {
   }
 }
 
-resource "aws_elasticache_subnet_group" "juicefs" {
-  name       = "${var.namespace}-juicefs-metadatastore"
-  subnet_ids = var.subnet_ids
-}

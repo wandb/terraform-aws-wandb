@@ -16,6 +16,12 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "subnet_group_name" {
+  description = "Name of the subnet group"
+  nullable    = false
+  type        = string
+}
+
 variable "s3_bucket_name" {
   description = "The name of the S3 bucket used to store chunk data"
   nullable    = false

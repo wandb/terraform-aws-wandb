@@ -55,6 +55,17 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 
+provider "helm" {
+  experiments {
+    manifest = true
+  }
+  kubernetes {
+    host                   = data.aws_eks_cluster.app_cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority.0.data)
+    token                  = data.aws_eks_cluster_auth.app_cluster.token
+  }
+}
+
 module "wandb_app" {
   source = "github.com/wandb/terraform-kubernetes-wandb"
 

@@ -33,3 +33,11 @@ output "s3_user" {
   value       = aws_iam_user.juicefs.name
 }
 
+output "values-dot-yaml" {
+  value = templatefile("${path.module}/csi-values.tftpl",
+    {
+      accessKey = "${aws_iam_access_key.juicefs.id}"
+      # bucket    = local.objectstore_url
+      # metaurl   = local.metastore_url
+  })
+}

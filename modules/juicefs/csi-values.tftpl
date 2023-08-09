@@ -1,0 +1,125 @@
+---
+image:
+  repository: juicedata/juicefs-csi-driver
+  tag: v0.21.0
+  pullPolicy: ""
+sidecars:
+  livenessProbeImage:
+    repository: quay.io/k8scsi/livenessprobe
+    tag: v1.1.0
+    pullPolicy: ""
+  nodeDriverRegistrarImage:
+    repository: quay.io/k8scsi/csi-node-driver-registrar
+    tag: v2.1.0
+    pullPolicy: ""
+  csiProvisionerImage:
+    repository: quay.io/k8scsi/csi-provisioner
+    tag: v1.6.0
+    pullPolicy: ""
+  csiResizerImage:
+    repository: quay.io/k8scsi/csi-resizer
+    tag: v1.0.1
+    pullPolicy: ""
+imagePullSecrets: []
+mountMode: mountpod
+hostAliases:
+  - ip: 127.0.0.1
+    hostnames:
+      - s3.juicefs.local
+      - redis.juicefs.local
+kubeletDir: /var/lib/kubelet
+jfsMountDir: /var/lib/juicefs/volume
+jfsConfigDir: /var/lib/juicefs/config
+immutable: false
+dnsPolicy: ClusterFirstWithHostNet
+dnsConfig: {}
+serviceAccount:
+  controller:
+    create: true
+    annotations: {}
+    name: juicefs-csi-controller-sa
+  node:
+    create: true
+    annotations: {}
+    name: juicefs-csi-node-sa
+controller:
+  enabled: true
+  leaderElection:
+    enabled: true
+    leaderElectionNamespace: juicefs
+    leaseDuration: ""
+  provisioner: true
+  replicas: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+  terminationGracePeriodSeconds: 30
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  service:
+    port: 9909
+    type: ClusterIP
+  priorityClassName: system-cluster-critical
+  envs: null
+node:
+  enabled: true
+  hostNetwork: false
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  storageClassShareMount: true
+  mountPodNonPreempting: false
+  terminationGracePeriodSeconds: 30
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  priorityClassName: system-node-critical
+  envs: null
+defaultMountImage:
+  ce: ""
+  ee: ""
+webhook:
+  certManager:
+    enabled: true
+  caBundlePEM: ""
+  crtPEM: ""
+  keyPEM: ""
+  timeoutSeconds: 5
+  FailurePolicy: Fail
+storageClasses:
+  - name: juicefs-sc
+    enabled: enable
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    backend:
+      name: juicefs
+      accessKey: "{accessKey}"
+      envs: ""
+      configs: ""
+      trashDays: "1"
+      formatOptions: compress=lz4
+    mountOptions: null
+    pathPattern: ""
+    cachePVC: ""
+    mountPod:
+      resources:
+        limits:
+          cpu: 5000m
+          memory: 5Gi
+        requests:
+          cpu: 1000m
+          memory: 1Gi
+      image: ""
