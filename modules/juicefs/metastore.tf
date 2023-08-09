@@ -34,6 +34,11 @@ resource "aws_elasticache_parameter_group" "juicefs" {
   }
 
   parameter {
+    name = "list-compress-depth"
+    value = 1
+  }
+
+  parameter {
     name  = "maxmemory-policy"
     value = "noeviction"
   }
