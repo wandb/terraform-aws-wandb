@@ -22,9 +22,10 @@ resource "helm_release" "juicefs-csi-driver" {
 
   values = [templatefile("${path.module}/csi-values.tftpl",
     {
-      accessKey = aws_iam_access_key.juicefs.id,
-      bucket    = local.objectstore_url,
-      metaurl   = local.metastore_url,
+      accessKey = "${aws_iam_access_key.juicefs.id}",
+      bucket_url    = "${local.objectstore_url}",
+      metastore_url   = "${local.metastore_url}",
+      secretKey = "${aws_iam_access_key.juicefs.secret}",
   })]
 }
 

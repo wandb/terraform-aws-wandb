@@ -1,3 +1,9 @@
+variable "k8s_cluster_id" {
+  description = "The terraform id of the k8s cluster"
+  nullable    = false
+  type        = string
+}
+
 variable "namespace" {
   description = "The name prefix for all resources created"
   nullable    = false

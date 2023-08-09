@@ -2,24 +2,24 @@
 image:
   repository: juicedata/juicefs-csi-driver
   tag: v0.21.0
-  pullPolicy: ""
+  pullPolicy: always
 sidecars:
   livenessProbeImage:
     repository: quay.io/k8scsi/livenessprobe
     tag: v1.1.0
-    pullPolicy: ""
+    pullPolicy: 'Always'
   nodeDriverRegistrarImage:
     repository: quay.io/k8scsi/csi-node-driver-registrar
     tag: v2.1.0
-    pullPolicy: ""
+    pullPolicy: 'Always'
   csiProvisionerImage:
     repository: quay.io/k8scsi/csi-provisioner
     tag: v1.6.0
-    pullPolicy: ""
+    pullPolicy: 'Always'
   csiResizerImage:
     repository: quay.io/k8scsi/csi-resizer
     tag: v1.0.1
-    pullPolicy: ""
+    pullPolicy: 'Always'
 imagePullSecrets: []
 mountMode: mountpod
 hostAliases:
@@ -27,6 +27,7 @@ hostAliases:
     hostnames:
       - s3.juicefs.local
       - redis.juicefs.local
+# The kubelet working directory, can be set using --root-dir when starting kubelet
 kubeletDir: /var/lib/kubelet
 jfsMountDir: /var/lib/juicefs/volume
 jfsConfigDir: /var/lib/juicefs/config
@@ -46,9 +47,9 @@ controller:
   enabled: true
   leaderElection:
     enabled: true
-    leaderElectionNamespace: juicefs
-    leaseDuration: ""
-  provisioner: true
+    leaderElectionNamespace: ''
+    leaseDuration: ''
+  provisioner: false
   replicas: 2
   resources:
     limits:
@@ -67,7 +68,6 @@ controller:
     port: 9909
     type: ClusterIP
   priorityClassName: system-cluster-critical
-  envs: null
 node:
   enabled: true
   hostNetwork: false
@@ -76,7 +76,7 @@ node:
       cpu: 1000m
       memory: 1Gi
     requests:
-      cpu: 500m
+      cpu: 100m
       memory: 512Mi
   storageClassShareMount: true
   mountPodNonPreempting: false
@@ -87,33 +87,30 @@ node:
     - key: CriticalAddonsOnly
       operator: Exists
   priorityClassName: system-node-critical
-  envs: null
-defaultMountImage:
-  ce: ""
-  ee: ""
 webhook:
   certManager:
     enabled: true
-  caBundlePEM: ""
-  crtPEM: ""
-  keyPEM: ""
   timeoutSeconds: 5
   FailurePolicy: Fail
 storageClasses:
   - name: juicefs-sc
-    enabled: enable
+    enabled: true
     reclaimPolicy: Delete
     allowVolumeExpansion: true
+    annotations:
+      storageclass.kubernetes.io/is-default-class: 'true'
     backend:
       name: juicefs
-      accessKey: "${accessKey}"
-      envs: ""
-      configs: ""
-      trashDays: "1"
-      formatOptions: compress=lz4
-    mountOptions: null
-    pathPattern: ""
-    cachePVC: ""
+      metaurl: ${metastore_url}
+      storage: s3
+      bucket: ${bucket_url}
+      token: ''
+      accessKey: ${accessKey}
+      secretKey: ${secretKey}
+      trashDays: '1'
+    mountOptions:
+      - debug
+      - cache-size=16384
     mountPod:
       resources:
         limits:
@@ -122,4 +119,4 @@ storageClasses:
         requests:
           cpu: 1000m
           memory: 1Gi
-      image: ""
+      image: ''

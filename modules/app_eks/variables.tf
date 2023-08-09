@@ -59,7 +59,7 @@ variable "kms_key_arn" {
 variable "instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
-  default     = ["m4.large"]
+  default     = ["m7g.xlarge"]
 }
 
 variable "lb_security_group_inbound_id" {
