@@ -4,8 +4,9 @@ resource "aws_elasticache_user" "juicefs" {
   access_string = "on ~* +@all -@dangerous"
   engine        = "REDIS"
   passwords = [
-    random_password.juicefs.result
+     random_password.juicefs.result
   ]
+ 
 }
 
 resource "random_password" "juicefs" {

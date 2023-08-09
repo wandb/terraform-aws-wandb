@@ -6,6 +6,7 @@ output "elasticache_arn" {
 output "elasticache_password" {
   description = "The REDIS username used to access the JuiceFS metadatastore"
   value       = aws_elasticache_user.juicefs.passwords
+  sensitive = false
 }
 
 output "elasticache_user" {
@@ -23,9 +24,10 @@ output "s3_access_key" {
   value       = aws_iam_access_key.juicefs.id
 }
 
-output "s3_password" {
+output "s3_secret_key" {
   description = "Password used to access objectstore"
   value       = aws_iam_access_key.juicefs.encrypted_secret
+  sensitive = false
 }
 
 output "s3_user" {
