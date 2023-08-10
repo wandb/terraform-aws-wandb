@@ -58,11 +58,11 @@ output "elasticache_connection_string" {
 }
 
 output "redis_security_group_id" {
-  value = module.redis.security_group_id
+  value = module.redis[0].security_group_id
 }
 
 output "redis_subnet_group_name" {
-  value = module.redis.subnet_group_name
+  value = module.redis[0].subnet_group_name
 }
 
 output "vpc_id" {
