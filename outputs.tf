@@ -56,3 +56,15 @@ output "internal_app_port" {
 output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
 }
+
+output "redis_security_group_id" {
+  value = module.redis.security_group_id
+}
+
+output "redis_subnet_group_name" {
+  value = module.redis.subnet_group_name
+}
+
+output "vpc_id" {
+  value = module.networking.vpc_id
+}
