@@ -68,3 +68,27 @@ output "vpc_id" {
 output "private_subnet_ids" {
   value = module.networking.private_subnets
 }
+
+output "elasticache_user" {
+  value = module.juicefs.elasticache_user
+}
+
+output "elasticache_password" {
+  value = module.juicefs.elasticache_password
+}
+
+output "elasticache_url" {
+  value = module.juicefs.redis_url
+}
+
+output "s3_user" {
+  value = module.juicefs.s3_user
+}
+
+output "s3_access_key" {
+  value = module.juicefs.s3_access_key
+}
+
+output "s3_secret_key" {
+  value = module.juicefs.s3_secret_key
+}
