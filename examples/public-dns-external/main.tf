@@ -39,6 +39,9 @@ module "wandb_infra" {
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
+
+  elasticache_password = var.elasticache_password
+  elasticache_user = var.elasticache_user
 }
 
 data "aws_eks_cluster" "app_cluster" {

@@ -8,6 +8,8 @@ resource "kubernetes_namespace" "juicefs" {
 resource "kubernetes_secret" "juicefs" {
   depends_on = [kubernetes_namespace.juicefs]
 
+  type = "Opaque"
+
   metadata {
     name      = "juicefs-secret"
     namespace = "juicefs"
@@ -24,7 +26,5 @@ resource "kubernetes_secret" "juicefs" {
     format-options : "compress=lz4"
     mount-options : "cache-size=16384"
   }
-
-  type = "Opaque"
 }
 

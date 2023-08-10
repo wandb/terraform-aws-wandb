@@ -83,3 +83,15 @@ variable "allowed_inbound_ipv6_cidr" {
   nullable = false
   type     = list(string)
 }
+
+variable "elasticache_user" {
+  description = "The username used to access elasticache"
+  nullable    = false
+  type        = string
+}
+
+variable "elasticache_password" {
+  description = "Isn't it obvious?"
+  nullable    = false
+  type        = string
+}

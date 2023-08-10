@@ -1,3 +1,16 @@
+variable "elasticache_user" {
+  description = "The username used to access elasticache"
+  nullable    = false
+  type        = string
+}
+
+variable "elasticache_password" {
+  description = "Isn't it obvious?"
+  nullable    = false
+  type        = string
+}
+
+
 variable "k8s_cluster_id" {
   description = "The terraform id of the k8s cluster"
   nullable    = false

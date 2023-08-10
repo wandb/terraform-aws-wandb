@@ -1,10 +1,11 @@
 resource "aws_elasticache_replication_group" "juicefs" {
   apply_immediately             = true
   at_rest_encryption_enabled    = true
+  auth_token                    = "${var.elasticache_password}"
   auto_minor_version_upgrade    = true
   automatic_failover_enabled    = true
   engine                        = "redis"
-  engine_version                = "7.0"
+  engine_version                = "6.2"
   maintenance_window            = "sun:05:00-sun:09:00"
   multi_az_enabled              = false
   node_type                     = "cache.m7g.xlarge"
@@ -17,11 +18,18 @@ resource "aws_elasticache_replication_group" "juicefs" {
   subnet_group_name             = var.subnet_group_name
   snapshot_retention_limit      = 7
   transit_encryption_enabled    = true
+
+  log_delivery_configuration {
+    destination      = aws_cloudwatch_log_group.juicefs.name
+    destination_type = "cloudwatch-logs"
+    log_format       = "text"
+    log_type         = "engine-log"
+  }  
 }
 
 resource "aws_elasticache_parameter_group" "juicefs" {
   name   = "${var.namespace}-juicefs"
-  family = "redis7"
+  family = "redis6.x"
 
   parameter {
     name  = "activedefrag"
