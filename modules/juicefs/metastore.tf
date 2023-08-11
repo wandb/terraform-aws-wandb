@@ -1,7 +1,7 @@
 resource "aws_elasticache_replication_group" "juicefs" {
   apply_immediately             = true
   at_rest_encryption_enabled    = true
-  auth_token                    = "${var.elasticache_password}"
+  auth_token                    = "aaaaaaaaalalalalalalalalalalaolkalakla,la,la,la,la,la,la,la,al,al"
   auto_minor_version_upgrade    = true
   automatic_failover_enabled    = true
   engine                        = "redis"
