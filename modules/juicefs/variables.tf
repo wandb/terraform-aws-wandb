@@ -1,12 +1,12 @@
 variable "elasticache_user" {
   description = "The username used to access elasticache"
-  nullable    = false
+  nullable    = true
   type        = string
 }
 
 variable "elasticache_password" {
   description = "Isn't it obvious?"
-  nullable    = false
+  nullable    = true
   type        = string
 }
 
