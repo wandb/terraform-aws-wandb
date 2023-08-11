@@ -38,3 +38,7 @@ resource "aws_iam_role_policy_attachment" "ec2_container_registry" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
+resource "aws_iam_role_policy_attachment" "ebs_csi" {
+  role       = aws_iam_role.node.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
