@@ -23,6 +23,7 @@ variable "elasticache_user" {
 
 variable "elasticache_password" {
   description = "Isn't it obvious?"
+  default = "wwsssslslslslslslslslsllslslslslslslslslslslslsls"
   nullable    = false
   type        = string
 }
