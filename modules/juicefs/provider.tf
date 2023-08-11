@@ -1,2 +1,2 @@
-provider "kubernetes" {}
+
 provider "helm" {}
