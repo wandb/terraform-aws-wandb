@@ -6,6 +6,10 @@ output "bucket_arn" {
   value = aws_s3_bucket.file_storage.arn
 }
 
+output "bucket_id" {
+  value = aws_s3_bucket.file_storage.id
+}
+
 output "bucket_region" {
   value = aws_s3_bucket.file_storage.region
 }

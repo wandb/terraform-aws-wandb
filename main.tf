@@ -176,7 +176,7 @@ module "app_lb" {
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
-  alb_target_group_arn   = module.app_lb.tg_app_arn
+  lb_target_group_arn    = module.app_lb.tg_app_arn
 }
 
 module "redis" {

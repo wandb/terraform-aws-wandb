@@ -99,29 +99,31 @@ resources that lack official modules.
 
 ### A note on updating EKS cluster version
 
-Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.24` - you'd need to:
+Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.25` - you'd need to:
 
-- Update `1.21` to `1.22`, run `terraform apply`,
-- then upgrade to `1.23`, run `tf apply` and
-- finally to `1.24`, run `tf apply`.
+1. update the cluster version in the app_eks module from `1.21` to `1.22`
+2.  run `terraform apply`
+3. update the cluster version to `1.23`
+4. run `terraform apply`
+5. update the cluster version to `1.24`
+...and so on and so forth.
 
-You will not be able to upgrade directly from `1.21` to `1.24`.
-
+Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 <!-- BEGIN_TF_DOCS -->
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.60 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.6 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.6 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.60 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.6 |
 
 ## Modules
 
