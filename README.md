@@ -217,6 +217,6 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
 | <a name="output_network_public_subnets"></a> [network\_public\_subnets](#output\_network\_public\_subnets) | The identities of the public subnetworks deployed within the VPC. |
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc_id) | n/a |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc_id) | The id of VPC where resources are created. |
 
 <!-- END_TF_DOCS -->
