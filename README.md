@@ -209,11 +209,14 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_cluster_node_role"></a> [cluster\_node\_role](#output\_cluster\_node\_role) | n/a |
 | <a name="output_database_connection_string"></a> [database\_connection\_string](#output\_database\_connection\_string) | n/a |
 | <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
+| <a name="output_elasticache_security_group_id"></a> [elasticache\_security\_group\_id](#output\_elasticache\_security\_group\_id) | n/a |
+| <a name="output_elasticache_subnet_group_name"></a> [elasticache\_subnet\_group\_name](#output\_elasticache\_subnet\_group\_name) | n/a |
 | <a name="output_internal_app_port"></a> [internal\_app\_port](#output\_internal\_app\_port) | n/a |
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The identity of the VPC in which resources are deployed. |
 | <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
 | <a name="output_network_public_subnets"></a> [network\_public\_subnets](#output\_network\_public\_subnets) | The identities of the public subnetworks deployed within the VPC. |
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc_id) | n/a |
 
 <!-- END_TF_DOCS -->
