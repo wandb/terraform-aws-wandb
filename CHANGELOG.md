@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.0.0...v2.1.0) (2023-08-14)
+
+
+### Features
+
+* Update provider deprecations ([#117](https://github.com/wandb/terraform-aws-wandb/issues/117)) ([e210dc6](https://github.com/wandb/terraform-aws-wandb/commit/e210dc6001af70976a5a307c0883de3bcb0541d7))
+
 ## [2.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.16.10...v2.0.0) (2023-07-31)
 
 
