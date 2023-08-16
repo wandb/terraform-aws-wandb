@@ -126,6 +126,7 @@ module "aurora" {
   iam_role_force_detach_policies      = true
   iam_role_name                       = "${var.namespace}-aurora-monitoring"
   instances                           = { 1 = {} }
+  instance_class                      = var.instance_class
   kms_key_id                          = var.kms_key_arn
   master_password                     = local.master_password
   master_username                     = var.master_username
