@@ -21,15 +21,17 @@ variable "use_internal_queue" {
 # Database                               #
 ##########################################
 variable "database_engine_version" {
+  default     = "8.0.mysql_aurora.3.02.2"
   description = "Version for MySQL Auora"
+  nullable    = false
   type        = string
-  default     = "8.0.mysql_aurora.3.03.0"
 }
 
 variable "database_instance_class" {
-  description = "Instance type to use by database master instance."
-  type        = string
   default     = "db.r5.large"
+  description = "Instance type to use by database master instance."
+  nullable    = false
+  type        = string
 }
 
 variable "database_snapshot_identifier" {

@@ -73,26 +73,22 @@ locals {
 module "database" {
   source = "./modules/database"
 
-  namespace                        = var.namespace
-  kms_key_arn                      = local.kms_key_arn
-  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
-
-  database_name   = var.database_name
-  master_username = var.database_master_username
-
-  instance_class      = var.database_instance_class
-  engine_version      = var.database_engine_version
-  snapshot_identifier = var.database_snapshot_identifier
-  sort_buffer_size    = var.database_sort_buffer_size
-
-  deletion_protection = var.deletion_protection
-
-  vpc_id                 = local.network_id
-  create_db_subnet_group = local.network_database_create_subnet_group
-  db_subnet_group_name   = local.network_database_subnet_group_name
-  subnets                = local.network_database_subnets
-
-  allowed_cidr_blocks = local.network_private_subnet_cidrs
+  allowed_cidr_blocks                 = local.network_private_subnet_cidrs
+  create_db_subnet_group              = local.network_database_create_subnet_group
+  database_name                       = var.database_name
+  db_subnet_group_name                = local.network_database_subnet_group_name
+  deletion_protection                 = var.deletion_protection
+  engine_version                      = var.database_engine_version
+  iam_database_authentication_enabled = false
+  instance_class                      = var.database_instance_class
+  kms_key_arn                         = local.kms_key_arn
+  master_username                     = var.database_master_username
+  namespace                           = var.namespace
+  performance_insights_kms_key_arn    = var.database_performance_insights_kms_key_arn
+  snapshot_identifier                 = var.database_snapshot_identifier
+  sort_buffer_size                    = var.database_sort_buffer_size
+  subnets                             = local.network_database_subnets
+  vpc_id                              = local.network_id
 }
 
 locals {

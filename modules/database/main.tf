@@ -1,7 +1,3 @@
-locals {
-  master_password = random_string.master_password.result
-}
-
 # Random string to use as initial master password
 resource "random_string" "master_password" {
   length  = 32
@@ -11,6 +7,7 @@ resource "random_string" "master_password" {
 locals {
   is_mysql_80            = length(regexall("^8.0", var.engine_version)) > 0
   engine_version_tag     = local.is_mysql_80 ? "80" : "57"
+  master_password        = random_string.master_password.result
   parameter_family       = local.is_mysql_80 ? "aurora-mysql8.0" : "aurora-mysql5.7"
   parameter_group_name   = "${var.namespace}-aurora-db-${local.engine_version_tag}-parameter-group"
   parameter_cluster_name = "${var.namespace}-aurora-${local.engine_version_tag}-cluster-parameter-group"
@@ -96,17 +93,28 @@ resource "aws_rds_cluster_parameter_group" "default" {
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "6.2.0"
+  version = "7.7.1"
 
-  allow_major_version_upgrade         = true
-  allowed_cidr_blocks                 = var.allowed_cidr_blocks
-  apply_immediately                   = true
-  autoscaling_enabled                 = false
-  backup_retention_period             = var.backup_retention_period
+  allow_major_version_upgrade            = true
+  allowed_cidr_blocks                    = var.allowed_cidr_blocks
+  apply_immediately                      = true
+  autoscaling_enabled                    = false
+  backup_retention_period                = var.backup_retention_period
+  backtrack_window                       = 0
+  cloudwatch_log_group_retention_in_days = 7
+  create_cloudwatch_log_group            = false
+  ######################################################
+  # we create these next two in tf, so don't need
+  # the module to create them
+  ######################################################
+  create_db_cluster_parameter_group   = false
+  create_db_parameter_group           = false
   create_db_subnet_group              = var.create_db_subnet_group
+  create_monitoring_role              = true
   create_random_password              = false
   create_security_group               = true
   database_name                       = var.database_name
+  db_cluster_instance_class           = var.instance_class
   db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.default.id
   db_parameter_group_name             = aws_db_parameter_group.default.id
   db_subnet_group_name                = var.db_subnet_group_name
@@ -114,10 +122,9 @@ module "aurora" {
   enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
   engine                              = "aurora-mysql"
   engine_version                      = var.engine_version
-  iam_database_authentication_enabled = false
+  iam_database_authentication_enabled = var.iam_database_authentication_enabled
   iam_role_force_detach_policies      = true
   iam_role_name                       = "${var.namespace}-aurora-monitoring"
-  instance_class                      = var.instance_class
   instances                           = { 1 = {} }
   kms_key_id                          = var.kms_key_arn
   master_password                     = local.master_password
@@ -140,6 +147,4 @@ module "aurora" {
   storage_encrypted                     = true
   subnets                               = var.subnets
   vpc_id                                = var.vpc_id
-
-
 }

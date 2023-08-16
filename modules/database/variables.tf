@@ -1,10 +1,65 @@
-variable "kms_key_arn" {
-  description = "The ARN for the KMS encryption key."
+variable "allowed_cidr_blocks" {
+  description = "A list of CIDR blocks which are allowed to access the database"
+  nullable    = false
+  type        = list(string)
+}
+
+variable "backup_retention_period" {
+  default     = 30
+  description = "The days to retain backups for."
+  nullable    = false
+  type        = number
+}
+
+variable "binlog_row_image" {
+  default     = "minimal"
+  description = "Value for binlog_row_image"
+  nullable    = false
   type        = string
 }
 
-variable "performance_insights_kms_key_arn" {
-  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+variable "create_db_subnet_group" {
+  default     = true
+  description = "Determines whether to create the databae subnet group or use existing"
+  nullable    = false
+  type        = string
+}
+
+variable "db_subnet_group_name" {
+  default     = ""
+  description = "The name of the subnet group name (existing or created)"
+  nullable    = true
+  type        = string
+}
+
+variable "deletion_protection" {
+  default     = true
+  description = "If the DB instance should have deletion protection enabled. The database can't be deleted when this value is set to `true`."
+  nullable    = false
+  type        = bool
+}
+
+variable "engine_version" {
+  description = "Version for MySQL Auora to use"
+  nullable    = false
+  type        = string
+}
+
+variable "iam_database_authentication_enabled" {
+  description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
+  type        = bool
+  nullable    = false
+}
+
+variable "instance_class" {
+  description = "Instance type to use at master instance."
+  nullable    = false
+  type        = string
+}
+
+variable "kms_key_arn" {
+  description = "The ARN for the KMS encryption key."
+  nullable    = false
   type        = string
 }
 
@@ -13,51 +68,10 @@ variable "namespace" {
   description = "The name prefix for all resources created."
 }
 
-variable "vpc_id" {
-  description = "The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
+variable "performance_insights_kms_key_arn" {
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  nullable    = true
   type        = string
-}
-
-variable "engine_version" {
-  description = "Version for MySQL Auora to use"
-  type        = string
-  default     = "8.0.mysql_aurora.3.03.0"
-}
-
-variable "create_db_subnet_group" {
-  description = "Determines whether to create the databae subnet group or use existing"
-  type        = string
-  default     = true
-}
-
-variable "db_subnet_group_name" {
-  description = "The name of the subnet group name (existing or created)"
-  type        = string
-  default     = ""
-}
-
-variable "subnets" {
-  description = "List of subnet IDs used by database subnet group created."
-  type        = list(string)
-  default     = []
-}
-
-variable "instance_class" {
-  description = "Instance type to use at master instance."
-  type        = string
-  default     = "db.r5.large"
-}
-
-variable "deletion_protection" {
-  description = "If the DB instance should have deletion protection enabled. The database can't be deleted when this value is set to `true`."
-  type        = bool
-  default     = true
-}
-
-variable "backup_retention_period" {
-  description = "The days to retain backups for."
-  type        = number
-  default     = 30
 }
 
 variable "preferred_backup_window" {
@@ -71,17 +85,33 @@ variable "preferred_maintenance_window" {
   type        = string
   default     = "sun:05:00-sun:06:00"
 }
-variable "iam_database_authentication_enabled" {
-  description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
-  type        = bool
-  default     = true
+
+variable "subnets" {
+  default     = []
+  description = "List of subnet IDs used by database subnet group created."
+  nullable    = false
+  type        = list(string)
 }
 
-variable "allowed_cidr_blocks" {
-  description = "A list of CIDR blocks which are allowed to access the database"
-  type        = list(string)
-  default     = []
+
+variable "vpc_id" {
+  description = "The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
+  nullable    = false
+  type        = string
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 variable "snapshot_identifier" {
   description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot"
@@ -116,8 +146,3 @@ variable "innodb_lru_scan_depth" {
 
 
 # Cluster parametes
-variable "binlog_row_image" {
-  description = "Value for binlog_row_image"
-  type        = string
-  default     = "minimal"
-}
