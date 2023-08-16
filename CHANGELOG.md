@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.1.0...v2.2.0) (2023-08-16)
+
+
+### Features
+
+* Update vcp provider ([#120](https://github.com/wandb/terraform-aws-wandb/issues/120)) ([85f9976](https://github.com/wandb/terraform-aws-wandb/commit/85f997655f4119ad1fefe94f07d98f19a9e4ecd9))
+
 ## [2.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.0.0...v2.1.0) (2023-08-14)
 
 
