@@ -13,6 +13,8 @@ module "vpc" {
   create_igw                     = true
   customer_gateways              = var.customer_gateways
   database_subnets               = var.database_subnet_cidrs
+  # setting these to empty shouldn't interfere
+  # with SG rules attached to SGs
   default_security_group_egress  = []
   default_security_group_ingress = []
   elasticache_subnets            = var.create_elasticache_subnet ? var.elasticache_subnet_cidrs : []
