@@ -31,7 +31,7 @@ jobs:
         run: python scripts/set_variable_default.py eks_cluster_version ${{ steps.eks.outputs.LATEST_VERSION }}
 
       - name: Set EKS Version
-        run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} modules/app_eks/variables.tf
+        run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} modules/eks-cluster/variables.tf
 
       - name: Update terraform docs
         uses: terraform-docs/gh-actions@main

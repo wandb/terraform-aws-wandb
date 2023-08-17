@@ -124,7 +124,7 @@ locals {
 }
 
 module "app_eks" {
-  source = "./modules/app_eks"
+  source = "modules/eks-cluster"
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -155,7 +155,7 @@ module "app_eks" {
 }
 
 module "app_lb" {
-  source = "./modules/app_lb"
+  source = "modules/application-load-balancer"
 
   namespace             = var.namespace
   load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"

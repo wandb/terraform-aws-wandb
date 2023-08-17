@@ -279,7 +279,7 @@ variable "kubernetes_map_users" {
 variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
-  default     = ["m4.large"]
+  default     = ["is4gen.medium"]
 }
 
 variable "eks_policy_arns" {
