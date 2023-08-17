@@ -117,7 +117,7 @@ module "aurora" {
   iam_database_authentication_enabled = false
   iam_role_force_detach_policies      = true
   iam_role_name                       = "${var.namespace}-aurora-monitoring"
-  instance_class                      = var.instance_class
+  instance_class                      = "db.m7g"
   instances                           = { 1 = {} }
   kms_key_id                          = var.kms_key_arn
   master_password                     = local.master_password
