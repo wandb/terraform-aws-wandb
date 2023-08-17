@@ -1,0 +1,125 @@
+---
+image:
+  repository: juicedata/juicefs-csi-driver
+  tag: v0.21.0
+  pullPolicy: 'Always'
+sidecars:
+  livenessProbeImage:
+    repository: quay.io/k8scsi/livenessprobe
+    tag: v1.1.0
+    pullPolicy: 'Always'
+  nodeDriverRegistrarImage:
+    repository: quay.io/k8scsi/csi-node-driver-registrar
+    tag: v2.1.0
+    pullPolicy: 'Always'
+  csiProvisionerImage:
+    repository: quay.io/k8scsi/csi-provisioner
+    tag: v1.6.0
+    pullPolicy: 'Always'
+  csiResizerImage:
+    repository: quay.io/k8scsi/csi-resizer
+    tag: v1.0.1
+    pullPolicy: 'Always'
+imagePullSecrets: []
+mountMode: mountpod
+hostAliases:
+  - ip: 127.0.0.1
+    hostnames:
+      - s3.juicefs.local
+      - redis.juicefs.local
+# The kubelet working directory, can be set using --root-dir when starting kubelet
+kubeletDir: /var/lib/kubelet
+jfsMountDir: /var/lib/juicefs/volume
+jfsConfigDir: /var/lib/juicefs/config
+immutable: false
+dnsPolicy: ClusterFirstWithHostNet
+dnsConfig: {}
+serviceAccount:
+  controller:
+    create: true
+    annotations: {}
+    name: juicefs-csi-controller-sa
+  node:
+    create: true
+    annotations: {}
+    name: juicefs-csi-node-sa
+controller:
+  enabled: true
+  leaderElection:
+    enabled: true
+    leaderElectionNamespace: ''
+    leaseDuration: ''
+  provisioner: true
+  replicas: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  terminationGracePeriodSeconds: 30
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  service:
+    port: 9909
+    type: ClusterIP
+  priorityClassName: system-cluster-critical
+node:
+  enabled: true
+  hostNetwork: false
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  storageClassShareMount: true
+  mountPodNonPreempting: false
+  terminationGracePeriodSeconds: 90
+  affinity: {}
+  nodeSelector: {}
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  priorityClassName: system-node-critical
+webhook:
+  certManager:
+    enabled: true
+  timeoutSeconds: 5
+  FailurePolicy: Fail
+storageClasses:
+  - name: juicefs-sc
+    enabled: true
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    annotations:
+      storageclass.kubernetes.io/is-default-class: 'true'
+    backend:
+      name: juicefs
+      metaurl: ${metastore_url}
+      storage: s3
+      bucket: ${bucket_url}
+      token: ''
+      accessKey: ${accessKey}
+      secretKey: ${secretKey}
+      trashDays: '14'
+    mountOptions:
+      - debug
+      - cache-size=204800
+      - buffer-size=512
+      - prefetch=2
+      - writeback
+    mountPod:
+      resources:
+        limits:
+          cpu: 5000m
+          memory: 5Gi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      image: ''
