@@ -8,11 +8,11 @@ module "vpc" {
 
   create_vpc = var.create_vpc
 
-  azs                            = data.aws_availability_zones.available.names
-  cidr                           = var.cidr
-  create_igw                     = true
-  customer_gateways              = var.customer_gateways
-  database_subnets               = var.database_subnet_cidrs
+  azs               = data.aws_availability_zones.available.names
+  cidr              = var.cidr
+  create_igw        = true
+  customer_gateways = var.customer_gateways
+  database_subnets  = var.database_subnet_cidrs
   # setting these to empty shouldn't interfere
   # with SG rules attached to SGs
   default_security_group_egress  = []
