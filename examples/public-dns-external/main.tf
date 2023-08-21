@@ -1,3 +1,13 @@
+# this assumes your shell is authenticated with gcloud and using playground-111:
+# gcloud config set project playground-111
+# gcloud auth application-default login
+terraform {
+  backend "gcs" {
+    bucket = "install.wandb.ai"
+    prefix = "cvp.wandb.ml"
+  }
+}
+
 provider "aws" {
   region = "us-west-2"
 
@@ -26,11 +36,12 @@ module "wandb_infra" {
   database_sort_buffer_size    = var.database_sort_buffer_size
 
   allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = ["::/0"]
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
 
   eks_cluster_version            = "1.25"
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
+  kubernetes_instance_types      = ["m6a.2xlarge"] # 8 vCPU, 32 GiB RAM
 
   domain_name = var.domain_name
   zone_id     = var.zone_id
@@ -56,9 +67,25 @@ provider "kubernetes" {
 }
 
 module "wandb_app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
+  # source = "github.com/wandb/terraform-kubernetes-wandb"
+  source = "../../../terraform-kubernetes-wandb"
 
   license = var.wandb_license
+
+  oidc_client_id = var.oidc_client_id
+  oidc_issuer = var.oidc_issuer
+
+  other_wandb_secrets = var.other_wandb_secrets
+
+  dd_env = var.datadog_env
+  weave_enabled = true
+  weave_enable_datadog = true
+  weave_dd_profiling_enabled = true
+  weave_storage_class = "ebs-sc"
+  weave_storage_provisioner = "ebs.csi.aws.com"
+  weave_storage_type = "gp3"
+  weave_storage_size = "250Gi"
+  parquet_enabled = true
 
   host                       = module.wandb_infra.url
   bucket                     = "s3://${module.wandb_infra.bucket_name}"
