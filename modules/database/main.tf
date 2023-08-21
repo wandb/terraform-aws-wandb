@@ -111,7 +111,7 @@ module "aurora" {
   db_parameter_group_name             = aws_db_parameter_group.default.id
   db_subnet_group_name                = var.db_subnet_group_name
   deletion_protection                 = var.deletion_protection
-  enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
+  enabled_cloudwatch_logs_exports     = []
   engine                              = "aurora-mysql"
   engine_version                      = var.engine_version
   iam_database_authentication_enabled = false
