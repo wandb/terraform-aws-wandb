@@ -76,6 +76,7 @@ module "wandb_app" {
   oidc_issuer = var.oidc_issuer
 
   other_wandb_secrets = var.other_wandb_secrets
+  other_wandb_env = var.other_wandb_env
 
   dd_env = var.datadog_env
   weave_enabled = true
