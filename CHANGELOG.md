@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.2.0...v2.3.0) (2023-08-22)
+
+
+### Features
+
+* Change default instance type ([#128](https://github.com/wandb/terraform-aws-wandb/issues/128)) ([7353120](https://github.com/wandb/terraform-aws-wandb/commit/735312030f7ef0efac2761254cc00a367194b342))
+
 ## [2.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.1.0...v2.2.0) (2023-08-16)
 
 
