@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.3.0...v2.4.0) (2023-08-28)
+
+
+### Features
+
+* RDS/Aurora Provider Update ([#129](https://github.com/wandb/terraform-aws-wandb/issues/129)) ([394fa56](https://github.com/wandb/terraform-aws-wandb/commit/394fa56586063a5d3cd9c87684f382d4979b3154))
+
 ## [2.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.2.0...v2.3.0) (2023-08-22)
 
 
