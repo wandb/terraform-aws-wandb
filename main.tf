@@ -31,17 +31,6 @@ locals {
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
-data "aws_s3_bucket" "file_storage" {
-  depends_on = [module.file_storage]
-  bucket     = local.bucket_name
-}
-
-data "aws_sqs_queue" "file_storage" {
-  count      = local.use_internal_queue ? 0 : 1
-  depends_on = [module.file_storage]
-  name       = local.bucket_queue_name
-}
-
 module "networking" {
   source     = "./modules/networking"
   namespace  = var.namespace

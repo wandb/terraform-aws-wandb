@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+### [2.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.0...v2.4.1) (2023-08-29)
+
+
+### Bug Fixes
+
+* Remove duplicate data statements ([#130](https://github.com/wandb/terraform-aws-wandb/issues/130)) ([ae7e6b2](https://github.com/wandb/terraform-aws-wandb/commit/ae7e6b2b4a038f81ac06fc4a38c7440639a4e66c))
+
+## [2.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.3.0...v2.4.0) (2023-08-28)
+
+
+### Features
+
+* RDS/Aurora Provider Update ([#129](https://github.com/wandb/terraform-aws-wandb/issues/129)) ([394fa56](https://github.com/wandb/terraform-aws-wandb/commit/394fa56586063a5d3cd9c87684f382d4979b3154))
+
+## [2.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.2.0...v2.3.0) (2023-08-22)
+
+
+### Features
+
+* Change default instance type ([#128](https://github.com/wandb/terraform-aws-wandb/issues/128)) ([7353120](https://github.com/wandb/terraform-aws-wandb/commit/735312030f7ef0efac2761254cc00a367194b342))
+
+## [2.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.1.0...v2.2.0) (2023-08-16)
+
+
+### Features
+
+* Update vcp provider ([#120](https://github.com/wandb/terraform-aws-wandb/issues/120)) ([85f9976](https://github.com/wandb/terraform-aws-wandb/commit/85f997655f4119ad1fefe94f07d98f19a9e4ecd9))
+
 ## [2.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.0.0...v2.1.0) (2023-08-14)
 
 
