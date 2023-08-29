@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [2.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.0...v2.4.1) (2023-08-29)
+
+
+### Bug Fixes
+
+* Remove duplicate data statements ([#130](https://github.com/wandb/terraform-aws-wandb/issues/130)) ([ae7e6b2](https://github.com/wandb/terraform-aws-wandb/commit/ae7e6b2b4a038f81ac06fc4a38c7440639a4e66c))
+
 ## [2.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.3.0...v2.4.0) (2023-08-28)
 
 
