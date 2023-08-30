@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [2.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.1...v2.4.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* SSE-S3 example ([#132](https://github.com/wandb/terraform-aws-wandb/issues/132)) ([627005b](https://github.com/wandb/terraform-aws-wandb/commit/627005b063e1339746dece1d2255ed006ac1b25f))
+
 ### [2.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.0...v2.4.1) (2023-08-29)
 
 
