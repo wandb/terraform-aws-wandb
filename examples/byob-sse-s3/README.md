@@ -32,7 +32,7 @@ can version, reuse, and share.
    It is most common to install and authenticate with [AWS
    CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 3. Pull terraform-aws-wandb repo and cd to this
-   [directory](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/byob)
+   [directory](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/byob-sse-s3)
 4. Run `terraform init`
 5. Run `terraform apply`. If you need to assume a different role, please
    configure that in the `main.tf` file before running `apply`. You can learn
@@ -76,7 +76,7 @@ Lastly, you'll need to create the S3 bucket. Make sure to enable CORS access. Yo
 </CORSConfiguration>
 ```
 
-Also, enable server side encryption and use the KMS key you just generated.
+As stated above, server side encryption will be handled via SSE-S3 encryption with AE256.
 
 Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
 
