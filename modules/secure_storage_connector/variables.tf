@@ -9,6 +9,12 @@ variable "create_kms_key" {
   default     = true
 }
 
+variable "enable_key_rotation" {
+  description = "Specifies whether key rotation is enabled. https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html"
+  type        = bool
+  default     = true
+}
+
 variable "sse_algorithm" {
   description = "The server-side encryption algorithm to use. Valid values are `AES256` and `aws:kms`"
   type        = string

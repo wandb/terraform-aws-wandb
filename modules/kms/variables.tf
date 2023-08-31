@@ -8,6 +8,12 @@ variable "key_deletion_window" {
   type        = number
 }
 
+variable "enable_key_rotation" {
+  description = "Specifies whether key rotation is enabled. https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html"
+  type        = bool
+  default     = true
+}
+
 variable "iam_principal_arn" {
   description = "The IAM principal (role or user) ARN that will be authorized to use the key."
   type        = string
