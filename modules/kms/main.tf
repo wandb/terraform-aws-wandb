@@ -11,7 +11,7 @@ resource "aws_kms_key" "key" {
       {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Principal" : { "AWS" : data.aws_caller_identity.current.arn },
         "Action" : "kms:*",
         "Resource" : "*"
       },
@@ -52,7 +52,7 @@ resource "aws_kms_key" "key" {
         "Resource" : "*",
         "Condition" : {
           "StringEquals" : {
-            "kms:CallerAccount" : "${data.aws_caller_identity.current.account_id}",
+            "kms:CallerAccount" : data.aws_caller_identity.current.account_id,
           },
           "StringLike" : {
             "kms:ViaService" : "ec2.*.amazonaws.com",

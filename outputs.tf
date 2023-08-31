@@ -54,5 +54,5 @@ output "internal_app_port" {
 }
 
 output "elasticache_connection_string" {
-  value = var.create_elasticache ? module.redis.0.connection_string : null
+  value = var.create_elasticache ? module.redis[0].connection_string : null
 }

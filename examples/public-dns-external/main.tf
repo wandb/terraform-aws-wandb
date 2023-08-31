@@ -26,7 +26,7 @@ module "wandb_infra" {
   database_sort_buffer_size    = var.database_sort_buffer_size
 
   allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = ["::/0"]
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
 
   eks_cluster_version            = "1.25"
   kubernetes_public_access       = true

@@ -70,7 +70,7 @@ resource "aws_s3_bucket_policy" "s3_policy" {
           "s3:GetBucketVersioning"
         ],
         "Resource" : [
-          "${module.file_storage.bucket_arn}",
+          module.file_storage.bucket_arn,
           "${module.file_storage.bucket_arn}/*",
         ]
       }
