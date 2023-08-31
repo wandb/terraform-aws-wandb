@@ -1,19 +1,6 @@
 data "aws_iam_policy_document" "node_cloudwatch" {
   statement {
     actions = [
-      "cloudwatch:ListMetrics",
-      "cloudwatch:ListMetricStreams",
-      "cloudwatch:PutMetricData",
-      "cloudwatch:PutMetricStream",
-      "cloudwatch:StartMetricStream",
-      "cloudwatch:StopMetricStream",
-    ]
-    effect    = "Allow"
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
