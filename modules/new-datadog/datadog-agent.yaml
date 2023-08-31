@@ -1,0 +1,85 @@
+apiVersion: datadoghq.com/v2alpha1
+kind: DatadogAgent
+metadata:
+  name: datadog
+  namespace: datadog
+spec:
+  global:
+    credentials:
+      apiSecret:
+        secretName: datadog-secrets
+        keyName: api-key
+      appSecret:
+        secretName: datadog-secrets
+        keyName: app-key
+    registry: "public.ecr.aws/datadog"
+    site: "datadoghq.com"
+  features:
+    admissionController:
+      enabled: true
+    apm:
+      enabled: true
+      unixDomainSocketConfig:
+        enabled: true      
+    clusterChecks:
+      enabled: true
+      useClusterChecksRunners: true
+    dogstatsd:
+      originDetectionEnabled: true
+      unixDomainSocketConfig:
+        enabled: true            
+    eventCollection:
+      collectKubernetesEvents: true       
+    externalMetricsServer:
+      enabled: true
+      useDatadogMetrics: true
+    liveContainerCollection:
+      enabled: true      
+    liveProcessCollection:
+      enabled: true
+    logCollection:
+      enabled: true
+      containerCollectAll: true
+    npm: 
+      enabled: true
+  override:
+    clusterAgent:
+      extraConfd:
+        configMap:
+          name: cluster-agent-confd
+          items:
+            - key: test
+              path: test.d/test.yaml
+      #containers:
+      #image:
+      #  name: gcr.io/datadoghq/cluster-agent:latest
+      replicas: 1
+    clusterAgentChecksRunner:
+      #containers:
+      replicas: 1
+    nodeAgent:
+      containers:
+        traceAgent:
+          env:
+            - name: DD_APM_IGNORE_RESOURCES
+              value: "GET /__weave/hello"    
+      #image:
+      #  name: gcr.io/datadoghq/agent:latest
+      replicas: 1
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          value: weave-python
+        - effect: NoSchedule
+          key: dedicated
+          value: parquet
+        - effect: NoSchedule
+          key: dedicated
+          value: infra-worker
+        - effect: NoSchedule
+          key: dedicated
+          value: api      
+        - operator: Exists
+        
+  
+
