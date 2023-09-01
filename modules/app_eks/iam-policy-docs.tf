@@ -1,6 +1,7 @@
 data "aws_iam_policy_document" "node_cloudwatch" {
   statement {
     actions = [
+      "cloudwatch:PutMetricData",
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
