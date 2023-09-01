@@ -29,9 +29,11 @@ module "eks" {
   map_roles    = var.map_roles
   map_users    = var.map_users
 
+  cluster_enabled_log_types = [ "api", "audit", "controllerManager", "scheduler" ]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+  cluster_log_retention_in_days = 30
 
   cluster_encryption_config = var.kms_key_arn != "" ? [
     {

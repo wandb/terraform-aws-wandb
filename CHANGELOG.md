@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.2...v2.5.0) (2023-09-01)
+
+
+### Features
+
+* Enable EKS logs ([#134](https://github.com/wandb/terraform-aws-wandb/issues/134)) ([2239119](https://github.com/wandb/terraform-aws-wandb/commit/2239119bd7b2bb0660c25459f20592dfd4016549))
+
 ### [2.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.1...v2.4.2) (2023-08-30)
 
 
