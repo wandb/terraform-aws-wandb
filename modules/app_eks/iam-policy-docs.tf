@@ -9,6 +9,12 @@ data "aws_iam_policy_document" "node_cloudwatch" {
     effect    = "Allow"
     resources = ["arn:aws:logs:*:*:*"]
   }
+
+ statement {
+     actions   = ["cloudwatch:PutMetricData"]
+     effect    = "Allow"
+     resources = ["*"]
+   }  
 }
 
 data "aws_iam_policy_document" "node_IMDSv2" {
@@ -51,5 +57,3 @@ data "aws_iam_policy_document" "node_s3" {
     ]
   }
 }
-
-
