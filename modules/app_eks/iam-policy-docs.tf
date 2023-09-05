@@ -57,5 +57,3 @@ data "aws_iam_policy_document" "node_s3" {
     ]
   }
 }
-
-
