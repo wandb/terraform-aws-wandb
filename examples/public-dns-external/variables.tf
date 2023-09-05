@@ -26,12 +26,7 @@ variable "wandb_license" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.01.0"
-
-  validation {
-    condition     = contains(["5.7", "8.0.mysql_aurora.3.01.0", "8.0.mysql_aurora.3.02.0"], var.database_engine_version)
-    error_message = "We only support MySQL: \"5.7\"; \"8.0.mysql_aurora.3.01.0\"; \"8.0.mysql_aurora.3.02.0\"."
-  }
+  default     = "8.0.mysql_aurora.3.02.2"
 }
 
 variable "database_instance_class" {
@@ -73,4 +68,18 @@ variable "bucket_kms_key_arn" {
   type        = string
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
   default     = ""
+}
+
+
+variable "allowed_inbound_cidr" {
+  default  = ["0.0.0.0/0"]
+  nullable = false
+  type     = list(string)
+}
+
+
+variable "allowed_inbound_ipv6_cidr" {
+  default  = ["::/0"]
+  nullable = false
+  type     = list(string)
 }

@@ -27,7 +27,7 @@ resource "aws_kms_key" "key" {
           "kms:ReEncrypt*",
           "kms:GenerateDataKey*"
         ],
-        Resource: "*"
+        Resource : "*"
       }
     ]
   })
@@ -37,7 +37,7 @@ module "file_storage" {
   source = "../../modules/file_storage"
 
   namespace     = var.namespace
-  sse_algorithm = "aws:kms"
+  sse_algorithm = var.sse_algorithm
   kms_key_arn   = var.create_kms_key ? aws_kms_key.key[0].arn : null
 
   create_queue = false
@@ -79,5 +79,5 @@ resource "aws_s3_bucket_policy" "s3_policy" {
 }
 
 data "aws_s3_bucket" "file_storage" {
-  bucket     = module.file_storage.bucket_name
+  bucket = module.file_storage.bucket_name
 }

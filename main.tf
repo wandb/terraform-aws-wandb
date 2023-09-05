@@ -8,16 +8,17 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn            = module.kms.key.arn
-  provision_file_storage = var.bucket_name == ""
+  kms_key_arn         = module.kms.key.arn
+  use_external_bucket = var.bucket_name != ""
+  use_internal_queue  = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
-  count     = local.provision_file_storage ? 1 : 0
+  count     = var.create_bucket ? 1 : 0
   source    = "./modules/file_storage"
   namespace = var.namespace
 
-  create_queue = !var.use_internal_queue
+  create_queue = !local.use_internal_queue
 
   sse_algorithm = "aws:kms"
   kms_key_arn   = local.kms_key_arn
@@ -26,19 +27,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.provision_file_storage ? module.file_storage.0.bucket_name : var.bucket_name
-  bucket_queue_name = !var.use_internal_queue && local.provision_file_storage ? module.file_storage.0.bucket_queue_name : null
-}
-
-data "aws_s3_bucket" "file_storage" {
-  depends_on = [module.file_storage]
-  bucket     = local.bucket_name
-}
-
-data "aws_sqs_queue" "file_storage" {
-  count      = var.use_internal_queue ? 0 : 1
-  depends_on = [module.file_storage]
-  name       = local.bucket_queue_name
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
 module "networking" {
@@ -72,8 +62,9 @@ locals {
 module "database" {
   source = "./modules/database"
 
-  namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  namespace                        = var.namespace
+  kms_key_arn                      = local.kms_key_arn
+  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
   master_username = var.database_master_username
@@ -132,9 +123,9 @@ module "app_eks" {
   map_roles      = var.kubernetes_map_roles
   map_users      = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.provision_file_storage ? local.kms_key_arn : var.bucket_kms_key_arn
+  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
-  bucket_sqs_queue_arn = var.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
+  bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
@@ -174,7 +165,7 @@ module "app_lb" {
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
-  alb_target_group_arn   = module.app_lb.tg_app_arn
+  lb_target_group_arn    = module.app_lb.tg_app_arn
 }
 
 module "redis" {
@@ -185,6 +176,7 @@ module "redis" {
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
+  node_type               = var.elasticache_node_type
 
   kms_key_arn = local.kms_key_arn
 }

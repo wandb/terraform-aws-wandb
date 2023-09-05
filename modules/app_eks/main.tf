@@ -1,19 +1,11 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
 }
 
-data "aws_iam_policy_document" "node" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
 
 resource "aws_eks_addon" "eks" {
   cluster_name = var.namespace
@@ -24,119 +16,11 @@ resource "aws_eks_addon" "eks" {
 }
 
 locals {
-  managed_policy_arns = [
+  managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ]
-}
-
-# Configure permissions required for nodes
-resource "aws_iam_role" "node" {
-  name               = "${var.namespace}-node"
-  assume_role_policy = data.aws_iam_policy_document.node.json
-
-  managed_policy_arns = concat(local.managed_policy_arns, var.eks_policy_arns)
-
-  # Policy to access S3
-  inline_policy {
-    name = "${var.namespace}-node-s3-policy"
-    policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : "s3:*",
-          "Resource" : [
-            "${var.bucket_arn}",
-            "${var.bucket_arn}/*"
-          ]
-        }
-      ]
-    })
-  }
-
-  # Policy to access SQS. If we are using an internal queue, we dont need to set
-  # any permissions
-  dynamic "inline_policy" {
-    for_each = var.bucket_sqs_queue_arn == null ? [] : [1]
-    content {
-      name = "${var.namespace}-node-sqs-policy"
-      policy = jsonencode({
-        "Version" : "2012-10-17",
-        "Statement" : [
-          {
-            "Effect" : "Allow",
-            "Action" : "sqs:*",
-            "Resource" : [
-              "${var.bucket_sqs_queue_arn}"
-            ]
-          }
-        ]
-      })
-    }
-  }
-
-  # Encrypt and decrypt with KMS
-  dynamic "inline_policy" {
-    for_each = var.bucket_kms_key_arn == "" ? [] : [1]
-    content {
-      name = "${var.namespace}-node-kms-policy"
-      policy = jsonencode({
-        "Version" : "2012-10-17",
-        "Statement" : [
-          {
-            "Effect" : "Allow",
-            "Action" : [
-              "kms:Encrypt",
-              "kms:Decrypt",
-              "kms:ReEncrypt*",
-              "kms:GenerateDataKey*",
-              "kms:DescribeKey"
-            ],
-            "Resource" : [
-              "${var.bucket_kms_key_arn}"
-            ]
-          }
-        ]
-      })
-    }
-  }
-
-  # Publish cloudwatch metrics
-  inline_policy {
-    name = "${var.namespace}-node-cloudwatch-policy"
-    policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Effect" : "Allow",
-          "Action" : ["cloudwatch:PutMetricData"],
-          "Resource" : "*"
-        }
-      ]
-    })
-  }
-
-  # Enable IMDsv2 
-  inline_policy {
-    name = "${var.namespace}-node-IMDsv2-policy"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect   = "Allow"
-          Action   = "ec2:DescribeInstanceAttribute"
-          Resource = "*"
-        },
-        {
-          Effect   = "Allow"
-          Action   = "ec2:PutInstanceMetadata"
-          Resource = "*"
-        }
-      ]
-    })
-  }
+  ], var.eks_policy_arns)
 }
 
 module "eks" {
@@ -153,9 +37,11 @@ module "eks" {
   map_roles    = var.map_roles
   map_users    = var.map_users
 
+  cluster_enabled_log_types = [ "api", "audit", "controllerManager", "scheduler" ]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+  cluster_log_retention_in_days = 30
 
   cluster_encryption_config = var.kms_key_arn != "" ? [
     {

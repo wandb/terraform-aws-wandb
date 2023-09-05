@@ -15,6 +15,18 @@ variable "eks_node_role_arn" {
   default     = ""
 }
 
+variable "sse_algorithm" {
+  description = "The server-side encryption algorithm to use. Valid values are `AES256` and `aws:kms`"
+  type        = string
+  default     = "AES256"
+}
+
+variable "create_kms_key" {
+  description = "If a KMS key should be created to encrypt S3 storage bucket objects. This can only be used when you set the value of sse_algorithm as aws:kms."
+  type        = bool
+  default     = false
+}
+
 provider "aws" {
   region = var.region
 
@@ -40,12 +52,10 @@ module "secure_storage_connector" {
   source            = "wandb/wandb/aws//modules/secure_storage_connector"
   namespace         = local.namespace
   aws_principal_arn = local.wandb_deployment_account_arn
+  sse_algorithm     = var.sse_algorithm
+  create_kms_key    = var.create_kms_key
 }
 
 output "bucket_name" {
   value = module.secure_storage_connector.bucket.bucket
-}
-
-output "bucket_kms_key_arn" {
-  value = module.secure_storage_connector.bucket_kms_key.arn
 }

@@ -41,7 +41,7 @@ variable "database_snapshot_identifier" {
 variable "database_sort_buffer_size" {
   description = "Specifies the sort_buffer_size value to set for the database"
   type        = number
-  default     = 262144
+  default     = 67108864
 }
 
 variable "database_name" {
@@ -54,6 +54,26 @@ variable "database_master_username" {
   description = "Specifies the master_username value to set for the database"
   type        = string
   default     = "wandb"
+}
+
+variable "database_binlog_format" {
+  description = "Specifies the binlog_format value to set for the database"
+  type        = string
+  default     = "ROW"
+}
+
+variable "database_innodb_lru_scan_depth" {
+  description = "Specifies the innodb_lru_scan_depth value to set for the database"
+  type        = number
+  default     = 128
+}
+
+variable "database_performance_insights_kms_key_arn" {
+  default     = null
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  nullable    = true
+  type        = string
+
 }
 
 ##########################################
@@ -112,15 +132,15 @@ variable "acm_certificate_arn" {
 }
 
 variable "allowed_inbound_cidr" {
+  description = "CIDRs allowed to access wandb-server."
+  nullable    = false
   type        = list(string)
-  default     = []
-  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 variable "allowed_inbound_ipv6_cidr" {
+  description = "CIDRs allowed to access wandb-server."
+  nullable    = false
   type        = list(string)
-  default     = []
-  description = "Allow HTTP(S) traffic to W&B. Defaults to no connections."
 }
 
 
@@ -213,9 +233,9 @@ variable "network_elasticache_subnet_cidrs" {
 # EKS Cluster                            #
 ##########################################
 variable "eks_cluster_version" {
+  description = "EKS cluster kubernetes version"
+  nullable    = false
   type        = string
-  description = "Indicates EKS cluster version"
-  default     = "1.21"
 }
 
 variable "kubernetes_public_access" {
@@ -259,8 +279,8 @@ variable "kubernetes_map_users" {
 variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
-  default     = ["m4.large"]
- }
+  default     = ["m5.large"]
+}
 
 variable "eks_policy_arns" {
   type        = list(string)
@@ -273,6 +293,10 @@ variable "eks_policy_arns" {
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
+variable "create_bucket" {
+  type    = bool
+  default = true
+}
 
 variable "bucket_name" {
   type    = string
@@ -291,5 +315,11 @@ variable "bucket_kms_key_arn" {
 variable "create_elasticache" {
   type        = bool
   description = "Boolean indicating whether to provision an elasticache instance (true) or not (false)."
-  default     = false
+  default     = true
+}
+
+variable "elasticache_node_type" {
+  description = "The type of the redis cache node to deploy"
+  type        = string
+  default     = "cache.t2.medium"
 }
