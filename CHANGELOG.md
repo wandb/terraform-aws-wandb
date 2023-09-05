@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [2.5.1](https://github.com/wandb/terraform-aws-wandb/compare/v2.5.0...v2.5.1) (2023-09-05)
+
+
+### Bug Fixes
+
+* Add cloudwatch metrics to policy ([#136](https://github.com/wandb/terraform-aws-wandb/issues/136)) ([be6f070](https://github.com/wandb/terraform-aws-wandb/commit/be6f0705879ca21c776bea43d14561d26fd38edf))
+
 ## [2.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.4.2...v2.5.0) (2023-09-01)
 
 
