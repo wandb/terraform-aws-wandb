@@ -56,18 +56,6 @@ variable "database_master_username" {
   default     = "wandb"
 }
 
-variable "database_binlog_format" {
-  description = "Specifies the binlog_format value to set for the database"
-  type        = string
-  default     = "ROW"
-}
-
-variable "database_innodb_lru_scan_depth" {
-  description = "Specifies the innodb_lru_scan_depth value to set for the database"
-  type        = number
-  default     = 128
-}
-
 variable "database_performance_insights_kms_key_arn" {
   default     = null
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
@@ -280,12 +268,6 @@ variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m5.large"]
-}
-
-variable "eks_policy_arns" {
-  type        = list(string)
-  description = "Additional IAM policy to apply to the EKS cluster"
-  default     = []
 }
 
 ##########################################

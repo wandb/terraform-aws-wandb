@@ -8,6 +8,7 @@ module "vpc" {
 
   create_vpc = var.create_vpc
 
+  amazon_side_asn   = var.amazon_side_asn
   azs               = data.aws_availability_zones.available.names
   cidr              = var.cidr
   create_igw        = true

@@ -114,7 +114,7 @@ module "aurora" {
   enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
   engine                              = "aurora-mysql"
   engine_version                      = var.engine_version
-  iam_database_authentication_enabled = false
+  iam_database_authentication_enabled = var.iam_database_authentication_enabled
   iam_role_force_detach_policies      = true
   iam_role_name                       = "${var.namespace}-aurora-monitoring"
   instance_class                      = var.instance_class
@@ -134,7 +134,7 @@ module "aurora" {
   performance_insights_retention_period = 7
   preferred_backup_window               = var.preferred_backup_window
   preferred_maintenance_window          = var.preferred_maintenance_window
-  security_group_tags                   = { "Namespace" : "${var.namespace}" }
+  security_group_tags                   = { "Namespace" : var.namespace }
   skip_final_snapshot                   = true
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = true

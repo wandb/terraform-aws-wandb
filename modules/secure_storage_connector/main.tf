@@ -1,9 +1,10 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
-  count       = var.create_kms_key ? 1 : 0
-  key_usage   = "ENCRYPT_DECRYPT"
-  description = "Wandb managed key to encrypt and decrypt file storage"
+  count               = var.create_kms_key ? 1 : 0
+  key_usage           = "ENCRYPT_DECRYPT"
+  description         = "Wandb managed key to encrypt and decrypt file storage"
+  enable_key_rotation = var.enable_key_rotation
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -70,7 +71,7 @@ resource "aws_s3_bucket_policy" "s3_policy" {
           "s3:GetBucketVersioning"
         ],
         "Resource" : [
-          "${module.file_storage.bucket_arn}",
+          module.file_storage.bucket_arn,
           "${module.file_storage.bucket_arn}/*",
         ]
       }

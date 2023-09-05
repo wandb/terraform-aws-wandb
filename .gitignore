@@ -24,3 +24,4 @@ test.py
 
 **/wandb/*
 policy.json
+results.json

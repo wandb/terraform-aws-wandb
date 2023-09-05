@@ -27,8 +27,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
-  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage[0].bucket_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage[0].bucket_queue_name
 }
 
 module "networking" {
@@ -39,7 +39,7 @@ module "networking" {
   cidr                      = var.network_cidr
   private_subnet_cidrs      = var.network_private_subnet_cidrs
   public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
+  database_subnet_cidrs     = local.network_database_subnet_cidrs
   create_elasticache_subnet = var.create_elasticache
   elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
 }
@@ -125,7 +125,7 @@ module "app_eks" {
 
   bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
-  bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
+  bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage[0].arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
@@ -134,13 +134,11 @@ module "app_eks" {
   database_security_group_id   = module.database.security_group_id
 
   create_elasticache_security_group = var.create_elasticache
-  elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null
+  elasticache_security_group_id     = var.create_elasticache ? module.redis[0].security_group_id : null
 
   cluster_version                      = var.eks_cluster_version
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
-
-  eks_policy_arns = var.eks_policy_arns
 }
 
 module "app_lb" {
@@ -160,6 +158,7 @@ module "app_lb" {
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
   network_public_subnets  = local.network_public_subnets
+  ssl_policy              = var.ssl_policy
 }
 
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
