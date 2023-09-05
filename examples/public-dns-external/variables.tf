@@ -70,13 +70,41 @@ variable "bucket_kms_key_arn" {
   default     = ""
 }
 
+variable "oidc_issuer" {
+  type        = string
+  description = "The OIDC issuer URL"
+  default     = ""
+}
+
+variable "oidc_client_id" {
+  type        = string
+  description = "The OIDC client ID"
+  default     = ""
+}
+
+variable "other_wandb_secrets" {
+  type        = map(string)
+  description = "Other secrets env vars to pass to wandb"
+  default     = {}
+}
+
+variable "other_wandb_env" {
+  type        = map(string)
+  description = "Other env vars to pass to wandb"
+  default     = {}
+}
+
+variable "datadog_env" {
+  type        = string
+  description = "The Datadog environment to use"
+  default     = ""
+}
 
 variable "allowed_inbound_cidr" {
   default  = ["0.0.0.0/0"]
   nullable = false
   type     = list(string)
 }
-
 
 variable "allowed_inbound_ipv6_cidr" {
   default  = ["::/0"]
