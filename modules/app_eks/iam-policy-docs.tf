@@ -1,5 +1,11 @@
 data "aws_iam_policy_document" "node_cloudwatch" {
   statement {
+    actions   = ["cloudwatch:PutMetricData"]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+
+  statement {
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
@@ -10,11 +16,23 @@ data "aws_iam_policy_document" "node_cloudwatch" {
     resources = ["arn:aws:logs:*:*:*"]
   }
 
- statement {
-     actions   = ["cloudwatch:PutMetricData"]
-     effect    = "Allow"
-     resources = ["*"]
-   }  
+  //////////////////////////////////////////////////////
+  // these permissions exist only so that the node can
+  // delete previously created log streams specific
+  // to the RDS and EKS modules. They should be 
+  // commented out or removed after logging is uniformly
+  // enabled, but may be required when performing upgrades
+  // to the modules used herein.
+  //////////////////////////////////////////////////////
+  statement {
+    actions = [
+      "logs:DeleteLogGroup",
+      "logs:DeleteLogStream"
+    ]
+    effect    = "Allow"
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+
 }
 
 data "aws_iam_policy_document" "node_IMDSv2" {
