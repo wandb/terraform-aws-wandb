@@ -116,7 +116,7 @@ module "aurora" {
   // we exclude 'error' from this next because the error log is already
   // created
   ////////////////////////////////////////////////////////////////////////////////////////
-  enabled_cloudwatch_logs_exports     = ["audit", "general", "slowquery"]
+  enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
   engine                              = "aurora-mysql"
   engine_version                      = var.engine_version
   iam_database_authentication_enabled = false
