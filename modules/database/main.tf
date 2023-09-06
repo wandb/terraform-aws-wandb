@@ -104,6 +104,7 @@ module "aurora" {
   autoscaling_enabled                 = false
   backup_retention_period             = var.backup_retention_period
   create_db_subnet_group              = var.create_db_subnet_group
+  create_cloudwatch_log_group         = true
   create_random_password              = false
   create_security_group               = true
   database_name                       = var.database_name
@@ -111,7 +112,11 @@ module "aurora" {
   db_parameter_group_name             = aws_db_parameter_group.default.id
   db_subnet_group_name                = var.db_subnet_group_name
   deletion_protection                 = var.deletion_protection
-  enabled_cloudwatch_logs_exports     = ["audit", "error", "general", "slowquery"]
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // we exclude 'error' from this next because the error log is already
+  // created
+  ////////////////////////////////////////////////////////////////////////////////////////
+  enabled_cloudwatch_logs_exports     = ["audit", "general", "slowquery"]
   engine                              = "aurora-mysql"
   engine_version                      = var.engine_version
   iam_database_authentication_enabled = false
