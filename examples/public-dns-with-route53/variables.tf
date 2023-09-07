@@ -18,3 +18,4 @@ variable "subdomain" {
 variable "wandb_license" {
   type = string
 }
+
