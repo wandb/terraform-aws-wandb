@@ -19,7 +19,3 @@ variable "wandb_license" {
   type = string
 }
 
-variable "zone_id" {
-  description = "The Route53 zone ID to create records in."
-  type        = string
-}
