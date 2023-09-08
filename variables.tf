@@ -282,6 +282,18 @@ variable "kubernetes_instance_types" {
   default     = ["m5.large"]
 }
 
+variable "kubernetes_desired_nodes" {
+  type        = number
+  description = "(Optional) Desired number of nodes in EKS"
+  default     = 2
+}
+
+variable "kubernetes_max_nodes" {
+  type        = number
+  description = "(Optional) Max number of nodes in EKS"
+  default     = 5
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"

@@ -55,9 +55,9 @@ module "eks" {
   node_groups = {
     primary = {
       version                = var.cluster_version,
-      desired_capacity       = 2,
-      max_capacity           = 5,
-      min_capacity           = 2,
+      desired_capacity       = var.desired_nodes,
+      max_capacity           = var.max_nodes,
+      min_capacity           = var.desired_nodes,
       instance_types         = var.instance_types,
       iam_role_arn           = aws_iam_role.node.arn,
       create_launch_template = local.encrypt_ebs_volume,
