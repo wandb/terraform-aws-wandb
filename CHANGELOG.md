@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.6.0...v2.7.0) (2023-09-13)
+
+
+### Features
+
+* Update to terraform-kubernetes-wandb v1.12.0 ([#142](https://github.com/wandb/terraform-aws-wandb/issues/142)) ([2c40efe](https://github.com/wandb/terraform-aws-wandb/commit/2c40efe56264f9028ff5d2a166b500eadef325dd))
+
 ## [2.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.5.1...v2.6.0) (2023-09-12)
 
 
