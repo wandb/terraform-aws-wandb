@@ -56,7 +56,9 @@ provider "kubernetes" {
 }
 
 module "wandb_app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
+  source  = "wandb/wandb/kubernetes"
+  version = "1.12.0"
+
 
   license = var.wandb_license
 
