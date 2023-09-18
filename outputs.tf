@@ -24,7 +24,7 @@ output "database_username" {
 
 output "database_password" {
   sensitive = true
-  value = module.database.password  
+  value     = module.database.password
 }
 output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
