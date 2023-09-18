@@ -3,7 +3,7 @@ terraform {
     organization = "weights-and-biases"
 
     workspaces {
-      tags = ["deployer", "aws"]
+      tags = ["deployer", var.cloud_provider]
     }
   }
 

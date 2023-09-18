@@ -1,0 +1,340 @@
+agents:
+    clusterAgent:
+        containers:
+            securityContext:
+                allowPrivilegeEscalation: true
+                readOnlyRootFilesystem: true
+        metricsProvider:
+            enabled: true
+            useDatadogMetrics: true
+        podSecurity:
+            podSecurityPolicy:
+                create: false
+        replicas: 1
+    clusterCheckRunner:
+        replicas: 1
+    containers:
+        agent:
+            logLevel: INFO
+            resources:
+                limits:
+                    cpu: 800m
+                    memory: 1024Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+        initContainers:
+            resources:
+                limits:
+                    cpu: 800m
+                    memory: 1024Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+        processAgent:
+            logLevel: INFO
+            resources:
+                limits:
+                    cpu: 800m
+                    memory: 1024Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+        systemProbe:
+            logLevel: INFO
+            resources:
+                limits:
+                    cpu: 800m
+                    memory: 1024Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+            securityContext:
+                capabilities:
+                    add:
+                        - SYS_ADMIN
+                        - SYS_RESOURCE
+                        - SYS_PTRACE
+                        - NET_ADMIN
+                        - NET_BROADCAST
+                        - NET_RAW
+                        - IPC_LOCK
+                        - CHOWN
+                        - DAC_READ_SEARCH
+                privileged: true
+                replicas: 1
+        traceAgent:
+            logLevel: INFO
+            resources:
+                limits:
+                    cpu: 800m
+                    memory: 1024Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+    enabled: true
+    nodeAgent:
+        replicas: 1
+    podSecurity:
+        apparmor:
+            enabled: false
+        create: false
+        podSecurityPolicy:
+            create: false
+        privileged: true
+    priorityClassCreate: true
+    priorityClassName: datadog
+    priorityClassValue: 1e+09
+    priorityPreemptionPolicyValue: Never
+    rbac:
+        automountServiceAccountToken: true
+        create: true
+    resources:
+        limits:
+            cpu: 800m
+            memory: 1024Mi
+        requests:
+            cpu: 200m
+            memory: 256Mi
+    traceAgent:
+        replicas: 1
+
+#####
+clusterAgent:
+    admissionController:
+        enabled: true
+    confd:
+        mysql.yaml: |-
+            cluster_check: true
+                instances:
+                    - host: "<EXTERNAL_IP>"
+                      port: 3306
+                      username: "datadog"
+                      password: "<YOUR_CHOSEN_PASSWORD>"        
+    containers:
+        clusterAgent:
+            securityContext:
+                allowPrivilegeEscalation: true
+                readOnlyRootFilesystem: true
+        securityContext:
+            allowPrivilegeEscalation: true
+            readOnlyRootFilesystem: true
+    enabled: true
+    metricsProvider:
+        createReaderRbac: true
+        enabled: true
+        service:
+            port: 8443
+            type: ClusterIP
+        useDatadogMetrics: true
+    networkPolicy:
+        create: true
+    nodeSelector: {}
+    podSecurity:
+        podSecurityPolicy:
+            create: false
+        securityContextConstraints:
+            create: false
+    priorityClassName: datadog
+    rbac:
+        create: true
+    replicas: 1
+    resources:
+        limits:
+            cpu: 800m
+            memory: 1024Mi
+        requests:
+            cpu: 200m
+            memory: 256Mi
+
+#####
+clusterChecksRunner:
+    enabled: true
+    priorityClassName: datadog
+    rbac:
+        create: true
+    replicas: 1
+    resources:
+        limits:
+            cpu: 800m
+            memory: 1024Mi
+        requests:
+            cpu: 200m
+            memory: 256Mi
+
+#####
+clusterName: wandb-george           
+
+#####
+datadog:
+    apiKey: "${api_key}"
+##    apiKeyExistingSecret: null
+    apm:
+        enabled: true
+        hostSocketPath: /var/run/datadog/
+        port: 8126
+        portEnabled: true
+        socketEnabled: true
+        socketPath: /var/run/datadog/apm.socket
+        useSocketVolume: false
+    appKey: "${app_key}"
+##    appKeyExistingSecret: null
+    clusterChecks:
+        enabled: true
+    clusterName: george
+    clusterTagger:
+        collectKubernetesTags: true
+    collectApiServicesMetrics: true
+    collectCrdMetrics: true
+    collectEvents: true
+    collectVpaMetrics: true
+##    containerExcludeLogs:
+    containerIncludeLogs: ["name:wandb.*"]
+    containerExcludeMetrics: ["name:datadog.*"]
+    containerIncludeMetrics: ["name:wandb.*"]
+    dogstatsd:
+        nonLocalTraffic: true
+        originDetection: true
+        port: 8125
+        socketPath: /var/run/datadog/dsd.socket
+        tags:
+            - cloud:"${cloud_provider_tag}"
+            - database:"${database_tag}"
+            - env:"${environment_tag}"
+            - namespace:"${namespace_tag}"
+            - objectstore:"${objectstore_tag}"
+        useHostPort: true
+        useSocketVolume: true
+    helmCheck:
+        collectEvents: true
+        enabled: true
+    kubeStateMetricsCore:
+        collectApiServicesMetrics: true
+        collectCrdMetrics: true
+        collectSecretMetrics: true
+        collectVpaMetrics: true
+        enabled: true
+        ignoreLegacyKSMCheck: true
+        rbac:
+            create: true
+        tags:
+            - cloud:"${cloud_provider_tag}"      
+            - database:"${database_tag}"
+            - env:"${environment_tag}"
+            - namespace:"${namespace_tag}"
+            - objectstore:"${objectstore_tag}"
+        useClusterCheckRunners: true
+    kubeStateMetricsEnabled: false
+    kubeStateMetricsNetworkPolicy:
+        create: true
+    kubernetesEvents:
+        collectedEventTypes:
+            - kind: Pod
+              reasons:
+                - Failed
+                - BackOff
+                - Unhealthy
+                - FailedScheduling
+                - FailedMount
+                - FailedAttachVolume
+            - kind: Node
+              reasons:
+                - TerminatingEvictedPod
+                - NodeNotReady
+                - Rebooted
+                - HostPortConflict
+            - kind: CronJob
+              reasons:
+                - SawCompletedJob
+        unbundleEvents: true
+    logLevel: INFO
+    logs:
+        autoMultiLineDetection: true
+        containerCollectAll: true
+        containerCollectUsingFiles: true
+        enabled: true
+    metricsProvider:
+        enabled: true
+    namespaceLabelsAsTags:
+        app: app
+    networkMonitoring:
+        enabled: true
+    networkPolicy:
+        create: true
+    nodeLabelsAsTags:
+        beta.kubernetes.io/instance-type: aws-instance-type
+    orchestratorExplorer:
+        enabled: true
+    otlp:
+        receiver:
+            protocols:
+                grpc:
+                    enabled: true
+                    endpoint: 0.0.0.0:4317
+                    useHostPort: true
+                http:
+                    enabled: true
+                    endpoint: 0.0.0.0:4318
+                    useHostPort: true
+    processAgent:
+        enabled: true
+        processCollection: true
+        processDiscovery: true
+        stripProcessArguments: false
+    prometheusScrape:
+        additionalConfigs: []
+        enabled: true
+        serviceEndpoints: true
+        version: 2
+    remoteConfiguration:
+        enabled: true
+    securityAgent:
+        compliance:
+            enabled: false
+            xccdf:
+                enabled: false
+        runtime:
+            activityDump:
+                enabled: false
+                pathMerge:
+                    enabled: false
+            enabled: false
+            fimEnabled: false
+            network:
+                enabled: false
+            securityProfile:
+                enabled: false
+            syscallMonitor:
+                enabled: false
+    serviceMonitoring:
+        enabled: true
+    site: "${site}"
+    systemProbe:
+        collectDNSStats: true
+        enableConntrack: true
+        enableDefaultKernelHeadersPaths: true
+        enableDefaultOsReleasePaths: true
+        enableOOMKill: true
+        enableTCPQueueLength: true
+    tags:
+        - cloud:"${cloud_provider_tag}"   
+        - database:"${database_tag}"
+        - env:"${environment_tag}"
+        - namespace:"${namespace_tag}"
+        - objectstore:"${objectstore_tag}"
+    useClusterCheckRunners: true
+
+#####
+datadog-crds:
+    crds:
+        datadogAgents: false
+        datadogMetrics: false
+        datadogMonitors: false
+
+#####
+tags:
+    - cloud:"${cloud_provider_tag}"
+    - database:"${database_tag}"
+    - env:"${environment_tag}"
+    - namespace:"${namespace_tag}"
+    - objectstore:"${objectstore_tag}" 

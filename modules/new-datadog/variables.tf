@@ -3,17 +3,17 @@ variable "cluster_name" {
   type     = string
 }
 
-variable "dd_api_key" {
+variable "api_key" {
   nullable = true
   type     = string
 }
 
-variable "dd_app_key" {
+variable "app_key" {
   nullable = true
   type     = string
 }
 
-variable "dd_site" {
+variable "site" {
   nullable = true
   type     = string
 }
