@@ -23,6 +23,7 @@ output "database_username" {
 }
 
 output "database_password" {
+  sensitive = true
   value = module.database.password  
 }
 output "elasticache_connection_string" {
