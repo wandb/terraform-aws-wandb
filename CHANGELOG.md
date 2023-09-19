@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.7.0...v2.8.0) (2023-09-19)
+
+
+### Features
+
+* Ouput db creds ([#143](https://github.com/wandb/terraform-aws-wandb/issues/143)) ([23ce843](https://github.com/wandb/terraform-aws-wandb/commit/23ce843e4925b53905cee2f8ca3d43e5c5e55091))
+
 ## [2.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.6.0...v2.7.0) (2023-09-13)
 
 
