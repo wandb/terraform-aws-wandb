@@ -112,3 +112,17 @@ variable "service_port" {
   default = 32543
 }
 
+variable "desired_nodes" {
+  type        = number
+  description = "(Required) Desired number of nodes in EKS"
+}
+
+variable "max_nodes" {
+  type        = number
+  description = "(Required) Max number of nodes in EKS"
+}
+
+variable "min_nodes" {
+  type        = number
+  description = "(Required) Min number of nodes in EKS"
+}
