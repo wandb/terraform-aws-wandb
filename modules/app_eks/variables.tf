@@ -121,3 +121,8 @@ variable "max_nodes" {
   type        = number
   description = "(Required) Max number of nodes in EKS"
 }
+
+variable "min_nodes" {
+  type        = number
+  description = "(Required) Min number of nodes in EKS"
+}

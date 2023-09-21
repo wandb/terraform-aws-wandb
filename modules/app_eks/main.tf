@@ -57,7 +57,7 @@ module "eks" {
       version                = var.cluster_version,
       desired_capacity       = var.desired_nodes,
       max_capacity           = var.max_nodes,
-      min_capacity           = var.desired_nodes,
+      min_capacity           = var.min_nodes,
       instance_types         = var.instance_types,
       iam_role_arn           = aws_iam_role.node.arn,
       create_launch_template = local.encrypt_ebs_volume,

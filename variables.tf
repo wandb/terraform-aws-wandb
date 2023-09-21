@@ -294,6 +294,12 @@ variable "kubernetes_max_nodes" {
   default     = 5
 }
 
+variable "kubernetes_min_nodes" {
+  type        = number
+  description = "(Optional) Min number of nodes in EKS"
+  default     = 2
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"
