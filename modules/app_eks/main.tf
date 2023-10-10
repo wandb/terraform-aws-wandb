@@ -54,19 +54,21 @@ module "eks" {
 
   node_groups = {
     primary = {
-      version                = var.cluster_version,
-      desired_capacity       = 2,
-      max_capacity           = 5,
-      min_capacity           = 2,
-      instance_types         = var.instance_types,
-      iam_role_arn           = aws_iam_role.node.arn,
+      # IMDsv2
       create_launch_template = local.encrypt_ebs_volume,
+      desired_capacity       = 2,
       disk_encrypted         = local.encrypt_ebs_volume,
       disk_kms_key_id        = var.kms_key_arn,
+      disk_type = "gp3"
+      enable_monitoring = true
       force_update_version   = local.encrypt_ebs_volume,
-      # IMDsv2
-      metadata_http_tokens                 = "required",
+      iam_role_arn           = aws_iam_role.node.arn,
+      instance_types         = var.instance_types,
+      max_capacity           = 5,
       metadata_http_put_response_hop_limit = 2
+      metadata_http_tokens                 = "required",
+      min_capacity           = 2,
+      version                = var.cluster_version,
     }
   }
 
