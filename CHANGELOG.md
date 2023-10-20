@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.8.0...v3.0.0) (2023-10-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Deploy aws load balancer controller to clusters (#147)
+
+### Features
+
+* Deploy aws load balancer controller to clusters ([#147](https://github.com/wandb/terraform-aws-wandb/issues/147)) ([90ce430](https://github.com/wandb/terraform-aws-wandb/commit/90ce430022018fdf288cf9cba575af4b59a737c1))
+
 ## [2.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.7.0...v2.8.0) (2023-09-19)
 
 
