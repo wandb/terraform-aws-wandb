@@ -1,6 +1,6 @@
 provider "aws" {
-  region  = "us-east-2"
-  profile = "AWSAdministratorAccess-770934259321"
+  region  = "us-west-2"
+
   default_tags {
     tags = {
       GithubRepo = "terraform-aws-wandb"
