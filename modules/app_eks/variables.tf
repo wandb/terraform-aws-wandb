@@ -111,4 +111,3 @@ variable "service_port" {
   type    = number
   default = 32543
 }
-
