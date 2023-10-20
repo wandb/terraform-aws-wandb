@@ -15,6 +15,12 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name = var.namespace
+  addon_name   = "vpc-cni"
+  depends_on   = [module.eks]
+}
+
 locals {
   managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
@@ -113,4 +119,13 @@ resource "aws_security_group_rule" "elasticache" {
   from_port                = local.redis_port
   to_port                  = local.redis_port
   type                     = "ingress"
+}
+
+module "lb_controller" {
+  source = "./lb_controller"
+
+  namespace   = "namespace"
+  oidc_issuer = module.eks.cluster_oidc_issuer_url
+
+  depends_on = [module.eks]
 }

@@ -180,3 +180,37 @@ module "redis" {
 
   kms_key_arn = local.kms_key_arn
 }
+
+# Comming soon!
+# module "wandb" {
+#   source  = "wandb/wandb/helm"
+#   version = "1.2.0"
+
+#   depends_on = [
+#     module.database,
+#     module.app_eks,
+#     module.redis,
+#   ]
+
+#   operator_chart_version = "1.1.0"
+#   controller_image_tag   = "1.10.1"
+
+#   spec = {
+#     values = {
+#       global = {
+#         host    = local.url
+#         license = var.license
+#       }
+
+#       ingress = {
+#         class = "alb"
+
+#         annotations = {
+#           "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+#           "alb.ingress.kubernetes.io/target-type" = "ip"
+#           # "app.kubernetes.io/instance" = "${var.namespace}-lb-2"
+#         }
+#       }
+#     }
+#   }
+# }

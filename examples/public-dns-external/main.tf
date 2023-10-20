@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region  = "us-west-2"
 
   default_tags {
     tags = {
@@ -36,6 +36,8 @@ module "wandb_infra" {
   zone_id     = var.zone_id
   subdomain   = var.subdomain
 
+  # license = var.wandb_license
+
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
@@ -55,10 +57,17 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.app_cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.app_cluster.token
+  }
+}
+
 module "wandb_app" {
   source  = "wandb/wandb/kubernetes"
   version = "1.12.0"
-
 
   license = var.wandb_license
 
