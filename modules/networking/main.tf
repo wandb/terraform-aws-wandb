@@ -28,4 +28,12 @@ module "vpc" {
   private_subnets                = var.private_subnet_cidrs
   public_subnets                 = var.public_subnet_cidrs
   single_nat_gateway             = false
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb"        = "1"
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb"                 = "1"
+  }
 }

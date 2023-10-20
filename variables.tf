@@ -323,3 +323,11 @@ variable "elasticache_node_type" {
   type        = string
   default     = "cache.t2.medium"
 }
+
+# ##########################################
+# # Weights & Biases                       #
+# ##########################################
+# variable "license" {
+#   type        = string
+#   description = "Weights & Biases license key."
+# }
