@@ -32,3 +32,7 @@ output "security_group_id" {
   description = "The security group ID of the cluster"
   value       = module.aurora.security_group_id
 }
+
+output "port" {
+  value = module.aurora.cluster_port
+}
