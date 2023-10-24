@@ -2,7 +2,7 @@
 
 ## About
 
-This exmaple is a minimal example of what is needed to deploy an instance of 
+This example is a minimal example of what is needed to deploy an instance of 
 Weights & Biases that uses an external DNS into an already existing VPC and EKS cluster.
 
 ## Module Prerequites
