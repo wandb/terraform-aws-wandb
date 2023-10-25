@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.1.0...v3.2.0) (2023-10-25)
+
+
+### Features
+
+* **examples:** Adds tf template for bring your own vpc and eks ([#149](https://github.com/wandb/terraform-aws-wandb/issues/149)) ([930ecac](https://github.com/wandb/terraform-aws-wandb/commit/930ecac9034479a620cfcfabe1e14c554c0d4d2c))
+
 ## [3.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.0.0...v3.1.0) (2023-10-24)
 
 
