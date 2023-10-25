@@ -123,7 +123,7 @@ variable network_database_subnet_cidrs {
     description = "Subnet CIDRs"
 }
 
-eks_cluster_version {
+variable eks_cluster_version {
     type = string
     description = "EKS cluster version"
 }

@@ -48,8 +48,6 @@ module "wandb_infra" {
   network_private_subnet_cidrs     = var.network_private_subnet_cidrs
   network_public_subnet_cidrs      = var.network_public_subnet_cidrs
   network_database_subnet_cidrs    = var.network_database_subnet_cidrs
-  # create_elasticache               = false
-  # network_elasticache_subnet_cidrs = 
 
   deletion_protection = false
 
@@ -101,7 +99,6 @@ module "wandb_app" {
   bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
-  # redis_connection_string    = "redis://${module.wandb_infra.elasticache_connection_string}?tls=true&ttlInSeconds=604800"
 
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
