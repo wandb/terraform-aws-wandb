@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.2.0...v3.3.0) (2023-10-31)
+
+
+### Features
+
+* Remove vpc-cni EKS add-on in app_eks/main.tf ([#150](https://github.com/wandb/terraform-aws-wandb/issues/150)) ([9f01dde](https://github.com/wandb/terraform-aws-wandb/commit/9f01dde88971487622111e71ec2871b7445b5f57))
+
+## [3.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.1.0...v3.2.0) (2023-10-25)
+
+
+### Features
+
+* **examples:** Adds tf template for bring your own vpc and eks ([#149](https://github.com/wandb/terraform-aws-wandb/issues/149)) ([930ecac](https://github.com/wandb/terraform-aws-wandb/commit/930ecac9034479a620cfcfabe1e14c554c0d4d2c))
+
+## [3.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.0.0...v3.1.0) (2023-10-24)
+
+
+### Features
+
+* external dns ([#148](https://github.com/wandb/terraform-aws-wandb/issues/148)) ([ab45809](https://github.com/wandb/terraform-aws-wandb/commit/ab4580977a323577bc1d1049af7b39c620554a21))
+
 ## [3.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.8.0...v3.0.0) (2023-10-20)
 
 

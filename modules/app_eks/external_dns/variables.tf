@@ -8,3 +8,7 @@ variable "oidc_provider" {
     url = string
   })
 }
+
+variable "fqdn" {
+  type = string
+}

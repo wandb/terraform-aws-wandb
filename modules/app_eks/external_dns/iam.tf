@@ -6,7 +6,7 @@ data "aws_iam_policy_document" "default" {
     condition {
       test     = "StringEquals"
       variable = "${replace(var.oidc_provider.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+      values   = ["system:serviceaccount:kube-system:external-dns"]
     }
 
     principals {
@@ -18,12 +18,12 @@ data "aws_iam_policy_document" "default" {
 
 resource "aws_iam_role" "default" {
   assume_role_policy = data.aws_iam_policy_document.default.json
-  name               = "${var.namespace}-aws-lb-controller"
+  name               = "${var.namespace}-external-dns"
 }
 
 resource "aws_iam_policy" "default" {
-  policy = file("${path.module}/AWSLoadBalancerController.json")
-  name   = "${var.namespace}-AWSLoadBalancerController"
+  policy = file("${path.module}/AllowExternalDNSUpdates.json")
+  name   = "${var.namespace}-AllowExternalDNSUpdates"
 }
 
 resource "aws_iam_role_policy_attachment" "default" {
