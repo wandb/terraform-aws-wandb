@@ -331,3 +331,14 @@ variable "elasticache_node_type" {
 #   type        = string
 #   description = "Weights & Biases license key."
 # }
+
+variable "secret_manager_arn" {
+  type = string
+  description = ""
+}
+
+variable "other_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}

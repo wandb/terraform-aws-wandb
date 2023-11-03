@@ -141,6 +141,7 @@ module "app_eks" {
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 
   eks_policy_arns = var.eks_policy_arns
+  secret_manager_arn = var.secret_manager_arn
 }
 
 module "app_lb" {

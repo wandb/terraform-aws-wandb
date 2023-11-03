@@ -111,3 +111,8 @@ variable "service_port" {
   type    = number
   default = 32543
 }
+
+variable "secret_manager_arn" {
+  description = ""
+  type        = string
+}

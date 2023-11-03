@@ -57,3 +57,13 @@ data "aws_iam_policy_document" "node_s3" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "secrets_manager" {
+  statement {
+    actions = [
+      "secretsmanager:*",
+    ]
+    effect  = "Allow"
+    resources = var.secret_manager_arn == "" || var.secret_manager_arn == null ? ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:*"] : [var.secret_manager_arn]
+  }
+}

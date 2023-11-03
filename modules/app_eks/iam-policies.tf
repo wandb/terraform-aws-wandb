@@ -38,3 +38,11 @@ resource "aws_iam_policy" "node_s3" {
     create_before_destroy = false
   }
 }
+
+resource "aws_iam_policy" "secrets_manager" {
+  name   = "${var.namespace}-secrets-manager"
+  policy = data.aws_iam_policy_document.secrets_manager.json
+  lifecycle {
+    create_before_destroy = false
+  }
+}
