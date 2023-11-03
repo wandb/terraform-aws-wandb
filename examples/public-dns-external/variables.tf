@@ -83,3 +83,9 @@ variable "allowed_inbound_ipv6_cidr" {
   nullable = false
   type     = list(string)
 }
+
+variable "other_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}

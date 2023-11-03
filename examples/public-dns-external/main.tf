@@ -65,6 +65,10 @@ provider "helm" {
   }
 }
 
+locals {
+  secret_store_source = "aws-secretmanager://wandb-secret?namespace=wandb-secret"
+}
+
 module "wandb_app" {
   source  = "wandb/wandb/kubernetes"
   version = "1.12.0"
@@ -87,6 +91,10 @@ module "wandb_app" {
   # If we dont wait, tf will start trying to deploy while the work group is
   # still spinning up
   depends_on = [module.wandb_infra]
+
+  other_wandb_env = merge({
+    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = local.secret_store_source
+  }, var.other_wandb_env)
 }
 
 output "bucket_name" {
