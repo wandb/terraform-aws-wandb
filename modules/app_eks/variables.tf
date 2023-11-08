@@ -115,13 +115,3 @@ variable "service_port" {
   type    = number
   default = 32543
 }
-
-locals {
-  secrets_prefix_default = var.namespace
-}
-
-variable "secrets_prefix" {
-  type = string
-  description = "(Required) The prefix assigned to all secrets created by W&B users and saved using the AWS Secret Manager"
-  default = local.secrets_prefix_default
-}

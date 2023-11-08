@@ -69,6 +69,6 @@ data "aws_iam_policy_document" "secrets_manager" {
       "secretsmanager:DeleteSecretVersion"
     ]
     effect  = "Allow"
-    resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_prefix}*"]
+    resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.namespace}*"]
   }
 }

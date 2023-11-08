@@ -89,7 +89,7 @@ module "wandb_app" {
   depends_on = [module.wandb_infra]
 
   other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.secrets_prefix}?namespace=${var.secrets_prefix}"
+    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
   }, var.other_wandb_env)
 }
 
