@@ -116,7 +116,8 @@ variable "service_port" {
   default = 32543
 }
 
-variable "secret_manager_arn" {
-  description = ""
-  type        = string
+variable "secrets_prefix" {
+  type = string
+  description = "(Required) The prefix assigned to all secrets created by W&B users and saved using the AWS Secret Manager"
+  default = "wandb-secret"
 }
