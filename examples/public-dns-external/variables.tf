@@ -89,3 +89,9 @@ variable "other_wandb_env" {
   description = "Extra environment variables for W&B"
   default     = {}
 }
+
+variable "secrets_prefix" {
+  type = string
+  description = "(Required) The prefix assigned to all secrets created by W&B users and saved using the AWS Secret Manager"
+  default = "wandb-secret"
+}

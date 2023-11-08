@@ -61,9 +61,14 @@ data "aws_iam_policy_document" "node_s3" {
 data "aws_iam_policy_document" "secrets_manager" {
   statement {
     actions = [
-      "secretsmanager:*",
+      "secretsmanager:CreateSecret",
+      "secretsmanager:UpdateSecret",
+      "secretsmanager:DeleteSecret",
+      "secretsmanager:PutSecretValue",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DeleteSecretVersion"
     ]
     effect  = "Allow"
-    resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_prefix}-*"]
+    resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_prefix}*"]
   }
 }

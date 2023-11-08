@@ -65,10 +65,6 @@ provider "helm" {
   }
 }
 
-locals {
-  secret_store_source = "aws-secretmanager://wandb-secret?namespace=wandb-secret"
-}
-
 module "wandb_app" {
   source  = "wandb/wandb/kubernetes"
   version = "1.12.0"
@@ -93,7 +89,7 @@ module "wandb_app" {
   depends_on = [module.wandb_infra]
 
   other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = local.secret_store_source
+    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.secrets_prefix}?namespace=${var.secrets_prefix}"
   }, var.other_wandb_env)
 }
 

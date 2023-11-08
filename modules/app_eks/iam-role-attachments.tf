@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "ebs_csi" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "node_secrets" {
+resource "aws_iam_role_policy_attachment" "node_secrets_manager" {
   role       = aws_iam_role.node.name
   policy_arn = aws_iam_policy.secrets_manager.arn
 }
