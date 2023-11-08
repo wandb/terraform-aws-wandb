@@ -90,8 +90,12 @@ variable "other_wandb_env" {
   default     = {}
 }
 
+locals {
+  secrets_prefix_default = var.namespace
+}
+
 variable "secrets_prefix" {
   type = string
   description = "(Required) The prefix assigned to all secrets created by W&B users and saved using the AWS Secret Manager"
-  default = "wandb-secret"
+  default = local.secrets_prefix_default
 }
