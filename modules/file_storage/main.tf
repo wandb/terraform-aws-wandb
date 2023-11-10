@@ -67,7 +67,24 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "file_storage" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "file_storage" {
+  bucket = aws_s3_bucket.file_storage.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
 
+resource "aws_s3_bucket_configuration" "file_storage" {
+  depends_on = [aws_s3_bucket_versioning.file_storage]
+  bucket     = aws_s3_bucket.file_storage.id
+  rule {
+    id     = "noncurrent-version-expiration"
+    status = "Enabled"
+    noncurrent_version_expiration = {
+      noncurrent_days = 30
+    }
+  }
+}
 
 
 # Give the bucket permission to send messages onto the queue. Looks like we
