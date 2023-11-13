@@ -17,6 +17,12 @@ variable "use_internal_queue" {
   default = false
 }
 
+variable "size" {
+    type = string
+    description = "T-shirt size for deployment"
+    default = "small"
+}
+
 ##########################################
 # Database                               #
 ##########################################
@@ -282,6 +288,12 @@ variable "kubernetes_instance_types" {
   default     = ["m5.large"]
 }
 
+variable "kubernetes_node_count" {
+  description = "Number of nodes"
+  type = number
+  default = 2
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"
@@ -331,3 +343,9 @@ variable "elasticache_node_type" {
 #   type        = string
 #   description = "Weights & Biases license key."
 # }
+
+variable "size" {
+  description = "Deployment size for the instance"
+  type        = string
+  default = null
+}

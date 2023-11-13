@@ -61,7 +61,7 @@ module "eks" {
   node_groups = {
     primary = {
       version                = var.cluster_version,
-      desired_capacity       = 2,
+      desired_capacity       = var.desired_capacity,
       max_capacity           = 5,
       min_capacity           = 2,
       instance_types         = var.instance_types,

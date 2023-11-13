@@ -115,3 +115,9 @@ variable "service_port" {
   type    = number
   default = 32543
 }
+
+variable "desired_capacity" {
+  description = "Desired number of worker nodes."
+  type        = number
+  default     = 2
+}
