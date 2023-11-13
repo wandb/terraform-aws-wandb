@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.3.0...v3.4.0) (2023-11-13)
+
+
+### Features
+
+* Add support for AWS Secrets Manager ([#151](https://github.com/wandb/terraform-aws-wandb/issues/151)) ([aa64eb1](https://github.com/wandb/terraform-aws-wandb/commit/aa64eb146622132d9b70083094b3c60a728e6038))
+
 ## [3.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.2.0...v3.3.0) (2023-10-31)
 
 
