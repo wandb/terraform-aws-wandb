@@ -15,15 +15,11 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
-# removed due to conflict with 
-# AWS Load Balancer Controller
-# being installed with Helm.
-# See: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/
-#resource "aws_eks_addon" "vpc_cni" {
-#  cluster_name = var.namespace
-#  addon_name   = "vpc-cni"
-#  depends_on   = [module.eks]
-#}
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name = var.namespace
+  addon_name   = "vpc-cni"
+  depends_on   = [module.eks]
+}
 
 locals {
   managed_policy_arns = concat([
