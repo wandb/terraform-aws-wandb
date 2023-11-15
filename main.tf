@@ -183,62 +183,62 @@ module "redis" {
   kms_key_arn = local.kms_key_arn
 }
 
-# Comming soon!
-# module "wandb" {
-#   source  = "wandb/wandb/helm"
-#   version = "1.2.0"
+Comming soon!
+module "wandb" {
+  source  = "wandb/wandb/helm"
+  version = "1.2.0"
 
-#   depends_on = [
-#     module.database,
-#     module.app_eks,
-#     module.redis,
-#   ]
+  depends_on = [
+    module.database,
+    module.app_eks,
+    module.redis,
+  ]
 
-#   operator_chart_version = "1.1.0"
-#   controller_image_tag   = "1.10.1"
+  operator_chart_version = "1.1.0"
+  controller_image_tag   = "1.10.1"
 
-#   spec = {
-#     values = {
-#       global = {
-#         host    = local.url
-#         license = var.license
+  spec = {
+    values = {
+      global = {
+        host    = local.url
+        license = var.license
 
-#         bucket = {
-#           provider = "s3"
-#           name     = local.bucket_name
-#           region   = data.aws_s3_bucket.file_storage.region
-#           kmsKey   = local.kms_key_arn
-#         }
+        bucket = {
+          provider = "s3"
+          name     = local.bucket_name
+          region   = data.aws_s3_bucket.file_storage.region
+          kmsKey   = local.kms_key_arn
+        }
 
-#         mysql = {
-#           host     = module.database.endpoint
-#           password = module.database.password
-#           username = module.database.username
-#           database = module.database.database_name
-#           port     = module.database.port
-#         }
+        mysql = {
+          host     = module.database.endpoint
+          password = module.database.password
+          username = module.database.username
+          database = module.database.database_name
+          port     = module.database.port
+        }
 
-#         redis = {
-#           host = module.redis.0.host
-#           port = "${module.redis.0.port}?tls=true"
-#         }
-#       }
+        redis = {
+          host = module.redis.0.host
+          port = "${module.redis.0.port}?tls=true"
+        }
+      }
 
-#       ingress = {
-#         class = "alb"
+      ingress = {
+        class = "alb"
 
-#         annotations = {
-#           "alb.ingress.kubernetes.io/load-balancer-name" = "${var.namespace}-alb-k8s"
-#           "alb.ingress.kubernetes.io/inbound-cidrs"      = "0.0.0.0/0"
-#           "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
-#           "alb.ingress.kubernetes.io/target-type"        = "ip"
-#           "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
-#           "alb.ingress.kubernetes.io/certificate-arn"    = local.acm_certificate_arn
-#         }
-#       }
+        annotations = {
+          "alb.ingress.kubernetes.io/load-balancer-name" = "${var.namespace}-alb-k8s"
+          "alb.ingress.kubernetes.io/inbound-cidrs"      = "0.0.0.0/0"
+          "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
+          "alb.ingress.kubernetes.io/target-type"        = "ip"
+          "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
+          "alb.ingress.kubernetes.io/certificate-arn"    = local.acm_certificate_arn
+        }
+      }
 
-#       mysql = { install = false }
-#       redis = { install = false }
-#     }
-#   }
-# }
+      mysql = { install = false }
+      redis = { install = false }
+    }
+  }
+}
