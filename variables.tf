@@ -327,8 +327,8 @@ variable "elasticache_node_type" {
 # ##########################################
 # # Weights & Biases                       #
 # ##########################################
-# variable "license" {
-#   type        = string
-#   description = "Weights & Biases license key."
-# }
+variable "license" {
+  type        = string
+  description = "Weights & Biases license key."
+}
 
