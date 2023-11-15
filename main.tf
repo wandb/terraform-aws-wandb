@@ -183,7 +183,6 @@ module "redis" {
   kms_key_arn = local.kms_key_arn
 }
 
-Comming soon!
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
