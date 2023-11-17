@@ -343,9 +343,3 @@ variable "elasticache_node_type" {
 #   type        = string
 #   description = "Weights & Biases license key."
 # }
-
-variable "size" {
-  description = "Deployment size for the instance"
-  type        = string
-  default = null
-}
