@@ -1,5 +1,6 @@
 provider "aws" {
-  region = "us-east-2"
+  region  = "eu-central-1"
+  profile = "sandbox-admin"
 
   default_tags {
     tags = {
@@ -61,16 +62,17 @@ module "standard" {
   namespace     = var.namespace
   public_access = false
 
-  wandb_license = var.wandb_license
-
   domain_name = aws_route53_zone.private.name
   zone_id     = aws_route53_zone.private.zone_id
 
   # Creating a custom VPC so that we can initalize a route53 zone first and configure a vpn
-  create_vpc              = false
-  network_id              = module.networking.vpc_id
-  network_private_subnets = module.networking.private_subnets
-  network_public_subnets  = module.networking.public_subnets
+  create_vpc                = false
+  network_id                = module.networking.vpc_id
+  network_private_subnets   = module.networking.private_subnets
+  network_public_subnets    = module.networking.public_subnets
+  allowed_inbound_cidr      = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
+  eks_cluster_version       = var.eks_cluster_version
 }
 
 output "url" {
