@@ -223,6 +223,10 @@ module "wandb" {
         }
       }
 
+      otel = {
+        install = false
+      }
+
       ingress = {
         class = "alb"
 
