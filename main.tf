@@ -192,7 +192,6 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
-
   operator_chart_version = "1.1.0"
   controller_image_tag   = "1.10.1"
 
@@ -232,7 +231,9 @@ module "wandb" {
 
         annotations = {
           "alb.ingress.kubernetes.io/load-balancer-name" = "${var.namespace}-alb-k8s"
-          "alb.ingress.kubernetes.io/inbound-cidrs"      = "0.0.0.0/0"
+          "alb.ingress.kubernetes.io/inbound-cidrs"      = <<-EOF
+            ${join("\\,", var.allowed_inbound_cidr)}
+          EOF
           "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
           "alb.ingress.kubernetes.io/target-type"        = "ip"
           "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
