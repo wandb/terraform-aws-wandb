@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [3.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.1...v3.4.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* Switch to gp3 volumes on EKS nodes ([#146](https://github.com/wandb/terraform-aws-wandb/issues/146)) ([86dbc7d](https://github.com/wandb/terraform-aws-wandb/commit/86dbc7df0de1aa6d2bc69862770ea67010354c20))
+
 ### [3.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.0...v3.4.1) (2023-12-07)
 
 
