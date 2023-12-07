@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [3.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.0...v3.4.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Fix private access example ([#155](https://github.com/wandb/terraform-aws-wandb/issues/155)) ([f0745ea](https://github.com/wandb/terraform-aws-wandb/commit/f0745eaf3e2d7111b6becfccac3134b18961e862))
+
 ## [3.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.3.0...v3.4.0) (2023-11-13)
 
 
