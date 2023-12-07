@@ -26,13 +26,13 @@ variable "wandb_license" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.02.2"
+  default     = "5.7.mysql_aurora.2.11.2"
 }
 
 variable "database_instance_class" {
   description = "Instance type to use by database master instance."
   type        = string
-  default     = "db.r5.large"
+  default     = "db.r5.4xlarge"
 }
 
 variable "database_snapshot_identifier" {
@@ -84,8 +84,46 @@ variable "allowed_inbound_ipv6_cidr" {
   type     = list(string)
 }
 
-variable "other_wandb_env" {
-  type        = map(string)
-  description = "Extra environment variables for W&B"
-  default     = {}
+variable "vpc_id" {
+    type = string
+    description = "VPC network ID"
+}
+variable vpc_cidr {
+    type = string
+    description = "VPC network CIDR"
+}   
+
+variable network_private_subnets {
+    type = list[string]
+    description = "Subnet IDs"
+}
+
+variable network_public_subnets {
+    type = list[string]
+    description = "Subnet IDs"
+}
+
+variable network_database_subnets {
+    type = list[string]
+    description = "Subnet IDs"
+}
+
+variable network_private_subnet_cidrs {
+    type = list[string]
+    description = "Subnet CIDRs"
+}
+
+variable network_public_subnet_cidrs {
+    type = list[string]
+    description = "Subnet CIDRs"
+}
+
+variable network_database_subnet_cidrs {
+    type = list[string]
+    description = "Subnet CIDRs"
+}
+
+variable eks_cluster_version {
+    type = string
+    description = "EKS cluster version"
 }

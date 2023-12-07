@@ -8,6 +8,10 @@ variable "bucket_kms_key_arn" {
   type        = string
 }
 
+variable "fqdn" {
+  type = string
+}
+
 variable "bucket_sqs_queue_arn" {
   default = ""
   type    = string
@@ -111,4 +115,3 @@ variable "service_port" {
   type    = number
   default = 32543
 }
-

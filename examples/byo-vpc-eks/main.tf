@@ -1,22 +1,53 @@
+terraform {
+  backend "s3" {
+    bucket = "<bucket-name>" #TODO: Replace with bucket name where you want to store the Terraform state
+    key    = "wandb-tf-state"
+    region = "<region-name>" #TODO: Replace if region is different
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.6"
+    }
+  }
+}
+
 provider "aws" {
-  region  = "us-west-2"
+  region = "<region-name>" #TODO: Replace this with region name
 
   default_tags {
     tags = {
       GithubRepo = "terraform-aws-wandb"
       GithubOrg  = "wandb"
-      Enviroment = "Example"
-      Example    = "PublicDnsExternal"
+      Environment = "Production"
     }
   }
 }
 
 module "wandb_infra" {
-  source = "../../"
+  source  = "wandb/wandb/aws"
+  version = "3.0.0"
 
   namespace     = var.namespace
   public_access = true
   external_dns  = true
+
+  create_vpc = false
+  
+  network_id   = var.vpc_id
+  network_cidr = var.vpc_cidr
+
+  network_private_subnets          = var.network_private_subnets
+  network_public_subnets           = var.network_public_subnets
+  network_database_subnets         = var.network_database_subnets 
+  network_private_subnet_cidrs     = var.network_private_subnet_cidrs
+  network_public_subnet_cidrs      = var.network_public_subnet_cidrs
+  network_database_subnet_cidrs    = var.network_database_subnet_cidrs
 
   deletion_protection = false
 
@@ -28,15 +59,15 @@ module "wandb_infra" {
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = ["::/0"]
 
-  eks_cluster_version            = "1.25"
+  eks_cluster_version            = var.eks_cluster_version
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
+
+  create_elasticache = false
 
   domain_name = var.domain_name
   zone_id     = var.zone_id
   subdomain   = var.subdomain
-
-  # license = var.wandb_license
 
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
@@ -57,17 +88,8 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.app_cluster.token
 }
 
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.app_cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.app_cluster.token
-  }
-}
-
 module "wandb_app" {
-  source  = "wandb/wandb/kubernetes"
-  version = "1.12.0"
+  source = "github.com/wandb/terraform-kubernetes-wandb"
 
   license = var.wandb_license
 
@@ -77,20 +99,13 @@ module "wandb_app" {
   bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
   database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
-  redis_connection_string    = "redis://${module.wandb_infra.elasticache_connection_string}?tls=true&ttlInSeconds=604800"
 
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
 
   service_port = module.wandb_infra.internal_app_port
 
-  # If we dont wait, tf will start trying to deploy while the work group is
-  # still spinning up
   depends_on = [module.wandb_infra]
-
-  other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
-  }, var.other_wandb_env)
 }
 
 output "bucket_name" {

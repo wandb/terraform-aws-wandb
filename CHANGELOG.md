@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+### [3.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.0...v3.4.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Fix private access example ([#155](https://github.com/wandb/terraform-aws-wandb/issues/155)) ([f0745ea](https://github.com/wandb/terraform-aws-wandb/commit/f0745eaf3e2d7111b6becfccac3134b18961e862))
+
+## [3.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.3.0...v3.4.0) (2023-11-13)
+
+
+### Features
+
+* Add support for AWS Secrets Manager ([#151](https://github.com/wandb/terraform-aws-wandb/issues/151)) ([aa64eb1](https://github.com/wandb/terraform-aws-wandb/commit/aa64eb146622132d9b70083094b3c60a728e6038))
+
+## [3.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.2.0...v3.3.0) (2023-10-31)
+
+
+### Features
+
+* Remove vpc-cni EKS add-on in app_eks/main.tf ([#150](https://github.com/wandb/terraform-aws-wandb/issues/150)) ([9f01dde](https://github.com/wandb/terraform-aws-wandb/commit/9f01dde88971487622111e71ec2871b7445b5f57))
+
+## [3.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.1.0...v3.2.0) (2023-10-25)
+
+
+### Features
+
+* **examples:** Adds tf template for bring your own vpc and eks ([#149](https://github.com/wandb/terraform-aws-wandb/issues/149)) ([930ecac](https://github.com/wandb/terraform-aws-wandb/commit/930ecac9034479a620cfcfabe1e14c554c0d4d2c))
+
+## [3.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.0.0...v3.1.0) (2023-10-24)
+
+
+### Features
+
+* external dns ([#148](https://github.com/wandb/terraform-aws-wandb/issues/148)) ([ab45809](https://github.com/wandb/terraform-aws-wandb/commit/ab4580977a323577bc1d1049af7b39c620554a21))
+
+## [3.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.8.0...v3.0.0) (2023-10-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Deploy aws load balancer controller to clusters (#147)
+
+### Features
+
+* Deploy aws load balancer controller to clusters ([#147](https://github.com/wandb/terraform-aws-wandb/issues/147)) ([90ce430](https://github.com/wandb/terraform-aws-wandb/commit/90ce430022018fdf288cf9cba575af4b59a737c1))
+
 ## [2.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v2.7.0...v2.8.0) (2023-09-19)
 
 

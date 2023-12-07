@@ -15,6 +15,16 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
+# removed due to conflict with 
+# AWS Load Balancer Controller
+# being installed with Helm.
+# See: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/
+#resource "aws_eks_addon" "vpc_cni" {
+#  cluster_name = var.namespace
+#  addon_name   = "vpc-cni"
+#  depends_on   = [module.eks]
+#}
+
 locals {
   managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
@@ -115,4 +125,34 @@ resource "aws_security_group_rule" "elasticache" {
   from_port                = local.redis_port
   to_port                  = local.redis_port
   type                     = "ingress"
+}
+
+data "tls_certificate" "eks" {
+  url = module.eks.cluster_oidc_issuer_url
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = module.eks.cluster_oidc_issuer_url
+}
+
+module "lb_controller" {
+  source = "./lb_controller"
+
+  namespace     = var.namespace
+  oidc_provider = aws_iam_openid_connect_provider.eks
+
+  depends_on = [module.eks]
+}
+
+module "external_dns" {
+  source = "./external_dns"
+
+  namespace     = var.namespace
+  oidc_provider = aws_iam_openid_connect_provider.eks
+  fqdn          = var.fqdn
+
+
+  depends_on = [module.eks]
 }
