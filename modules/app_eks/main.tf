@@ -8,17 +8,17 @@ locals {
 
 
 resource "aws_eks_addon" "eks" {
-  cluster_name = var.namespace
+  depends_on = [ module.eks ]
   addon_name   = "aws-ebs-csi-driver"
-  depends_on = [
-    module.eks
-  ]
+  cluster_name = var.namespace
+  resolve_conflicts = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name = var.namespace
+  depends_on = [ module.eks ]
   addon_name   = "vpc-cni"
-  depends_on   = [module.eks]
+  cluster_name = var.namespace
+  resolve_conflicts = "OVERWRITE"
 }
 
 locals {
