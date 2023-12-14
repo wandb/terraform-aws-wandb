@@ -33,15 +33,6 @@ resource "aws_eks_addon" "efs" {
 #  depends_on   = [module.eks]
 #}
 
-locals {
-  managed_policy_arns = concat([
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEFSCSIDriverPolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ], var.eks_policy_arns)
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 17.23"
