@@ -234,7 +234,6 @@ module "wandb" {
           EOF
           "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
           "alb.ingress.kubernetes.io/target-type"        = "ip"
-          "test"                                         = "test"
           "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"    = local.acm_certificate_arn
         }
