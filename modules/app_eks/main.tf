@@ -15,6 +15,14 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
+resource "aws_eks_addon" "efs" {
+  cluster_name = var.namespace
+  addon_name   = "aws-efs-csi-driver"
+  depends_on = [
+    module.eks
+  ]
+}
+
 # removed due to conflict with 
 # AWS Load Balancer Controller
 # being installed with Helm.
