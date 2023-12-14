@@ -37,6 +37,7 @@ locals {
   managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    "arn:aws:iam::aws:policy/AmazonEFSCSIDriverPolicy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
   ], var.eks_policy_arns)
 }
