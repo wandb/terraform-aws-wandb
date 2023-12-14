@@ -201,6 +201,8 @@ module "wandb" {
         host    = local.url
         license = var.license
 
+        extraEnv = var.other_wandb_env
+
         bucket = {
           provider = "s3"
           name     = local.bucket_name
