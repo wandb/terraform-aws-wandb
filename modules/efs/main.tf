@@ -34,10 +34,6 @@ resource "aws_security_group" "storage_class_nfs" {
     protocol        = "tcp"
     security_groups = [var.primary_workers_security_group_id]
   }
-
-  tags = {
-    Name = "nfs-security-group"
-  }
 }
 
 
