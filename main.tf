@@ -262,8 +262,3 @@ module "wandb" {
     }
   }
 }
-
-
-output "efs_ip" {
-  value = module.efs.efs_ip
-}
