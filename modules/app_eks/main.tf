@@ -16,8 +16,10 @@ resource "aws_eks_addon" "eks" {
 }
 
 resource "aws_eks_addon" "efs" {
-  cluster_name = var.namespace
-  addon_name   = "aws-efs-csi-driver"
+  cluster_name      = module.eks.cluster_id
+  addon_name        = "aws-efs-csi-driver"
+  addon_version     = "v1.7.1-eksbuild.1" # Ensure this version is compatible
+  resolve_conflicts = "OVERWRITE"
   depends_on = [
     module.eks
   ]

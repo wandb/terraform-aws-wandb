@@ -10,3 +10,7 @@ output "autoscaling_group_names" {
 output "node_role" {
   value = aws_iam_role.node
 }
+
+output "primary_workers_security_group_id" {
+  value = aws_security_group.primary_workers.id
+}
