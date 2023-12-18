@@ -26,14 +26,6 @@ module "file_storage" {
   deletion_protection = var.deletion_protection
 }
 
-module "efs" {
-  source                            = "./modules/efs"
-  namespace                         = var.namespace
-  private_subnets                   = module.networking.private_subnets
-  primary_workers_security_group_id = module.app_eks.primary_workers_security_group_id
-  vpc_id                            = module.networking.vpc_id
-}
-
 locals {
   bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
@@ -254,7 +246,7 @@ module "wandb" {
         persistence = {
           provider = "efs"
           efs = {
-            fileSystemId = module.efs.efs_id
+            fileSystemId = module.app_eks.efs_id
           }
 
         }
