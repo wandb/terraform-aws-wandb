@@ -21,17 +21,17 @@ resource "aws_security_group" "storage_class_nfs" {
   name        = "${var.namespace}-${random_pet.efs.id}"
   description = "Security group for NFS traffic"
   vpc_id      = var.network_id
-
-  ingress {
-    description     = "NFS inbound"
-    from_port       = 2049
-    to_port         = 2049
-    protocol        = "tcp"
-    security_groups = [aws_security_group.primary_workers.id]
-  }
-
 }
 
+resource "aws_security_group_rule" "nfs_ingress" {
+  description              = "NFS inbound"
+  type                     = "ingress"
+  from_port                = 2049
+  to_port                  = 2049
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.storage_class_nfs.id
+  source_security_group_id = aws_security_group.primary_workers.id
+}
 
 resource "aws_efs_mount_target" "storage_class" {
   for_each        = { for subnet in var.network_private_subnets : subnet => subnet }
