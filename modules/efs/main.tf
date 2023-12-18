@@ -7,11 +7,6 @@ resource "aws_efs_file_system" "storage_class" {
   encrypted        = true
   performance_mode = "generalPurpose"
   throughput_mode  = "elastic"
-
-
-  tags = {
-    Name = "${var.namespace}-efs-${random_pet.efs.id}"
-  }
 }
 
 resource "aws_efs_backup_policy" "storage_class" {
@@ -34,6 +29,7 @@ resource "aws_security_group" "storage_class_nfs" {
     protocol        = "tcp"
     security_groups = [var.primary_workers_security_group_id]
   }
+
 }
 
 
