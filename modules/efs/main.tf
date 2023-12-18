@@ -18,7 +18,7 @@ resource "aws_efs_backup_policy" "storage_class" {
 }
 
 resource "aws_security_group" "storage_class_nfs" {
-  name        = "nfs-security-group"
+  name        = "${var.namespace}-${random_pet.efs.id}"
   description = "Security group for NFS traffic"
   vpc_id      = var.vpc_id
 
