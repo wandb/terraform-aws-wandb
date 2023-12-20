@@ -207,7 +207,7 @@ module "wandb" {
           provider = "s3"
           name     = local.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.kms_key_arn
+          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
         }
 
         mysql = {
