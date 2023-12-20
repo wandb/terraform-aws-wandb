@@ -213,7 +213,7 @@ module "wandb" {
         mysql = {
           host     = module.database.endpoint
           password = module.database.password
-          username = module.database.username
+          user     = module.database.username
           database = module.database.database_name
           port     = module.database.port
         }
