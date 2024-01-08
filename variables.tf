@@ -111,6 +111,19 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
+variable "enable_dummy_dns" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
+}
+
+
+variable "enable_operator_alb" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
+}
+
 variable "extra_fqdn" {
   type    = list(string)
   default = []

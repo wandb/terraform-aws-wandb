@@ -153,7 +153,7 @@ module "external_dns" {
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
-  fqdn          = var.fqdn
+  domain_filter = var.domain_filter
 
 
   depends_on = [module.eks]

@@ -8,7 +8,7 @@ variable "bucket_kms_key_arn" {
   type        = string
 }
 
-variable "fqdn" {
+variable "domain_filter" {
   type = string
 }
 

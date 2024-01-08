@@ -9,6 +9,6 @@ variable "oidc_provider" {
   })
 }
 
-variable "fqdn" {
+variable "domain_filter" {
   type = string
 }
