@@ -92,7 +92,7 @@ variable "external_dns" {
 }
 
 variable "custom_domain_filter" {
-  description = "A custom domain filter to be used instead of the default FQDN. If not set, the local FQDN is used."
+  description = "A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used."
   type        = string
   default     = null
 }
