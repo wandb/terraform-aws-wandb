@@ -349,4 +349,8 @@ variable "other_wandb_env" {
   type        = map(any)
   description = "Extra environment variables for W&B"
   default     = {}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

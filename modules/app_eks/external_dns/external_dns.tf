@@ -22,18 +22,25 @@ resource "helm_release" "external_dns" {
 
   set {
     name  = "domainFilters[0]"
+<<<<<<< HEAD
     value = var.domain_filter
   }
 
   set {
     name  = "policy"
     value = "sync"
+=======
+    value = var.fqdn
+>>>>>>> origin/main
   }
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/main
 }
