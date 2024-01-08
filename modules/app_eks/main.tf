@@ -15,6 +15,16 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
+resource "aws_eks_addon" "efs" {
+  cluster_name      = module.eks.cluster_id
+  addon_name        = "aws-efs-csi-driver"
+  addon_version     = "v1.7.1-eksbuild.1" # Ensure this version is compatible
+  resolve_conflicts = "OVERWRITE"
+  depends_on = [
+    module.eks
+  ]
+}
+
 # removed due to conflict with 
 # AWS Load Balancer Controller
 # being installed with Helm.
@@ -24,14 +34,6 @@ resource "aws_eks_addon" "eks" {
 #  addon_name   = "vpc-cni"
 #  depends_on   = [module.eks]
 #}
-
-locals {
-  managed_policy_arns = concat([
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ], var.eks_policy_arns)
-}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
