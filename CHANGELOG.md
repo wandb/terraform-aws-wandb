@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.2...v4.0.0) (2024-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Init operator (#154)
+
+### Features
+
+* Init operator ([#154](https://github.com/wandb/terraform-aws-wandb/issues/154)) ([95def33](https://github.com/wandb/terraform-aws-wandb/commit/95def33db96c55a640fba4df5bdfbcc3a179d8ac))
+
 ### [3.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.1...v3.4.2) (2023-12-07)
 
 
