@@ -91,6 +91,12 @@ variable "external_dns" {
   description = "Using external DNS. A `subdomain` must also be specified if this value is true."
 }
 
+variable "custom_domain_filter" {
+  description = "A custom domain filter to be used instead of the default FQDN. If not set, the local FQDN is used."
+  type        = string
+  default     = null
+}
+
 # Sometimes domain name and zone name dont match, so lets explicitly ask for
 # both. Also is just life easier to have both even though in most cause it may
 # be redundant info.

@@ -108,6 +108,7 @@ module "acm" {
 locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
+  domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
 
   internal_app_port = 32543
 }
@@ -115,7 +116,7 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  domain_filter = var.domain_name
+  domain_filter = local.domain_filter
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
