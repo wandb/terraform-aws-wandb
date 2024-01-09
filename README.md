@@ -217,3 +217,15 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
 
 <!-- END_TF_DOCS -->
+
+## Migrations
+
+#### Upgrading from 3.x -> 4.x
+
+- You must provider an `license` variable to the module
+
+
+
+
+
+
