@@ -242,6 +242,12 @@ module "wandb" {
         }
       }
 
+      app = {
+        extraEnv = {
+          "GORILLA_GLUE_LIST" = "true"
+        }
+      }
+
       mysql = { install = false }
       redis = { install = false }
 

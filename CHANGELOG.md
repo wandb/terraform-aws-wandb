@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.0.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.1...v4.0.2) (2024-01-09)
+
+
+### Bug Fixes
+
+* EFS index vs subnet for_each ([#163](https://github.com/wandb/terraform-aws-wandb/issues/163)) ([1e47177](https://github.com/wandb/terraform-aws-wandb/commit/1e47177a0017ef694e7667781111d9ce2d375f2b))
+
+### [4.0.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.0...v4.0.1) (2024-01-09)
+
+
+### Bug Fixes
+
+* Disable gorilla glue tasks ([#161](https://github.com/wandb/terraform-aws-wandb/issues/161)) ([5d24bda](https://github.com/wandb/terraform-aws-wandb/commit/5d24bda4fead8d79b3e06d488ecb824980a3d15b))
+
 ## [4.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.2...v4.0.0) (2024-01-08)
 
 
