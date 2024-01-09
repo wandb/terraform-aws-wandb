@@ -224,6 +224,13 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 - You must provider an `license` variable to the module
 
+### Upgrading from 2.x -> 3.x
+
+- No changes required by you
+
+### Upgrading from 1.x -> 2.x
+
+- ~>4.0 version required for AWS Provider
 
 
 
