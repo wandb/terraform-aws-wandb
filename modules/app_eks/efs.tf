@@ -34,7 +34,8 @@ resource "aws_security_group_rule" "nfs_ingress" {
 }
 
 resource "aws_efs_mount_target" "storage_class" {
-  for_each        = { for subnet in var.network_private_subnets : subnet => subnet }
+  for_each = { for index, subnet in var.network_private_subnets : index => subnet }
+
   file_system_id  = aws_efs_file_system.storage_class.id
   subnet_id       = each.value
   security_groups = [aws_security_group.storage_class_nfs.id]

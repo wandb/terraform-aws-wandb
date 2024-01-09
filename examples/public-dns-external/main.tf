@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "us-west-2"
+  region = "us-west-2"
 
   default_tags {
     tags = {
@@ -36,7 +36,7 @@ module "wandb_infra" {
   zone_id     = var.zone_id
   subdomain   = var.subdomain
 
-  # license = var.wandb_license
+  license = var.wandb_license
 
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
