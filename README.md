@@ -224,7 +224,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 - You must provider a `license` variable to the module
 
-```hcl
+```
 module "wandb" {
   version = "4.x"
 
