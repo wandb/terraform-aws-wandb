@@ -222,7 +222,8 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 #### Upgrading from 3.x -> 4.x
 
-- You must provider a `license` variable to the module
+- If egress access for retrieving the wandb/controller image is not available, Terraform apply may experience failures.
+- It's necessary to supply a license variable within the module, as shown:
 
 ```hcl
 module "wandb" {
