@@ -222,7 +222,17 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 #### Upgrading from 3.x -> 4.x
 
-- You must provider an `license` variable to the module
+- You must provider a `license` variable to the module
+
+```tf
+module "wandb" {
+  version = "4.x"
+
+  # ...
+  license = "<your license key>"
+  # ...
+}
+```
 
 ### Upgrading from 2.x -> 3.x
 
