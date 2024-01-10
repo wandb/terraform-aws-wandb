@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.2...v4.1.0) (2024-01-10)
+
+
+### Features
+
+* Adding flags to switch between LB ([#159](https://github.com/wandb/terraform-aws-wandb/issues/159)) ([ffa3778](https://github.com/wandb/terraform-aws-wandb/commit/ffa3778fe05da8681a828ce84f3f8291bb8fe5bd))
+
 ### [4.0.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.1...v4.0.2) (2024-01-09)
 
 
