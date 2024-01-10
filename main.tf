@@ -197,7 +197,7 @@ module "wandb" {
   controller_image_tag   = "1.10.1"
 
   spec = {
-    values = {
+    values = merge({
       global = {
         host    = local.url
         license = var.license
@@ -260,6 +260,14 @@ module "wandb" {
 
         }
       }
-    }
+      }, var.enable_operator_alb ? {} :
+      {
+        app = {
+          extraEnv = {
+            "GORILLA_GLUE_LIST" = "true"
+          }
+        }
+      }
+    )
   }
 }
