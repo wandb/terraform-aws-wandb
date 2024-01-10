@@ -116,7 +116,7 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  domain_filter = local.domain_filter
+  fqdn = local.domain_filter
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -197,7 +197,7 @@ module "wandb" {
   controller_image_tag   = "1.10.1"
 
   spec = {
-    values = merge({
+    values = {
       global = {
         host    = local.url
         license = var.license
@@ -242,6 +242,12 @@ module "wandb" {
         }
       }
 
+      app = var.enable_operator_alb ? {} : {
+        extraEnv = {
+          "GORILLA_GLUE_LIST" = "true"
+        }
+      }
+
       mysql = { install = false }
       redis = { install = false }
 
@@ -251,17 +257,8 @@ module "wandb" {
           efs = {
             fileSystemId = module.app_eks.efs_id
           }
-
         }
       }
-      }, var.enable_operator_alb ? {} :
-      {
-        app = {
-          extraEnv = {
-            "GORILLA_GLUE_LIST" = "true"
-          }
-        }
-      }
-    )
+    }
   }
 }
