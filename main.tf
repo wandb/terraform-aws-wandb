@@ -108,6 +108,7 @@ module "acm" {
 locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
+  domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
 
   internal_app_port = 32543
 }
@@ -115,7 +116,7 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  fqdn = local.fqdn
+  fqdn = local.domain_filter
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -153,7 +154,7 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = local.fqdn
+  fqdn                      = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
   extra_fqdn                = var.extra_fqdn
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
@@ -228,18 +229,20 @@ module "wandb" {
         class = "alb"
 
         annotations = {
-          "alb.ingress.kubernetes.io/load-balancer-name" = "${var.namespace}-alb-k8s"
-          "alb.ingress.kubernetes.io/inbound-cidrs"      = <<-EOF
+          "alb.ingress.kubernetes.io/load-balancer-name"             = "${var.namespace}-alb-k8s"
+          "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
-          "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
-          "alb.ingress.kubernetes.io/target-type"        = "ip"
-          "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
-          "alb.ingress.kubernetes.io/certificate-arn"    = local.acm_certificate_arn
+          "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
+          "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
+          "alb.ingress.kubernetes.io/scheme"                         = "internet-facing"
+          "alb.ingress.kubernetes.io/target-type"                    = "ip"
+          "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
+          "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
         }
       }
 
-      app = {
+      app = var.enable_operator_alb ? {} : {
         extraEnv = {
           "GORILLA_GLUE_LIST" = "true"
         }
@@ -254,7 +257,6 @@ module "wandb" {
           efs = {
             fileSystemId = module.app_eks.efs_id
           }
-
         }
       }
     }

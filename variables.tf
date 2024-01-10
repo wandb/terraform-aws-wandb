@@ -91,6 +91,12 @@ variable "external_dns" {
   description = "Using external DNS. A `subdomain` must also be specified if this value is true."
 }
 
+variable "custom_domain_filter" {
+  description = "A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used."
+  type        = string
+  default     = null
+}
+
 # Sometimes domain name and zone name dont match, so lets explicitly ask for
 # both. Also is just life easier to have both even though in most cause it may
 # be redundant info.
@@ -109,6 +115,19 @@ variable "subdomain" {
   type        = string
   default     = null
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
+}
+
+variable "enable_dummy_dns" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
+}
+
+
+variable "enable_operator_alb" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
 }
 
 variable "extra_fqdn" {
