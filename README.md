@@ -217,3 +217,28 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
 
 <!-- END_TF_DOCS -->
+
+## Migrations
+
+#### Upgrading from 3.x -> 4.x
+
+- If egress access for retrieving the wandb/controller image is not available, Terraform apply may experience failures.
+- It's necessary to supply a license variable within the module, as shown:
+
+```hcl
+module "wandb" {
+  version = "4.x"
+
+  # ...
+  license = "<your license key>"
+  # ...
+}
+```
+
+### Upgrading from 2.x -> 3.x
+
+- No changes required by you
+
+### Upgrading from 1.x -> 2.x
+
+- ~>4.0 version required for AWS Provider
