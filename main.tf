@@ -244,7 +244,7 @@ module "wandb" {
 
       app = var.enable_operator_alb ? {} : {
         extraEnv = {
-          "GORILLA_GLUE_LIST" = "false"
+          "GORILLA_GLUE_LIST" = "true"
         }
       }
 
