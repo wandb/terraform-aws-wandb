@@ -242,12 +242,6 @@ module "wandb" {
         }
       }
 
-      app = var.enable_operator_alb ? null : {
-        extraEnv = {
-          "GORILLA_GLUE_LIST" = "true"
-        }
-      }
-
       mysql = { install = false }
       redis = { install = false }
 
