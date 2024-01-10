@@ -22,7 +22,7 @@ resource "helm_release" "external_dns" {
 
   set {
     name  = "domainFilters[0]"
-    value = var.domain_filter
+    value = var.fqdn
   }
 
   set {
