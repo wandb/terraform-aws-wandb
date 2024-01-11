@@ -222,6 +222,7 @@ module "wandb" {
         redis = {
           host = module.redis.0.host
           port = "${module.redis.0.port}?tls=true&ttlInSeconds=604800"
+          
         }
       }
 
