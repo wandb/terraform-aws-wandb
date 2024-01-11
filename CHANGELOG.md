@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.1.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.0...v4.1.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* Update redis connection ttl ([#165](https://github.com/wandb/terraform-aws-wandb/issues/165)) ([f236b3b](https://github.com/wandb/terraform-aws-wandb/commit/f236b3b8c5f7d3fcece1a1d302276bde6bdd75d5))
+
 ## [4.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.2...v4.1.0) (2024-01-10)
 
 
