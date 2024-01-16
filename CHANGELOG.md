@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.1.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.1...v4.1.2) (2024-01-16)
+
+
+### Bug Fixes
+
+* Max LB name length ([#166](https://github.com/wandb/terraform-aws-wandb/issues/166)) ([85bd266](https://github.com/wandb/terraform-aws-wandb/commit/85bd266f5f0ce003f2d4e69f796a41df0ff9fb9c))
+
 ### [4.1.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.0...v4.1.1) (2024-01-11)
 
 
