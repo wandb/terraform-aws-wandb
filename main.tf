@@ -186,7 +186,7 @@ module "redis" {
 
 locals {
   max_lb_name_length = 32 - length("-alb-k8s")
-  lb_name_truncated  = "${substr(var.namespace, 0, min(length(var.namespace), local.max_lb_name_length))}-alb-k8s"
+  lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
 
 module "wandb" {
