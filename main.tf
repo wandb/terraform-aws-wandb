@@ -184,6 +184,11 @@ module "redis" {
   kms_key_arn = local.kms_key_arn
 }
 
+locals {
+  max_lb_name_length = 32 - length("-alb-k8s")
+  lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
+}
+
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
@@ -229,7 +234,7 @@ module "wandb" {
         class = "alb"
 
         annotations = {
-          "alb.ingress.kubernetes.io/load-balancer-name"             = "${var.namespace}-alb-k8s"
+          "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
