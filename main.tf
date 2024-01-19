@@ -55,8 +55,6 @@ locals {
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
-
-  network_elasticache_subnet_group_name = module.networking.elasticache_subnet_group_name
 }
 
 module "database" {
@@ -171,8 +169,16 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   lb_target_group_arn    = module.app_lb.tg_app_arn
 }
 
+locals {
+  network_elasticache_subnets          = var.create_vpc ? module.networking.elasticache_subnets : var.network_elasticache_subnets
+  network_elasticache_create_subnet_group = !var.create_vpc
+  network_elasticache_subnet_group_name = var.create_vpc ? module.networking.elasticache_subnet_group_name : "${var.namespace}-elasticache-subnet"
+}
+
 module "redis" {
   count     = var.create_elasticache ? 1 : 0
+  redis_create_subnet_group = local.network_elasticache_create_subnet_group
+  redis_subnets = local.network_elasticache_subnets
   source    = "./modules/redis"
   namespace = var.namespace
 

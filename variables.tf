@@ -217,6 +217,12 @@ variable "network_database_subnets" {
   type        = list(string)
 }
 
+variable "network_elasticache_subnets" {
+  default     = []
+  description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
