@@ -43,6 +43,11 @@ resource "aws_iam_role_policy_attachment" "eks_cni" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
+resource "aws_iam_role_policy_attachment" "eks_efs" {
+  role       = aws_iam_role.node.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+}
+
 resource "aws_iam_role_policy_attachment" "eks_worker_node" {
   role       = aws_iam_role.node.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"

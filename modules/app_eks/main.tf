@@ -4,16 +4,14 @@ locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
-}
 
-
-locals {
   managed_policy_arns = concat([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
   ], var.eks_policy_arns)
 }
+
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
