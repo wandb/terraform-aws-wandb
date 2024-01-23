@@ -128,6 +128,7 @@ resource "aws_security_group_rule" "elasticache" {
   to_port                  = local.redis_port
   type                     = "ingress"
 }
+
 data "tls_certificate" "eks" {
   url = module.eks.cluster_oidc_issuer_url
 }
