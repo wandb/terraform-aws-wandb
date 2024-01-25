@@ -165,6 +165,24 @@ module "app_lb" {
   network_public_subnets  = local.network_public_subnets
 }
 
+module "private_link" {
+  count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
+  source = "./modules/private_link"
+
+  namespace               = var.namespace
+  allowed_account_ids     = var.private_link_allowed_account_ids
+  deletion_protection     = var.deletion_protection
+  network_private_subnets = local.network_private_subnets
+  alb_name                = local.lb_name_truncated
+  vpc_id                  = local.network_id
+  cluster_id              = module.app_eks.cluster_id
+  acm_certificate_arn     = local.acm_certificate_arn
+
+  depends_on = [
+    module.wandb
+  ]
+}
+
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
