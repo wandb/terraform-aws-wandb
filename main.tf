@@ -175,8 +175,6 @@ module "private_link" {
   network_private_subnets = local.network_private_subnets
   alb_name                = local.lb_name_truncated
   vpc_id                  = local.network_id
-  cluster_id              = module.app_eks.cluster_id
-  acm_certificate_arn     = local.acm_certificate_arn
 
   depends_on = [
     module.wandb
