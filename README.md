@@ -115,15 +115,15 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.6 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.23 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.6 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
 
 ## Modules
 
@@ -136,7 +136,9 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="module_file_storage"></a> [file\_storage](#module\_file\_storage) | ./modules/file_storage | n/a |
 | <a name="module_kms"></a> [kms](#module\_kms) | ./modules/kms | n/a |
 | <a name="module_networking"></a> [networking](#module\_networking) | ./modules/networking | n/a |
+| <a name="module_private_link"></a> [private\_link](#module\_private\_link) | ./modules/private_link | n/a |
 | <a name="module_redis"></a> [redis](#module\_redis) | ./modules/redis | n/a |
+| <a name="module_wandb"></a> [wandb](#module\_wandb) | wandb/wandb/helm | 1.2.0 |
 
 ## Resources
 
@@ -157,31 +159,35 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
+| <a name="input_custom_domain_filter"></a> [custom\_domain\_filter](#input\_custom\_domain\_filter) | A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used. | `string` | `null` | no |
 | <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
 | <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.03.0"` | no |
 | <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
 | <a name="input_database_master_username"></a> [database\_master\_username](#input\_database\_master\_username) | Specifies the master\_username value to set for the database | `string` | `"wandb"` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Specifies the name of the database | `string` | `"wandb_local"` | no |
-| <a name="input_database_performance_insights_kms_key_arn"></a> [database\_performance\_insights\_kms\_key\_arn](#input\_database\_performance\_insights\_kms\_key\_arn) | Specifies an existing KMS key ARN to encrypt the performance insights data if performance\_insights\_enabled is was enabled out of band | `string` | n/a | yes |
+| <a name="input_database_performance_insights_kms_key_arn"></a> [database\_performance\_insights\_kms\_key\_arn](#input\_database\_performance\_insights\_kms\_key\_arn) | Specifies an existing KMS key ARN to encrypt the performance insights data if performance\_insights\_enabled is was enabled out of band | `string` | `null` | no |
 | <a name="input_database_snapshot_identifier"></a> [database\_snapshot\_identifier](#input\_database\_snapshot\_identifier) | Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot | `string` | `null` | no |
 | <a name="input_database_sort_buffer_size"></a> [database\_sort\_buffer\_size](#input\_database\_sort\_buffer\_size) | Specifies the sort\_buffer\_size value to set for the database | `number` | `67108864` | no |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`. | `bool` | `true` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain for accessing the Weights & Biases UI. | `string` | n/a | yes |
-| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | Indicates EKS cluster version | `string` | `"1.21"` | no |
+| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | EKS cluster kubernetes version | `string` | n/a | yes |
 | <a name="input_eks_policy_arns"></a> [eks\_policy\_arns](#input\_eks\_policy\_arns) | Additional IAM policy to apply to the EKS cluster | `list(string)` | `[]` | no |
 | <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy | `string` | `"cache.t2.medium"` | no |
+| <a name="input_enable_dummy_dns"></a> [enable\_dummy\_dns](#input\_enable\_dummy\_dns) | Boolean indicating whether or not to enable dummy DNS for the old alb | `bool` | `false` | no |
+| <a name="input_enable_operator_alb"></a> [enable\_operator\_alb](#input\_enable\_operator\_alb) | Boolean indicating whether to use operatore ALB (true) or not (false). | `bool` | `false` | no |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | Using external DNS. A `subdomain` must also be specified if this value is true. | `bool` | `false` | no |
 | <a name="input_extra_fqdn"></a> [extra\_fqdn](#input\_extra\_fqdn) | n/a | `list(string)` | `[]` | no |
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `null` | no |
 | <a name="input_kms_key_deletion_window"></a> [kms\_key\_deletion\_window](#input\_kms\_key\_deletion\_window) | Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days. | `number` | `7` | no |
 | <a name="input_kms_key_policy"></a> [kms\_key\_policy](#input\_kms\_key\_policy) | The policy that will define the permissions for the kms key. | `string` | `""` | no |
-| <a name="input_kubernetes_instance_types"></a> [kubernetes\_instance\_types](#input\_kubernetes\_instance\_types) | EC2 Instance type for primary node group. | `list(string)` | <pre>[<br>  "m4.large"<br>]</pre> | no |
+| <a name="input_kubernetes_instance_types"></a> [kubernetes\_instance\_types](#input\_kubernetes\_instance\_types) | EC2 Instance type for primary node group. | `list(string)` | <pre>[<br>  "m5.large"<br>]</pre> | no |
 | <a name="input_kubernetes_map_accounts"></a> [kubernetes\_map\_accounts](#input\_kubernetes\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
 | <a name="input_kubernetes_map_roles"></a> [kubernetes\_map\_roles](#input\_kubernetes\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_kubernetes_map_users"></a> [kubernetes\_map\_users](#input\_kubernetes\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_kubernetes_public_access"></a> [kubernetes\_public\_access](#input\_kubernetes\_public\_access) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. | `bool` | `false` | no |
 | <a name="input_kubernetes_public_access_cidrs"></a> [kubernetes\_public\_access\_cidrs](#input\_kubernetes\_public\_access\_cidrs) | List of CIDR blocks which can access the Amazon EKS public API server endpoint. | `list(string)` | `[]` | no |
+| <a name="input_license"></a> [license](#input\_license) | Weights & Biases license key. | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | String used for prefix resources. | `string` | n/a | yes |
 | <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | CIDR block for VPC. | `string` | `"10.10.0.0/16"` | no |
 | <a name="input_network_database_subnet_cidrs"></a> [network\_database\_subnet\_cidrs](#input\_network\_database\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.20.0/24",<br>  "10.10.21.0/24"<br>]</pre> | no |
@@ -192,6 +198,8 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_network_private_subnets"></a> [network\_private\_subnets](#input\_network\_private\_subnets) | A list of the identities of the private subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
 | <a name="input_network_public_subnet_cidrs"></a> [network\_public\_subnet\_cidrs](#input\_network\_public\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.0.0/24",<br>  "10.10.1.0/24"<br>]</pre> | no |
 | <a name="input_network_public_subnets"></a> [network\_public\_subnets](#input\_network\_public\_subnets) | A list of the identities of the public subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
+| <a name="input_other_wandb_env"></a> [other\_wandb\_env](#input\_other\_wandb\_env) | Extra environment variables for W&B | `map(any)` | `{}` | no |
+| <a name="input_private_link_allowed_account_ids"></a> [private\_link\_allowed\_account\_ids](#input\_private\_link\_allowed\_account\_ids) | List of AWS account IDs allowed to access the VPC Endpoint Service | `list(string)` | `[]` | no |
 | <a name="input_public_access"></a> [public\_access](#input\_public\_access) | Is this instance accessable a public domain. | `bool` | `false` | no |
 | <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | SSL policy to use on ALB listener | `string` | `"ELBSecurityPolicy-FS-1-2-Res-2020-10"` | no |
 | <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route. | `string` | `null` | no |
@@ -208,6 +216,8 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | n/a |
 | <a name="output_cluster_node_role"></a> [cluster\_node\_role](#output\_cluster\_node\_role) | n/a |
 | <a name="output_database_connection_string"></a> [database\_connection\_string](#output\_database\_connection\_string) | n/a |
+| <a name="output_database_password"></a> [database\_password](#output\_database\_password) | n/a |
+| <a name="output_database_username"></a> [database\_username](#output\_database\_username) | n/a |
 | <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
 | <a name="output_internal_app_port"></a> [internal\_app\_port](#output\_internal\_app\_port) | n/a |
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
