@@ -27,21 +27,3 @@ variable "vpc_id" {
   description = "ID of the VPC to create the VPC Endpoint Service in"
   type        = string
 }
-
-variable "cluster_id" {
-  description = "The EKS cluster ID needed to get the tags for the target group"
-  type        = string
-}
-
-variable "ssl_policy" {
-  type        = string
-  default     = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
-  description = "(Optional) SSL policy to use on ALB listener"
-}
-
-variable "acm_certificate_arn" {
-  type        = string
-  description = "(Optional) The ARN of an existing ACM certificate."
-  default     = null
-}
-
