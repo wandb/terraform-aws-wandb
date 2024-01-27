@@ -233,6 +233,8 @@ module "wandb" {
       ingress = {
         class = "alb"
 
+        additionalHosts = [""]
+
         annotations = {
           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
