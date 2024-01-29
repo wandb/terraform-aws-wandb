@@ -11,7 +11,7 @@ resource "aws_lb" "nlb" {
   enable_deletion_protection = var.deletion_protection
 }
 
-resource "aws_lb_target_group" "nlb_tg" {
+resource "aws_lb_target_group" "nlb" {
   name        = "${var.namespace}-nlb-tg"
   protocol    = "TCP"
   target_type = "alb"
