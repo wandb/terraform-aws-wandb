@@ -35,7 +35,7 @@ data "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group_attachment" "nlb_to_alb" {
-  target_group_arn = aws_lb_target_group.nlb_tg.arn
+  target_group_arn = aws_lb_target_group.nlb.arn
   target_id        = data.aws_lb.alb.arn
 }
 
@@ -52,6 +52,6 @@ resource "aws_lb_listener" "nlb" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.nlb_tg.arn
+    target_group_arn = aws_lb_target_group.nlb.arn
   }
 }
