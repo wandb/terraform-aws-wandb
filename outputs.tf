@@ -26,12 +26,19 @@ output "database_password" {
   sensitive = true
   value     = module.database.password
 }
+
+output "database_size" {
+  value = local.deployment_size[var.size].db
+}
+
 output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
 }
+
 output "internal_app_port" {
   value = local.internal_app_port
 }
+
 output "kms_key_arn" {
   value       = local.kms_key_arn
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
@@ -51,6 +58,7 @@ output "network_public_subnets" {
   value       = local.network_public_subnets
   description = "The identities of the public subnetworks deployed within the VPC."
 }
+
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"

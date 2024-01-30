@@ -18,9 +18,10 @@ variable "use_internal_queue" {
 }
 
 variable "size" {
-    type = string
-    description = "Deployment size"
     default = "small"
+    description = "Deployment size"
+    nullable = true
+    type = string
 }
 
 ##########################################

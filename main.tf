@@ -102,7 +102,7 @@ module "database" {
   database_name   = var.database_name
   master_username = var.database_master_username
 
-  instance_class      = coalesce(try(local.deployment_size[var.size].db, null), var.database_instance_class)
+  instance_class      = try(local.deployment_size[var.size].db, var.database_instance_class)
   engine_version      = var.database_engine_version
   snapshot_identifier = var.database_snapshot_identifier
   sort_buffer_size    = var.database_sort_buffer_size
@@ -155,7 +155,7 @@ module "app_eks" {
   kms_key_arn = local.kms_key_arn
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
-  desired_capacity = coalesce(try(local.deployment_size[var.size].node_count, null), var.kubernetes_node_count)
+  desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
@@ -213,7 +213,7 @@ module "redis" {
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
-  node_type               = coalesce(try(local.deployment_size[var.size].cache, null), var.elasticache_node_type)
+  node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
   kms_key_arn = local.kms_key_arn
 }
 
