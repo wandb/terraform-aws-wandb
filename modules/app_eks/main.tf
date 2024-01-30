@@ -15,19 +15,25 @@ resource "aws_eks_addon" "eks" {
   ]
 }
 
-resource "aws_eks_addon" "vpc_cni" {
-  cluster_name = var.namespace
-  addon_name   = "vpc-cni"
-  depends_on   = [module.eks]
+resource "aws_eks_addon" "efs" {
+  cluster_name      = module.eks.cluster_id
+  addon_name        = "aws-efs-csi-driver"
+  addon_version     = "v1.7.1-eksbuild.1" # Ensure this version is compatible
+  resolve_conflicts = "OVERWRITE"
+  depends_on = [
+    module.eks
+  ]
 }
 
-locals {
-  managed_policy_arns = concat([
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ], var.eks_policy_arns)
-}
+# removed due to conflict with 
+# AWS Load Balancer Controller
+# being installed with Helm.
+# See: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/
+#resource "aws_eks_addon" "vpc_cni" {
+#  cluster_name = var.namespace
+#  addon_name   = "vpc-cni"
+#  depends_on   = [module.eks]
+#}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -60,19 +66,21 @@ module "eks" {
 
   node_groups = {
     primary = {
-      version                = var.cluster_version,
-      desired_capacity       = var.desired_capacity,
-      max_capacity           = 5,
-      min_capacity           = 2,
-      instance_types         = var.instance_types,
-      iam_role_arn           = aws_iam_role.node.arn,
-      create_launch_template = local.encrypt_ebs_volume,
-      disk_encrypted         = local.encrypt_ebs_volume,
-      disk_kms_key_id        = var.kms_key_arn,
-      force_update_version   = local.encrypt_ebs_volume,
       # IMDsv2
-      metadata_http_tokens                 = "required",
+      create_launch_template               = local.encrypt_ebs_volume,
+      desired_capacity                     = 2,
+      disk_encrypted                       = local.encrypt_ebs_volume,
+      disk_kms_key_id                      = var.kms_key_arn,
+      disk_type                            = "gp3"
+      enable_monitoring                    = true
+      force_update_version                 = local.encrypt_ebs_volume,
+      iam_role_arn                         = aws_iam_role.node.arn,
+      instance_types                       = var.instance_types,
+      max_capacity                         = 5,
       metadata_http_put_response_hop_limit = 2
+      metadata_http_tokens                 = "required",
+      min_capacity                         = 2,
+      version                              = var.cluster_version,
     }
   }
 

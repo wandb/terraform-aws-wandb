@@ -2,6 +2,80 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.1.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.1...v4.1.2) (2024-01-16)
+
+
+### Bug Fixes
+
+* Max LB name length ([#166](https://github.com/wandb/terraform-aws-wandb/issues/166)) ([85bd266](https://github.com/wandb/terraform-aws-wandb/commit/85bd266f5f0ce003f2d4e69f796a41df0ff9fb9c))
+
+### [4.1.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.0...v4.1.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* Update redis connection ttl ([#165](https://github.com/wandb/terraform-aws-wandb/issues/165)) ([f236b3b](https://github.com/wandb/terraform-aws-wandb/commit/f236b3b8c5f7d3fcece1a1d302276bde6bdd75d5))
+
+## [4.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.2...v4.1.0) (2024-01-10)
+
+
+### Features
+
+* Adding flags to switch between LB ([#159](https://github.com/wandb/terraform-aws-wandb/issues/159)) ([ffa3778](https://github.com/wandb/terraform-aws-wandb/commit/ffa3778fe05da8681a828ce84f3f8291bb8fe5bd))
+
+### [4.0.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.1...v4.0.2) (2024-01-09)
+
+
+### Bug Fixes
+
+* EFS index vs subnet for_each ([#163](https://github.com/wandb/terraform-aws-wandb/issues/163)) ([1e47177](https://github.com/wandb/terraform-aws-wandb/commit/1e47177a0017ef694e7667781111d9ce2d375f2b))
+
+### [4.0.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.0...v4.0.1) (2024-01-09)
+
+
+### Bug Fixes
+
+* Disable gorilla glue tasks ([#161](https://github.com/wandb/terraform-aws-wandb/issues/161)) ([5d24bda](https://github.com/wandb/terraform-aws-wandb/commit/5d24bda4fead8d79b3e06d488ecb824980a3d15b))
+
+## [4.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.2...v4.0.0) (2024-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Init operator (#154)
+
+### Features
+
+* Init operator ([#154](https://github.com/wandb/terraform-aws-wandb/issues/154)) ([95def33](https://github.com/wandb/terraform-aws-wandb/commit/95def33db96c55a640fba4df5bdfbcc3a179d8ac))
+
+### [3.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.1...v3.4.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* Switch to gp3 volumes on EKS nodes ([#146](https://github.com/wandb/terraform-aws-wandb/issues/146)) ([86dbc7d](https://github.com/wandb/terraform-aws-wandb/commit/86dbc7df0de1aa6d2bc69862770ea67010354c20))
+
+### [3.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.0...v3.4.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Fix private access example ([#155](https://github.com/wandb/terraform-aws-wandb/issues/155)) ([f0745ea](https://github.com/wandb/terraform-aws-wandb/commit/f0745eaf3e2d7111b6becfccac3134b18961e862))
+
+## [3.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.3.0...v3.4.0) (2023-11-13)
+
+
+### Features
+
+* Add support for AWS Secrets Manager ([#151](https://github.com/wandb/terraform-aws-wandb/issues/151)) ([aa64eb1](https://github.com/wandb/terraform-aws-wandb/commit/aa64eb146622132d9b70083094b3c60a728e6038))
+
+## [3.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.2.0...v3.3.0) (2023-10-31)
+
+
+### Features
+
+* Remove vpc-cni EKS add-on in app_eks/main.tf ([#150](https://github.com/wandb/terraform-aws-wandb/issues/150)) ([9f01dde](https://github.com/wandb/terraform-aws-wandb/commit/9f01dde88971487622111e71ec2871b7445b5f57))
+
 ## [3.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.1.0...v3.2.0) (2023-10-25)
 
 

@@ -141,6 +141,7 @@ module "acm" {
 locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
+  domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
 
   internal_app_port = 32543
 }
@@ -148,7 +149,7 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  fqdn = local.fqdn
+  fqdn = local.domain_filter
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -187,7 +188,7 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = local.fqdn
+  fqdn                      = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
   extra_fqdn                = var.extra_fqdn
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
@@ -216,63 +217,87 @@ module "redis" {
   kms_key_arn = local.kms_key_arn
 }
 
+locals {
+  max_lb_name_length = 32 - length("-alb-k8s")
+  lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
+}
 
-# Comming soon!
-# module "wandb" {
-#   source  = "wandb/wandb/helm"
-#   version = "1.2.0"
+module "wandb" {
+  source  = "wandb/wandb/helm"
+  version = "1.2.0"
 
-#   depends_on = [
-#     module.database,
-#     module.app_eks,
-#     module.redis,
-#   ]
+  depends_on = [
+    module.database,
+    module.app_eks,
+    module.redis,
+  ]
+  operator_chart_version = "1.1.0"
+  controller_image_tag   = "1.10.1"
 
-#   operator_chart_version = "1.1.0"
-#   controller_image_tag   = "1.10.1"
+  spec = {
+    values = {
+      global = {
+        host    = local.url
+        license = var.license
 
-#   spec = {
-#     values = {
-#       global = {
-#         host    = local.url
-#         license = var.license
+        extraEnv = var.other_wandb_env
 
-#         bucket = {
-#           provider = "s3"
-#           name     = local.bucket_name
-#           region   = data.aws_s3_bucket.file_storage.region
-#           kmsKey   = local.kms_key_arn
-#         }
+        bucket = {
+          provider = "s3"
+          name     = local.bucket_name
+          region   = data.aws_s3_bucket.file_storage.region
+          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+        }
 
-#         mysql = {
-#           host     = module.database.endpoint
-#           password = module.database.password
-#           username = module.database.username
-#           database = module.database.database_name
-#           port     = module.database.port
-#         }
+        mysql = {
+          host     = module.database.endpoint
+          password = module.database.password
+          user     = module.database.username
+          database = module.database.database_name
+          port     = module.database.port
+        }
 
-#         redis = {
-#           host = module.redis.0.host
-#           port = "${module.redis.0.port}?tls=true"
-#         }
-#       }
+        redis = {
+          host = module.redis.0.host
+          port = "${module.redis.0.port}?tls=true&ttlInSeconds=604800"
+        }
+      }
 
-#       ingress = {
-#         class = "alb"
+      ingress = {
+        class = "alb"
 
-#         annotations = {
-#           "alb.ingress.kubernetes.io/load-balancer-name" = "${var.namespace}-alb-k8s"
-#           "alb.ingress.kubernetes.io/inbound-cidrs"      = "0.0.0.0/0"
-#           "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
-#           "alb.ingress.kubernetes.io/target-type"        = "ip"
-#           "alb.ingress.kubernetes.io/listen-ports"       = "[{\\\"HTTPS\\\": 443}]"
-#           "alb.ingress.kubernetes.io/certificate-arn"    = local.acm_certificate_arn
-#         }
-#       }
+        annotations = {
+          "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
+          "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
+            ${join("\\,", var.allowed_inbound_cidr)}
+          EOF
+          "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
+          "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
+          "alb.ingress.kubernetes.io/scheme"                         = "internet-facing"
+          "alb.ingress.kubernetes.io/target-type"                    = "ip"
+          "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
+          "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
+        }
+      }
 
-#       mysql = { install = false }
-#       redis = { install = false }
-#     }
-#   }
-# }
+      app = var.enable_operator_alb ? {} : {
+        extraEnv = {
+          "GORILLA_GLUE_LIST" = "true"
+        }
+      }
+
+      mysql = { install = false }
+      redis = { install = false }
+
+      weave = {
+        persistence = {
+          provider = "efs"
+          efs = {
+            fileSystemId = module.app_eks.efs_id
+          }
+        }
+      }
+    }
+  }
+}
+

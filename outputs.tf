@@ -55,4 +55,3 @@ output "url" {
   value       = local.url
   description = "The URL to the W&B application"
 }
-
