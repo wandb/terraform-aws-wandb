@@ -32,33 +32,33 @@ locals {
 
   deployment_size = {
     small = {
-      db = "r6g.large",
+      db = "db.r6g.large",
       node_count = 2,
-      node_instance = "r6g.large"
+      node_instance = "r6i.large"
       cache = "cache.m6g.large"
     },
     medium = {
-      db = "r6g.xlarge",
+      db = "db.r6g.xlarge",
       node_count = 2,
-      node_instance = "r6g.xlarge"
+      node_instance = "r6i.xlarge"
       cache = "cache.m6g.large"
     },
     large = {
-      db = "r6g.2xlarge",
+      db = "db.r6g.2xlarge",
       node_count = 2,
-      node_instance = "r6g.2xlarge"
+      node_instance = "r6i.2xlarge"
       cache = "cache.m6g.xlarge"
     },
     xlarge = {
-      db = "r6g.4xlarge",
+      db = "db.r6g.4xlarge",
       node_count = 3,
-      node_instance = "r6g.4xlarge"
+      node_instance = "r6i.4xlarge"
       cache = "cache.m6g.xlarge"
     },
     xxlarge = {
-      db = "r6g.8xlarge",
+      db = "db.r6g.8xlarge",
       node_count = 3,
-      node_instance = "r6g.8xlarge"
+      node_instance = "r6i.8xlarge"
       cache = "cache.m6g.2xlarge"
     }
   }
@@ -154,7 +154,7 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
-  instance_types   = coalesce(try([local.deployment_size[var.size].node_instance], null), var.kubernetes_instance_types.0)
+  instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = coalesce(try(local.deployment_size[var.size].node_count, null), var.kubernetes_node_count)
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles

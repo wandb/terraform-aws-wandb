@@ -19,7 +19,7 @@ variable "use_internal_queue" {
 
 variable "size" {
     type = string
-    description = "T-shirt size for deployment"
+    description = "Deployment size"
     default = "small"
 }
 
