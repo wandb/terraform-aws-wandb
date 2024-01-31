@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.2...v4.2.0) (2024-01-31)
+
+
+### Features
+
+* PrivateLink support ([#169](https://github.com/wandb/terraform-aws-wandb/issues/169)) ([10cc72f](https://github.com/wandb/terraform-aws-wandb/commit/10cc72ff230b4963272bc13f20010e61562c79ef))
+
 ### [4.1.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.1...v4.1.2) (2024-01-16)
 
 
