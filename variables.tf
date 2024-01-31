@@ -253,6 +253,11 @@ variable "network_elasticache_subnet_cidrs" {
   default     = ["10.10.30.0/24", "10.10.31.0/24"]
 }
 
+variable "private_link_allowed_account_ids" {
+  description = "List of AWS account IDs allowed to access the VPC Endpoint Service"
+  type        = list(string)
+  default     = []
+}
 
 ##########################################
 # EKS Cluster                            #

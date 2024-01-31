@@ -163,6 +163,22 @@ module "app_lb" {
   network_public_subnets  = local.network_public_subnets
 }
 
+module "private_link" {
+  count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
+  source = "./modules/private_link"
+
+  namespace               = var.namespace
+  allowed_account_ids     = var.private_link_allowed_account_ids
+  deletion_protection     = var.deletion_protection
+  network_private_subnets = local.network_private_subnets
+  alb_name                = local.lb_name_truncated
+  vpc_id                  = local.network_id
+
+  depends_on = [
+    module.wandb
+  ]
+}
+
 resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   for_each               = module.app_eks.autoscaling_group_names
   autoscaling_group_name = each.value
@@ -240,6 +256,7 @@ module "wandb" {
       ingress = {
         class = "alb"
 
+        additionalHosts = concat(var.extra_fqdn, length(var.private_link_allowed_account_ids) > 0 ? [""] : [])
         annotations = merge({
           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
