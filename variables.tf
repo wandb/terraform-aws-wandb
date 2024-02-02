@@ -17,6 +17,12 @@ variable "use_internal_queue" {
   default = false
 }
 
+variable "size" {
+    type = string
+    description = "T-shirt size for deployment"
+    default = "small"
+}
+
 ##########################################
 # Database                               #
 ##########################################
@@ -304,6 +310,12 @@ variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group."
   type        = list(string)
   default     = ["m5.large"]
+}
+
+variable "kubernetes_node_count" {
+  description = "Number of nodes"
+  type = number
+  default = 2
 }
 
 variable "eks_policy_arns" {
