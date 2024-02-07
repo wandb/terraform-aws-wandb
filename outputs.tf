@@ -71,6 +71,10 @@ output "redis_instance_type" {
   value = local.deployment_size[var.size].cache
 }
 
+output "standardized_size" {
+  value = var.size
+}
+
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
