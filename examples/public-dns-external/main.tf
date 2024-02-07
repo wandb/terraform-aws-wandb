@@ -103,5 +103,5 @@ output "bucket_queue_name" {
 }
 
 output "datbase_size" {
-  value = module.wandb_infra.database_size
+  value = module.wandb_infra.database_instance_type
 }

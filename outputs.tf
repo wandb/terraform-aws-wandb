@@ -27,12 +27,20 @@ output "database_password" {
   value     = module.database.password
 }
 
-output "database_size" {
+output "database_instance_type" {
   value = local.deployment_size[var.size].db
 }
 
 output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
+}
+
+output "eks_node_count" {
+  value = local.deployment_size[var.size].node_count
+}
+
+output "eks_node_instance_type" {
+  value = local.deployment_size[var.size].node_instance
 }
 
 output "internal_app_port" {
@@ -57,6 +65,10 @@ output "network_private_subnets" {
 output "network_public_subnets" {
   value       = local.network_public_subnets
   description = "The identities of the public subnetworks deployed within the VPC."
+}
+
+output "redis_instance_type" {
+  value = local.deployment_size[var.size].cache
 }
 
 output "url" {
