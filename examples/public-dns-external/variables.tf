@@ -13,6 +13,13 @@ variable "zone_id" {
   description = "Id of Route53 zone"
 }
 
+variable "size" {
+  default     = "small"
+  description = "Deployment size"
+  nullable    = true
+  type        = string
+}
+
 variable "subdomain" {
   type        = string
   default     = null

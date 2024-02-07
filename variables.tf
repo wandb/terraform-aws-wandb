@@ -18,10 +18,10 @@ variable "use_internal_queue" {
 }
 
 variable "size" {
-    default = "small"
-    description = "Deployment size"
-    nullable = true
-    type = string
+  default     = "small"
+  description = "Deployment size"
+  nullable    = true
+  type        = string
 }
 
 ##########################################
@@ -310,8 +310,8 @@ variable "kubernetes_instance_types" {
 
 variable "kubernetes_node_count" {
   description = "Number of nodes"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "eks_policy_arns" {

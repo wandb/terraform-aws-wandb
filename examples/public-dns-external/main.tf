@@ -41,6 +41,7 @@ module "wandb_infra" {
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
+  size               = var.size
 }
 
 data "aws_eks_cluster" "app_cluster" {
@@ -99,4 +100,8 @@ output "bucket_name" {
 
 output "bucket_queue_name" {
   value = module.wandb_infra.bucket_queue_name
+}
+
+output "datbase_size" {
+  value = module.wandb_infra.database_size
 }

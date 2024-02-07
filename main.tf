@@ -29,39 +29,6 @@ module "file_storage" {
 locals {
   bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
-
-  deployment_size = {
-    small = {
-      db = "db.r6g.large",
-      node_count = 2,
-      node_instance = "r6i.large"
-      cache = "cache.m6g.large"
-    },
-    medium = {
-      db = "db.r6g.xlarge",
-      node_count = 2,
-      node_instance = "r6i.xlarge"
-      cache = "cache.m6g.large"
-    },
-    large = {
-      db = "db.r6g.2xlarge",
-      node_count = 2,
-      node_instance = "r6i.2xlarge"
-      cache = "cache.m6g.xlarge"
-    },
-    xlarge = {
-      db = "db.r6g.4xlarge",
-      node_count = 3,
-      node_instance = "r6i.4xlarge"
-      cache = "cache.m6g.xlarge"
-    },
-    xxlarge = {
-      db = "db.r6g.8xlarge",
-      node_count = 3,
-      node_instance = "r6i.8xlarge"
-      cache = "cache.m6g.2xlarge"
-    }
-  }
 }
 
 module "networking" {
@@ -214,7 +181,7 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn = local.kms_key_arn
+  kms_key_arn             = local.kms_key_arn
 }
 
 locals {
