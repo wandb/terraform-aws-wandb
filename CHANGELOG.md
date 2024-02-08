@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.2.0...v4.3.0) (2024-02-08)
+
+
+### Features
+
+* Add standardized instance sizing in AWS ([#172](https://github.com/wandb/terraform-aws-wandb/issues/172)) ([e6b4ab7](https://github.com/wandb/terraform-aws-wandb/commit/e6b4ab7fb33e249d68b145d8c13b4598da4744c3)), closes [#171](https://github.com/wandb/terraform-aws-wandb/issues/171)
+
 ## [4.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.2...v4.2.0) (2024-01-31)
 
 
