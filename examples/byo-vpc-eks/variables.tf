@@ -85,45 +85,45 @@ variable "allowed_inbound_ipv6_cidr" {
 }
 
 variable "vpc_id" {
-    type = string
-    description = "VPC network ID"
+  type        = string
+  description = "VPC network ID"
 }
-variable vpc_cidr {
-    type = string
-    description = "VPC network CIDR"
-}   
-
-variable network_private_subnets {
-    type = list[string]
-    description = "Subnet IDs"
+variable "vpc_cidr" {
+  type        = string
+  description = "VPC network CIDR"
 }
 
-variable network_public_subnets {
-    type = list[string]
-    description = "Subnet IDs"
+variable "network_private_subnets" {
+  type        = list[string]
+  description = "Subnet IDs"
 }
 
-variable network_database_subnets {
-    type = list[string]
-    description = "Subnet IDs"
+variable "network_public_subnets" {
+  type        = list[string]
+  description = "Subnet IDs"
 }
 
-variable network_private_subnet_cidrs {
-    type = list[string]
-    description = "Subnet CIDRs"
+variable "network_database_subnets" {
+  type        = list[string]
+  description = "Subnet IDs"
 }
 
-variable network_public_subnet_cidrs {
-    type = list[string]
-    description = "Subnet CIDRs"
+variable "network_private_subnet_cidrs" {
+  type        = list[string]
+  description = "Subnet CIDRs"
 }
 
-variable network_database_subnet_cidrs {
-    type = list[string]
-    description = "Subnet CIDRs"
+variable "network_public_subnet_cidrs" {
+  type        = list[string]
+  description = "Subnet CIDRs"
 }
 
-variable eks_cluster_version {
-    type = string
-    description = "EKS cluster version"
+variable "network_database_subnet_cidrs" {
+  type        = list[string]
+  description = "Subnet CIDRs"
+}
+
+variable "eks_cluster_version" {
+  type        = string
+  description = "EKS cluster version"
 }
