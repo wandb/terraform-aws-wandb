@@ -22,8 +22,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      GithubRepo = "terraform-aws-wandb"
-      GithubOrg  = "wandb"
+      GithubRepo  = "terraform-aws-wandb"
+      GithubOrg   = "wandb"
       Environment = "Production"
     }
   }
@@ -38,16 +38,16 @@ module "wandb_infra" {
   external_dns  = true
 
   create_vpc = false
-  
+
   network_id   = var.vpc_id
   network_cidr = var.vpc_cidr
 
-  network_private_subnets          = var.network_private_subnets
-  network_public_subnets           = var.network_public_subnets
-  network_database_subnets         = var.network_database_subnets 
-  network_private_subnet_cidrs     = var.network_private_subnet_cidrs
-  network_public_subnet_cidrs      = var.network_public_subnet_cidrs
-  network_database_subnet_cidrs    = var.network_database_subnet_cidrs
+  network_private_subnets       = var.network_private_subnets
+  network_public_subnets        = var.network_public_subnets
+  network_database_subnets      = var.network_database_subnets
+  network_private_subnet_cidrs  = var.network_private_subnet_cidrs
+  network_public_subnet_cidrs   = var.network_public_subnet_cidrs
+  network_database_subnet_cidrs = var.network_database_subnet_cidrs
 
   deletion_protection = false
 
