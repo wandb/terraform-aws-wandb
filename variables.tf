@@ -264,8 +264,14 @@ variable "eks_cluster_version" {
 }
 variable "kubernetes_alb_internet_facing" {
   type        = bool
-  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
   default     = true
+}
+
+variable "kubernetes_alb_subnets" {
+  type        = list(string)
+  description = "List of subnets the ALB will use for ingress traffic."
+  default     = []
 }
 
 variable "kubernetes_public_access" {

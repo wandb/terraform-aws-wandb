@@ -240,7 +240,7 @@ module "wandb" {
       ingress = {
         class = "alb"
 
-        annotations = {
+        annotations = merge({
           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
@@ -251,7 +251,13 @@ module "wandb" {
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
-        }
+          },
+          length(var.kubernetes_alb_subnets) > 0 ? {
+            "alb.ingress.kubernetes.io/subnets" = <<-EOF
+              ${join("\\,", var.kubernetes_alb_subnets)}
+            EOF
+        } : {})
+
       }
 
       app = var.enable_operator_alb ? {} : {
