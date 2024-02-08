@@ -262,6 +262,11 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+variable "kubernetes_alb_internet_facing" {
+  type        = bool
+  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
+  default     = true
+}
 
 variable "kubernetes_public_access" {
   type        = bool
@@ -269,11 +274,6 @@ variable "kubernetes_public_access" {
   default     = false
 }
 
-variable "kubernetes_alb_internet_facing" {
-  type        = bool
-  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = true
-}
 
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
