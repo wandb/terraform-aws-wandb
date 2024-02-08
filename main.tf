@@ -247,7 +247,7 @@ module "wandb" {
           EOF
           "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
-          "alb.ingress.kubernetes.io/scheme"                         = "internet-facing"
+          "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
