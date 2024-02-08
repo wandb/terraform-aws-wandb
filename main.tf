@@ -257,6 +257,7 @@ module "wandb" {
         class = "alb"
 
         additionalHosts = concat(var.extra_fqdn, length(var.private_link_allowed_account_ids) > 0 ? [""] : [])
+
         annotations = merge({
           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
