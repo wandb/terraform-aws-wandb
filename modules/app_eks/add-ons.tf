@@ -19,7 +19,3 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts = "OVERWRITE"
   service_account_role_arn = aws_iam_role.node.arn
 }
-
-
-
-
