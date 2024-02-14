@@ -1,3 +1,16 @@
+provider "aws" {
+  region = "us-west-2"
+
+  default_tags {
+    tags = {
+      GithubRepo = "terraform-aws-wandb"
+      GithubOrg  = "wandb"
+      Enviroment = "Example"
+      Example    = "PublicDnsExternal"
+    }
+  }
+}
+
 module "wandb_infra" {
   source = "../../"
 
