@@ -5,6 +5,14 @@ locals {
   region = "us-west-1"
 }
 
+data "terraform_remote_state" "infra" {
+  backend = "remote"
+  config = {
+    organization = "weights-and-biases"
+    workspaces   = { name = "deployer-global" }
+  }
+}
+
 provider "aws" {
   region     = local.region
   access_key = module.aws_credentials.access_key
