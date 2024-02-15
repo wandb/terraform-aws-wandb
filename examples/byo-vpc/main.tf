@@ -26,6 +26,8 @@ module "wandb_infra" {
 
   create_vpc = false
 
+  size = "medium"
+
   network_id   = var.vpc_id
   network_cidr = var.vpc_cidr
 
