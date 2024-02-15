@@ -282,7 +282,7 @@ variable "kubernetes_alb_internet_facing" {
 
 variable "kubernetes_alb_subnets" {
   type        = list(string)
-  description = "List of subnets the ALB will use for ingress traffic."
+  description = "List of subnet ID's the ALB will use for ingress traffic."
   default     = []
 }
 
