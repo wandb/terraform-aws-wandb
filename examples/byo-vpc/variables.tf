@@ -63,6 +63,7 @@ variable "eks_cluster_version" {
   description = "EKS cluster kubernetes version"
   nullable    = false
   type        = string
+  default     = "1.25"
 }
 
 variable "wandb_image" {
