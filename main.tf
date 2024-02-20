@@ -1,4 +1,5 @@
 module "kms" {
+  count  = var.create_same_kms_key && !var.is_seprate_kms ? 1 : 0
   source = "./modules/kms"
 
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
@@ -7,8 +8,33 @@ module "kms" {
   key_policy = var.kms_key_policy
 }
 
+module "separate_kms_s3" {
+  source = "./modules/kms"
+
+  count = !var.create_same_kms_key && var.is_seprate_kms ? 1 : 0
+
+  key_alias           = var.kms_key_alias == null ? "${var.namespace}-separate-s3-kms-alias" : var.kms_key_alias
+  key_deletion_window = var.kms_key_deletion_window
+
+  key_policy = var.kms_key_policy
+}
+
+module "separate_kms_db" {
+  source = "./modules/kms"
+  count  = !var.create_same_kms_key && var.is_seprate_kms ? 1 : 0
+
+  key_alias           = var.kms_key_alias == null ? "${var.namespace}-separate-db-kms-alias" : var.kms_key_alias
+  key_deletion_window = var.kms_key_deletion_window
+
+  key_policy = var.kms_key_policy
+}
+
 locals {
-  kms_key_arn         = module.kms.key.arn
+
+  kms_key_storage_arn = (var.create_same_kms_key && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_s3) > 0 ? module.separate_kms_s3[0].key.arn : null
+
+  kms_key_db_arn = (var.create_same_kms_key && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_db) > 0 ? module.separate_kms_db[0].key.arn : null
+
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
 }
@@ -21,7 +47,7 @@ module "file_storage" {
   create_queue = !local.use_internal_queue
 
   sse_algorithm = "aws:kms"
-  kms_key_arn   = local.kms_key_arn
+  kms_key_arn   = var.is_ext_key_s3 ? var.bucket_kms_key_arn  : local.kms_key_storage_arn
 
   deletion_protection = var.deletion_protection
 }
@@ -63,7 +89,7 @@ module "database" {
   source = "./modules/database"
 
   namespace                        = var.namespace
-  kms_key_arn                      = local.kms_key_arn
+  kms_key_arn                      = var.is_ext_key_db ? var.external_kms_key_db : local.kms_key_db_arn
   performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
@@ -119,7 +145,7 @@ module "app_eks" {
   fqdn = local.domain_filter
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  kms_key_arn = local.kms_key_storage_arn //need more info
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
@@ -127,7 +153,7 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn :  local.kms_key_storage_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -197,7 +223,7 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn             = local.kms_key_arn
+  kms_key_arn             = var.is_ext_key_db ? var.external_kms_key_db : local.kms_key_db_arn
 }
 
 locals {
@@ -229,7 +255,7 @@ module "wandb" {
           provider = "s3"
           name     = local.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_storage_arn
         }
 
         mysql = {
