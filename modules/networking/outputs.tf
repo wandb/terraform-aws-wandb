@@ -58,6 +58,11 @@ output "elasticache_subnet_cidrs" {
   description = "A list of the CIDR blocks which comprise the elasticache subnetworks."
 }
 
+output "elasticache_subnets" {
+  value       = module.vpc.elasticache_subnets
+  description = "A list of IDs of elasticache subnets"
+}
+
 output "private_route_table_ids" {
   value       = module.vpc.private_route_table_ids
   description = "List of IDs of private route tables"
