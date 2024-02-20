@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.3.0...v4.4.0) (2024-02-20)
+
+
+### Features
+
+* BYO VPC ([#168](https://github.com/wandb/terraform-aws-wandb/issues/168)) ([35b1efc](https://github.com/wandb/terraform-aws-wandb/commit/35b1efce3b846bd0355ff4e2ef699e8ebbc1fdc7))
+
 ## [4.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.2.0...v4.3.0) (2024-02-08)
 
 
