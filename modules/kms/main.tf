@@ -34,20 +34,14 @@ resource "aws_kms_key" "key" {
         "Resource" : "*"
       },
       {
-        "Sid" : "Allow use of the key and metadata to the account",
+        "Sid" : "Temp SRE access for DR restore",
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : "arn:aws:sts::830241207209:assumed-role/AWSReservedSSO_SRE_f5adc5756fb1bc0f/george.scott@wandb.com"
+  
         },
         "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*",
-          "kms:Get*",
-          "kms:List*",
-          "kms:RevokeGrant"
+          "kms:*"
         ],
         "Resource" : "*"
       },      
