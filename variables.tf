@@ -1,6 +1,6 @@
-##########################################
-# Common                                 #
-##########################################
+# ##########################################
+# # Common                                 #
+# ##########################################
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
@@ -428,14 +428,14 @@ variable "other_wandb_env" {
 # New Vars for Encryption                #
 ##########################################
 
-variable "create_same_kms_key" {
+variable "create_kms" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "is_seprate_kms" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "is_ext_key_s3" {
