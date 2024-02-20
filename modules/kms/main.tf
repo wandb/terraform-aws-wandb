@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "key" {
   deletion_window_in_days = var.key_deletion_window
-  description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
+  # description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
   key_usage               = "ENCRYPT_DECRYPT"
 
   policy = var.key_policy != "" ? var.key_policy : jsonencode({

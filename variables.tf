@@ -4,6 +4,7 @@
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
+  default = ""
 }
 
 variable "deletion_protection" {
@@ -409,9 +410,9 @@ variable "elasticache_node_type" {
   default     = "cache.t2.medium"
 }
 
-# ##########################################
-# # Weights & Biases                       #
-# ##########################################
+##########################################
+# Weights & Biases                       #
+##########################################
 variable "license" {
   type        = string
   description = "Weights & Biases license key."
@@ -421,4 +422,31 @@ variable "other_wandb_env" {
   type        = map(any)
   description = "Extra environment variables for W&B"
   default     = {}
+}
+
+##########################################
+# New Vars for Encryption                #
+##########################################
+
+variable "create_same_kms_key" {
+  type    = bool
+  default = false
+}
+
+variable "is_seprate_kms" {
+  type    = bool
+  default = false
+}
+
+variable "is_ext_key_s3" {
+  type = bool
+  default = false
+
+}
+variable "is_ext_key_db" {
+  type    = bool
+  default = false
+}
+variable "external_kms_key_db" {
+  type    = string
 }
