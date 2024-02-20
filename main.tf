@@ -1,6 +1,6 @@
 module "kms" {
-  count  = var.create_same_kms_key && !var.is_seprate_kms ? 1 : 0
-  source = "./modules/kms"
+  count  = var.create_kms && !var.is_seprate_kms ? 1 : 0
+  source = "./modules/kms" 
 
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
@@ -11,7 +11,7 @@ module "kms" {
 module "separate_kms_s3" {
   source = "./modules/kms"
 
-  count = !var.create_same_kms_key && var.is_seprate_kms ? 1 : 0
+  count = var.create_kms && var.is_seprate_kms ? 1 : 0
 
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-separate-s3-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
@@ -21,7 +21,7 @@ module "separate_kms_s3" {
 
 module "separate_kms_db" {
   source = "./modules/kms"
-  count  = !var.create_same_kms_key && var.is_seprate_kms ? 1 : 0
+  count  = var.create_kms && var.is_seprate_kms ? 1 : 0
 
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-separate-db-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
@@ -30,10 +30,10 @@ module "separate_kms_db" {
 }
 
 locals {
+  //
+  kms_key_storage_arn = (var.create_kms && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_s3) > 0 ? module.separate_kms_s3[0].key.arn : null
 
-  kms_key_storage_arn = (var.create_same_kms_key && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_s3) > 0 ? module.separate_kms_s3[0].key.arn : null
-
-  kms_key_db_arn = (var.create_same_kms_key && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_db) > 0 ? module.separate_kms_db[0].key.arn : null
+  kms_key_db_arn = (var.create_kms && !var.is_seprate_kms) ? length(module.kms) > 0 ? module.kms[0].key.arn : null : length(module.separate_kms_db) > 0 ? module.separate_kms_db[0].key.arn : null
 
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
