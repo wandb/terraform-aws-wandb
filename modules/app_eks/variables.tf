@@ -120,6 +120,7 @@ variable "desired_capacity" {
   description = "Desired number of worker nodes."
   type        = number
   default     = 2
+}
 
 variable "system_reserved_cpu_millicores" {
   description = "(Optional) The amount of 'system-reserved' CPU millicores to pass to the kubelet. For example: 100.  A value of -1 disables the flag."

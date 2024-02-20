@@ -145,6 +145,11 @@ module "app_eks" {
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 
   eks_policy_arns = var.eks_policy_arns
+
+  system_reserved_cpu_millicores      = var.system_reserved_cpu_millicores
+  system_reserved_memory_megabytes    = var.system_reserved_memory_megabytes
+  system_reserved_ephemeral_megabytes = var.system_reserved_ephemeral_megabytes
+  system_reserved_pid                 = var.system_reserved_pid
 }
 
 module "app_lb" {

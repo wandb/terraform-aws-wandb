@@ -5,10 +5,10 @@ locals {
   redis_port         = 6379
   encrypt_ebs_volume = true
   system_reserved = join(",", flatten([
-    var.system_reserved_cpu_millicores >= 0 ? "cpu=${var.system_reserved_cpu_millicores}m" : [],
-    var.system_reserved_memory_megabytes >= 0 ? "memory=${var.system_reserved_memory_megabytes}Mi" : [],
-    var.system_reserved_ephemeral_megabytes >= 0 ? "ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi" : [],
-    var.system_reserved_pid >= 0 ? "pid=${var.system_reserved_pid}" : []
+    var.system_reserved_cpu_millicores >= 0 ? ["cpu=${var.system_reserved_cpu_millicores}m"] : [],
+    var.system_reserved_memory_megabytes >= 0 ? ["memory=${var.system_reserved_memory_megabytes}Mi"] : [],
+    var.system_reserved_ephemeral_megabytes >= 0 ? ["ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi"] : [],
+    var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
 }

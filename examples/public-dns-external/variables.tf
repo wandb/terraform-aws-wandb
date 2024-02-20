@@ -96,3 +96,27 @@ variable "other_wandb_env" {
   description = "Extra environment variables for W&B"
   default     = {}
 }
+
+variable "system_reserved_cpu_millicores" {
+  description = "(Optional) The amount of 'system-reserved' CPU millicores to pass to the kubelet. For example: 100.  A value of -1 disables the flag."
+  type        = number
+  default     = -1
+}
+
+variable "system_reserved_memory_megabytes" {
+  description = "(Optional) The amount of 'system-reserved' memory in megabytes to pass to the kubelet. For example: 100.  A value of -1 disables the flag."
+  type        = number
+  default     = -1
+}
+
+variable "system_reserved_ephemeral_megabytes" {
+  description = "(Optional) The amount of 'system-reserved' ephemeral storage in megabytes to pass to the kubelet. For example: 1000.  A value of -1 disables the flag."
+  type        = number
+  default     = -1
+}
+
+variable "system_reserved_pid" {
+  description = "(Optional) The amount of 'system-reserved' process ids [pid] to pass to the kubelet. For example: 1000.  A value of -1 disables the flag."
+  type        = number
+  default     = -1
+}
