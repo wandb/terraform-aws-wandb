@@ -429,24 +429,12 @@ variable "other_wandb_env" {
 ##########################################
 
 variable "create_kms" {
-  type    = bool
-  default = true
-}
-
-variable "is_seprate_kms" {
-  type    = bool
-  default = true
-}
-
-variable "is_ext_key_s3" {
   type = bool
-  default = false
+  default = true
 
 }
-variable "is_ext_key_db" {
-  type    = bool
-  default = false
-}
-variable "external_kms_key_db" {
+variable "db_kms_key_arn" {
   type    = string
+  default = ""
+
 }
