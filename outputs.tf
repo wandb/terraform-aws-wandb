@@ -28,7 +28,7 @@ output "database_password" {
 }
 
 output "database_instance_type" {
-  value = local.deployment_size[var.size].db
+  value = try(local.deployment_size[var.size].db, var.database_instance_class)
 }
 
 output "elasticache_connection_string" {
@@ -36,11 +36,11 @@ output "elasticache_connection_string" {
 }
 
 output "eks_node_count" {
-  value = local.deployment_size[var.size].node_count
+  value = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
 }
 
 output "eks_node_instance_type" {
-  value = local.deployment_size[var.size].node_instance
+  value = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
 }
 
 output "internal_app_port" {
@@ -68,7 +68,7 @@ output "network_public_subnets" {
 }
 
 output "redis_instance_type" {
-  value = local.deployment_size[var.size].cache
+  value = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
 }
 
 output "standardized_size" {
