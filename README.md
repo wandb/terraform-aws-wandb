@@ -252,3 +252,4 @@ module "wandb" {
 ### Upgrading from 1.x -> 2.x
 
 - ~>4.0 version required for AWS Provider
+
