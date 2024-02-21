@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.0...v4.4.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* Backwards compatibility for standardized instance sizing in AWS ([#180](https://github.com/wandb/terraform-aws-wandb/issues/180)) ([fa18488](https://github.com/wandb/terraform-aws-wandb/commit/fa184884b917d67580af609dad1991ce4d240586))
+
 ## [4.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.3.0...v4.4.0) (2024-02-20)
 
 
