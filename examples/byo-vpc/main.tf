@@ -1,6 +1,7 @@
 provider "aws" {
   region = "us-west-2"
 
+
   default_tags {
     tags = {
       GithubRepo = "terraform-aws-wandb"
@@ -18,7 +19,25 @@ module "wandb_infra" {
   public_access = true
   external_dns  = true
 
-  deletion_protection = false
+  enable_dummy_dns    = var.enable_dummy_dns
+  enable_operator_alb = var.enable_operator_alb
+
+  deletion_protection = true
+
+  create_vpc = false
+
+  size = "medium"
+
+  network_id   = var.vpc_id
+  network_cidr = var.vpc_cidr
+
+  network_private_subnets       = var.network_private_subnets
+  network_public_subnets        = var.network_public_subnets
+  network_database_subnets      = var.network_database_subnets
+  network_private_subnet_cidrs  = var.network_private_subnet_cidrs
+  network_public_subnet_cidrs   = var.network_public_subnet_cidrs
+  network_database_subnet_cidrs = var.network_database_subnet_cidrs
+  network_elasticache_subnets   = var.network_elasticache_subnets
 
   database_instance_class      = var.database_instance_class
   database_engine_version      = var.database_engine_version
@@ -28,7 +47,7 @@ module "wandb_infra" {
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = ["::/0"]
 
-  eks_cluster_version            = "1.25"
+  eks_cluster_version            = var.eks_cluster_version
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
@@ -41,7 +60,6 @@ module "wandb_infra" {
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
-  size               = var.size
 }
 
 data "aws_eks_cluster" "app_cluster" {
@@ -110,20 +128,4 @@ output "bucket_name" {
 
 output "bucket_queue_name" {
   value = module.wandb_infra.bucket_queue_name
-}
-
-output "database_instance_type" {
-  value = module.wandb_infra.database_instance_type
-}
-
-output "eks_node_instance_type" {
-  value = module.wandb_infra.eks_node_instance_type
-}
-
-output "redis_instance_type" {
-  value = module.wandb_infra.redis_instance_type
-}
-
-output "standardized_size" {
-  value = var.size
 }

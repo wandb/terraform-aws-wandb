@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.1...v4.4.2) (2024-02-22)
+
+
+### Bug Fixes
+
+* Backwards compatibility to avoid node group changes ([#181](https://github.com/wandb/terraform-aws-wandb/issues/181)) ([a1ec409](https://github.com/wandb/terraform-aws-wandb/commit/a1ec40953602f62f15f58f1bf99f40b5d7ce8996))
+
+### [4.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.0...v4.4.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* Backwards compatibility for standardized instance sizing in AWS ([#180](https://github.com/wandb/terraform-aws-wandb/issues/180)) ([fa18488](https://github.com/wandb/terraform-aws-wandb/commit/fa184884b917d67580af609dad1991ce4d240586))
+
+## [4.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.3.0...v4.4.0) (2024-02-20)
+
+
+### Features
+
+* BYO VPC ([#168](https://github.com/wandb/terraform-aws-wandb/issues/168)) ([35b1efc](https://github.com/wandb/terraform-aws-wandb/commit/35b1efce3b846bd0355ff4e2ef699e8ebbc1fdc7))
+
 ## [4.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.2.0...v4.3.0) (2024-02-08)
 
 

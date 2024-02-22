@@ -61,8 +61,6 @@ locals {
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
-
-  network_elasticache_subnet_group_name = module.networking.elasticache_subnet_group_name
 }
 
 module "database" {
@@ -194,14 +192,23 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
   lb_target_group_arn    = module.app_lb.tg_app_arn
 }
 
+locals {
+  network_elasticache_subnets             = var.create_vpc ? module.networking.elasticache_subnets : var.network_elasticache_subnets
+  network_elasticache_subnet_cidrs        = var.create_vpc ? module.networking.elasticache_subnet_cidrs : var.network_elasticache_subnet_cidrs
+  network_elasticache_create_subnet_group = !var.create_vpc
+  network_elasticache_subnet_group_name   = var.create_vpc ? module.networking.elasticache_subnet_group_name : "${var.namespace}-elasticache-subnet"
+}
+
 module "redis" {
-  count     = var.create_elasticache ? 1 : 0
-  source    = "./modules/redis"
-  namespace = var.namespace
+  count                     = var.create_elasticache ? 1 : 0
+  redis_create_subnet_group = local.network_elasticache_create_subnet_group
+  redis_subnets             = local.network_elasticache_subnets
+  source                    = "./modules/redis"
+  namespace                 = var.namespace
 
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
-  vpc_subnets_cidr_blocks = module.networking.elasticache_subnet_cidrs
+  vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
   kms_key_arn             = local.db_kms_key_arn
 }
@@ -257,18 +264,24 @@ module "wandb" {
 
         additionalHosts = concat(var.extra_fqdn, length(var.private_link_allowed_account_ids) > 0 ? [""] : [])
 
-        annotations = {
+        annotations = merge({
           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
           "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
-          "alb.ingress.kubernetes.io/scheme"                         = "internet-facing"
+          "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
-        }
+          },
+          length(var.kubernetes_alb_subnets) > 0 ? {
+            "alb.ingress.kubernetes.io/subnets" = <<-EOF
+              ${join("\\,", var.kubernetes_alb_subnets)}
+            EOF
+        } : {})
+
       }
 
       app = var.enable_operator_alb ? {} : {

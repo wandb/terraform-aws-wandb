@@ -19,7 +19,7 @@ variable "use_internal_queue" {
 }
 
 variable "size" {
-  default     = "small"
+  default     = null
   description = "Deployment size"
   nullable    = true
   type        = string
@@ -225,6 +225,12 @@ variable "network_database_subnets" {
   type        = list(string)
 }
 
+variable "network_elasticache_subnets" {
+  default     = []
+  description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
@@ -269,12 +275,24 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+variable "kubernetes_alb_internet_facing" {
+  type        = bool
+  description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
+  default     = true
+}
+
+variable "kubernetes_alb_subnets" {
+  type        = list(string)
+  description = "List of subnet ID's the ALB will use for ingress traffic."
+  default     = []
+}
 
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
   default     = false
 }
+
 
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
