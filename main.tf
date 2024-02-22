@@ -96,7 +96,7 @@ locals {
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
 }
 
-# Create SSL Ceritifcation if applicable
+#Create SSL Ceritifcation if applicable
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
