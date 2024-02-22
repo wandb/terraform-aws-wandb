@@ -245,6 +245,35 @@ module "wandb" {
 }
 ```
 
+### Alow customer specific customer-managed keys for S3 and RDS
+- we can provide external kms key to encrypt database, redis and S3 buckets.
+- To provide kms keys we need to provide kms arn values in 
+```
+db_kms_key_arn
+bucket_kms_key_arn
+```
+### In order to allow cross account KMS keys. we need to allow kms keys to be accessed by WandB account.
+this can be donw by adding the following policy document.
+```
+{
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::<Account_id>:root"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    }
+```
+
 ### Upgrading from 2.x -> 3.x
 
 - No changes required by you
