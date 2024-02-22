@@ -13,6 +13,11 @@ resource "aws_iam_role_policy_attachment" "node_kms" {
   policy_arn = aws_iam_policy.node_kms.arn
 }
 
+resource "aws_iam_role_policy_attachment" "node_secrets_manager" {
+  role       = aws_iam_role.node.name
+  policy_arn = aws_iam_policy.secrets_manager.arn
+}
+
 resource "aws_iam_role_policy_attachment" "node_sqs" {
   role       = aws_iam_role.node.name
   policy_arn = aws_iam_policy.node_sqs.arn
@@ -21,6 +26,16 @@ resource "aws_iam_role_policy_attachment" "node_sqs" {
 resource "aws_iam_role_policy_attachment" "node_s3" {
   role       = aws_iam_role.node.name
   policy_arn = aws_iam_policy.node_s3.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ebs_csi" {
+  role       = aws_iam_role.node.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_container_registry" {
+  role       = aws_iam_role.node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cni" {
@@ -38,17 +53,6 @@ resource "aws_iam_role_policy_attachment" "eks_worker_node" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_container_registry" {
-  role       = aws_iam_role.node.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
 
-resource "aws_iam_role_policy_attachment" "ebs_csi" {
-  role       = aws_iam_role.node.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-}
 
-resource "aws_iam_role_policy_attachment" "node_secrets_manager" {
-  role       = aws_iam_role.node.name
-  policy_arn = aws_iam_policy.secrets_manager.arn
-}
+
