@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.1...v4.4.2) (2024-02-22)
+
+
+### Bug Fixes
+
+* Backwards compatibility to avoid node group changes ([#181](https://github.com/wandb/terraform-aws-wandb/issues/181)) ([a1ec409](https://github.com/wandb/terraform-aws-wandb/commit/a1ec40953602f62f15f58f1bf99f40b5d7ce8996))
+
 ### [4.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.0...v4.4.1) (2024-02-21)
 
 
