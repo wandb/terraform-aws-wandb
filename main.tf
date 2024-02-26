@@ -9,12 +9,11 @@ module "kms" {
 
 locals {
 
-  kms_key_arn_generic = module.kms.key.arn
+  default_kms_key = module.kms.key.arn
 
-  s3_kms_key_arn= var.create_kms ? local.kms_key_arn_generic : length(var.bucket_kms_key_arn)> 0 ? var.bucket_kms_key_arn : local.kms_key_arn_generic
-  
-  db_kms_key_arn = var.create_kms ?  local.kms_key_arn_generic: length(var.db_kms_key_arn)> 0  ? var.db_kms_key_arn : local.kms_key_arn_generic
-
+  s3_kms_key_arn= var.create_kms ? local.default_kms_key : length(var.bucket_kms_key_arn)> 0 ? var.bucket_kms_key_arn : local.default_kms_key
+  db_kms_key_arn = var.create_kms ?  local.default_kms_key: length(var.db_kms_key_arn)> 0  ? var.db_kms_key_arn : local.default_kms_key
+  database_performance_insights_kms_key_arn = var.create_kms ?  local.default_kms_key: length(var.database_performance_insights_kms_key_arn)> 0  ? var.database_performance_insights_kms_key_arn : local.default_kms_key
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
 }
@@ -68,7 +67,7 @@ module "database" {
 
   namespace                        = var.namespace
   kms_key_arn                      = local.db_kms_key_arn
-  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
+  performance_insights_kms_key_arn = local.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
   master_username = var.database_master_username
@@ -123,7 +122,7 @@ module "app_eks" {
   fqdn = local.domain_filter
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn_generic 
+  kms_key_arn = local.default_kms_key 
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
