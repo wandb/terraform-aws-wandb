@@ -4,7 +4,7 @@
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
-  default = ""
+  default = "test"
 }
 
 variable "deletion_protection" {
@@ -77,7 +77,7 @@ variable "database_innodb_lru_scan_depth" {
 }
 
 variable "database_performance_insights_kms_key_arn" {
-  default     = null
+  default     = ""
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
   nullable    = true
   type        = string
@@ -388,14 +388,11 @@ variable "bucket_name" {
   type    = string
   default = ""
 }
-
 variable "bucket_kms_key_arn" {
-  type        = string
-  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  default     = null
+  type    = string
+  default = ""
   validation {
-    # regex(...) fails if it cannot find a match
-    condition     = can(regex("^arn:aws:kms:*:*"))
+    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$",var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
     error_message = "Invalid value for bucket kms ARN"
   }
 }
@@ -432,13 +429,11 @@ variable "other_wandb_env" {
 ##########################################
 # New Vars for Encryption                #
 ##########################################
-
 variable "db_kms_key_arn" {
   type    = string
-  default = null
+  default = ""
   validation {
-    # regex(...) fails if it cannot find a match
-    condition     = can(regex("^arn:aws:kms:*:*"))
-    error_message = "Invalid value for db kms ARN"
+    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
+    error_message = "Invalid value for bucket kms ARN"
   }
 }
