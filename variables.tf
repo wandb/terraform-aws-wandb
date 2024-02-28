@@ -362,7 +362,12 @@ variable "bucket_name" {
 variable "bucket_kms_key_arn" {
   type        = string
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  default     = ""
+  default     = null
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^arn:aws:kms:*:*"))
+    error_message = "Invalid value for bucket kms ARN"
+  }
 }
 
 ##########################################
@@ -398,13 +403,12 @@ variable "other_wandb_env" {
 # New Vars for Encryption                #
 ##########################################
 
-variable "create_kms" {
-  type = bool
-  default = true
-
-}
 variable "db_kms_key_arn" {
   type    = string
-  default = ""
-
+  default = null
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^arn:aws:kms:*:*"))
+    error_message = "Invalid value for db kms ARN"
+  }
 }

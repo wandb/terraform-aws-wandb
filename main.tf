@@ -10,10 +10,9 @@ module "kms" {
 locals {
 
   default_kms_key = module.kms.key.arn
-
-  s3_kms_key_arn= var.create_kms ? local.default_kms_key : length(var.bucket_kms_key_arn)> 0 ? var.bucket_kms_key_arn : local.default_kms_key
-  db_kms_key_arn = var.create_kms ?  local.default_kms_key: length(var.db_kms_key_arn)> 0  ? var.db_kms_key_arn : local.default_kms_key
-  database_performance_insights_kms_key_arn = var.create_kms ?  local.default_kms_key: length(var.database_performance_insights_kms_key_arn)> 0  ? var.database_performance_insights_kms_key_arn : local.default_kms_key
+  s3_kms_key_arn= length(var.bucket_kms_key_arn)> 0 ? var.bucket_kms_key_arn : local.default_kms_key
+  db_kms_key_arn = length(var.db_kms_key_arn)> 0 ? var.db_kms_key_arn : local.default_kms_key
+  database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn)> 0  ? var.database_performance_insights_kms_key_arn : local.default_kms_key
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
 }
