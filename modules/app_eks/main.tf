@@ -4,6 +4,13 @@ locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
+  system_reserved = join(",", flatten([
+    var.system_reserved_cpu_millicores >= 0 ? ["cpu=${var.system_reserved_cpu_millicores}m"] : [],
+    var.system_reserved_memory_megabytes >= 0 ? ["memory=${var.system_reserved_memory_megabytes}Mi"] : [],
+    var.system_reserved_ephemeral_megabytes >= 0 ? ["ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi"] : [],
+    var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
+  ]))
+  create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
 }
 
 
@@ -67,7 +74,7 @@ module "eks" {
   node_groups = {
     primary = {
       # IMDsv2
-      create_launch_template               = local.encrypt_ebs_volume,
+      create_launch_template               = local.create_launch_template,
       desired_capacity                     = 2,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
@@ -76,6 +83,7 @@ module "eks" {
       force_update_version                 = local.encrypt_ebs_volume,
       iam_role_arn                         = aws_iam_role.node.arn,
       instance_types                       = var.instance_types,
+      kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
       max_capacity                         = 5,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
