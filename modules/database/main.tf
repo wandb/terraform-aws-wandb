@@ -9,9 +9,10 @@ resource "random_string" "master_password" {
 }
 
 locals {
-  parameter_family       = "aurora-mysql8.0" 
-  parameter_group_name   = "${var.namespace}-aurora-db-80-parameter-group"
-  parameter_cluster_name = "${var.namespace}-aurora-80-cluster-parameter-group"
+  engine_version_tag     = "80" 
+  parameter_family       = "aurora-mysql8.0"
+  parameter_group_name   = "${var.namespace}-aurora-db-${local.engine_version_tag}-parameter-group"
+  parameter_cluster_name = "${var.namespace}-aurora-${local.engine_version_tag}-cluster-parameter-group"
 }
 
 #https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html#AuroraMySQL.Reference.Parameters.Instance
