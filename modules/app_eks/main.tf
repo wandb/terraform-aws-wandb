@@ -156,6 +156,16 @@ module "lb_controller" {
   depends_on = [module.eks]
 }
 
+module "irsa" {
+  source = "./irsa"
+  role_name = "${var.namespace}-irsa-role"
+  policy_name = "${var.namespace}-irsa-policy"
+  path = "/"
+  namespace     = var.namespace
+  oidc_provider = aws_iam_openid_connect_provider.eks
+  depends_on = [module.eks]
+}
+
 module "external_dns" {
   source = "./external_dns"
 
