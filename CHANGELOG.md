@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.4.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.2...v4.4.3) (2024-03-04)
+
+
+### Bug Fixes
+
+* Amend tshirt sizes ([#184](https://github.com/wandb/terraform-aws-wandb/issues/184)) ([db11384](https://github.com/wandb/terraform-aws-wandb/commit/db1138436d89e190d783449f1f4300f63b1761b4))
+
 ### [4.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.1...v4.4.2) (2024-02-22)
 
 
