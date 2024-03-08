@@ -40,7 +40,7 @@ Then run the following:
 
 Verify the policy with:
 
-`aws s3api get-bucket-policy --bucket gdi-wandb`
+`aws s3api get-bucket-policy --bucket ${BUCKET_NAME}`
 
 You will also need to add the following cors policy. 
 
