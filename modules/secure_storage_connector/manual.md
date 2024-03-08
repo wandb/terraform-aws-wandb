@@ -35,12 +35,16 @@ If you have your own bucket that you would like to integrate with W&B, create th
 }
 ```
 Then run the following:
+
 `aws s3api put-bucket-policy --bucket ${BUCKET_NAME} --policy file://bucket-policy.json`
 
 Verify the policy with:
+
 `aws s3api get-bucket-policy --bucket gdi-wandb`
 
-You will also need to add the following cors policy. Create the following `cors-policy.json`:
+You will also need to add the following cors policy. 
+
+Create the following `cors-policy.json`:
 
 ``` json title="cors-policy.json"
 {
@@ -57,6 +61,9 @@ You will also need to add the following cors policy. Create the following `cors-
 ```
 
 Then run:
+
 `aws s3api put-bucket-cors --bucket ${BUCKET_NAME} --cors-configuration file://cors-policy.json`
+
 To verify:
+
 `aws s3api get-bucket-cors --bucket ${BUCKET_NAME}`
