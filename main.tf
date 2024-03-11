@@ -228,7 +228,7 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
-  operator_chart_version = "1.1.0"
+  operator_chart_version = "1.1.2"
   controller_image_tag   = "1.10.1"
 
   spec = {
