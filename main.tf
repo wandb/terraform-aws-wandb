@@ -44,6 +44,7 @@ module "networking" {
   elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
 }
 
+
 locals {
   network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
   network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
@@ -55,6 +56,14 @@ locals {
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+}
+
+module "msk" {
+  source    = "./modules/msk"
+  namespace = var.namespace
+
+  private_subnets = local.network_private_subnets
+  vpc_id          = local.network_id
 }
 
 module "database" {
