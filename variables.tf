@@ -267,7 +267,7 @@ variable "private_link_allowed_account_ids" {
 }
 
 variable "allowed_private_endpoint_cidr" {
-  description = "CIDRs allowed to access wandb-server."
+  description = "Private CIDRs allowed to access wandb-server."
   nullable    = false
   type        = list(string)
   default = ["10.20.0.0/20"]
