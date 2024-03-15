@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.4...v4.5.0) (2024-03-14)
+
+
+### Features
+
+* **backend:** Make minimum nodes for t-shirts '3' ([#188](https://github.com/wandb/terraform-aws-wandb/issues/188)) ([ae22611](https://github.com/wandb/terraform-aws-wandb/commit/ae2261116a08028763f43955be6d870deb8bdc22))
+
 ### [4.4.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.3...v4.4.4) (2024-03-11)
 
 
