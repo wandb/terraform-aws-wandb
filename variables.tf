@@ -276,7 +276,7 @@ variable "allowed_private_endpoint_cidr" {
 variable "private_only_traffic" {
   description = "Enable private only traffic from customer private network"
   type = bool
-  default = false
+  default = true
 }
 
 ##########################################
