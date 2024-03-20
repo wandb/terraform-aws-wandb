@@ -150,8 +150,9 @@ resource "aws_iam_openid_connect_provider" "eks" {
 module "lb_controller" {
   source = "./lb_controller"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
+  namespace                        = var.namespace
+  oidc_provider                    = aws_iam_openid_connect_provider.eks
+  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 
   depends_on = [module.eks]
 }
