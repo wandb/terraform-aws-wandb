@@ -164,6 +164,5 @@ module "external_dns" {
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
 
-
   depends_on = [module.eks]
 }
