@@ -18,7 +18,7 @@ audit logging and SAML single sign-on.
 This module is intended to run in an AWS account with minimal preparation,
 however it does have the following pre-requisites:
 
-### Terrafom version >= 1
+### Terrafom version >= 1.5
 
 ### Credentials / Permissions
 
@@ -26,7 +26,7 @@ however it does have the following pre-requisites:
 
 - AWS Identity & Access Management (IAM)
 - AWS Key Management System (KMS)
-- Amazon Aurora MySQL
+- Amazon Aurora MySQL (RDS)
 - Amazon VPC
 - Amazon S3
 - Amazon Route53
