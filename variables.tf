@@ -368,6 +368,12 @@ variable "system_reserved_pid" {
   default     = 500
 }
 
+variable "aws_loadbalancer_controller_tags" {
+  description = "(Optional) A map of AWS tags to apply to all resources managed by the load balancer controller"
+  type        = map(string)
+  default     = {}
+}
+
 ##########################################
 # External Bucket                        #
 ##########################################

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.4...v4.5.0) (2024-03-14)
+
+
+### Features
+
+* **backend:** Make minimum nodes for t-shirts '3' ([#188](https://github.com/wandb/terraform-aws-wandb/issues/188)) ([ae22611](https://github.com/wandb/terraform-aws-wandb/commit/ae2261116a08028763f43955be6d870deb8bdc22))
+
+### [4.4.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.3...v4.4.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* Bump operator chart version ([#187](https://github.com/wandb/terraform-aws-wandb/issues/187)) ([713c1cc](https://github.com/wandb/terraform-aws-wandb/commit/713c1cc233e9ff087fac00e6f9ce83fac2e38eab))
+
 ### [4.4.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.2...v4.4.3) (2024-03-04)
 
 
