@@ -286,9 +286,9 @@ module "wandb" {
       }
 
       app = var.enable_operator_alb ? {} : {
-        extraEnv = {
+        extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
-        }
+        }, var.app_wandb_env)
       }
 
       mysql = { install = false }
@@ -301,6 +301,11 @@ module "wandb" {
             fileSystemId = module.app_eks.efs_id
           }
         }
+        extraEnv = var.weave_wandb_env
+      }
+
+      parquet = {
+        extraEnv = var.parquet_wandb_env
       }
     }
   }
