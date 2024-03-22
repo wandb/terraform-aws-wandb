@@ -27,3 +27,10 @@ variable "vpc_id" {
   description = "ID of the VPC to create the VPC Endpoint Service in"
   type        = string
 }
+
+variable "enable_private_only_traffic" {
+  type        = bool
+}
+variable "nlb_security_group" {
+  type        = string
+}

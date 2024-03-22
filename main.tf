@@ -160,29 +160,32 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
-  extra_fqdn                = var.extra_fqdn
-  allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
-  target_port               = local.internal_app_port
-
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
+  fqdn = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
+  extra_fqdn                  = var.extra_fqdn
+  allowed_inbound_cidr        = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
+  target_port                 = local.internal_app_port
+  network_id                  = local.network_id
+  network_private_subnets     = local.network_private_subnets
+  network_public_subnets      = local.network_public_subnets
+  enable_private_only_traffic = var.private_only_traffic
+  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
 }
 
 module "private_link" {
   count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
   source = "./modules/private_link"
 
-  namespace               = var.namespace
-  allowed_account_ids     = var.private_link_allowed_account_ids
-  deletion_protection     = var.deletion_protection
-  network_private_subnets = local.network_private_subnets
-  alb_name                = local.lb_name_truncated
-  vpc_id                  = local.network_id
-
+  namespace                   = var.namespace
+  allowed_account_ids         = var.private_link_allowed_account_ids
+  deletion_protection         = var.deletion_protection
+  network_private_subnets     = local.network_private_subnets
+  alb_name                    = local.lb_name_truncated
+  vpc_id                      = local.network_id
+  enable_private_only_traffic = var.private_only_traffic
+  nlb_security_group          = module.app_lb.nlb_security_group
   depends_on = [
+    module.app_lb,
     module.wandb
   ]
 }
