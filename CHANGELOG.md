@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.2...v4.5.3) (2024-03-22)
+
+
+### Bug Fixes
+
+* **dev:** Add passthrough for env vars ([#190](https://github.com/wandb/terraform-aws-wandb/issues/190)) ([e944e6d](https://github.com/wandb/terraform-aws-wandb/commit/e944e6d99a248524bd5de3c423b931afa4514dfe))
+
+### [4.5.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.1...v4.5.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* Update readme ([#195](https://github.com/wandb/terraform-aws-wandb/issues/195)) ([bf6b2a7](https://github.com/wandb/terraform-aws-wandb/commit/bf6b2a72acb19f8cc6fceaecc0e8cc0fdffab169))
+
+### [4.5.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.0...v4.5.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix desired_capacity value passing ([#193](https://github.com/wandb/terraform-aws-wandb/issues/193)) ([ebfb34d](https://github.com/wandb/terraform-aws-wandb/commit/ebfb34dcd299e9f3fc79678e97ce4fd9ac7c9629))
+
 ## [4.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.4...v4.5.0) (2024-03-14)
 
 

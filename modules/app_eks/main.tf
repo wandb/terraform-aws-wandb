@@ -75,7 +75,7 @@ module "eks" {
     primary = {
       # IMDsv2
       create_launch_template               = local.create_launch_template,
-      desired_capacity                     = 2,
+      desired_capacity                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
       disk_type                            = "gp3"
@@ -87,7 +87,7 @@ module "eks" {
       max_capacity                         = 5,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
-      min_capacity                         = 2,
+      min_capacity                         = var.desired_capacity,
       version                              = var.cluster_version,
     }
   }
@@ -163,7 +163,6 @@ module "external_dns" {
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
-
 
   depends_on = [module.eks]
 }
