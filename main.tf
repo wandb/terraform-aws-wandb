@@ -120,7 +120,7 @@ module "app_eks" {
   kms_key_arn = local.kms_key_arn
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
-  desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
+  min_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
