@@ -87,7 +87,7 @@ module "eks" {
       max_capacity                         = 5,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
-      min_capacity                         = var.desired_capacity,
+      #min_capacity                         = var.desired_capacity,
       version                              = var.cluster_version,
     }
   }
