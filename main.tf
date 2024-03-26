@@ -148,6 +148,8 @@ module "app_eks" {
   system_reserved_memory_megabytes    = var.system_reserved_memory_megabytes
   system_reserved_ephemeral_megabytes = var.system_reserved_ephemeral_megabytes
   system_reserved_pid                 = var.system_reserved_pid
+
+  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 }
 
 module "app_lb" {
@@ -226,7 +228,7 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
-  operator_chart_version = "1.1.0"
+  operator_chart_version = "1.1.2"
   controller_image_tag   = "1.10.1"
 
   spec = {
@@ -284,9 +286,9 @@ module "wandb" {
       }
 
       app = var.enable_operator_alb ? {} : {
-        extraEnv = {
+        extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
-        }
+        }, var.app_wandb_env)
       }
 
       mysql = { install = false }
@@ -299,6 +301,11 @@ module "wandb" {
             fileSystemId = module.app_eks.efs_id
           }
         }
+        extraEnv = var.weave_wandb_env
+      }
+
+      parquet = {
+        extraEnv = var.parquet_wandb_env
       }
     }
   }

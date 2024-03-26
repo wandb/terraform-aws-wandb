@@ -367,6 +367,12 @@ variable "system_reserved_pid" {
   default     = 500
 }
 
+variable "aws_loadbalancer_controller_tags" {
+  description = "(Optional) A map of AWS tags to apply to all resources managed by the load balancer controller"
+  type        = map(string)
+  default     = {}
+}
+
 ##########################################
 # External Bucket                        #
 ##########################################
@@ -413,6 +419,24 @@ variable "license" {
 
 variable "other_wandb_env" {
   type        = map(any)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "weave_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "app_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "parquet_wandb_env" {
+  type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
 }

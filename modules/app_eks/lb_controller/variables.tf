@@ -8,3 +8,7 @@ variable "oidc_provider" {
     url = string
   })
 }
+
+variable "aws_loadbalancer_controller_tags" {
+  type = map(string)
+}

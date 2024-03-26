@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.2...v4.5.3) (2024-03-22)
+
+
+### Bug Fixes
+
+* **dev:** Add passthrough for env vars ([#190](https://github.com/wandb/terraform-aws-wandb/issues/190)) ([e944e6d](https://github.com/wandb/terraform-aws-wandb/commit/e944e6d99a248524bd5de3c423b931afa4514dfe))
+
+### [4.5.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.1...v4.5.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* Update readme ([#195](https://github.com/wandb/terraform-aws-wandb/issues/195)) ([bf6b2a7](https://github.com/wandb/terraform-aws-wandb/commit/bf6b2a72acb19f8cc6fceaecc0e8cc0fdffab169))
+
+### [4.5.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.0...v4.5.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix desired_capacity value passing ([#193](https://github.com/wandb/terraform-aws-wandb/issues/193)) ([ebfb34d](https://github.com/wandb/terraform-aws-wandb/commit/ebfb34dcd299e9f3fc79678e97ce4fd9ac7c9629))
+
+## [4.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.4...v4.5.0) (2024-03-14)
+
+
+### Features
+
+* **backend:** Make minimum nodes for t-shirts '3' ([#188](https://github.com/wandb/terraform-aws-wandb/issues/188)) ([ae22611](https://github.com/wandb/terraform-aws-wandb/commit/ae2261116a08028763f43955be6d870deb8bdc22))
+
+### [4.4.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.3...v4.4.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* Bump operator chart version ([#187](https://github.com/wandb/terraform-aws-wandb/issues/187)) ([713c1cc](https://github.com/wandb/terraform-aws-wandb/commit/713c1cc233e9ff087fac00e6f9ce83fac2e38eab))
+
 ### [4.4.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.2...v4.4.3) (2024-03-04)
 
 
