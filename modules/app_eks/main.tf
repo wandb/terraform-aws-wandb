@@ -72,7 +72,7 @@ module "eks" {
   worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
 
   node_groups = {
-    primary = {
+    default = {
       # IMDsv2
       create_launch_template               = local.create_launch_template,
       desired_capacity                     = var.desired_capacity,
