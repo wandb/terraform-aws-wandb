@@ -12,6 +12,10 @@ variable "fqdn" {
   type = string
 }
 
+variable "subject_alternative_names" {
+  type = list(string)
+}
+
 variable "bucket_sqs_queue_arn" {
   default = ""
   type    = string

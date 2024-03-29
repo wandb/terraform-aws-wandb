@@ -114,7 +114,8 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  fqdn = local.domain_filter
+  fqdn                      = local.domain_filter
+  subject_alternative_names = var.enable_dummy_dns ? var.extra_fqdn : []
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -152,6 +153,11 @@ module "app_eks" {
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 }
 
+locals {
+  full_fqdn  = var.enable_dummy_dns ? "old-${local.fqdn}" : local.fqdn
+  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old-${fqdn}"] : var.extra_fqdn
+}
+
 module "app_lb" {
   source = "./modules/app_lb"
 
@@ -160,8 +166,8 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
-  extra_fqdn                = var.extra_fqdn
+  fqdn                      = local.full_fqdn
+  extra_fqdn                = local.extra_fqdn
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
   target_port               = local.internal_app_port
@@ -270,12 +276,18 @@ module "wandb" {
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
-          "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
           "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
+          },
+          length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
+            "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
+              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}
+            EOF
+            } : {
+            "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
           },
           length(var.kubernetes_alb_subnets) > 0 ? {
             "alb.ingress.kubernetes.io/subnets" = <<-EOF
