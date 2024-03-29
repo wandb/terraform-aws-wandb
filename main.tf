@@ -284,7 +284,7 @@ module "wandb" {
           },
           length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
             "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
-              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}
+              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
             EOF
             } : {
             "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
