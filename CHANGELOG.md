@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.6.0...v4.7.0) (2024-04-04)
+
+
+### Features
+
+* Add desired capacity to EKS module ([#200](https://github.com/wandb/terraform-aws-wandb/issues/200)) ([600de97](https://github.com/wandb/terraform-aws-wandb/commit/600de97053aee717d1f2c9718062f3b5af3469f4))
+
 ## [4.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.3...v4.6.0) (2024-04-03)
 
 
