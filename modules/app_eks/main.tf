@@ -75,6 +75,7 @@ module "eks" {
     primary = {
       # IMDsv2
       create_launch_template               = local.create_launch_template,
+      desired_capacity                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
       disk_type                            = "gp3"
