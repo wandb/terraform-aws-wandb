@@ -57,6 +57,15 @@ locals {
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
 }
 
+module "s3_endpoint" {
+  count = var.create_s3_endpoint ? 1 : 0
+  source          = "./modules/endpoint"
+  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  network_id      = local.network_id
+  private_subnets = local.network_private_subnets[0]
+  depends_on = [ module.networking ]
+}
+
 module "database" {
   source = "./modules/database"
 
