@@ -440,8 +440,3 @@ variable "parquet_wandb_env" {
   description = "Extra environment variables for W&B"
   default     = {}
 }
-
-variable "create_s3_endpoint" {
-  type = bool
-  default = true
-}
