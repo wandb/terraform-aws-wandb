@@ -58,12 +58,12 @@ locals {
 }
 
 module "s3_endpoint" {
- count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
-  source          = "./modules/endpoint"
-  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
-  network_id      = local.network_id
-  private_subnets = local.network_private_subnets[0]
-  depends_on = [ module.networking ]
+  count                  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
+  source                 = "./modules/endpoint"
+  service_name           = "com.amazonaws.${data.aws_region.current.name}.s3"
+  network_id             = local.network_id
+  private_route_table_id = [module.networking.private_route_table_ids[0],module.networking.private_route_table_ids[1]]
+  depends_on             = [module.networking]
 }
 
 module "database" {

@@ -1,16 +1,9 @@
 resource "aws_vpc_endpoint" "endpoint" {
   vpc_id              = var.network_id
   service_name        = var.service_name
-  vpc_endpoint_type   = "Interface"
-  private_dns_enabled = true
-
-  dns_options {
-    dns_record_ip_type                             = "ipv4"
-    private_dns_only_for_inbound_resolver_endpoint = false
-  }
-  
+  vpc_endpoint_type   = "Gateway" 
   auto_accept = true
-  subnet_ids  = [var.private_subnets]
+  route_table_ids  = var.private_route_table_id
 
   policy = <<POLICY
 {
