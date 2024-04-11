@@ -64,23 +64,22 @@ module "eks" {
 
   cluster_addons = {
     coredns = {
-      resolve_conflicts = "OVERWRITE"
+      resolve_conflicts_on_create = "OVERWRITE"
     }
     kube-proxy = {}
     vpc-cni = {
-      resolve_conflicts = "OVERWRITE"
+      resolve_conflicts_on_create = "OVERWRITE"
     }
   }  
 
-  cluster_encryption_config = var.kms_key_arn != "" ? [
+  cluster_encryption_config = [
     {
       provider_key_arn = var.kms_key_arn
       resources        = ["secrets"]
     }
-  ] : null
+  ]
 
     eks_managed_node_group_defaults = {
-    disk_size      = 50
           instance_types                       = var.instance_types
   }
 
