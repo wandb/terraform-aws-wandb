@@ -56,6 +56,8 @@ module "eks" {
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
+  create_cluster_security_group = false
+  create_node_security_group = false
   node_security_group_id = aws_security_group.primary_workers.id
   subnet_ids = var.network_private_subnets
   vpc_id  = var.network_id
