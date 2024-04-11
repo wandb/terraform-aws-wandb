@@ -44,23 +44,31 @@ resource "aws_eks_addon" "efs" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 17.23"
+  version = "~> 18.31"
 
-  cluster_name    = var.namespace
-  cluster_version = var.cluster_version
-
-  vpc_id  = var.network_id
-  subnets = var.network_private_subnets
-
-  map_accounts = var.map_accounts
-  map_roles    = var.map_roles
-  map_users    = var.map_users
-
+  aws_auth_accounts = var.map_accounts
+  aws_auth_roles    = var.map_roles
+  aws_auth_users    = var.map_users
+  cloudwatch_log_group_retention_in_days = 30
   cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cluster_log_retention_in_days        = 30
+  cluster_name    = var.namespace
+  cluster_version = var.cluster_version
+  node_security_group_id = aws_security_group.primary_workers.id
+  subnet_ids = var.network_private_subnets
+  vpc_id  = var.network_id
+
+  cluster_addons = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
+  }  
 
   cluster_encryption_config = var.kms_key_arn != "" ? [
     {
@@ -69,24 +77,26 @@ module "eks" {
     }
   ] : null
 
-  worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
+    eks_managed_node_group_defaults = {
+    disk_size      = 50
+          instance_types                       = var.instance_types
+  }
 
-  node_groups = {
+  eks_managed_node_groups = {
     primary = {
       create_launch_template               = local.create_launch_template,
-      desired_capacity                     = var.desired_capacity,
+      desired_size                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
       disk_type                            = "gp3"
       enable_monitoring                    = true
       force_update_version                 = local.encrypt_ebs_volume,
       iam_role_arn                         = aws_iam_role.node.arn,
-      instance_types                       = var.instance_types,
       kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-      max_capacity                         = 5,
+      max_size                         = 5,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
-      min_capacity                         = var.desired_capacity,
+      min_size                         = var.desired_capacity,
       version                              = var.cluster_version,
     }
   }
@@ -99,42 +109,6 @@ module "eks" {
   }
 }
 
-resource "aws_security_group" "primary_workers" {
-  name        = "${var.namespace}-primary-workers"
-  description = "EKS primary workers security group."
-  vpc_id      = var.network_id
-}
-
-resource "aws_security_group_rule" "lb" {
-  description              = "Allow container NodePort service to receive load balancer traffic."
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.primary_workers.id
-  source_security_group_id = var.lb_security_group_inbound_id
-  from_port                = var.service_port
-  to_port                  = var.service_port
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "database" {
-  description              = "Allow inbound traffic from EKS workers to database"
-  protocol                 = "tcp"
-  security_group_id        = var.database_security_group_id
-  source_security_group_id = aws_security_group.primary_workers.id
-  from_port                = local.mysql_port
-  to_port                  = local.mysql_port
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "elasticache" {
-  count                    = var.create_elasticache_security_group ? 1 : 0
-  description              = "Allow inbound traffic from EKS workers to elasticache"
-  protocol                 = "tcp"
-  security_group_id        = var.elasticache_security_group_id
-  source_security_group_id = aws_security_group.primary_workers.id
-  from_port                = local.redis_port
-  to_port                  = local.redis_port
-  type                     = "ingress"
-}
 
 data "tls_certificate" "eks" {
   url = module.eks.cluster_oidc_issuer_url
