@@ -73,7 +73,6 @@ module "eks" {
 
   node_groups = {
     primary = {
-      # IMDsv2
       create_launch_template               = local.create_launch_template,
       desired_capacity                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,

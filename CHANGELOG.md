@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.6.0...v4.7.0) (2024-04-04)
+
+
+### Features
+
+* Add desired capacity to EKS module ([#200](https://github.com/wandb/terraform-aws-wandb/issues/200)) ([600de97](https://github.com/wandb/terraform-aws-wandb/commit/600de97053aee717d1f2c9718062f3b5af3469f4))
+
+## [4.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.3...v4.6.0) (2024-04-03)
+
+
+### Features
+
+* Remove desired_capacity in favor of setting min_capacity ([#198](https://github.com/wandb/terraform-aws-wandb/issues/198)) ([264b448](https://github.com/wandb/terraform-aws-wandb/commit/264b44877a9649796a48e6ff0dff730fdddcee5b))
+
 ### [4.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.2...v4.5.3) (2024-03-22)
 
 
