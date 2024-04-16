@@ -34,6 +34,4 @@ resource "helm_release" "external_dns" {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
-
-
 }
