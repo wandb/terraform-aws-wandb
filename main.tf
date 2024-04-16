@@ -114,8 +114,7 @@ locals {
 module "app_eks" {
   source = "./modules/app_eks"
 
-  fqdn                      = local.domain_filter
-  subject_alternative_names = var.enable_dummy_dns ? var.extra_fqdn : []
+  fqdn = local.domain_filter
 
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
@@ -154,8 +153,8 @@ module "app_eks" {
 }
 
 locals {
-  full_fqdn  = var.enable_dummy_dns ? "old-${local.fqdn}" : local.fqdn
-  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old-${fqdn}"] : var.extra_fqdn
+  full_fqdn  = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
+  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old.${fqdn}"] : var.extra_fqdn
 }
 
 module "app_lb" {

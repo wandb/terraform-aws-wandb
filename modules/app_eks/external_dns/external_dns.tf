@@ -1,10 +1,3 @@
-locals {
-  domain_filters = concat(
-    [{ name = "domainFilters[0]", value = var.fqdn }],
-    [for san in var.subject_alternative_names : { name = "domainFilters[${index(var.subject_alternative_names, san) + 1}]", value = san }]
-  )
-}
-
 resource "helm_release" "external_dns" {
   name       = "external-dns"
   namespace  = "kube-system"
@@ -27,14 +20,11 @@ resource "helm_release" "external_dns" {
     value = "external-dns"
   }
 
-  dynamic "set" {
-    for_each = local.domain_filters
-
-    content {
-      name  = set.value.name
-      value = set.value.value
-    }
+  set {
+    name  = "domainFilters[0]"
+    value = var.fqdn
   }
+
   set {
     name  = "policy"
     value = "sync"
