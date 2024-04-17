@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.7.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.0...v4.7.1) (2024-04-17)
+
+
+### Bug Fixes
+
+* Adding missing extra_fqdn support for operator that was supported previously ([#197](https://github.com/wandb/terraform-aws-wandb/issues/197)) ([7adf420](https://github.com/wandb/terraform-aws-wandb/commit/7adf4203c2b75447def8483a93d972ed42eb69fc))
+
 ## [4.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.6.0...v4.7.0) (2024-04-04)
 
 
