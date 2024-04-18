@@ -31,6 +31,11 @@ resource "helm_release" "external_dns" {
   }
 
   set {
+    name  = "interval"
+    value = "3m"
+  }
+
+  set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
