@@ -114,7 +114,6 @@ variable "innodb_lru_scan_depth" {
   default     = 128
 }
 
-
 # Cluster parametes
 variable "binlog_row_image" {
   description = "Value for binlog_row_image"
