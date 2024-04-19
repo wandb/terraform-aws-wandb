@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.7.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.1...v4.7.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* Retention Adjustment ([#204](https://github.com/wandb/terraform-aws-wandb/issues/204)) ([3ea7ce1](https://github.com/wandb/terraform-aws-wandb/commit/3ea7ce11b594dafe8b4d59523ca2ad9876b132ce))
+
 ### [4.7.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.0...v4.7.1) (2024-04-17)
 
 
