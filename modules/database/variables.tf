@@ -57,7 +57,7 @@ variable "deletion_protection" {
 variable "backup_retention_period" {
   description = "The days to retain backups for."
   type        = number
-  default     = 30
+  default     = 14
 }
 
 variable "preferred_backup_window" {
@@ -113,7 +113,6 @@ variable "innodb_lru_scan_depth" {
   type        = number
   default     = 128
 }
-
 
 # Cluster parametes
 variable "binlog_row_image" {
