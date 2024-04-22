@@ -14,13 +14,13 @@ locals {
 }
 
 
-resource "aws_eks_addon" "eks" {
-  cluster_name = var.namespace
-  addon_name   = "aws-ebs-csi-driver"
-  depends_on = [
-    module.eks
-  ]
-}
+# resource "aws_eks_addon" "eks" {
+#   cluster_name = var.namespace
+#   addon_name   = "aws-ebs-csi-driver"
+#   depends_on = [
+#     module.eks
+#   ]
+# }
 
 resource "aws_eks_addon" "efs" {
   cluster_name      = module.eks.cluster_id
