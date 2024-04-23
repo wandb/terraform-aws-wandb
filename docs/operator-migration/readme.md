@@ -226,7 +226,9 @@ actions:
     - aws_eks_node_group.workers["primary"]
 ```
 
-````
+You should see something like this:
+
+![post-operator-apply](./images/post-operator-apply.png)
 
 Note that in `post-operator.tf`, there is a single:
 
@@ -236,7 +238,7 @@ module "wandb_infra" {
   version = "4.7.2"
   ...
 }
-````
+```
 
 #### Changes in the Post-Operator Configuration:
 
