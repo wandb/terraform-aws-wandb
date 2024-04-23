@@ -1,4 +1,5 @@
 
+### IAM policy and role for vpc-cni
 data "aws_iam_policy_document" "oidc_assume_role" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -27,6 +28,11 @@ resource "aws_iam_role" "oidc" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role.json
 }
 
+
+
+
+
+### add-ons
 resource "aws_eks_addon" "aws-efs-csi-driver" {
    depends_on = [
      aws_eks_addon.vpc-cni
