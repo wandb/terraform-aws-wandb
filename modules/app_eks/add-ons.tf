@@ -27,7 +27,7 @@ resource "aws_iam_role" "oidc" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role.json
 }
 
-resource "aws_eks_addon" "core-dns" {
+resource "aws_eks_addon" "aws-efs-csi-driver" {
    depends_on = [
      aws_eks_addon.vpc-cni
    ]
@@ -37,13 +37,23 @@ resource "aws_eks_addon" "core-dns" {
    resolve_conflicts          = "OVERWRITE"
  }
 
-resource "aws_eks_addon" "ebs-csi" {
+resource "aws_eks_addon" "aws-ebs-csi-driver" {
   depends_on = [
     aws_eks_addon.vpc-cni
   ]
   cluster_name                = var.namespace
   addon_name                  = "aws-ebs-csi-driver"
   addon_version               = "v1.25.0-eksbuild.1"
+  resolve_conflicts           = "OVERWRITE"
+}
+
+resource "aws_eks_addon" "coredns" {
+  depends_on = [
+    aws_eks_addon.vpc-cni
+  ]
+  cluster_name                = var.namespace
+  addon_name                  = "coredns"
+  addon_version               = "v1.9.3-eksbuild.11"
   resolve_conflicts           = "OVERWRITE"
 }
 
