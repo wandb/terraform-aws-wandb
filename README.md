@@ -102,13 +102,14 @@ resources that lack official modules.
 Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.25` - you'd need to:
 
 1. update the cluster version in the app_eks module from `1.21` to `1.22`
-2.  run `terraform apply`
+2. run `terraform apply`
 3. update the cluster version to `1.23`
 4. run `terraform apply`
 5. update the cluster version to `1.24`
-...and so on and so forth.
+   ...and so on and so forth.
 
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
+
 <!-- BEGIN_TF_DOCS -->
 
 ## Requirements
@@ -230,7 +231,11 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 ## Migrations
 
-#### Upgrading from 3.x -> 4.x
+### Upgrading to Operator
+
+See our upgrade guide [here](./docs/operator-migration/readme.md)
+
+### Upgrading from 3.x -> 4.x
 
 - If egress access for retrieving the wandb/controller image is not available, Terraform apply may experience failures.
 - It's necessary to supply a license variable within the module, as shown:
