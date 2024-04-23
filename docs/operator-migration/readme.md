@@ -88,6 +88,7 @@ To commence with a base installation of the W&B Pre-Operator, ensure that `post-
 
 Before initiating the migration process, ensure the following prerequisites are met:
 
+- **Egress**: The deployment can't be airgapped. It needs access to [deploy.wandb.ai](deploy.wandb.ai) to get the latest spec for the **_Release Channel_**.
 - **AWS Credentials**: Proper AWS credentials configured to interact with your AWS resources.
 - **Terraform Installed**: The latest version of Terraform should be installed on your system.
 - **Route53 Hosted Zone**: An existing Route53 hosted zone corresponding to the domain under which the application will be served.
