@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "oidc_assume_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "eks-oidc" {
+resource "aws_iam_role_policy_attachment" "eks_oidc" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.oidc.name
 }
