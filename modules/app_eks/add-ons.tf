@@ -53,7 +53,7 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
 
 resource "aws_eks_addon" "coredns" {
   depends_on = [
-    aws_eks_addon.vpc-cni
+    aws_eks_addon.vpc_cni
   ]
   cluster_name                = var.namespace
   addon_name                  = "coredns"
