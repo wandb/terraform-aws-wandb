@@ -30,10 +30,8 @@ resource "aws_iam_role" "oidc" {
 
 
 
-
-
 ### add-ons
-resource "aws_eks_addon" "aws-efs-csi-driver" {
+resource "aws_eks_addon" "aws_efs_csi_driver" {
    depends_on = [
      aws_eks_addon.vpc-cni
    ]
@@ -43,7 +41,7 @@ resource "aws_eks_addon" "aws-efs-csi-driver" {
    resolve_conflicts          = "OVERWRITE"
  }
 
-resource "aws_eks_addon" "aws-ebs-csi-driver" {
+resource "aws_eks_addon" "aws_ebs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc-cni
   ]
@@ -63,7 +61,7 @@ resource "aws_eks_addon" "coredns" {
   resolve_conflicts           = "OVERWRITE"
 }
 
-resource "aws_eks_addon" "kube-proxy" {
+resource "aws_eks_addon" "kube_proxy" {
   depends_on = [
     aws_eks_addon.vpc-cni
   ]
@@ -73,7 +71,7 @@ resource "aws_eks_addon" "kube-proxy" {
   resolve_conflicts           = "OVERWRITE"
 }
 
-resource "aws_eks_addon" "vpc-cni" {
+resource "aws_eks_addon" "vpc_cni" {
   cluster_name                = var.namespace
   addon_name                  = "vpc-cni"
   addon_version               = "v1.18.0-eksbuild.1"
