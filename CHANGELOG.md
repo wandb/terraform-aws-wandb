@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.0...v4.8.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* Update external_dns interval ([#203](https://github.com/wandb/terraform-aws-wandb/issues/203)) ([0a44b43](https://github.com/wandb/terraform-aws-wandb/commit/0a44b43582083832b459822fc4f2af0492f3b4e6))
+
+## [4.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.2...v4.8.0) (2024-04-23)
+
+
+### Features
+
+* Dropping support for MySQL 5.7 ([#183](https://github.com/wandb/terraform-aws-wandb/issues/183)) ([0ef5828](https://github.com/wandb/terraform-aws-wandb/commit/0ef5828c8278c7fb585598e48197daf6dcbf0317))
+
 ### [4.7.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.1...v4.7.2) (2024-04-19)
 
 
