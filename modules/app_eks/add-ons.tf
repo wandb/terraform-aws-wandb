@@ -63,7 +63,7 @@ resource "aws_eks_addon" "coredns" {
 
 resource "aws_eks_addon" "kube_proxy" {
   depends_on = [
-    aws_eks_addon.vpc-cni
+    aws_eks_addon.vpc_cni
   ]
   cluster_name                = var.namespace
   addon_name                  = "kube-proxy"
