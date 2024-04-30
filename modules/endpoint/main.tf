@@ -1,4 +1,4 @@
-resource "aws_vpc_endpoint" "endpoint" {
+resource "aws_vpc_endpoint" "default" {
   vpc_id              = var.network_id
   service_name        = var.service_name
   vpc_endpoint_type   = "Gateway" 
