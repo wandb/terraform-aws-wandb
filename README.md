@@ -163,7 +163,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
 | <a name="input_custom_domain_filter"></a> [custom\_domain\_filter](#input\_custom\_domain\_filter) | A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used. | `string` | `null` | no |
 | <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
-| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.03.0"` | no |
+| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.05.2"` | no |
 | <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
 | <a name="input_database_master_username"></a> [database\_master\_username](#input\_database\_master\_username) | Specifies the master\_username value to set for the database | `string` | `"wandb"` | no |

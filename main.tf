@@ -16,14 +16,12 @@ locals {
 module "file_storage" {
   count     = var.create_bucket ? 1 : 0
   source    = "./modules/file_storage"
-  namespace = var.namespace
-
+  
   create_queue = !local.use_internal_queue
-
-  sse_algorithm = "aws:kms"
-  kms_key_arn   = local.kms_key_arn
-
   deletion_protection = var.deletion_protection
+  kms_key_arn   = local.kms_key_arn
+  namespace = var.namespace
+  sse_algorithm = "aws:kms"
 }
 
 locals {
