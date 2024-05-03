@@ -163,8 +163,8 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
-  extra_fqdn                  = var.extra_fqdn
+  fqdn                      = local.full_fqdn
+  extra_fqdn                = local.extra_fqdn
   allowed_inbound_cidr        = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
   target_port                 = local.internal_app_port
