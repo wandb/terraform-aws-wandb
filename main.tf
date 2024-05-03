@@ -16,14 +16,12 @@ locals {
 module "file_storage" {
   count     = var.create_bucket ? 1 : 0
   source    = "./modules/file_storage"
-  namespace = var.namespace
-
+  
   create_queue = !local.use_internal_queue
-
-  sse_algorithm = "aws:kms"
-  kms_key_arn   = local.kms_key_arn
-
   deletion_protection = var.deletion_protection
+  kms_key_arn   = local.kms_key_arn
+  namespace = var.namespace
+  sse_algorithm = "aws:kms"
 }
 
 locals {
@@ -152,6 +150,11 @@ module "app_eks" {
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 }
 
+locals {
+  full_fqdn  = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
+  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old.${fqdn}"] : var.extra_fqdn
+}
+
 module "app_lb" {
   source = "./modules/app_lb"
 
@@ -170,6 +173,7 @@ module "app_lb" {
   network_public_subnets      = local.network_public_subnets
   enable_private_only_traffic = var.private_only_traffic
   private_endpoint_cidr       = var.allowed_private_endpoint_cidr
+
 }
 
 module "private_link" {
@@ -273,12 +277,18 @@ module "wandb" {
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
-          "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
           "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
+          },
+          length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
+            "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
+              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
+            EOF
+            } : {
+            "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
           },
           length(var.kubernetes_alb_subnets) > 0 ? {
             "alb.ingress.kubernetes.io/subnets" = <<-EOF
@@ -289,9 +299,9 @@ module "wandb" {
       }
 
       app = var.enable_operator_alb ? {} : {
-        extraEnv = {
+        extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
-        }
+        }, var.app_wandb_env)
       }
 
       mysql = { install = false }
@@ -304,6 +314,11 @@ module "wandb" {
             fileSystemId = module.app_eks.efs_id
           }
         }
+        extraEnv = var.weave_wandb_env
+      }
+
+      parquet = {
+        extraEnv = var.parquet_wandb_env
       }
     }
   }

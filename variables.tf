@@ -30,7 +30,7 @@ variable "size" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.03.0"
+  default     = "8.0.mysql_aurora.3.05.2"
 }
 
 variable "database_instance_class" {
@@ -138,8 +138,9 @@ variable "enable_operator_alb" {
 }
 
 variable "extra_fqdn" {
-  type    = list(string)
-  default = []
+  type        = list(string)
+  description = "Additional fqdn's must be in the same hosted zone as `domain_name`."
+  default     = []
 }
 
 ##########################################
@@ -432,6 +433,24 @@ variable "license" {
 
 variable "other_wandb_env" {
   type        = map(any)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "weave_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "app_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "parquet_wandb_env" {
+  type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
 }
