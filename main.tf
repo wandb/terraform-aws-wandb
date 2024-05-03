@@ -60,7 +60,7 @@ module "s3_endpoint" {
   source                 = "./modules/endpoint"
   service_name           = "com.amazonaws.${data.aws_region.current.name}.s3"
   network_id             = local.network_id
-  private_route_table_id = [module.networking.private_route_table_ids[0],module.networking.private_route_table_ids[1]]
+  private_route_table_id = module.networking.private_route_table_ids
   depends_on             = [module.networking]
 }
 
