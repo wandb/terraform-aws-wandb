@@ -2,7 +2,7 @@ resource "helm_release" "external_dns" {
   name       = "external-dns"
   namespace  = "kube-system"
   chart      = "external-dns"
-  version    = "1.13.1"
+  version    = "1.14.1"
   repository = "https://kubernetes-sigs.github.io/external-dns"
 
   set {
@@ -31,9 +31,12 @@ resource "helm_release" "external_dns" {
   }
 
   set {
+    name  = "interval"
+    value = "3m"
+  }
+
+  set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
-
-
 }
