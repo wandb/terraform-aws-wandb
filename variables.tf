@@ -452,7 +452,7 @@ variable "db_kms_key_arn" {
   type    = string
   default = ""
   validation {
-    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
+    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
     error_message = "Invalid value for db kms ARN"
   }
 }
