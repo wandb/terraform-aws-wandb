@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.1...v4.9.0) (2024-04-30)
+
+
+### Features
+
+* Update default RDS version to 8.0.mysql_aurora.3.05.2 ([#209](https://github.com/wandb/terraform-aws-wandb/issues/209)) ([dd4e1fe](https://github.com/wandb/terraform-aws-wandb/commit/dd4e1fe49a949af461349ee1e5d4bc9306626f90))
+
 ### [4.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.0...v4.8.1) (2024-04-23)
 
 
@@ -493,7 +500,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
-* Set MySQL default version to 8.0.mysql_aurora.3.03.0 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
+* Set MySQL default version to 8.0.mysql_aurora.3.05.2 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
 
 ## [1.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.5...v1.11.0) (2023-02-28)
 
