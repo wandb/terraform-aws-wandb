@@ -264,7 +264,7 @@ variable "network_elasticache_subnet_cidrs" {
 variable "private_link_allowed_account_ids" {
   description = "List of AWS account IDs allowed to access the VPC Endpoint Service"
   type        = list(string)
-  default     = [""]
+  default     = []
 }
 
 variable "allowed_private_endpoint_cidr" {
