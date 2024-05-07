@@ -49,6 +49,7 @@ module "wandb_infra" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+  private_link_allowed_account_ids = var.private_link_allowed_account_ids
 }
 
 data "aws_eks_cluster" "app_cluster" {

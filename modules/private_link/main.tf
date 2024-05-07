@@ -28,6 +28,8 @@ resource "aws_lb_target_group" "nlb" {
     timeout             = 10
     port                = "traffic-port"
   }
+
+
 }
 
 data "aws_lb" "alb" {
@@ -37,6 +39,10 @@ data "aws_lb" "alb" {
 resource "aws_lb_target_group_attachment" "nlb_to_alb" {
   target_group_arn = aws_lb_target_group.nlb.arn
   target_id        = data.aws_lb.alb.arn
+  
+  lifecycle {
+    ignore_changes = [target_id]
+  }
 }
 
 resource "aws_vpc_endpoint_service" "private_link" {
