@@ -113,7 +113,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 ### Notes on EKS Add-ons
 If a terraform apply fails because an add-on is already installed, remove the add-on using the AWS console or the AWS
-CLI and re-run the apply.
+CLI and re-run the apply. Running pods will not be impacted.
 
 ## Requirements
 
