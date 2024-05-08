@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.0...v4.10.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* Update to readme ([#213](https://github.com/wandb/terraform-aws-wandb/issues/213)) ([4ab44af](https://github.com/wandb/terraform-aws-wandb/commit/4ab44af5490141f3a50c9cd3589566580862f9a4))
+
 ## [4.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.9.0...v4.10.0) (2024-05-08)
 
 
