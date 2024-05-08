@@ -33,7 +33,7 @@ resource "aws_iam_role" "oidc" {
 ### add-ons
 resource "aws_eks_addon" "aws_efs_csi_driver" {
    depends_on = [
-     aws_eks_addon.vpc-cni
+     aws_eks_addon.vpc_cni
    ]
    cluster_name               = var.namespace
    addon_name                 = "aws-efs-csi-driver"
