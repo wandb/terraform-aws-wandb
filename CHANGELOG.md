@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.9.0...v4.10.0) (2024-05-08)
+
+
+### Features
+
+* Set default EKS to 1.26; install vpc-cni add-on ([#207](https://github.com/wandb/terraform-aws-wandb/issues/207)) ([0fa5767](https://github.com/wandb/terraform-aws-wandb/commit/0fa5767b47d2612821f4dab3cb589ca3a8fafa2b))
+
 ## [4.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.1...v4.9.0) (2024-04-30)
 
 
