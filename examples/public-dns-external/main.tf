@@ -28,7 +28,7 @@ module "wandb_infra" {
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = ["::/0"]
 
-  eks_cluster_version            = "1.25"
+  eks_cluster_version            = "1.26"
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
