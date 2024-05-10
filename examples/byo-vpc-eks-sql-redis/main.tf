@@ -102,14 +102,14 @@ locals {
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "../../modules/file_storage"
-  
-  create_queue = !local.use_internal_queue
+  count  = var.create_bucket ? 1 : 0
+  source = "../../modules/file_storage"
+
+  create_queue        = !local.use_internal_queue
   deletion_protection = var.deletion_protection
-  kms_key_arn   = local.kms_key_arn
-  namespace = var.namespace
-  sse_algorithm = "aws:kms"
+  kms_key_arn         = local.kms_key_arn
+  namespace           = var.namespace
+  sse_algorithm       = "aws:kms"
 }
 
 locals {
@@ -248,6 +248,11 @@ module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
 
+  depends_on = [
+    module.networking,
+    module.app_lb,
+    module.redis,
+  ]
   operator_chart_version = "1.1.2"
   controller_image_tag   = "1.10.1"
 
@@ -337,3 +342,27 @@ module "wandb" {
   }
 }
 
+module "wandb_app" {
+  source  = "wandb/wandb/kubernetes"
+  version = "1.14.1"
+
+  license = var.license
+
+  host                       = local.url
+  bucket                     = "s3://${local.bucket_name}"
+  bucket_aws_region          = data.aws_s3_bucket.file_storage.region
+  bucket_queue               = "internal://"
+  bucket_kms_key_arn         = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+  database_connection_string = "mysql://${var.database_master_username}:${var.database_master_password}@${var.database_endpoint}/${var.database_name}"
+  redis_connection_string    = "redis://${var.redis_host}:${var.redis_port}?tls=true&ttlInSeconds=604800"
+
+  wandb_image   = var.wandb_image
+  wandb_version = var.wandb_version
+
+  service_port = local.internal_app_port
+  depends_on   = [module.wandb]
+
+  other_wandb_env = merge({
+    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
+  }, var.other_wandb_env)
+}

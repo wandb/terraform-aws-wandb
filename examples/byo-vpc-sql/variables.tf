@@ -60,11 +60,13 @@ variable "database_name" {
 variable "database_port" {
   description = "Specifies the port of the database"
   type        = string
+  default     = "3306"
 }
 
 variable "database_master_username" {
   description = "Specifies the master_username value to set for the database"
   type        = string
+  default     = "wandb"
 }
 
 variable "database_master_password" {
@@ -100,7 +102,7 @@ variable "database_performance_insights_kms_key_arn" {
 variable "database_security_group_id" {
   description = "Specifies the security group id value to set for the database"
   type        = string
-  default = "sg-08a535514ea4cd7b1"
+  default     = ""
 }
 
 ##########################################
@@ -460,4 +462,16 @@ variable "parquet_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
+}
+
+variable "wandb_image" {
+  description = "Docker repository of to pull the wandb image from."
+  type        = string
+  default     = "wandb/local"
+}
+
+variable "wandb_version" {
+  description = "The version of Weights & Biases local to deploy."
+  type        = string
+  default     = "latest"
 }
