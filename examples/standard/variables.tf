@@ -90,18 +90,6 @@ variable "license" {
   description = "Weights & Biases license key."
 }
 
-variable "wandb_image" {
-  description = "Docker repository of to pull the wandb image from."
-  type        = string
-  default     = "wandb/local"
-}
-
-variable "wandb_version" {
-  description = "The version of Weights & Biases local to deploy."
-  type        = string
-  default     = "latest"
-}
-
 variable "other_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"

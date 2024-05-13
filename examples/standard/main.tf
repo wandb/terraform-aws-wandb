@@ -73,30 +73,6 @@ provider "helm" {
   }
 }
 
-module "wandb_app" {
-  source  = "wandb/wandb/kubernetes"
-  version = "1.14.1"
-
-  license = var.license
-
-  host                       = module.wandb_infra.url
-  bucket                     = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region          = module.wandb_infra.bucket_region
-  bucket_queue               = "internal://"
-  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
-  database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
-  redis_connection_string    = "redis://${module.wandb_infra.elasticache_connection_string}?tls=true&ttlInSeconds=604800"
-
-  wandb_image   = var.wandb_image
-  wandb_version = var.wandb_version
-
-  service_port = module.wandb_infra.internal_app_port
-  depends_on   = [module.wandb_infra]
-
-  other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
-  }, var.other_wandb_env)
-}
 
 output "bucket_name" {
   value = module.wandb_infra.bucket_name

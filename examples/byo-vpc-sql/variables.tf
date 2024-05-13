@@ -102,7 +102,6 @@ variable "database_performance_insights_kms_key_arn" {
 variable "database_security_group_id" {
   description = "Specifies the security group id value to set for the database"
   type        = string
-  default     = ""
 }
 
 ##########################################
@@ -224,31 +223,26 @@ variable "create_vpc" {
 }
 
 variable "network_id" {
-  default     = ""
   description = "The identity of the VPC in which resources will be deployed."
   type        = string
 }
 
 variable "network_private_subnets" {
-  default     = []
   description = "A list of the identities of the private subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_public_subnets" {
-  default     = []
   description = "A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_database_subnets" {
-  default     = []
   description = "A list of the identities of the database subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_elasticache_subnets" {
-  default     = []
   description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
   type        = list(string)
 }
@@ -462,16 +456,4 @@ variable "parquet_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
-}
-
-variable "wandb_image" {
-  description = "Docker repository of to pull the wandb image from."
-  type        = string
-  default     = "wandb/local"
-}
-
-variable "wandb_version" {
-  description = "The version of Weights & Biases local to deploy."
-  type        = string
-  default     = "latest"
 }

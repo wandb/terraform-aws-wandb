@@ -213,6 +213,11 @@ variable "kms_key_policy" {
   default     = ""
 }
 
+variable "kms_key_arn" {
+  type        = string
+  description = "KMS key arn for AWS KMS Customer managed key."
+}
+
 ##########################################
 # Network                                #
 ##########################################
@@ -223,31 +228,26 @@ variable "create_vpc" {
 }
 
 variable "network_id" {
-  default     = ""
   description = "The identity of the VPC in which resources will be deployed."
   type        = string
 }
 
 variable "network_private_subnets" {
-  default     = []
   description = "A list of the identities of the private subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_public_subnets" {
-  default     = []
   description = "A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_database_subnets" {
-  default     = []
   description = "A list of the identities of the database subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_elasticache_subnets" {
-  default     = []
   description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
   type        = list(string)
 }
@@ -491,16 +491,4 @@ variable "parquet_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
-}
-
-variable "wandb_image" {
-  description = "Docker repository of to pull the wandb image from."
-  type        = string
-  default     = "wandb/local"
-}
-
-variable "wandb_version" {
-  description = "The version of Weights & Biases local to deploy."
-  type        = string
-  default     = "latest"
 }

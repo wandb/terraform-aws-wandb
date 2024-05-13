@@ -54,51 +54,10 @@ provider "helm" {
   }
 }
 
-module "kms" {
-  source = "../../modules/kms"
-
-  key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
-  key_deletion_window = var.kms_key_deletion_window
-
-  key_policy = var.kms_key_policy
-}
-
 locals {
-  kms_key_arn         = module.kms.key.arn
+  kms_key_arn         = var.kms_key_arn
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
-  deployment_size = {
-    small = {
-      db            = "db.r6g.large",
-      node_count    = 3,
-      node_instance = "r6i.xlarge"
-      cache         = "cache.m6g.large"
-    },
-    medium = {
-      db            = "db.r6g.xlarge",
-      node_count    = 3,
-      node_instance = "r6i.xlarge"
-      cache         = "cache.m6g.large"
-    },
-    large = {
-      db            = "db.r6g.2xlarge",
-      node_count    = 3,
-      node_instance = "r6i.2xlarge"
-      cache         = "cache.m6g.xlarge"
-    },
-    xlarge = {
-      db            = "db.r6g.4xlarge",
-      node_count    = 3,
-      node_instance = "r6i.2xlarge"
-      cache         = "cache.m6g.xlarge"
-    },
-    xxlarge = {
-      db            = "db.r6g.8xlarge",
-      node_count    = 3,
-      node_instance = "r6i.4xlarge"
-      cache         = "cache.m6g.2xlarge"
-    }
-  }
 }
 
 module "file_storage" {
@@ -117,30 +76,10 @@ locals {
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
-module "networking" {
-  source     = "../../modules/networking"
-  namespace  = var.namespace
-  create_vpc = var.create_vpc
-
-  cidr                      = var.network_cidr
-  private_subnet_cidrs      = var.network_private_subnet_cidrs
-  public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
-  create_elasticache_subnet = var.create_elasticache
-  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
-}
-
 locals {
-  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
-
-  network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
-  network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
-
-  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
-  network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
-  network_database_create_subnet_group = !var.create_vpc
-  network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+  network_id              = var.network_id
+  network_public_subnets  = var.network_public_subnets
+  network_private_subnets = var.network_private_subnets
 }
 
 locals {
@@ -168,8 +107,7 @@ locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
   domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
-
-  internal_app_port = 32543
+  internal_app_port   = 32543
 }
 
 locals {
@@ -219,27 +157,6 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
 }
 
 locals {
-  network_elasticache_subnets             = var.create_vpc ? module.networking.elasticache_subnets : var.network_elasticache_subnets
-  network_elasticache_subnet_cidrs        = var.create_vpc ? module.networking.elasticache_subnet_cidrs : var.network_elasticache_subnet_cidrs
-  network_elasticache_create_subnet_group = !var.create_vpc
-  network_elasticache_subnet_group_name   = var.create_vpc ? module.networking.elasticache_subnet_group_name : "${var.namespace}-elasticache-subnet"
-}
-
-module "redis" {
-  count                     = var.create_elasticache ? 1 : 0
-  redis_create_subnet_group = local.network_elasticache_create_subnet_group
-  redis_subnets             = local.network_elasticache_subnets
-  source                    = "../../modules/redis"
-  namespace                 = var.namespace
-
-  vpc_id                  = local.network_id
-  redis_subnet_group_name = local.network_elasticache_subnet_group_name
-  vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
-  node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn             = local.kms_key_arn
-}
-
-locals {
   max_lb_name_length = 32 - length("-alb-k8s")
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
@@ -249,9 +166,7 @@ module "wandb" {
   version = "1.2.0"
 
   depends_on = [
-    module.networking,
     module.app_lb,
-    module.redis,
   ]
   operator_chart_version = "1.1.2"
   controller_image_tag   = "1.10.1"
@@ -280,8 +195,8 @@ module "wandb" {
         }
 
         redis = {
-          host = var.create_elasticache ? module.redis.0.host : var.redis_host
-          port = var.create_elasticache ? "${module.redis.0.port}?tls=true&ttlInSeconds=604800" : "${var.redis_port}?tls=true&ttlInSeconds=604800"
+          host = var.redis_host
+          port = "${var.redis_port}?tls=true&ttlInSeconds=604800"
         }
       }
 
@@ -340,29 +255,4 @@ module "wandb" {
       }
     }
   }
-}
-
-module "wandb_app" {
-  source  = "wandb/wandb/kubernetes"
-  version = "1.14.1"
-
-  license = var.license
-
-  host                       = local.url
-  bucket                     = "s3://${local.bucket_name}"
-  bucket_aws_region          = data.aws_s3_bucket.file_storage.region
-  bucket_queue               = "internal://"
-  bucket_kms_key_arn         = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
-  database_connection_string = "mysql://${var.database_master_username}:${var.database_master_password}@${var.database_endpoint}/${var.database_name}"
-  redis_connection_string    = "redis://${var.redis_host}:${var.redis_port}?tls=true&ttlInSeconds=604800"
-
-  wandb_image   = var.wandb_image
-  wandb_version = var.wandb_version
-
-  service_port = local.internal_app_port
-  depends_on   = [module.wandb]
-
-  other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
-  }, var.other_wandb_env)
 }
