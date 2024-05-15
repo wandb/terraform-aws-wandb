@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.1...v4.10.2) (2024-05-13)
+
+
+### Bug Fixes
+
+* Amend standard sizes ([#214](https://github.com/wandb/terraform-aws-wandb/issues/214)) ([a1763f9](https://github.com/wandb/terraform-aws-wandb/commit/a1763f93ef507a99e76940fc8c7a0223b5498ff3))
+
 ### [4.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.0...v4.10.1) (2024-05-08)
 
 
