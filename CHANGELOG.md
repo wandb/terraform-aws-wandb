@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.1...v4.10.2) (2024-05-13)
+
+
+### Bug Fixes
+
+* Amend standard sizes ([#214](https://github.com/wandb/terraform-aws-wandb/issues/214)) ([a1763f9](https://github.com/wandb/terraform-aws-wandb/commit/a1763f93ef507a99e76940fc8c7a0223b5498ff3))
+
+### [4.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.0...v4.10.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* Update to readme ([#213](https://github.com/wandb/terraform-aws-wandb/issues/213)) ([4ab44af](https://github.com/wandb/terraform-aws-wandb/commit/4ab44af5490141f3a50c9cd3589566580862f9a4))
+
+## [4.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.9.0...v4.10.0) (2024-05-08)
+
+
+### Features
+
+* Set default EKS to 1.26; install vpc-cni add-on ([#207](https://github.com/wandb/terraform-aws-wandb/issues/207)) ([0fa5767](https://github.com/wandb/terraform-aws-wandb/commit/0fa5767b47d2612821f4dab3cb589ca3a8fafa2b))
+
 ## [4.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.1...v4.9.0) (2024-04-30)
 
 
