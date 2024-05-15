@@ -14,34 +14,6 @@ locals {
 }
 
 
-resource "aws_eks_addon" "eks" {
-  cluster_name = var.namespace
-  addon_name   = "aws-ebs-csi-driver"
-  depends_on = [
-    module.eks
-  ]
-}
-
-resource "aws_eks_addon" "efs" {
-  cluster_name      = module.eks.cluster_id
-  addon_name        = "aws-efs-csi-driver"
-  addon_version     = "v1.7.1-eksbuild.1" # Ensure this version is compatible
-  resolve_conflicts = "OVERWRITE"
-  depends_on = [
-    module.eks
-  ]
-}
-
-# removed due to conflict with 
-# AWS Load Balancer Controller
-# being installed with Helm.
-# See: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/
-#resource "aws_eks_addon" "vpc_cni" {
-#  cluster_name = var.namespace
-#  addon_name   = "vpc-cni"
-#  depends_on   = [module.eks]
-#}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 17.23"
@@ -73,7 +45,6 @@ module "eks" {
 
   node_groups = {
     primary = {
-      # IMDsv2
       create_launch_template               = local.create_launch_template,
       desired_capacity                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,

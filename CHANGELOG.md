@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.1...v4.10.2) (2024-05-13)
+
+
+### Bug Fixes
+
+* Amend standard sizes ([#214](https://github.com/wandb/terraform-aws-wandb/issues/214)) ([a1763f9](https://github.com/wandb/terraform-aws-wandb/commit/a1763f93ef507a99e76940fc8c7a0223b5498ff3))
+
+### [4.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.0...v4.10.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* Update to readme ([#213](https://github.com/wandb/terraform-aws-wandb/issues/213)) ([4ab44af](https://github.com/wandb/terraform-aws-wandb/commit/4ab44af5490141f3a50c9cd3589566580862f9a4))
+
+## [4.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.9.0...v4.10.0) (2024-05-08)
+
+
+### Features
+
+* Set default EKS to 1.26; install vpc-cni add-on ([#207](https://github.com/wandb/terraform-aws-wandb/issues/207)) ([0fa5767](https://github.com/wandb/terraform-aws-wandb/commit/0fa5767b47d2612821f4dab3cb589ca3a8fafa2b))
+
+## [4.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.1...v4.9.0) (2024-04-30)
+
+
+### Features
+
+* Update default RDS version to 8.0.mysql_aurora.3.05.2 ([#209](https://github.com/wandb/terraform-aws-wandb/issues/209)) ([dd4e1fe](https://github.com/wandb/terraform-aws-wandb/commit/dd4e1fe49a949af461349ee1e5d4bc9306626f90))
+
+### [4.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.0...v4.8.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* Update external_dns interval ([#203](https://github.com/wandb/terraform-aws-wandb/issues/203)) ([0a44b43](https://github.com/wandb/terraform-aws-wandb/commit/0a44b43582083832b459822fc4f2af0492f3b4e6))
+
+## [4.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.2...v4.8.0) (2024-04-23)
+
+
+### Features
+
+* Dropping support for MySQL 5.7 ([#183](https://github.com/wandb/terraform-aws-wandb/issues/183)) ([0ef5828](https://github.com/wandb/terraform-aws-wandb/commit/0ef5828c8278c7fb585598e48197daf6dcbf0317))
+
+### [4.7.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.1...v4.7.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* Retention Adjustment ([#204](https://github.com/wandb/terraform-aws-wandb/issues/204)) ([3ea7ce1](https://github.com/wandb/terraform-aws-wandb/commit/3ea7ce11b594dafe8b4d59523ca2ad9876b132ce))
+
+### [4.7.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.0...v4.7.1) (2024-04-17)
+
+
+### Bug Fixes
+
+* Adding missing extra_fqdn support for operator that was supported previously ([#197](https://github.com/wandb/terraform-aws-wandb/issues/197)) ([7adf420](https://github.com/wandb/terraform-aws-wandb/commit/7adf4203c2b75447def8483a93d972ed42eb69fc))
+
+## [4.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.6.0...v4.7.0) (2024-04-04)
+
+
+### Features
+
+* Add desired capacity to EKS module ([#200](https://github.com/wandb/terraform-aws-wandb/issues/200)) ([600de97](https://github.com/wandb/terraform-aws-wandb/commit/600de97053aee717d1f2c9718062f3b5af3469f4))
+
+## [4.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.3...v4.6.0) (2024-04-03)
+
+
+### Features
+
+* Remove desired_capacity in favor of setting min_capacity ([#198](https://github.com/wandb/terraform-aws-wandb/issues/198)) ([264b448](https://github.com/wandb/terraform-aws-wandb/commit/264b44877a9649796a48e6ff0dff730fdddcee5b))
+
 ### [4.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.2...v4.5.3) (2024-03-22)
 
 
@@ -451,7 +521,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
-* Set MySQL default version to 8.0.mysql_aurora.3.03.0 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
+* Set MySQL default version to 8.0.mysql_aurora.3.05.2 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
 
 ## [1.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.5...v1.11.0) (2023-02-28)
 
