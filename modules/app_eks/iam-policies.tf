@@ -45,7 +45,7 @@ resource "aws_iam_policy" "secrets_manager" {
 }
 
 # IAM Policy for IRSA
-resource "aws_iam_policy" "irsa_policy" {
+resource "aws_iam_policy" "irsa" {
   name        = "${var.namespace}-irsa-policy"
   description = "IRSA IAM Policy"
   

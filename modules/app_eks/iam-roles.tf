@@ -5,7 +5,7 @@ resource "aws_iam_role" "node" {
 }
 
 # IAM Role for IRSA
-resource "aws_iam_role" "irsa_role" {
+resource "aws_iam_role" "irsa" {
   name = "${var.namespace}-irsa-role"
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
