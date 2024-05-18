@@ -52,3 +52,10 @@ resource "aws_iam_role_policy_attachment" "node_secrets_manager" {
   role       = aws_iam_role.node.name
   policy_arn = aws_iam_policy.secrets_manager.arn
 }
+
+# Attach IRSA Policy to the IRSA Role
+resource "aws_iam_policy_attachment" "irsa" {
+  name       = "irsa-policy-attachment"
+  roles      = [aws_iam_role.irsa_role.name]
+  policy_arn = aws_iam_policy.irsa_policy.arn
+}
