@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.2...v4.11.0) (2024-05-18)
+
+
+### Features
+
+* Changes to Connect to AWS S3 and KMS using IAM role for EKS service account ([#186](https://github.com/wandb/terraform-aws-wandb/issues/186)) ([a07a45e](https://github.com/wandb/terraform-aws-wandb/commit/a07a45e6d5b979ec2ef8fbb79b63a5d15867da08))
+
 ### [4.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.1...v4.10.2) (2024-05-13)
 
 
