@@ -37,7 +37,7 @@ resource "aws_eks_addon" "aws_efs_csi_driver" {
    ]
    cluster_name               = var.namespace
    addon_name                 = "aws-efs-csi-driver"
-   addon_version              = "v1.7.7-eksbuild.1"
+   addon_version              = "v2.0.2-eksbuild.1"
    resolve_conflicts          = "OVERWRITE"
  }
 
