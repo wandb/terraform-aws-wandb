@@ -2,6 +2,206 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.2...v4.11.0) (2024-05-18)
+
+
+### Features
+
+* Changes to Connect to AWS S3 and KMS using IAM role for EKS service account ([#186](https://github.com/wandb/terraform-aws-wandb/issues/186)) ([a07a45e](https://github.com/wandb/terraform-aws-wandb/commit/a07a45e6d5b979ec2ef8fbb79b63a5d15867da08))
+
+### [4.10.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.1...v4.10.2) (2024-05-13)
+
+
+### Bug Fixes
+
+* Amend standard sizes ([#214](https://github.com/wandb/terraform-aws-wandb/issues/214)) ([a1763f9](https://github.com/wandb/terraform-aws-wandb/commit/a1763f93ef507a99e76940fc8c7a0223b5498ff3))
+
+### [4.10.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.0...v4.10.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* Update to readme ([#213](https://github.com/wandb/terraform-aws-wandb/issues/213)) ([4ab44af](https://github.com/wandb/terraform-aws-wandb/commit/4ab44af5490141f3a50c9cd3589566580862f9a4))
+
+## [4.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.9.0...v4.10.0) (2024-05-08)
+
+
+### Features
+
+* Set default EKS to 1.26; install vpc-cni add-on ([#207](https://github.com/wandb/terraform-aws-wandb/issues/207)) ([0fa5767](https://github.com/wandb/terraform-aws-wandb/commit/0fa5767b47d2612821f4dab3cb589ca3a8fafa2b))
+
+## [4.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.1...v4.9.0) (2024-04-30)
+
+
+### Features
+
+* Update default RDS version to 8.0.mysql_aurora.3.05.2 ([#209](https://github.com/wandb/terraform-aws-wandb/issues/209)) ([dd4e1fe](https://github.com/wandb/terraform-aws-wandb/commit/dd4e1fe49a949af461349ee1e5d4bc9306626f90))
+
+### [4.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.8.0...v4.8.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* Update external_dns interval ([#203](https://github.com/wandb/terraform-aws-wandb/issues/203)) ([0a44b43](https://github.com/wandb/terraform-aws-wandb/commit/0a44b43582083832b459822fc4f2af0492f3b4e6))
+
+## [4.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.2...v4.8.0) (2024-04-23)
+
+
+### Features
+
+* Dropping support for MySQL 5.7 ([#183](https://github.com/wandb/terraform-aws-wandb/issues/183)) ([0ef5828](https://github.com/wandb/terraform-aws-wandb/commit/0ef5828c8278c7fb585598e48197daf6dcbf0317))
+
+### [4.7.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.1...v4.7.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* Retention Adjustment ([#204](https://github.com/wandb/terraform-aws-wandb/issues/204)) ([3ea7ce1](https://github.com/wandb/terraform-aws-wandb/commit/3ea7ce11b594dafe8b4d59523ca2ad9876b132ce))
+
+### [4.7.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.7.0...v4.7.1) (2024-04-17)
+
+
+### Bug Fixes
+
+* Adding missing extra_fqdn support for operator that was supported previously ([#197](https://github.com/wandb/terraform-aws-wandb/issues/197)) ([7adf420](https://github.com/wandb/terraform-aws-wandb/commit/7adf4203c2b75447def8483a93d972ed42eb69fc))
+
+## [4.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.6.0...v4.7.0) (2024-04-04)
+
+
+### Features
+
+* Add desired capacity to EKS module ([#200](https://github.com/wandb/terraform-aws-wandb/issues/200)) ([600de97](https://github.com/wandb/terraform-aws-wandb/commit/600de97053aee717d1f2c9718062f3b5af3469f4))
+
+## [4.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.3...v4.6.0) (2024-04-03)
+
+
+### Features
+
+* Remove desired_capacity in favor of setting min_capacity ([#198](https://github.com/wandb/terraform-aws-wandb/issues/198)) ([264b448](https://github.com/wandb/terraform-aws-wandb/commit/264b44877a9649796a48e6ff0dff730fdddcee5b))
+
+### [4.5.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.2...v4.5.3) (2024-03-22)
+
+
+### Bug Fixes
+
+* **dev:** Add passthrough for env vars ([#190](https://github.com/wandb/terraform-aws-wandb/issues/190)) ([e944e6d](https://github.com/wandb/terraform-aws-wandb/commit/e944e6d99a248524bd5de3c423b931afa4514dfe))
+
+### [4.5.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.1...v4.5.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* Update readme ([#195](https://github.com/wandb/terraform-aws-wandb/issues/195)) ([bf6b2a7](https://github.com/wandb/terraform-aws-wandb/commit/bf6b2a72acb19f8cc6fceaecc0e8cc0fdffab169))
+
+### [4.5.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.5.0...v4.5.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix desired_capacity value passing ([#193](https://github.com/wandb/terraform-aws-wandb/issues/193)) ([ebfb34d](https://github.com/wandb/terraform-aws-wandb/commit/ebfb34dcd299e9f3fc79678e97ce4fd9ac7c9629))
+
+## [4.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.4...v4.5.0) (2024-03-14)
+
+
+### Features
+
+* **backend:** Make minimum nodes for t-shirts '3' ([#188](https://github.com/wandb/terraform-aws-wandb/issues/188)) ([ae22611](https://github.com/wandb/terraform-aws-wandb/commit/ae2261116a08028763f43955be6d870deb8bdc22))
+
+### [4.4.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.3...v4.4.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* Bump operator chart version ([#187](https://github.com/wandb/terraform-aws-wandb/issues/187)) ([713c1cc](https://github.com/wandb/terraform-aws-wandb/commit/713c1cc233e9ff087fac00e6f9ce83fac2e38eab))
+
+### [4.4.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.2...v4.4.3) (2024-03-04)
+
+
+### Bug Fixes
+
+* Amend tshirt sizes ([#184](https://github.com/wandb/terraform-aws-wandb/issues/184)) ([db11384](https://github.com/wandb/terraform-aws-wandb/commit/db1138436d89e190d783449f1f4300f63b1761b4))
+
+### [4.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.1...v4.4.2) (2024-02-22)
+
+
+### Bug Fixes
+
+* Backwards compatibility to avoid node group changes ([#181](https://github.com/wandb/terraform-aws-wandb/issues/181)) ([a1ec409](https://github.com/wandb/terraform-aws-wandb/commit/a1ec40953602f62f15f58f1bf99f40b5d7ce8996))
+
+### [4.4.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.4.0...v4.4.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* Backwards compatibility for standardized instance sizing in AWS ([#180](https://github.com/wandb/terraform-aws-wandb/issues/180)) ([fa18488](https://github.com/wandb/terraform-aws-wandb/commit/fa184884b917d67580af609dad1991ce4d240586))
+
+## [4.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.3.0...v4.4.0) (2024-02-20)
+
+
+### Features
+
+* BYO VPC ([#168](https://github.com/wandb/terraform-aws-wandb/issues/168)) ([35b1efc](https://github.com/wandb/terraform-aws-wandb/commit/35b1efce3b846bd0355ff4e2ef699e8ebbc1fdc7))
+
+## [4.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.2.0...v4.3.0) (2024-02-08)
+
+
+### Features
+
+* Add standardized instance sizing in AWS ([#172](https://github.com/wandb/terraform-aws-wandb/issues/172)) ([e6b4ab7](https://github.com/wandb/terraform-aws-wandb/commit/e6b4ab7fb33e249d68b145d8c13b4598da4744c3)), closes [#171](https://github.com/wandb/terraform-aws-wandb/issues/171)
+
+## [4.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.2...v4.2.0) (2024-01-31)
+
+
+### Features
+
+* PrivateLink support ([#169](https://github.com/wandb/terraform-aws-wandb/issues/169)) ([10cc72f](https://github.com/wandb/terraform-aws-wandb/commit/10cc72ff230b4963272bc13f20010e61562c79ef))
+
+### [4.1.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.1...v4.1.2) (2024-01-16)
+
+
+### Bug Fixes
+
+* Max LB name length ([#166](https://github.com/wandb/terraform-aws-wandb/issues/166)) ([85bd266](https://github.com/wandb/terraform-aws-wandb/commit/85bd266f5f0ce003f2d4e69f796a41df0ff9fb9c))
+
+### [4.1.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.1.0...v4.1.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* Update redis connection ttl ([#165](https://github.com/wandb/terraform-aws-wandb/issues/165)) ([f236b3b](https://github.com/wandb/terraform-aws-wandb/commit/f236b3b8c5f7d3fcece1a1d302276bde6bdd75d5))
+
+## [4.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.2...v4.1.0) (2024-01-10)
+
+
+### Features
+
+* Adding flags to switch between LB ([#159](https://github.com/wandb/terraform-aws-wandb/issues/159)) ([ffa3778](https://github.com/wandb/terraform-aws-wandb/commit/ffa3778fe05da8681a828ce84f3f8291bb8fe5bd))
+
+### [4.0.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.1...v4.0.2) (2024-01-09)
+
+
+### Bug Fixes
+
+* EFS index vs subnet for_each ([#163](https://github.com/wandb/terraform-aws-wandb/issues/163)) ([1e47177](https://github.com/wandb/terraform-aws-wandb/commit/1e47177a0017ef694e7667781111d9ce2d375f2b))
+
+### [4.0.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.0.0...v4.0.1) (2024-01-09)
+
+
+### Bug Fixes
+
+* Disable gorilla glue tasks ([#161](https://github.com/wandb/terraform-aws-wandb/issues/161)) ([5d24bda](https://github.com/wandb/terraform-aws-wandb/commit/5d24bda4fead8d79b3e06d488ecb824980a3d15b))
+
+## [4.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.2...v4.0.0) (2024-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Init operator (#154)
+
+### Features
+
+* Init operator ([#154](https://github.com/wandb/terraform-aws-wandb/issues/154)) ([95def33](https://github.com/wandb/terraform-aws-wandb/commit/95def33db96c55a640fba4df5bdfbcc3a179d8ac))
+
 ### [3.4.2](https://github.com/wandb/terraform-aws-wandb/compare/v3.4.1...v3.4.2) (2023-12-07)
 
 
@@ -328,7 +528,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
-* Set MySQL default version to 8.0.mysql_aurora.3.03.0 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
+* Set MySQL default version to 8.0.mysql_aurora.3.05.2 ([#63](https://github.com/wandb/terraform-aws-wandb/issues/63)) ([7340b1f](https://github.com/wandb/terraform-aws-wandb/commit/7340b1f8761c4a0edaefbd22e4c4fd61bb8f16af))
 
 ## [1.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v1.10.5...v1.11.0) (2023-02-28)
 

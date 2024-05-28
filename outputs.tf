@@ -26,12 +26,27 @@ output "database_password" {
   sensitive = true
   value     = module.database.password
 }
+
+output "database_instance_type" {
+  value = try(local.deployment_size[var.size].db, var.database_instance_class)
+}
+
 output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
 }
+
+output "eks_node_count" {
+  value = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
+}
+
+output "eks_node_instance_type" {
+  value = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
+}
+
 output "internal_app_port" {
   value = local.internal_app_port
 }
+
 output "kms_key_arn" {
   value       = local.kms_key_arn
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
@@ -51,8 +66,16 @@ output "network_public_subnets" {
   value       = local.network_public_subnets
   description = "The identities of the public subnetworks deployed within the VPC."
 }
+
+output "redis_instance_type" {
+  value = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
+}
+
+output "standardized_size" {
+  value = var.size
+}
+
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
 }
-

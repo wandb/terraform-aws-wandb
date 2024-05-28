@@ -1,5 +1,5 @@
 variable "namespace" {
-   type = string
+  type = string
 }
 
 variable "oidc_provider" {
@@ -7,4 +7,8 @@ variable "oidc_provider" {
     arn = string
     url = string
   })
+}
+
+variable "aws_loadbalancer_controller_tags" {
+  type = map(string)
 }

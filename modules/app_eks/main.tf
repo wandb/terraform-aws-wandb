@@ -4,34 +4,15 @@ locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
+  system_reserved = join(",", flatten([
+    var.system_reserved_cpu_millicores >= 0 ? ["cpu=${var.system_reserved_cpu_millicores}m"] : [],
+    var.system_reserved_memory_megabytes >= 0 ? ["memory=${var.system_reserved_memory_megabytes}Mi"] : [],
+    var.system_reserved_ephemeral_megabytes >= 0 ? ["ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi"] : [],
+    var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
+  ]))
+  create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
 }
 
-
-resource "aws_eks_addon" "eks" {
-  cluster_name = var.namespace
-  addon_name   = "aws-ebs-csi-driver"
-  depends_on = [
-    module.eks
-  ]
-}
-
-# removed due to conflict with 
-# AWS Load Balancer Controller
-# being installed with Helm.
-# See: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/
-#resource "aws_eks_addon" "vpc_cni" {
-#  cluster_name = var.namespace
-#  addon_name   = "vpc-cni"
-#  depends_on   = [module.eks]
-#}
-
-locals {
-  managed_policy_arns = concat([
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  ], var.eks_policy_arns)
-}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -64,9 +45,8 @@ module "eks" {
 
   node_groups = {
     primary = {
-      # IMDsv2
-      create_launch_template               = local.encrypt_ebs_volume,
-      desired_capacity                     = 2,
+      create_launch_template               = local.create_launch_template,
+      desired_capacity                     = var.desired_capacity,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
       disk_type                            = "gp3"
@@ -74,10 +54,11 @@ module "eks" {
       force_update_version                 = local.encrypt_ebs_volume,
       iam_role_arn                         = aws_iam_role.node.arn,
       instance_types                       = var.instance_types,
+      kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
       max_capacity                         = 5,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
-      min_capacity                         = 2,
+      min_capacity                         = var.desired_capacity,
       version                              = var.cluster_version,
     }
   }
@@ -140,8 +121,9 @@ resource "aws_iam_openid_connect_provider" "eks" {
 module "lb_controller" {
   source = "./lb_controller"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
+  namespace                        = var.namespace
+  oidc_provider                    = aws_iam_openid_connect_provider.eks
+  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 
   depends_on = [module.eks]
 }
@@ -152,7 +134,6 @@ module "external_dns" {
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
-
 
   depends_on = [module.eks]
 }

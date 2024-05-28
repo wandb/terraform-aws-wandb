@@ -21,7 +21,7 @@ variable "vpc_id" {
 variable "engine_version" {
   description = "Version for MySQL Auora to use"
   type        = string
-  default     = "8.0.mysql_aurora.3.03.0"
+  default     = "8.0.mysql_aurora.3.05.2"
 }
 
 variable "create_db_subnet_group" {
@@ -57,7 +57,7 @@ variable "deletion_protection" {
 variable "backup_retention_period" {
   description = "The days to retain backups for."
   type        = number
-  default     = 30
+  default     = 14
 }
 
 variable "preferred_backup_window" {
@@ -113,7 +113,6 @@ variable "innodb_lru_scan_depth" {
   type        = number
   default     = 128
 }
-
 
 # Cluster parametes
 variable "binlog_row_image" {

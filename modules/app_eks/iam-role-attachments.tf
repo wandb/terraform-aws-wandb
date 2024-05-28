@@ -28,6 +28,11 @@ resource "aws_iam_role_policy_attachment" "eks_cni" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
+resource "aws_iam_role_policy_attachment" "eks_efs" {
+  role       = aws_iam_role.node.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+}
+
 resource "aws_iam_role_policy_attachment" "eks_worker_node" {
   role       = aws_iam_role.node.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
@@ -46,4 +51,11 @@ resource "aws_iam_role_policy_attachment" "ebs_csi" {
 resource "aws_iam_role_policy_attachment" "node_secrets_manager" {
   role       = aws_iam_role.node.name
   policy_arn = aws_iam_policy.secrets_manager.arn
+}
+
+# Attach IRSA Policy to the IRSA Role
+resource "aws_iam_policy_attachment" "irsa" {
+  name       = "irsa-policy-attachment"
+  roles      = [aws_iam_role.irsa.name]
+  policy_arn = aws_iam_policy.irsa.arn
 }

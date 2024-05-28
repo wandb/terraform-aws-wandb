@@ -17,13 +17,20 @@ variable "use_internal_queue" {
   default = false
 }
 
+variable "size" {
+  default     = null
+  description = "Deployment size"
+  nullable    = true
+  type        = string
+}
+
 ##########################################
 # Database                               #
 ##########################################
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.03.0"
+  default     = "8.0.mysql_aurora.3.05.2"
 }
 
 variable "database_instance_class" {
@@ -91,6 +98,12 @@ variable "external_dns" {
   description = "Using external DNS. A `subdomain` must also be specified if this value is true."
 }
 
+variable "custom_domain_filter" {
+  description = "A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used."
+  type        = string
+  default     = null
+}
+
 # Sometimes domain name and zone name dont match, so lets explicitly ask for
 # both. Also is just life easier to have both even though in most cause it may
 # be redundant info.
@@ -111,9 +124,23 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
+variable "enable_dummy_dns" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
+}
+
+
+variable "enable_operator_alb" {
+  type        = bool
+  default     = false
+  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
+}
+
 variable "extra_fqdn" {
-  type    = list(string)
-  default = []
+  type        = list(string)
+  description = "Additional fqdn's must be in the same hosted zone as `domain_name`."
+  default     = []
 }
 
 ##########################################
@@ -198,6 +225,12 @@ variable "network_database_subnets" {
   type        = list(string)
 }
 
+variable "network_elasticache_subnets" {
+  default     = []
+  description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
+  type        = list(string)
+}
+
 variable "network_cidr" {
   type        = string
   description = "CIDR block for VPC."
@@ -228,6 +261,11 @@ variable "network_elasticache_subnet_cidrs" {
   default     = ["10.10.30.0/24", "10.10.31.0/24"]
 }
 
+variable "private_link_allowed_account_ids" {
+  description = "List of AWS account IDs allowed to access the VPC Endpoint Service"
+  type        = list(string)
+  default     = []
+}
 
 ##########################################
 # EKS Cluster                            #
@@ -237,12 +275,24 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+variable "kubernetes_alb_internet_facing" {
+  type        = bool
+  description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
+  default     = true
+}
+
+variable "kubernetes_alb_subnets" {
+  type        = list(string)
+  description = "List of subnet ID's the ALB will use for ingress traffic."
+  default     = []
+}
 
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
   default     = false
 }
+
 
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
@@ -282,10 +332,46 @@ variable "kubernetes_instance_types" {
   default     = ["m5.large"]
 }
 
+variable "kubernetes_node_count" {
+  description = "Number of nodes"
+  type        = number
+  default     = 2
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"
   default     = []
+}
+
+variable "system_reserved_cpu_millicores" {
+  description = "(Optional) The amount of 'system-reserved' CPU millicores to pass to the kubelet. For example: 100.  A value of -1 disables the flag."
+  type        = number
+  default     = 70
+}
+
+variable "system_reserved_memory_megabytes" {
+  description = "(Optional) The amount of 'system-reserved' memory in megabytes to pass to the kubelet. For example: 100.  A value of -1 disables the flag."
+  type        = number
+  default     = 100
+}
+
+variable "system_reserved_ephemeral_megabytes" {
+  description = "(Optional) The amount of 'system-reserved' ephemeral storage in megabytes to pass to the kubelet. For example: 1000.  A value of -1 disables the flag."
+  type        = number
+  default     = 750
+}
+
+variable "system_reserved_pid" {
+  description = "(Optional) The amount of 'system-reserved' process ids [pid] to pass to the kubelet. For example: 1000.  A value of -1 disables the flag."
+  type        = number
+  default     = 500
+}
+
+variable "aws_loadbalancer_controller_tags" {
+  description = "(Optional) A map of AWS tags to apply to all resources managed by the load balancer controller"
+  type        = map(string)
+  default     = {}
 }
 
 ##########################################
@@ -327,8 +413,31 @@ variable "elasticache_node_type" {
 # ##########################################
 # # Weights & Biases                       #
 # ##########################################
-# variable "license" {
-#   type        = string
-#   description = "Weights & Biases license key."
-# }
+variable "license" {
+  type        = string
+  description = "Weights & Biases license key."
+}
 
+variable "other_wandb_env" {
+  type        = map(any)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "weave_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "app_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}
+
+variable "parquet_wandb_env" {
+  type        = map(string)
+  description = "Extra environment variables for W&B"
+  default     = {}
+}

@@ -9,6 +9,18 @@ variable "preferred_maintenance_window" {
   default     = "sun:03:00-sun:04:00"
 }
 
+variable "redis_subnets" {
+  default     = []
+  description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
+  type        = list(string)
+}
+
+variable "redis_create_subnet_group" {
+  default     = false
+  description = "Whether to create a new subnet group atop subnets provided via `redis_subnets`. If we bringing our own VPC this will not be created via the `network` module, and we must generate it."
+  type        = bool
+}
+
 variable "redis_subnet_group_name" {
   description = "The name of the subnet group (existing)"
   type        = string
