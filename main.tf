@@ -14,14 +14,14 @@ locals {
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "./modules/file_storage"
-  
-  create_queue = !local.use_internal_queue
+  count  = var.create_bucket ? 1 : 0
+  source = "./modules/file_storage"
+
+  create_queue        = !local.use_internal_queue
   deletion_protection = var.deletion_protection
-  kms_key_arn   = local.kms_key_arn
-  namespace = var.namespace
-  sse_algorithm = "aws:kms"
+  kms_key_arn         = local.kms_key_arn
+  namespace           = var.namespace
+  sse_algorithm       = "aws:kms"
 }
 
 locals {
