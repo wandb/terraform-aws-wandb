@@ -316,6 +316,8 @@ module "wandb" {
         serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
       } : {
         install = false
+        regions = []
+        serviceAccount = {}
       }
 
       otel = {
