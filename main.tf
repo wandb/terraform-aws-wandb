@@ -321,12 +321,15 @@ module "wandb" {
           "GORILLA_GLUE_LIST" = "true"
         }, var.app_wandb_env)
       }
-      ## To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
+
+      # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
       yace = var.enable_yace ? {
         install = true
         regions =  [data.aws_region.current.name]
         serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {}
+      } : {
+        install = false
+      }
 
       otel = {
         daemonset = var.enable_yace ? {
