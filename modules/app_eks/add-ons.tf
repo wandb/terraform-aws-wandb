@@ -37,7 +37,7 @@ resource "aws_eks_addon" "aws_efs_csi_driver" {
    ]
    cluster_name               = var.namespace
    addon_name                 = "aws-efs-csi-driver"
-   addon_version              = "v1.7.7-eksbuild.1"
+   addon_version              = "v2.0.3-eksbuild.1"
    resolve_conflicts          = "OVERWRITE"
    
  }
@@ -48,7 +48,7 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   ]
   cluster_name                = var.namespace
   addon_name                  = "aws-ebs-csi-driver"
-  addon_version               = "v1.25.0-eksbuild.1"
+  addon_version               = "v1.31.0-eksbuild.1"
   resolve_conflicts           = "OVERWRITE"
  
 }
@@ -59,9 +59,8 @@ resource "aws_eks_addon" "coredns" {
   ]
   cluster_name                = var.namespace
   addon_name                  = "coredns"
-  addon_version               = "v1.10.1-eksbuild.1"
+  addon_version               = "v1.10.1-eksbuild.4"
   resolve_conflicts           = "OVERWRITE"
-  configuration_values = "{\"replicaCount\":2}"
 }
 
 resource "aws_eks_addon" "kube_proxy" {
@@ -70,7 +69,7 @@ resource "aws_eks_addon" "kube_proxy" {
   ]
   cluster_name                = var.namespace
   addon_name                  = "kube-proxy"
-  addon_version               = "v1.27.1-eksbuild.1"
+  addon_version               = "v1.27.6-eksbuild.2"
   resolve_conflicts           = "OVERWRITE"
 }
 
