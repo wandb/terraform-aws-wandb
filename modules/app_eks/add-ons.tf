@@ -30,7 +30,8 @@ resource "aws_iam_role" "oidc" {
 
 
 
-### add-ons
+### add-ons for eks version 1.28
+
 resource "aws_eks_addon" "aws_efs_csi_driver" {
    depends_on = [
      aws_eks_addon.vpc_cni
@@ -59,7 +60,6 @@ resource "aws_eks_addon" "coredns" {
   addon_name                  = "coredns"
   addon_version               = "v1.10.1-eksbuild.4"
   resolve_conflicts           = "OVERWRITE"
-  configuration_values = "{\"replicaCount\":2}"
 }
 
 resource "aws_eks_addon" "kube_proxy" {
