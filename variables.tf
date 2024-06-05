@@ -275,6 +275,7 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+
 variable "kubernetes_alb_internet_facing" {
   type        = bool
   description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
