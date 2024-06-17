@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.0...v4.12.1) (2024-06-17)
+
+
+### Bug Fixes
+
+* Remove white space ([#231](https://github.com/wandb/terraform-aws-wandb/issues/231)) ([974b4f3](https://github.com/wandb/terraform-aws-wandb/commit/974b4f3ec0d01b34cf6d83008c9fe2a0d3d8ee7a))
+
 ## [4.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.11.0...v4.12.0) (2024-06-17)
 
 
