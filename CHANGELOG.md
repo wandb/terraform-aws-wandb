@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.11.0...v4.12.0) (2024-06-17)
+
+
+### Features
+
+* Added support yace ([#218](https://github.com/wandb/terraform-aws-wandb/issues/218)) ([12e053d](https://github.com/wandb/terraform-aws-wandb/commit/12e053d520f6998689d3bec0352b320a9105ba9e))
+
 ## [4.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.2...v4.11.0) (2024-05-18)
 
 
