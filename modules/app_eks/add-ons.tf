@@ -1,4 +1,3 @@
-
 ### IAM policy and role for vpc-cni
 data "aws_iam_policy_document" "oidc_assume_role" {
   statement {
