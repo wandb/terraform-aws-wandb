@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.1...v4.12.2) (2024-06-17)
+
+
+### Bug Fixes
+
+* Revert resolve conflicts var ([#233](https://github.com/wandb/terraform-aws-wandb/issues/233)) ([778f147](https://github.com/wandb/terraform-aws-wandb/commit/778f147aa9962fde6a74b7d35501ec7dd7abf2a9))
+
 ### [4.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.0...v4.12.1) (2024-06-17)
 
 
