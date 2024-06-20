@@ -454,3 +454,9 @@ variable "parquet_wandb_env" {
   description = "Extra environment variables for W&B"
   default     = {}
 }
+
+variable "enable_yace" {
+  type = bool
+  description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
+  default = true
+}

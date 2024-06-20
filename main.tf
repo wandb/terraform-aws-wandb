@@ -226,6 +226,15 @@ locals {
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
 
+data "aws_region" "current" {}
+
+module "iam_role" {
+   count  = var.enable_yace ? 1 : 0
+   source = "./modules/iam_role"
+   namespace = var.namespace
+   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
+}
+
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
@@ -302,6 +311,53 @@ module "wandb" {
         extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
         }, var.app_wandb_env)
+      }
+
+      # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
+      yace = var.enable_yace ? {
+        install = true
+        regions =  [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
+      } : {
+        install = false
+        regions = []
+        serviceAccount = {}
+      }
+
+      otel = {
+        daemonset = var.enable_yace ? {
+          config = {
+            receivers = {
+              prometheus = {
+                config = {
+                  scrape_configs = [
+                    { job_name = "yace"
+                      scheme = "http"
+                      metrics_path =  "/metrics"
+                      dns_sd_configs = [
+                        { names = ["yace"]
+                          type = "A"
+                          port = 5000
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+            service = {
+              pipelines = {
+                metrics = {
+                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
+                }
+              }
+            }
+          }
+        } : { config = {
+                receivers = {}
+                service   = {}
+              }
+            }
       }
 
       mysql = { install = false }
