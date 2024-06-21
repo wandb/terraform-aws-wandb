@@ -17,3 +17,7 @@ output "node_role" {
 output "primary_workers_security_group_id" {
   value = aws_security_group.primary_workers.id
 }
+
+output "aws_iam_openid_connect_provider" {
+  value = aws_iam_openid_connect_provider.eks.url
+}

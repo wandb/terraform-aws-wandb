@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.1...v4.12.2) (2024-06-17)
+
+
+### Bug Fixes
+
+* Revert resolve conflicts var ([#233](https://github.com/wandb/terraform-aws-wandb/issues/233)) ([778f147](https://github.com/wandb/terraform-aws-wandb/commit/778f147aa9962fde6a74b7d35501ec7dd7abf2a9))
+
+### [4.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.0...v4.12.1) (2024-06-17)
+
+
+### Bug Fixes
+
+* Remove white space ([#231](https://github.com/wandb/terraform-aws-wandb/issues/231)) ([974b4f3](https://github.com/wandb/terraform-aws-wandb/commit/974b4f3ec0d01b34cf6d83008c9fe2a0d3d8ee7a))
+
+## [4.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.11.0...v4.12.0) (2024-06-17)
+
+
+### Features
+
+* Added support yace ([#218](https://github.com/wandb/terraform-aws-wandb/issues/218)) ([12e053d](https://github.com/wandb/terraform-aws-wandb/commit/12e053d520f6998689d3bec0352b320a9105ba9e))
+
 ## [4.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.10.2...v4.11.0) (2024-05-18)
 
 
