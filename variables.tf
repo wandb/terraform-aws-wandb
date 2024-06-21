@@ -445,6 +445,12 @@ variable "parquet_wandb_env" {
   default     = {}
 }
 
+variable "enable_yace" {
+  type = bool
+  description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
+  default = true
+}
+
 ##########################################
 # New Vars for Encryption                #
 ##########################################
@@ -454,5 +460,4 @@ variable "db_kms_key_arn" {
   validation {
     condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
     error_message = "Invalid value for db kms ARN"
-  }
 }
