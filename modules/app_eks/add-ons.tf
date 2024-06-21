@@ -31,49 +31,49 @@ resource "aws_iam_role" "oidc" {
 
 ### add-ons
 resource "aws_eks_addon" "aws_efs_csi_driver" {
-  depends_on = [
-    aws_eks_addon.vpc_cni
-  ]
-  cluster_name      = var.namespace
-  addon_name        = "aws-efs-csi-driver"
-  addon_version     = "v1.7.7-eksbuild.1"
-  resolve_conflicts = "OVERWRITE"
+   depends_on = [
+     aws_eks_addon.vpc_cni
+   ]
+   cluster_name               = var.namespace
+   addon_name                 = "aws-efs-csi-driver"
+   addon_version              = "v2.0.4-eksbuild.1"
+   resolve_conflicts          = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "aws-ebs-csi-driver"
-  addon_version     = "v1.25.0-eksbuild.1"
-  resolve_conflicts = "OVERWRITE"
+  cluster_name                = var.namespace
+  addon_name                  = "aws-ebs-csi-driver"
+  addon_version               = "v1.31.0-eksbuild.1"
+  resolve_conflicts           = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "coredns" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "coredns"
-  addon_version     = "v1.9.3-eksbuild.11"
-  resolve_conflicts = "OVERWRITE"
+  cluster_name                = var.namespace
+  addon_name                  = "coredns"
+  addon_version               = "v1.10.1-eksbuild.11"
+  resolve_conflicts           = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "kube_proxy" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "kube-proxy"
-  addon_version     = "v1.25.14-eksbuild.2"
-  resolve_conflicts = "OVERWRITE"
+  cluster_name                = var.namespace
+  addon_name                  = "kube-proxy"
+  addon_version               = "v1.27.12-eksbuild.5"
+  resolve_conflicts           = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "vpc_cni" {
   cluster_name             = var.namespace
   addon_name               = "vpc-cni"
-  addon_version            = "v1.18.0-eksbuild.1"
+  addon_version            = "v1.18.2-eksbuild.1"
   resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
 }
