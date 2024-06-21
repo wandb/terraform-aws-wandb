@@ -9,12 +9,12 @@ module "kms" {
 
 locals {
 
-  default_kms_key = module.kms.key.arn
-  s3_kms_key_arn= length(var.bucket_kms_key_arn)> 0 ? var.bucket_kms_key_arn : local.default_kms_key
-  db_kms_key_arn = length(var.db_kms_key_arn)> 0 ? var.db_kms_key_arn : local.default_kms_key
-  database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn)> 0  ? var.database_performance_insights_kms_key_arn : local.default_kms_key
-  use_external_bucket = var.bucket_name != ""
-  use_internal_queue  = local.use_external_bucket || var.use_internal_queue
+  default_kms_key                           = module.kms.key.arn
+  s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
+  db_kms_key_arn                            = length(var.db_kms_key_arn) > 0 ? var.db_kms_key_arn : local.default_kms_key
+  database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
+  use_external_bucket                       = var.bucket_name != ""
+  use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
@@ -121,7 +121,7 @@ module "app_eks" {
   fqdn = local.domain_filter
 
   namespace   = var.namespace
-  kms_key_arn = local.default_kms_key 
+  kms_key_arn = local.default_kms_key
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
@@ -129,7 +129,7 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.s3_kms_key_arn 
+  bucket_kms_key_arn   = local.s3_kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -231,10 +231,10 @@ locals {
 data "aws_region" "current" {}
 
 module "iam_role" {
-   count  = var.enable_yace ? 1 : 0
-   source = "./modules/iam_role"
-   namespace = var.namespace
-   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
+  count                               = var.enable_yace ? 1 : 0
+  source                              = "./modules/iam_role"
+  namespace                           = var.namespace
+  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
 module "wandb" {
@@ -317,12 +317,12 @@ module "wandb" {
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
       yace = var.enable_yace ? {
-        install = true
-        regions =  [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {
-        install = false
-        regions = []
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        } : {
+        install        = false
+        regions        = []
         serviceAccount = {}
       }
 
@@ -333,13 +333,13 @@ module "wandb" {
               prometheus = {
                 config = {
                   scrape_configs = [
-                    { job_name = "yace"
-                      scheme = "http"
-                      metrics_path =  "/metrics"
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
                       dns_sd_configs = [
                         { names = ["yace"]
-                          type = "A"
-                          port = 5000
+                          type  = "A"
+                          port  = 5000
                         }
                       ]
                     }
@@ -355,11 +355,11 @@ module "wandb" {
               }
             }
           }
-        } : { config = {
-                receivers = {}
-                service   = {}
-              }
-            }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       mysql = { install = false }

@@ -4,7 +4,7 @@
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
-  default = "test"
+  default     = "test"
 }
 
 variable "deletion_protection" {
@@ -393,7 +393,7 @@ variable "bucket_kms_key_arn" {
   type    = string
   default = ""
   validation {
-    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$",var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
     error_message = "Invalid value for bucket kms ARN"
   }
 }
@@ -446,9 +446,9 @@ variable "parquet_wandb_env" {
 }
 
 variable "enable_yace" {
-  type = bool
+  type        = bool
   description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
-  default = true
+  default     = true
 }
 
 ##########################################
@@ -458,6 +458,7 @@ variable "db_kms_key_arn" {
   type    = string
   default = ""
   validation {
-    condition = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
     error_message = "Invalid value for db kms ARN"
+  }
 }
