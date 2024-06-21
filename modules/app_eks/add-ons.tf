@@ -1,4 +1,3 @@
-
 ### IAM policy and role for vpc-cni
 data "aws_iam_policy_document" "oidc_assume_role" {
   statement {
@@ -39,8 +38,7 @@ resource "aws_eks_addon" "aws_efs_csi_driver" {
    addon_name                 = "aws-efs-csi-driver"
    addon_version              = "v2.0.3-eksbuild.1"
    resolve_conflicts          = "OVERWRITE"
-   
- }
+}
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
   depends_on = [
@@ -50,7 +48,6 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   addon_name                  = "aws-ebs-csi-driver"
   addon_version               = "v1.31.0-eksbuild.1"
   resolve_conflicts           = "OVERWRITE"
- 
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -74,9 +71,9 @@ resource "aws_eks_addon" "kube_proxy" {
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name                = var.namespace
-  addon_name                  = "vpc-cni"
-  addon_version               = "v1.18.0-eksbuild.1"
-  resolve_conflicts           = "OVERWRITE"
+  cluster_name             = var.namespace
+  addon_name               = "vpc-cni"
+  addon_version            = "v1.18.0-eksbuild.1"
+  resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
 }
