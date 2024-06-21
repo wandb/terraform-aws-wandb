@@ -271,13 +271,13 @@ variable "allowed_private_endpoint_cidr" {
   description = "Private CIDRs allowed to access wandb-server."
   nullable    = false
   type        = list(string)
-  default = ["10.20.0.0/20"]
+  default = []
 }
 
 variable "private_only_traffic" {
   description = "Enable private only traffic from customer private network"
   type = bool
-  default = true
+  default = false
 }
 
 ##########################################
