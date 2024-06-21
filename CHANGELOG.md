@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.13.0...v4.14.0) (2024-06-21)
+
+
+### Features
+
+* Added support s3 endpoints ([#202](https://github.com/wandb/terraform-aws-wandb/issues/202)) ([4ebda49](https://github.com/wandb/terraform-aws-wandb/commit/4ebda4985a0d31df757598c9b3447b6d310e40f8))
+
 ## [4.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.2...v4.13.0) (2024-06-21)
 
 
