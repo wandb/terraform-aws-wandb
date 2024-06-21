@@ -3,10 +3,10 @@ locals {
   https_port = 443
 }
 
-resource "aws_security_group" "inbound-private" {
+resource "aws_security_group" "inbound_private" {
   count       = var.enable_private_only_traffic ? 1 : 0
-  name        = "${var.namespace}-nlb-inbound-private-endpoint"
-  description = "Allow http(s) traffic to wandb"
+  name        = "${var.namespace}-nlb-inbound"
+  description = "Allow http(s) inbound traffic from private endpoint to wandb"
   vpc_id      = var.network_id
 
   dynamic "ingress" {
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "alb_http_traffic" {
   to_port                  = local.http_port
   protocol                 = "tcp"
   security_group_id        = aws_security_group.inbound.id
-  source_security_group_id = aws_security_group.inbound-private[0].id
+  source_security_group_id = aws_security_group.inbound_private[0].id
 }
 
 resource "aws_security_group_rule" "alb_https_traffic" {
@@ -74,7 +74,7 @@ resource "aws_security_group_rule" "alb_https_traffic" {
   to_port                  = local.https_port
   protocol                 = "tcp"
   security_group_id        = aws_security_group.inbound.id
-  source_security_group_id = aws_security_group.inbound-private[0].id
+  source_security_group_id = aws_security_group.inbound_private[0].id
 }
 
 
