@@ -1,6 +1,6 @@
 locals {
   max_lb_name_length = 32 - length("-nlb")
-  lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-nlb"
+  lb_name_truncated  = var.enable_private_only_traffic ?  "${substr(var.namespace, 0, local.max_lb_name_length)}-private-link-nlb" : "${substr(var.namespace, 0, local.max_lb_name_length)}-nlb"
 }
 
 resource "aws_lb" "nlb" {
@@ -9,6 +9,10 @@ resource "aws_lb" "nlb" {
   load_balancer_type         = "network"
   subnets                    = var.network_private_subnets
   enable_deletion_protection = var.deletion_protection
+  security_groups = var.enable_private_only_traffic ? [var.nlb_security_group] : []
+lifecycle {
+  create_before_destroy = true
+}
 }
 
 resource "aws_lb_target_group" "nlb" {
