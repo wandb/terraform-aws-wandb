@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.15.0...v4.16.0) (2024-06-24)
+
+
+### Features
+
+* Added private-only traffic feature ([#192](https://github.com/wandb/terraform-aws-wandb/issues/192)) ([1e75812](https://github.com/wandb/terraform-aws-wandb/commit/1e758122e9cb0df34aa2e4ded1368bce5be75278))
+
 ## [4.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.14.0...v4.15.0) (2024-06-24)
 
 
