@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.13.0...v4.14.0) (2024-06-21)
+
+
+### Features
+
+* Added support s3 endpoints ([#202](https://github.com/wandb/terraform-aws-wandb/issues/202)) ([4ebda49](https://github.com/wandb/terraform-aws-wandb/commit/4ebda4985a0d31df757598c9b3447b6d310e40f8))
+
+## [4.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.2...v4.13.0) (2024-06-21)
+
+
+### Features
+
+* Upgraded eks version 1.26 to 1.27 ([#224](https://github.com/wandb/terraform-aws-wandb/issues/224)) ([bb7b99e](https://github.com/wandb/terraform-aws-wandb/commit/bb7b99e95595324c79e1bfaafd2f76d1241b1a8a))
+
 ### [4.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.1...v4.12.2) (2024-06-17)
 
 
