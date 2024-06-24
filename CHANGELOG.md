@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.14.0...v4.15.0) (2024-06-24)
+
+
+### Features
+
+* Upgraded eks version from 1.27 to 1.28 ([#226](https://github.com/wandb/terraform-aws-wandb/issues/226)) ([4d24df5](https://github.com/wandb/terraform-aws-wandb/commit/4d24df5d85df731c78801e2d625cf16e9d8bc5d3))
+
 ## [4.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.13.0...v4.14.0) (2024-06-21)
 
 
