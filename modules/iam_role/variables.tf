@@ -4,5 +4,5 @@ variable "namespace" {
 }
 
 variable "aws_iam_openid_connect_provider_url" {
-  type        = string
+  type = string
 }

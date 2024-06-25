@@ -8,20 +8,26 @@ module "kms" {
 }
 
 locals {
-  kms_key_arn         = module.kms.key.arn
-  use_external_bucket = var.bucket_name != ""
-  use_internal_queue  = local.use_external_bucket || var.use_internal_queue
+
+  default_kms_key                           = module.kms.key.arn
+  s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
+  db_kms_key_arn                            = length(var.db_kms_key_arn) > 0 ? var.db_kms_key_arn : local.default_kms_key
+  database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
+  use_external_bucket                       = var.bucket_name != ""
+  use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
   count     = var.create_bucket ? 1 : 0
   source    = "./modules/file_storage"
-  
-  create_queue = !local.use_internal_queue
-  deletion_protection = var.deletion_protection
-  kms_key_arn   = local.kms_key_arn
   namespace = var.namespace
+
+  create_queue = !local.use_internal_queue
+
   sse_algorithm = "aws:kms"
+  kms_key_arn   = local.s3_kms_key_arn
+
+  deletion_protection = var.deletion_protection
 }
 
 locals {
@@ -68,8 +74,8 @@ module "database" {
   source = "./modules/database"
 
   namespace                        = var.namespace
-  kms_key_arn                      = local.kms_key_arn
-  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
+  kms_key_arn                      = local.db_kms_key_arn
+  performance_insights_kms_key_arn = local.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
   master_username = var.database_master_username
@@ -95,7 +101,7 @@ locals {
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
 }
 
-# Create SSL Ceritifcation if applicable
+#Create SSL Ceritifcation if applicable
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
@@ -124,7 +130,7 @@ module "app_eks" {
   fqdn = local.domain_filter
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  kms_key_arn = local.default_kms_key
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
@@ -132,7 +138,7 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+  bucket_kms_key_arn   = local.s3_kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -227,7 +233,7 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn             = local.kms_key_arn
+  kms_key_arn             = local.db_kms_key_arn
 }
 
 locals {
@@ -238,10 +244,10 @@ locals {
 data "aws_region" "current" {}
 
 module "iam_role" {
-   count  = var.enable_yace ? 1 : 0
-   source = "./modules/iam_role"
-   namespace = var.namespace
-   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
+  count                               = var.enable_yace ? 1 : 0
+  source                              = "./modules/iam_role"
+  namespace                           = var.namespace
+  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
 module "wandb" {
@@ -268,7 +274,7 @@ module "wandb" {
           provider = "s3"
           name     = local.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+          kmsKey   = local.s3_kms_key_arn
         }
 
         mysql = {
@@ -324,12 +330,12 @@ module "wandb" {
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
       yace = var.enable_yace ? {
-        install = true
-        regions =  [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {
-        install = false
-        regions = []
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        } : {
+        install        = false
+        regions        = []
         serviceAccount = {}
       }
 
@@ -340,13 +346,13 @@ module "wandb" {
               prometheus = {
                 config = {
                   scrape_configs = [
-                    { job_name = "yace"
-                      scheme = "http"
-                      metrics_path =  "/metrics"
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
                       dns_sd_configs = [
                         { names = ["yace"]
-                          type = "A"
-                          port = 5000
+                          type  = "A"
+                          port  = 5000
                         }
                       ]
                     }
@@ -362,11 +368,11 @@ module "wandb" {
               }
             }
           }
-        } : { config = {
-                receivers = {}
-                service   = {}
-              }
-            }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       mysql = { install = false }
