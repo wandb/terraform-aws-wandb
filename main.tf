@@ -345,7 +345,7 @@ module "wandb" {
                       scheme       = "http"
                       metrics_path = "/metrics"
                       dns_sd_configs = [
-                        { names = ["yace"]
+                        { names = ["wandb-yace"]
                           type  = "A"
                           port  = 5000
                         }
