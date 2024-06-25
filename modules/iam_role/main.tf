@@ -14,7 +14,7 @@ resource "aws_iam_role" "irsa" {
         Action    = ["sts:AssumeRoleWithWebIdentity"]
         Condition = {
           StringLike = {
-            "${var.aws_iam_openid_connect_provider_url}:sub" = "system:serviceaccount:*:yace"
+            "${var.aws_iam_openid_connect_provider_url}:sub" = "system:serviceaccount:default:${var.yace_sa_name}"
             "${var.aws_iam_openid_connect_provider_url}:aud" = "sts.amazonaws.com"
           }
         }

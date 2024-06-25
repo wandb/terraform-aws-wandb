@@ -14,14 +14,14 @@ locals {
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "./modules/file_storage"
-  
-  create_queue = !local.use_internal_queue
+  count  = var.create_bucket ? 1 : 0
+  source = "./modules/file_storage"
+
+  create_queue        = !local.use_internal_queue
   deletion_protection = var.deletion_protection
-  kms_key_arn   = local.kms_key_arn
-  namespace = var.namespace
-  sse_algorithm = "aws:kms"
+  kms_key_arn         = local.kms_key_arn
+  namespace           = var.namespace
+  sse_algorithm       = "aws:kms"
 }
 
 locals {
@@ -238,10 +238,11 @@ locals {
 data "aws_region" "current" {}
 
 module "iam_role" {
-   count  = var.enable_yace ? 1 : 0
-   source = "./modules/iam_role"
-   namespace = var.namespace
-   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
+  count                               = var.enable_yace ? 1 : 0
+  source                              = "./modules/iam_role"
+  yace_sa_name                        = var.yace_sa_name
+  namespace                           = var.namespace
+  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
 module "wandb" {
@@ -324,12 +325,12 @@ module "wandb" {
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
       yace = var.enable_yace ? {
-        install = true
-        regions =  [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {
-        install = false
-        regions = []
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        } : {
+        install        = false
+        regions        = []
         serviceAccount = {}
       }
 
@@ -340,13 +341,13 @@ module "wandb" {
               prometheus = {
                 config = {
                   scrape_configs = [
-                    { job_name = "yace"
-                      scheme = "http"
-                      metrics_path =  "/metrics"
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
                       dns_sd_configs = [
                         { names = ["yace"]
-                          type = "A"
-                          port = 5000
+                          type  = "A"
+                          port  = 5000
                         }
                       ]
                     }
@@ -362,11 +363,11 @@ module "wandb" {
               }
             }
           }
-        } : { config = {
-                receivers = {}
-                service   = {}
-              }
-            }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
