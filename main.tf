@@ -172,8 +172,8 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = local.full_fqdn
-  extra_fqdn                = local.extra_fqdn
+  fqdn                        = local.full_fqdn
+  extra_fqdn                  = local.extra_fqdn
   allowed_inbound_cidr        = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
   target_port                 = local.internal_app_port
@@ -234,8 +234,6 @@ locals {
   max_lb_name_length = 32 - length("-alb-k8s")
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
-
-data "aws_region" "current" {}
 
 module "iam_role" {
   count                               = var.enable_yace ? 1 : 0
