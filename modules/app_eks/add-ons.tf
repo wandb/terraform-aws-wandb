@@ -56,7 +56,7 @@ resource "aws_eks_addon" "coredns" {
   ]
   cluster_name                = var.namespace
   addon_name                  = "coredns"
-  addon_version               = "v1.10.1-eksbuild.4"
+  addon_version               = "v1.10.1-eksbuild.11"
   resolve_conflicts           = "OVERWRITE"
 }
 
@@ -66,7 +66,7 @@ resource "aws_eks_addon" "kube_proxy" {
   ]
   cluster_name                = var.namespace
   addon_name                  = "kube-proxy"
-  addon_version               = "v1.27.6-eksbuild.2"
+  addon_version               = "v1.27.12-eksbuild.5"
   resolve_conflicts           = "OVERWRITE"
 }
 
