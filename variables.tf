@@ -460,3 +460,8 @@ variable "enable_yace" {
   description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
   default = true
 }
+
+variable "yace_sa_name" {
+  type = string
+  default = "wandb-yace"
+}
