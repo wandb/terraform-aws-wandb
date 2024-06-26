@@ -20,6 +20,9 @@ module "wandb_infra" {
 
   deletion_protection = false
 
+  enable_dummy_dns = true
+  enable_operator_alb = true
+
   database_instance_class      = var.database_instance_class
   database_engine_version      = var.database_engine_version
   database_snapshot_identifier = var.database_snapshot_identifier
@@ -28,7 +31,7 @@ module "wandb_infra" {
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = ["::/0"]
 
-  eks_cluster_version            = "1.25"
+  eks_cluster_version            = "1.26"
   kubernetes_public_access       = true
   kubernetes_public_access_cidrs = ["0.0.0.0/0"]
 
@@ -81,34 +84,6 @@ provider "helm" {
       command     = "aws"
     }
   }
-}
-
-module "wandb_app" {
-  source  = "wandb/wandb/kubernetes"
-  version = "1.12.0"
-
-  license = var.wandb_license
-
-  host                       = module.wandb_infra.url
-  bucket                     = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region          = module.wandb_infra.bucket_region
-  bucket_queue               = "internal://"
-  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
-  database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
-  redis_connection_string    = "redis://${module.wandb_infra.elasticache_connection_string}?tls=true&ttlInSeconds=604800"
-
-  wandb_image   = var.wandb_image
-  wandb_version = var.wandb_version
-
-  service_port = module.wandb_infra.internal_app_port
-
-  # If we dont wait, tf will start trying to deploy while the work group is
-  # still spinning up
-  depends_on = [module.wandb_infra]
-
-  other_wandb_env = merge({
-    "GORILLA_CUSTOMER_SECRET_STORE_SOURCE" = "aws-secretmanager://${var.namespace}?namespace=${var.namespace}"
-  }, var.other_wandb_env)
 }
 
 output "bucket_name" {
