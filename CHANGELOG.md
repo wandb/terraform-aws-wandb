@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.17.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.16.0...v4.17.0) (2024-06-26)
+
+
+### Features
+
+* Fixed yace service account issue ([#234](https://github.com/wandb/terraform-aws-wandb/issues/234)) ([8d290b8](https://github.com/wandb/terraform-aws-wandb/commit/8d290b83f654483823783e8562f9e378172a38a3))
+
 ## [4.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.15.0...v4.16.0) (2024-06-24)
 
 
