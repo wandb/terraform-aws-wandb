@@ -72,6 +72,9 @@ resource "aws_eks_addon" "kube_proxy" {
 }
 
 resource "aws_eks_addon" "vpc_cni" {
+  depends_on = [
+    module.eks
+  ]
   cluster_name             = var.namespace
   addon_name               = "vpc-cni"
   addon_version            = "v1.18.2-eksbuild.1"
