@@ -17,13 +17,6 @@ variable "use_internal_queue" {
   default = false
 }
 
-variable "size" {
-  default     = null
-  description = "Deployment size"
-  nullable    = true
-  type        = string
-}
-
 ##########################################
 # Database                               #
 ##########################################
