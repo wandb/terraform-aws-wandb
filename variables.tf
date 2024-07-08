@@ -271,13 +271,13 @@ variable "allowed_private_endpoint_cidr" {
   description = "Private CIDRs allowed to access wandb-server."
   nullable    = false
   type        = list(string)
-  default = []
+  default     = []
 }
 
 variable "private_only_traffic" {
   description = "Enable private only traffic from customer private network"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 ##########################################
@@ -349,6 +349,18 @@ variable "kubernetes_node_count" {
   description = "Number of nodes"
   type        = number
   default     = 2
+}
+
+variable "min_node_count" {
+  description = "Number of nodes"
+  type        = number
+  default     = 1
+}
+
+variable "max_node_count" {
+  description = "Number of nodes"
+  type        = number
+  default     = 6
 }
 
 variable "eks_policy_arns" {
@@ -456,12 +468,12 @@ variable "parquet_wandb_env" {
 }
 
 variable "enable_yace" {
-  type = bool
+  type        = bool
   description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
-  default = true
+  default     = true
 }
 
 variable "yace_sa_name" {
-  type = string
+  type    = string
   default = "wandb-yace"
 }

@@ -15,9 +15,9 @@ output "tg_app_arn" {
 }
 
 output "alb_name" {
-value =  aws_lb.alb.arn
+  value = aws_lb.alb.arn
 }
 
 output "nlb_security_group" {
-  value = var.enable_private_only_traffic? aws_security_group.inbound_private[0].id : null
+  value = var.enable_private_only_traffic ? aws_security_group.inbound_private[0].id : null
 }

@@ -128,6 +128,8 @@ module "app_eks" {
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
+  min_capacity     = try(local.deployment_size[var.size].min_node_count, var.min_node_count)
+  max_capacity     = try(local.deployment_size[var.size].max_node_count, var.max_node_count)
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
@@ -370,12 +372,12 @@ module "wandb" {
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
       yace = var.enable_yace ? {
-        install = true
-        regions =  [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {
-        install = false
-        regions = []
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        } : {
+        install        = false
+        regions        = []
         serviceAccount = {}
       }
 
@@ -386,13 +388,13 @@ module "wandb" {
               prometheus = {
                 config = {
                   scrape_configs = [
-                    { job_name = "yace"
-                      scheme = "http"
-                      metrics_path =  "/metrics"
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
                       dns_sd_configs = [
                         { names = ["yace"]
-                          type = "A"
-                          port = 5000
+                          type  = "A"
+                          port  = 5000
                         }
                       ]
                     }
@@ -408,11 +410,11 @@ module "wandb" {
               }
             }
           }
-        } : { config = {
-                receivers = {}
-                service   = {}
-              }
-            }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       mysql = { install = false }
