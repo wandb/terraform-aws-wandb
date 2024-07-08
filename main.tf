@@ -14,14 +14,14 @@ locals {
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "./modules/file_storage"
-  
-  create_queue = !local.use_internal_queue
+  count  = var.create_bucket ? 1 : 0
+  source = "./modules/file_storage"
+
+  create_queue        = !local.use_internal_queue
   deletion_protection = var.deletion_protection
-  kms_key_arn   = local.kms_key_arn
-  namespace = var.namespace
-  sse_algorithm = "aws:kms"
+  kms_key_arn         = local.kms_key_arn
+  namespace           = var.namespace
+  sse_algorithm       = "aws:kms"
 }
 
 locals {
@@ -53,6 +53,15 @@ locals {
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
+}
+
+module "s3_endpoint" {
+  count                  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
+  source                 = "./modules/endpoint"
+  service_name           = "com.amazonaws.${data.aws_region.current.name}.s3"
+  network_id             = local.network_id
+  private_route_table_id = module.networking.private_route_table_ids
+  depends_on             = [module.networking]
 }
 
 module "database" {
@@ -163,29 +172,33 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = local.full_fqdn
-  extra_fqdn                = local.extra_fqdn
-  allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
-  target_port               = local.internal_app_port
+  fqdn                        = local.full_fqdn
+  extra_fqdn                  = local.extra_fqdn
+  allowed_inbound_cidr        = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
+  target_port                 = local.internal_app_port
+  network_id                  = local.network_id
+  network_private_subnets     = local.network_private_subnets
+  network_public_subnets      = local.network_public_subnets
+  enable_private_only_traffic = var.private_only_traffic
+  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
 
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
 }
 
 module "private_link" {
   count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
   source = "./modules/private_link"
 
-  namespace               = var.namespace
-  allowed_account_ids     = var.private_link_allowed_account_ids
-  deletion_protection     = var.deletion_protection
-  network_private_subnets = local.network_private_subnets
-  alb_name                = local.lb_name_truncated
-  vpc_id                  = local.network_id
-
+  namespace                   = var.namespace
+  allowed_account_ids         = var.private_link_allowed_account_ids
+  deletion_protection         = var.deletion_protection
+  network_private_subnets     = local.network_private_subnets
+  alb_name                    = local.lb_name_truncated
+  vpc_id                      = local.network_id
+  enable_private_only_traffic = var.private_only_traffic
+  nlb_security_group          = module.app_lb.nlb_security_group
   depends_on = [
+    module.app_lb,
     module.wandb
   ]
 }
@@ -222,13 +235,12 @@ locals {
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
 
-data "aws_region" "current" {}
-
 module "iam_role" {
-   count  = var.enable_yace ? 1 : 0
-   source = "./modules/iam_role"
-   namespace = var.namespace
-   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
+  count                               = var.enable_yace ? 1 : 0
+  source                              = "./modules/iam_role"
+  yace_sa_name                        = var.yace_sa_name
+  namespace                           = var.namespace
+  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
 module "wandb" {
@@ -307,6 +319,53 @@ module "wandb" {
         extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
         }, var.app_wandb_env)
+      }
+
+      # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
+      yace = var.enable_yace ? {
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        } : {
+        install        = false
+        regions        = []
+        serviceAccount = {}
+      }
+
+      otel = {
+        daemonset = var.enable_yace ? {
+          config = {
+            receivers = {
+              prometheus = {
+                config = {
+                  scrape_configs = [
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
+                      dns_sd_configs = [
+                        { names = ["wandb-yace"]
+                          type  = "A"
+                          port  = 5000
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+            service = {
+              pipelines = {
+                metrics = {
+                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
+                }
+              }
+            }
+          }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)

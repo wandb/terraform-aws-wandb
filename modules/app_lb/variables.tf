@@ -74,3 +74,14 @@ variable "target_port" {
   type    = number
   default = 32543
 }
+
+
+variable "private_endpoint_cidr" {
+  description = "List of CIDR blocks allowed to access the wandb-server"
+  type        = list(string)
+}
+
+variable "enable_private_only_traffic" {
+  description = "Boolean flag to create sg"
+  type        = bool
+}

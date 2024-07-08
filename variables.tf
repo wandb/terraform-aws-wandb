@@ -267,6 +267,19 @@ variable "private_link_allowed_account_ids" {
   default     = []
 }
 
+variable "allowed_private_endpoint_cidr" {
+  description = "Private CIDRs allowed to access wandb-server."
+  nullable    = false
+  type        = list(string)
+  default = []
+}
+
+variable "private_only_traffic" {
+  description = "Enable private only traffic from customer private network"
+  type = bool
+  default = false
+}
+
 ##########################################
 # EKS Cluster                            #
 ##########################################
@@ -446,4 +459,9 @@ variable "enable_yace" {
   type = bool
   description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
   default = true
+}
+
+variable "yace_sa_name" {
+  type = string
+  default = "wandb-yace"
 }

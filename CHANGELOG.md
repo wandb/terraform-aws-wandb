@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.17.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.16.0...v4.17.0) (2024-06-26)
+
+
+### Features
+
+* Fixed yace service account issue ([#234](https://github.com/wandb/terraform-aws-wandb/issues/234)) ([8d290b8](https://github.com/wandb/terraform-aws-wandb/commit/8d290b83f654483823783e8562f9e378172a38a3))
+
+## [4.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.15.0...v4.16.0) (2024-06-24)
+
+
+### Features
+
+* Added private-only traffic feature ([#192](https://github.com/wandb/terraform-aws-wandb/issues/192)) ([1e75812](https://github.com/wandb/terraform-aws-wandb/commit/1e758122e9cb0df34aa2e4ded1368bce5be75278))
+
+## [4.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.14.0...v4.15.0) (2024-06-24)
+
+
+### Features
+
+* Upgraded eks version from 1.27 to 1.28 ([#226](https://github.com/wandb/terraform-aws-wandb/issues/226)) ([4d24df5](https://github.com/wandb/terraform-aws-wandb/commit/4d24df5d85df731c78801e2d625cf16e9d8bc5d3))
+
+## [4.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.13.0...v4.14.0) (2024-06-21)
+
+
+### Features
+
+* Added support s3 endpoints ([#202](https://github.com/wandb/terraform-aws-wandb/issues/202)) ([4ebda49](https://github.com/wandb/terraform-aws-wandb/commit/4ebda4985a0d31df757598c9b3447b6d310e40f8))
+
+## [4.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.2...v4.13.0) (2024-06-21)
+
+
+### Features
+
+* Upgraded eks version 1.26 to 1.27 ([#224](https://github.com/wandb/terraform-aws-wandb/issues/224)) ([bb7b99e](https://github.com/wandb/terraform-aws-wandb/commit/bb7b99e95595324c79e1bfaafd2f76d1241b1a8a))
+
 ### [4.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.12.1...v4.12.2) (2024-06-17)
 
 
