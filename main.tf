@@ -321,7 +321,7 @@ module "wandb" {
         }, var.app_wandb_env)
       }
 
-      # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
+      # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
       yace = var.enable_yace ? {
         install        = true
         regions        = [data.aws_region.current.name]
@@ -366,53 +366,6 @@ module "wandb" {
             service   = {}
           }
         }
-      }
-
-      # To support otel rds and redis metrics need operator-wandb chart minimum version 0.13.8 ( yace subchart)
-      yace = var.enable_yace ? {
-        install = true
-        regions =  [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn} }
-      } : {
-        install = false
-        regions = []
-        serviceAccount = {}
-      }
-
-      otel = {
-        daemonset = var.enable_yace ? {
-          config = {
-            receivers = {
-              prometheus = {
-                config = {
-                  scrape_configs = [
-                    { job_name = "yace"
-                      scheme = "http"
-                      metrics_path =  "/metrics"
-                      dns_sd_configs = [
-                        { names = ["yace"]
-                          type = "A"
-                          port = 5000
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-            service = {
-              pipelines = {
-                metrics = {
-                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
-                }
-              }
-            }
-          }
-        } : { config = {
-                receivers = {}
-                service   = {}
-              }
-            }
       }
 
       mysql = { install = false }
