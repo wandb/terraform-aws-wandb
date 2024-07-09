@@ -8,3 +8,5 @@ data "aws_sqs_queue" "file_storage" {
   depends_on = [module.file_storage]
   name       = local.bucket_queue_name
 }
+
+data "aws_region" "current" {}

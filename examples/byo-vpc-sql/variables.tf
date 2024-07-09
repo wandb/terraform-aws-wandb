@@ -1,6 +1,6 @@
-# ##########################################
-# # Common                                 #
-# ##########################################
+##########################################
+# Common                                 #
+##########################################
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
@@ -57,10 +57,27 @@ variable "database_name" {
   default     = "wandb_local"
 }
 
+variable "database_port" {
+  description = "Specifies the port of the database"
+  type        = string
+  default     = "3306"
+}
+
 variable "database_master_username" {
   description = "Specifies the master_username value to set for the database"
   type        = string
   default     = "wandb"
+}
+
+variable "database_master_password" {
+  description = "Specifies the master_password value to set for the database"
+  type        = string
+  sensitive   = true
+}
+
+variable "database_endpoint" {
+  description = "Specifies the endpoint value to set for the database"
+  type        = string
 }
 
 variable "database_binlog_format" {
@@ -76,11 +93,15 @@ variable "database_innodb_lru_scan_depth" {
 }
 
 variable "database_performance_insights_kms_key_arn" {
-  default     = ""
+  default     = null
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
   nullable    = true
   type        = string
+}
 
+variable "database_security_group_id" {
+  description = "Specifies the security group id value to set for the database"
+  type        = string
 }
 
 ##########################################
@@ -198,35 +219,30 @@ variable "kms_key_policy" {
 variable "create_vpc" {
   type        = bool
   description = "Boolean indicating whether to deploy a VPC (true) or not (false)."
-  default     = true
+  default     = false
 }
 
 variable "network_id" {
-  default     = ""
   description = "The identity of the VPC in which resources will be deployed."
   type        = string
 }
 
 variable "network_private_subnets" {
-  default     = []
   description = "A list of the identities of the private subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_public_subnets" {
-  default     = []
   description = "A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_database_subnets" {
-  default     = []
   description = "A list of the identities of the database subnetworks in which resources will be deployed."
   type        = list(string)
 }
 
 variable "network_elasticache_subnets" {
-  default     = []
   description = "A list of the identities of the subnetworks in which elasticache resources will be deployed."
   type        = list(string)
 }
@@ -267,19 +283,6 @@ variable "private_link_allowed_account_ids" {
   default     = []
 }
 
-variable "allowed_private_endpoint_cidr" {
-  description = "Private CIDRs allowed to access wandb-server."
-  nullable    = false
-  type        = list(string)
-  default = []
-}
-
-variable "private_only_traffic" {
-  description = "Enable private only traffic from customer private network"
-  type = bool
-  default = false
-}
-
 ##########################################
 # EKS Cluster                            #
 ##########################################
@@ -303,7 +306,7 @@ variable "kubernetes_alb_subnets" {
 variable "kubernetes_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = false
+  default     = true
 }
 
 
@@ -401,13 +404,11 @@ variable "bucket_name" {
   type    = string
   default = ""
 }
+
 variable "bucket_kms_key_arn" {
-  type    = string
-  default = ""
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
-    error_message = "Invalid value for bucket kms ARN"
-  }
+  type        = string
+  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
+  default     = ""
 }
 
 ##########################################
@@ -425,9 +426,9 @@ variable "elasticache_node_type" {
   default     = "cache.t2.medium"
 }
 
-##########################################
-# Weights & Biases                       #
-##########################################
+# ##########################################
+# # Weights & Biases                       #
+# ##########################################
 variable "license" {
   type        = string
   description = "Weights & Biases license key."
@@ -455,27 +456,4 @@ variable "parquet_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
-}
-
-variable "enable_yace" {
-  type        = bool
-  description = "deploy yet another cloudwatch exporter to fetch aws resources metrics"
-  default     = true
-}
-
-variable "yace_sa_name" {
-  type = string
-  default = "wandb-yace"
-}
-
-##########################################
-# New Vars for Encryption                #
-##########################################
-variable "db_kms_key_arn" {
-  type    = string
-  default = ""
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
-    error_message = "Invalid value for db kms ARN"
-  }
 }
