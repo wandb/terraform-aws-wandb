@@ -260,7 +260,7 @@ module "wandb" {
       global = {
         host    = local.url
         license = var.license
-
+        cloudProvider = "aws"
         extraEnv = var.other_wandb_env
 
         bucket = {
