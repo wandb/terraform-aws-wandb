@@ -18,8 +18,8 @@ locals {
       node_count     = 2,
       node_instance  = "r6i.xlarge",
       cache          = "cache.m6g.large",
-      min_node_count = 1,
-      max_node_count = 4
+      min_node_count = 2,
+      max_node_count = 5
     },
     large = {
       db             = "db.r6g.2xlarge",
