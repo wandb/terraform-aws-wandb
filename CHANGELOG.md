@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.19.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.18.0...v4.19.0) (2024-07-09)
+
+
+### Features
+
+* Resolved yace conflict  ([#239](https://github.com/wandb/terraform-aws-wandb/issues/239)) ([08ed7fa](https://github.com/wandb/terraform-aws-wandb/commit/08ed7faac3c1f18e264feb3f1864d37845520bb2))
+
 ## [4.18.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.17.0...v4.18.0) (2024-07-08)
 
 
