@@ -9,4 +9,4 @@ data "aws_sqs_queue" "file_storage" {
   name       = local.bucket_queue_name
 }
 
-data "aws_region" "current" { }
+data "aws_region" "current" {}

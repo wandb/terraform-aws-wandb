@@ -1,5 +1,61 @@
+provider "aws" {
+  region = "us-east-1"
+
+
+  default_tags {
+    tags = {
+      GithubRepo = "terraform-aws-wandb"
+      GithubOrg  = "wandb"
+      Enviroment = "Example"
+      Example    = "BYO-VPC-SQL"
+    }
+  }
+}
+data "aws_s3_bucket" "file_storage" {
+  depends_on = [module.file_storage]
+  bucket     = local.bucket_name
+}
+
+data "aws_sqs_queue" "file_storage" {
+  count      = local.use_internal_queue ? 0 : 1
+  depends_on = [module.file_storage]
+  name       = local.bucket_queue_name
+}
+
+data "aws_eks_cluster" "app_cluster" {
+  name = module.app_eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "app_cluster" {
+  name = module.app_eks.cluster_id
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.app_cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.app_cluster.token
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.app_cluster.name]
+    command     = "aws"
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.app_cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.app_cluster.token
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.app_cluster.name]
+      command     = "aws"
+    }
+  }
+}
+
 module "kms" {
-  source = "./modules/kms"
+  source = "../../modules/kms"
 
   key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
@@ -11,11 +67,43 @@ locals {
   kms_key_arn         = module.kms.key.arn
   use_external_bucket = var.bucket_name != ""
   use_internal_queue  = local.use_external_bucket || var.use_internal_queue
+  deployment_size = {
+    small = {
+      db            = "db.r6g.large",
+      node_count    = 3,
+      node_instance = "r6i.xlarge"
+      cache         = "cache.m6g.large"
+    },
+    medium = {
+      db            = "db.r6g.xlarge",
+      node_count    = 3,
+      node_instance = "r6i.xlarge"
+      cache         = "cache.m6g.large"
+    },
+    large = {
+      db            = "db.r6g.2xlarge",
+      node_count    = 3,
+      node_instance = "r6i.2xlarge"
+      cache         = "cache.m6g.xlarge"
+    },
+    xlarge = {
+      db            = "db.r6g.4xlarge",
+      node_count    = 3,
+      node_instance = "r6i.2xlarge"
+      cache         = "cache.m6g.xlarge"
+    },
+    xxlarge = {
+      db            = "db.r6g.8xlarge",
+      node_count    = 3,
+      node_instance = "r6i.4xlarge"
+      cache         = "cache.m6g.2xlarge"
+    }
+  }
 }
 
 module "file_storage" {
   count  = var.create_bucket ? 1 : 0
-  source = "./modules/file_storage"
+  source = "../../modules/file_storage"
 
   create_queue        = !local.use_internal_queue
   deletion_protection = var.deletion_protection
@@ -29,64 +117,11 @@ locals {
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
-module "networking" {
-  source     = "./modules/networking"
-  namespace  = var.namespace
-  create_vpc = var.create_vpc
-
-  cidr                      = var.network_cidr
-  private_subnet_cidrs      = var.network_private_subnet_cidrs
-  public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
-  create_elasticache_subnet = var.create_elasticache
-  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
-}
-
 locals {
-  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
-
-  network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
-  network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
-
-  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
-  network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
-  network_database_create_subnet_group = !var.create_vpc
-  network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
-}
-
-module "s3_endpoint" {
-  count                  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
-  source                 = "./modules/endpoint"
-  service_name           = "com.amazonaws.${data.aws_region.current.name}.s3"
-  network_id             = local.network_id
-  private_route_table_id = module.networking.private_route_table_ids
-  depends_on             = [module.networking]
-}
-
-module "database" {
-  source = "./modules/database"
-
-  namespace                        = var.namespace
-  kms_key_arn                      = local.kms_key_arn
-  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
-
-  database_name   = var.database_name
-  master_username = var.database_master_username
-
-  instance_class      = try(local.deployment_size[var.size].db, var.database_instance_class)
-  engine_version      = var.database_engine_version
-  snapshot_identifier = var.database_snapshot_identifier
-  sort_buffer_size    = var.database_sort_buffer_size
-
-  deletion_protection = var.deletion_protection
-
-  vpc_id                 = local.network_id
-  create_db_subnet_group = local.network_database_create_subnet_group
-  db_subnet_group_name   = local.network_database_subnet_group_name
-  subnets                = local.network_database_subnets
-
-  allowed_cidr_blocks = local.network_private_subnet_cidrs
+  network_id                   = var.network_id
+  network_public_subnets       = var.network_public_subnets
+  network_private_subnets      = var.network_private_subnets
+  network_private_subnet_cidrs = var.network_private_subnet_cidrs
 }
 
 locals {
@@ -119,7 +154,7 @@ locals {
 }
 
 module "app_eks" {
-  source = "./modules/app_eks"
+  source = "../../modules/app_eks"
 
   fqdn = local.domain_filter
 
@@ -140,7 +175,7 @@ module "app_eks" {
   network_private_subnets = local.network_private_subnets
 
   lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
-  database_security_group_id   = module.database.security_group_id
+  database_security_group_id   = var.database_security_group_id
 
   create_elasticache_security_group = var.create_elasticache
   elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null
@@ -165,40 +200,36 @@ locals {
 }
 
 module "app_lb" {
-  source = "./modules/app_lb"
+  source = "../../modules/app_lb"
 
   namespace             = var.namespace
   load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                        = local.full_fqdn
-  extra_fqdn                  = local.extra_fqdn
-  allowed_inbound_cidr        = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
-  target_port                 = local.internal_app_port
-  network_id                  = local.network_id
-  network_private_subnets     = local.network_private_subnets
-  network_public_subnets      = local.network_public_subnets
-  enable_private_only_traffic = var.private_only_traffic
-  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
+  fqdn                      = local.full_fqdn
+  extra_fqdn                = local.extra_fqdn
+  allowed_inbound_cidr      = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
+  target_port               = local.internal_app_port
 
+  network_id              = local.network_id
+  network_private_subnets = local.network_private_subnets
+  network_public_subnets  = local.network_public_subnets
 }
 
 module "private_link" {
   count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
-  source = "./modules/private_link"
+  source = "../../modules/private_link"
 
-  namespace                   = var.namespace
-  allowed_account_ids         = var.private_link_allowed_account_ids
-  deletion_protection         = var.deletion_protection
-  network_private_subnets     = local.network_private_subnets
-  alb_name                    = local.lb_name_truncated
-  vpc_id                      = local.network_id
-  enable_private_only_traffic = var.private_only_traffic
-  nlb_security_group          = module.app_lb.nlb_security_group
+  namespace               = var.namespace
+  allowed_account_ids     = var.private_link_allowed_account_ids
+  deletion_protection     = var.deletion_protection
+  network_private_subnets = local.network_private_subnets
+  alb_name                = local.lb_name_truncated
+  vpc_id                  = local.network_id
+
   depends_on = [
-    module.app_lb,
     module.wandb
   ]
 }
@@ -210,17 +241,17 @@ resource "aws_autoscaling_attachment" "autoscaling_attachment" {
 }
 
 locals {
-  network_elasticache_subnets             = var.create_vpc ? module.networking.elasticache_subnets : var.network_elasticache_subnets
-  network_elasticache_subnet_cidrs        = var.create_vpc ? module.networking.elasticache_subnet_cidrs : var.network_elasticache_subnet_cidrs
-  network_elasticache_create_subnet_group = !var.create_vpc
-  network_elasticache_subnet_group_name   = var.create_vpc ? module.networking.elasticache_subnet_group_name : "${var.namespace}-elasticache-subnet"
+  network_elasticache_subnets             = var.network_elasticache_subnets
+  network_elasticache_subnet_cidrs        = var.network_elasticache_subnet_cidrs
+  network_elasticache_create_subnet_group = true
+  network_elasticache_subnet_group_name   = "${var.namespace}-elasticache-subnet"
 }
 
 module "redis" {
   count                     = var.create_elasticache ? 1 : 0
   redis_create_subnet_group = local.network_elasticache_create_subnet_group
   redis_subnets             = local.network_elasticache_subnets
-  source                    = "./modules/redis"
+  source                    = "../../modules/redis"
   namespace                 = var.namespace
 
   vpc_id                  = local.network_id
@@ -235,20 +266,11 @@ locals {
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
 }
 
-module "iam_role" {
-  count                               = var.enable_yace ? 1 : 0
-  source                              = "./modules/iam_role"
-  yace_sa_name                        = var.yace_sa_name
-  namespace                           = var.namespace
-  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
-}
-
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
 
   depends_on = [
-    module.database,
     module.app_eks,
     module.redis,
   ]
@@ -271,11 +293,11 @@ module "wandb" {
         }
 
         mysql = {
-          host     = module.database.endpoint
-          password = module.database.password
-          user     = module.database.username
-          database = module.database.database_name
-          port     = module.database.port
+          host     = var.database_endpoint
+          password = var.database_master_password
+          user     = var.database_master_username
+          database = var.database_name
+          port     = var.database_port
         }
 
         redis = {
@@ -321,53 +343,6 @@ module "wandb" {
         }, var.app_wandb_env)
       }
 
-      # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
-      yace = var.enable_yace ? {
-        install        = true
-        regions        = [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
-        } : {
-        install        = false
-        regions        = []
-        serviceAccount = {}
-      }
-
-      otel = {
-        daemonset = var.enable_yace ? {
-          config = {
-            receivers = {
-              prometheus = {
-                config = {
-                  scrape_configs = [
-                    { job_name     = "yace"
-                      scheme       = "http"
-                      metrics_path = "/metrics"
-                      dns_sd_configs = [
-                        { names = ["wandb-yace"]
-                          type  = "A"
-                          port  = 5000
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-            service = {
-              pipelines = {
-                metrics = {
-                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
-                }
-              }
-            }
-          }
-          } : { config = {
-            receivers = {}
-            service   = {}
-          }
-        }
-      }
-
       mysql = { install = false }
       redis = { install = false }
 
@@ -387,4 +362,3 @@ module "wandb" {
     }
   }
 }
-
