@@ -48,13 +48,13 @@ resource "aws_iam_policy" "secrets_manager" {
 resource "aws_iam_policy" "irsa" {
   name        = "${var.namespace}-irsa-policy"
   description = "IRSA IAM Policy"
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "s3:*",
           "kms:*",
         ]
