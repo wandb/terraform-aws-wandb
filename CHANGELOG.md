@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.20.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.19.0...v4.20.0) (2024-07-10)
+
+
+### Features
+
+* Support for encrypting the database and bucket with CMK ([#182](https://github.com/wandb/terraform-aws-wandb/issues/182)) ([bc7c957](https://github.com/wandb/terraform-aws-wandb/commit/bc7c957307a852c94a6f6f4400a215101052fcac))
+
 ## [4.19.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.18.0...v4.19.0) (2024-07-09)
 
 
