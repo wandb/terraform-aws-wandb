@@ -11,19 +11,19 @@ locals {
 
   default_kms_key                           = module.kms.key.arn
   s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
-  db_kms_key_arn                            = length(var.db_kms_key_arn) > 0 ? var.db_kms_key_arn : local.default_kms_key
+  database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
   database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
   use_external_bucket                       = var.bucket_name != ""
   use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "./modules/file_storage"
-  namespace = var.namespace
-  create_queue = !local.use_internal_queue
-  sse_algorithm = "aws:kms"
-  kms_key_arn   = local.s3_kms_key_arn
+  count               = var.create_bucket ? 1 : 0
+  source              = "./modules/file_storage"
+  namespace           = var.namespace
+  create_queue        = !local.use_internal_queue
+  sse_algorithm       = "aws:kms"
+  kms_key_arn         = local.s3_kms_key_arn
   deletion_protection = var.deletion_protection
 }
 
@@ -71,7 +71,7 @@ module "database" {
   source = "./modules/database"
 
   namespace                        = var.namespace
-  kms_key_arn                      = local.db_kms_key_arn
+  kms_key_arn                      = local.database_kms_key_arn
   performance_insights_kms_key_arn = local.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
@@ -230,7 +230,7 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn             = local.db_kms_key_arn
+  kms_key_arn             = local.database_kms_key_arn
 }
 
 locals {
@@ -261,10 +261,10 @@ module "wandb" {
   spec = {
     values = {
       global = {
-        host    = local.url
-        license = var.license
+        host          = local.url
+        license       = var.license
         cloudProvider = "aws"
-        extraEnv = var.other_wandb_env
+        extraEnv      = var.other_wandb_env
 
         bucket = {
           provider = "s3"
