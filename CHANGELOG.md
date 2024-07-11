@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.20.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.0...v4.20.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* Pass cloudprovider value to the helm charts ([#240](https://github.com/wandb/terraform-aws-wandb/issues/240)) ([91017d4](https://github.com/wandb/terraform-aws-wandb/commit/91017d4e1d21140be24102b7e5129b4498183749))
+
 ## [4.20.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.19.0...v4.20.0) (2024-07-10)
 
 
