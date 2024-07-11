@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.20.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.1...v4.20.2) (2024-07-11)
+
+
+### Bug Fixes
+
+* AWS VPC CNI revert ([#236](https://github.com/wandb/terraform-aws-wandb/issues/236)) ([7aba491](https://github.com/wandb/terraform-aws-wandb/commit/7aba49119e24ffe68bc7e35dddde127040bfef3e))
+
 ### [4.20.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.0...v4.20.1) (2024-07-11)
 
 
