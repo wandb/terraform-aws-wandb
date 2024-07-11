@@ -80,7 +80,14 @@ variable "database_performance_insights_kms_key_arn" {
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
   nullable    = true
   type        = string
-
+}
+variable "database_kms_key_arn" {
+  type    = string
+  default = ""
+  validation {
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.database_kms_key_arn)) || var.database_kms_key_arn == ""
+    error_message = "Invalid value for db kms ARN"
+  }
 }
 
 ##########################################
@@ -271,13 +278,13 @@ variable "allowed_private_endpoint_cidr" {
   description = "Private CIDRs allowed to access wandb-server."
   nullable    = false
   type        = list(string)
-  default = []
+  default     = []
 }
 
 variable "private_only_traffic" {
   description = "Enable private only traffic from customer private network"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 ##########################################
@@ -464,18 +471,6 @@ variable "enable_yace" {
 }
 
 variable "yace_sa_name" {
-  type = string
-  default = "wandb-yace"
-}
-
-##########################################
-# New Vars for Encryption                #
-##########################################
-variable "db_kms_key_arn" {
   type    = string
-  default = ""
-  validation {
-    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.db_kms_key_arn)) || var.db_kms_key_arn == ""
-    error_message = "Invalid value for db kms ARN"
-  }
+  default = "wandb-yace"
 }
