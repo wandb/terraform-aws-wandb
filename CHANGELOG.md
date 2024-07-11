@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.20.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.2...v4.20.3) (2024-07-11)
+
+
+### Bug Fixes
+
+* Naming Conventions ([#241](https://github.com/wandb/terraform-aws-wandb/issues/241)) ([8f20d3e](https://github.com/wandb/terraform-aws-wandb/commit/8f20d3e3a455f348c2f9eb11582ffff592929cf7))
+
 ### [4.20.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.1...v4.20.2) (2024-07-11)
 
 
