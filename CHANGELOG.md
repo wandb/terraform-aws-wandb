@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.20.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.2...v4.20.3) (2024-07-11)
+
+
+### Bug Fixes
+
+* Naming Conventions ([#241](https://github.com/wandb/terraform-aws-wandb/issues/241)) ([8f20d3e](https://github.com/wandb/terraform-aws-wandb/commit/8f20d3e3a455f348c2f9eb11582ffff592929cf7))
+
+### [4.20.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.1...v4.20.2) (2024-07-11)
+
+
+### Bug Fixes
+
+* AWS VPC CNI revert ([#236](https://github.com/wandb/terraform-aws-wandb/issues/236)) ([7aba491](https://github.com/wandb/terraform-aws-wandb/commit/7aba49119e24ffe68bc7e35dddde127040bfef3e))
+
+### [4.20.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.0...v4.20.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* Pass cloudprovider value to the helm charts ([#240](https://github.com/wandb/terraform-aws-wandb/issues/240)) ([91017d4](https://github.com/wandb/terraform-aws-wandb/commit/91017d4e1d21140be24102b7e5129b4498183749))
+
+## [4.20.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.19.0...v4.20.0) (2024-07-10)
+
+
+### Features
+
+* Support for encrypting the database and bucket with CMK ([#182](https://github.com/wandb/terraform-aws-wandb/issues/182)) ([bc7c957](https://github.com/wandb/terraform-aws-wandb/commit/bc7c957307a852c94a6f6f4400a215101052fcac))
+
 ## [4.19.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.18.0...v4.19.0) (2024-07-09)
 
 
