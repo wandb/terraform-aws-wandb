@@ -48,7 +48,7 @@ output "internal_app_port" {
 }
 
 output "kms_key_arn" {
-  value       = local.kms_key_arn
+  value       = local.default_kms_key
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
 }
 

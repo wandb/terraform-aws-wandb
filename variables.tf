@@ -1,6 +1,6 @@
-##########################################
-# Common                                 #
-##########################################
+# ##########################################
+# # Common                                 #
+# ##########################################
 variable "namespace" {
   type        = string
   description = "String used for prefix resources."
@@ -76,11 +76,18 @@ variable "database_innodb_lru_scan_depth" {
 }
 
 variable "database_performance_insights_kms_key_arn" {
-  default     = null
+  default     = ""
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
   nullable    = true
   type        = string
-
+}
+variable "database_kms_key_arn" {
+  type    = string
+  default = ""
+  validation {
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.database_kms_key_arn)) || var.database_kms_key_arn == ""
+    error_message = "Invalid value for db kms ARN"
+  }
 }
 
 ##########################################
@@ -413,11 +420,13 @@ variable "bucket_name" {
   type    = string
   default = ""
 }
-
 variable "bucket_kms_key_arn" {
-  type        = string
-  description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  default     = ""
+  type    = string
+  default = ""
+  validation {
+    condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
+    error_message = "Invalid value for bucket kms ARN"
+  }
 }
 
 ##########################################
@@ -435,9 +444,9 @@ variable "elasticache_node_type" {
   default     = "cache.t2.medium"
 }
 
-# ##########################################
-# # Weights & Biases                       #
-# ##########################################
+##########################################
+# Weights & Biases                       #
+##########################################
 variable "license" {
   type        = string
   description = "Weights & Biases license key."

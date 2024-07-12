@@ -112,10 +112,6 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 <!-- BEGIN_TF_DOCS -->
 
-### Notes on EKS Add-ons
-If a terraform apply fails because an add-on is already installed, remove the add-on using the AWS console or the AWS
-CLI and re-run the apply. Running pods will not be impacted.
-
 ## Requirements
 
 | Name | Version |
@@ -139,16 +135,19 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="module_app_lb"></a> [app\_lb](#module\_app\_lb) | ./modules/app_lb | n/a |
 | <a name="module_database"></a> [database](#module\_database) | ./modules/database | n/a |
 | <a name="module_file_storage"></a> [file\_storage](#module\_file\_storage) | ./modules/file_storage | n/a |
+| <a name="module_iam_role"></a> [iam\_role](#module\_iam\_role) | ./modules/iam_role | n/a |
 | <a name="module_kms"></a> [kms](#module\_kms) | ./modules/kms | n/a |
 | <a name="module_networking"></a> [networking](#module\_networking) | ./modules/networking | n/a |
 | <a name="module_private_link"></a> [private\_link](#module\_private\_link) | ./modules/private_link | n/a |
 | <a name="module_redis"></a> [redis](#module\_redis) | ./modules/redis | n/a |
+| <a name="module_s3_endpoint"></a> [s3\_endpoint](#module\_s3\_endpoint) | ./modules/endpoint | n/a |
 | <a name="module_wandb"></a> [wandb](#module\_wandb) | wandb/wandb/helm | 1.2.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_s3_bucket.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_sqs_queue.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
 
@@ -159,9 +158,10 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="input_acm_certificate_arn"></a> [acm\_certificate\_arn](#input\_acm\_certificate\_arn) | The ARN of an existing ACM certificate. | `string` | `null` | no |
 | <a name="input_allowed_inbound_cidr"></a> [allowed\_inbound\_cidr](#input\_allowed\_inbound\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
 | <a name="input_allowed_inbound_ipv6_cidr"></a> [allowed\_inbound\_ipv6\_cidr](#input\_allowed\_inbound\_ipv6\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
+| <a name="input_allowed_private_endpoint_cidr"></a> [allowed\_private\_endpoint\_cidr](#input\_allowed\_private\_endpoint\_cidr) | Private CIDRs allowed to access wandb-server. | `list(string)` | `[]` | no |
 | <a name="input_app_wandb_env"></a> [app\_wandb\_env](#input\_app\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
 | <a name="input_aws_loadbalancer_controller_tags"></a> [aws\_loadbalancer\_controller\_tags](#input\_aws\_loadbalancer\_controller\_tags) | (Optional) A map of AWS tags to apply to all resources managed by the load balancer controller | `map(string)` | `{}` | no |
-| <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted. | `string` | `""` | no |
+| <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
@@ -171,9 +171,10 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.05.2"` | no |
 | <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
+| <a name="input_database_kms_key_arn"></a> [database\_kms\_key\_arn](#input\_database\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_database_master_username"></a> [database\_master\_username](#input\_database\_master\_username) | Specifies the master\_username value to set for the database | `string` | `"wandb"` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Specifies the name of the database | `string` | `"wandb_local"` | no |
-| <a name="input_database_performance_insights_kms_key_arn"></a> [database\_performance\_insights\_kms\_key\_arn](#input\_database\_performance\_insights\_kms\_key\_arn) | Specifies an existing KMS key ARN to encrypt the performance insights data if performance\_insights\_enabled is was enabled out of band | `string` | `null` | no |
+| <a name="input_database_performance_insights_kms_key_arn"></a> [database\_performance\_insights\_kms\_key\_arn](#input\_database\_performance\_insights\_kms\_key\_arn) | Specifies an existing KMS key ARN to encrypt the performance insights data if performance\_insights\_enabled is was enabled out of band | `string` | `""` | no |
 | <a name="input_database_snapshot_identifier"></a> [database\_snapshot\_identifier](#input\_database\_snapshot\_identifier) | Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot | `string` | `null` | no |
 | <a name="input_database_sort_buffer_size"></a> [database\_sort\_buffer\_size](#input\_database\_sort\_buffer\_size) | Specifies the sort\_buffer\_size value to set for the database | `number` | `67108864` | no |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`. | `bool` | `true` | no |
@@ -183,6 +184,7 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy | `string` | `"cache.t2.medium"` | no |
 | <a name="input_enable_dummy_dns"></a> [enable\_dummy\_dns](#input\_enable\_dummy\_dns) | Boolean indicating whether or not to enable dummy DNS for the old alb | `bool` | `false` | no |
 | <a name="input_enable_operator_alb"></a> [enable\_operator\_alb](#input\_enable\_operator\_alb) | Boolean indicating whether to use operatore ALB (true) or not (false). | `bool` | `false` | no |
+| <a name="input_enable_yace"></a> [enable\_yace](#input\_enable\_yace) | deploy yet another cloudwatch exporter to fetch aws resources metrics | `bool` | `true` | no |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | Using external DNS. A `subdomain` must also be specified if this value is true. | `bool` | `false` | no |
 | <a name="input_extra_fqdn"></a> [extra\_fqdn](#input\_extra\_fqdn) | Additional fqdn's must be in the same hosted zone as `domain_name`. | `list(string)` | `[]` | no |
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `null` | no |
@@ -212,6 +214,7 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="input_other_wandb_env"></a> [other\_wandb\_env](#input\_other\_wandb\_env) | Extra environment variables for W&B | `map(any)` | `{}` | no |
 | <a name="input_parquet_wandb_env"></a> [parquet\_wandb\_env](#input\_parquet\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
 | <a name="input_private_link_allowed_account_ids"></a> [private\_link\_allowed\_account\_ids](#input\_private\_link\_allowed\_account\_ids) | List of AWS account IDs allowed to access the VPC Endpoint Service | `list(string)` | `[]` | no |
+| <a name="input_private_only_traffic"></a> [private\_only\_traffic](#input\_private\_only\_traffic) | Enable private only traffic from customer private network | `bool` | `false` | no |
 | <a name="input_public_access"></a> [public\_access](#input\_public\_access) | Is this instance accessable a public domain. | `bool` | `false` | no |
 | <a name="input_size"></a> [size](#input\_size) | Deployment size | `string` | `null` | no |
 | <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | SSL policy to use on ALB listener | `string` | `"ELBSecurityPolicy-FS-1-2-Res-2020-10"` | no |
@@ -222,6 +225,7 @@ CLI and re-run the apply. Running pods will not be impacted.
 | <a name="input_system_reserved_pid"></a> [system\_reserved\_pid](#input\_system\_reserved\_pid) | (Optional) The amount of 'system-reserved' process ids [pid] to pass to the kubelet. For example: 1000.  A value of -1 disables the flag. | `number` | `500` | no |
 | <a name="input_use_internal_queue"></a> [use\_internal\_queue](#input\_use\_internal\_queue) | n/a | `bool` | `false` | no |
 | <a name="input_weave_wandb_env"></a> [weave\_wandb\_env](#input\_weave\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
+| <a name="input_yace_sa_name"></a> [yace\_sa\_name](#input\_yace\_sa\_name) | n/a | `string` | `"wandb-yace"` | no |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | Domain for creating the Weights & Biases subdomain on. | `string` | n/a | yes |
 
 ## Outputs
@@ -270,6 +274,40 @@ module "wandb" {
   license = "<your license key>"
   # ...
 }
+```
+
+### Alow customer specific customer-managed keys for S3 and RDS
+
+- we can provide external kms key to encrypt database, redis and S3 buckets.
+- To provide kms keys we need to provide kms arn values in
+
+```
+database_kms_key_arn
+bucket_kms_key_arn
+```
+
+### In order to allow cross account KMS keys. we need to allow kms keys to be accessed by WandB account.
+
+this can be donw by adding the following policy document.
+
+```
+{
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::<Account_id>:root"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    }
 ```
 
 ### Upgrading from 2.x -> 3.x
