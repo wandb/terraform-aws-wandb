@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.21.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.3...v4.21.0) (2024-07-17)
+
+
+### Features
+
+* Set up KMS key for clickhouse CMEK and endpoint for PL ([#243](https://github.com/wandb/terraform-aws-wandb/issues/243)) ([1d2fb92](https://github.com/wandb/terraform-aws-wandb/commit/1d2fb921792019b6356e0f89b7c117dda168339a))
+
 ### [4.20.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.2...v4.20.3) (2024-07-11)
 
 
