@@ -4,7 +4,7 @@ output "key" {
 }
 
 
-output "key_clickhouse" {
+output "clickhouse_key" {
   value       = aws_kms_key.clickhouse_key
   description = "The KMS key used to encrypt Weave data in Clickhouse."
 }

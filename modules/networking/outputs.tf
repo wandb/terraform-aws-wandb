@@ -68,7 +68,7 @@ output "private_route_table_ids" {
   description = "List of IDs of private route tables"
 }
 
-output "clickhouse_private_hostname" {
-  value       = aws_vpc_endpoint.clickhouse.dns_entry[0].hostname
+output "clickhouse_private_dns" {
+  value       = aws_vpc_endpoint.clickhouse.dns_entry[0]
   description = "The private DNS hostname of the Clickhouse VPC endpoint."
 }
