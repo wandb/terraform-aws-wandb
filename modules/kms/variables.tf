@@ -19,3 +19,14 @@ variable "key_policy" {
   type        = string
   default     = ""
 }
+
+variable "clickhouse_key_alias" {
+  description = "The key alias for AWS KMS Customer managed key."
+  type        = string
+}
+
+variable "clickhouse_key_policy" {
+  description = "The policy that will define the permissions for the kms clickhouse key."
+  type        = string
+  default     = ""
+}
