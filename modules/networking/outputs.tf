@@ -69,6 +69,6 @@ output "private_route_table_ids" {
 }
 
 output "clickhouse_private_dns" {
-  value       = aws_vpc_endpoint.clickhouse[0].dns_entry[0]
+  value       = aws_vpc_endpoint.clickhouse.count != 0 ? aws_vpc_endpoint.clickhouse[0].dns_entry[0] : null
   description = "The private DNS hostname of the Clickhouse VPC endpoint."
 }
