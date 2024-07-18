@@ -14,7 +14,7 @@ module "kms" {
 locals {
 
   default_kms_key                           = module.kms.key.arn
-  clickhouse_kms_key                        = module.kms.clickhouse_key.arn
+  clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
   s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
   database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
   database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key

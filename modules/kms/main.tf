@@ -143,7 +143,7 @@ resource "aws_kms_alias" "clickhouse_key" {
 
 
 resource "aws_kms_grant" "clickhouse" {
-  count = var.create_clickhouse_key && (var.iam_principal_arn == "") ? 0 : 1
+  count = !var.create_clickhouse_key && (var.iam_principal_arn == "") ? 0 : 1
 
   grantee_principal = var.iam_principal_arn
   key_id            = aws_kms_key.clickhouse_key[0].key_id
