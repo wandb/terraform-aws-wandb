@@ -138,7 +138,7 @@ resource "aws_kms_alias" "clickhouse_key" {
   count = var.create_clickhouse_key ? 1 : 0
 
   name          = "alias/${var.clickhouse_key_alias}"
-  target_key_id = aws_kms_key.clickhouse_key.key_id
+  target_key_id = aws_kms_key.clickhouse_key[0].key_id
 }
 
 
@@ -146,7 +146,7 @@ resource "aws_kms_grant" "clickhouse" {
   count = var.create_clickhouse_key && (var.iam_principal_arn == "") ? 0 : 1
 
   grantee_principal = var.iam_principal_arn
-  key_id            = aws_kms_key.clickhouse_key.key_id
+  key_id            = aws_kms_key.clickhouse_key[0].key_id
   operations = [
     "Decrypt",
     "DescribeKey",
