@@ -6,6 +6,7 @@ module "kms" {
   key_alias  = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_policy = var.kms_key_policy
 
+  create_clickhouse_key = var.enable_clickhouse
   clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
   clickhouse_key_policy = var.kms_clickhouse_key_policy
 }

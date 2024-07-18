@@ -91,6 +91,8 @@ resource "aws_kms_grant" "main" {
 }
 
 resource "aws_kms_key" "clickhouse_key" {
+  count = var.create_clickhouse_key ? 1 : 0
+
   deletion_window_in_days = var.key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weave resources in Clickhouse"
   key_usage               = "ENCRYPT_DECRYPT"
@@ -133,13 +135,15 @@ resource "aws_kms_key" "clickhouse_key" {
 
 
 resource "aws_kms_alias" "clickhouse_key" {
+  count = var.create_clickhouse_key ? 1 : 0
+
   name          = "alias/${var.clickhouse_key_alias}"
   target_key_id = aws_kms_key.clickhouse_key.key_id
 }
 
 
 resource "aws_kms_grant" "clickhouse" {
-  count = var.iam_principal_arn == "" ? 0 : 1
+  count = var.create_clickhouse_key && (var.iam_principal_arn == "") ? 0 : 1
 
   grantee_principal = var.iam_principal_arn
   key_id            = aws_kms_key.clickhouse_key.key_id
