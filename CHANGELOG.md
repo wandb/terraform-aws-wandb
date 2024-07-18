@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.0...v4.21.1) (2024-07-18)
+
+
+### Bug Fixes
+
+* Don't create KMS key and related resources for CH by default ([#244](https://github.com/wandb/terraform-aws-wandb/issues/244)) ([42d64ba](https://github.com/wandb/terraform-aws-wandb/commit/42d64bae1847a6d26b16bbf46cd341a39389ad0f))
+
 ## [4.21.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.3...v4.21.0) (2024-07-17)
 
 
