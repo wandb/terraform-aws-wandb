@@ -6,6 +6,7 @@ module "kms" {
   key_alias  = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_policy = var.kms_key_policy
 
+  create_clickhouse_key = var.enable_clickhouse
   clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
   clickhouse_key_policy = var.kms_clickhouse_key_policy
 }
@@ -13,7 +14,7 @@ module "kms" {
 locals {
 
   default_kms_key                           = module.kms.key.arn
-  clickhouse_kms_key                        = module.kms.clickhouse_key.arn
+  clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
   s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
   database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
   database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key

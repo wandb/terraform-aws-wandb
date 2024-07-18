@@ -487,8 +487,14 @@ variable "yace_sa_name" {
   default = "wandb-yace"
 }
 
+variable "enable_clickhouse" {
+  type        = bool
+  description = "Provision clickhouse resources"
+  default     = false
+}
+
 variable "clickhouse_endpoint_service_id" {
   type        = string
-  description = "The service ID of the VPC endpoint service for Clickhouse."
+  description = "The service ID of the VPC endpoint service for Clickhouse"
   default     = ""
 }
