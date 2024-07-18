@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.1...v4.21.2) (2024-07-18)
+
+
+### Bug Fixes
+
+* Condition to create kms.aws_kms_grant.clickhouse was incorrect ([#245](https://github.com/wandb/terraform-aws-wandb/issues/245)) ([78d9be7](https://github.com/wandb/terraform-aws-wandb/commit/78d9be7c0b1126aada5e5df7539ae47ecc6b3368))
+
 ### [4.21.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.0...v4.21.1) (2024-07-18)
 
 
