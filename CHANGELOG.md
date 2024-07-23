@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.2...v4.21.3) (2024-07-23)
+
+
+### Bug Fixes
+
+* YACE scoping ([#246](https://github.com/wandb/terraform-aws-wandb/issues/246)) ([47871c8](https://github.com/wandb/terraform-aws-wandb/commit/47871c846c13ed93ffa71b68c8177f0d2d99d7cf))
+
 ### [4.21.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.1...v4.21.2) (2024-07-18)
 
 
