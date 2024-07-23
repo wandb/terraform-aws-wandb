@@ -342,6 +342,7 @@ module "wandb" {
         install        = false
         regions        = []
         serviceAccount = {}
+        searchTags     = {}
       }
 
       otel = {
