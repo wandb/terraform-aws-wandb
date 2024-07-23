@@ -335,6 +335,9 @@ module "wandb" {
         install        = true
         regions        = [data.aws_region.current.name]
         serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        searchTags = {
+          "Namespace" = var.namespace
+        }
         } : {
         install        = false
         regions        = []
