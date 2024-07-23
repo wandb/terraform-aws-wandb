@@ -199,6 +199,18 @@ variable "kms_key_policy" {
   default     = ""
 }
 
+variable "kms_clickhouse_key_alias" {
+  type        = string
+  description = "KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK."
+  default     = null
+}
+
+variable "kms_clickhouse_key_policy" {
+  type        = string
+  description = "The policy that will define the permissions for the clickhouse kms key."
+  default     = ""
+}
+
 ##########################################
 # Network                                #
 ##########################################
@@ -473,4 +485,16 @@ variable "enable_yace" {
 variable "yace_sa_name" {
   type    = string
   default = "wandb-yace"
+}
+
+variable "enable_clickhouse" {
+  type        = bool
+  description = "Provision clickhouse resources"
+  default     = false
+}
+
+variable "clickhouse_endpoint_service_id" {
+  type        = string
+  description = "The service ID of the VPC endpoint service for Clickhouse"
+  default     = ""
 }

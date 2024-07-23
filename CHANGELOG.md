@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.1...v4.21.2) (2024-07-18)
+
+
+### Bug Fixes
+
+* Condition to create kms.aws_kms_grant.clickhouse was incorrect ([#245](https://github.com/wandb/terraform-aws-wandb/issues/245)) ([78d9be7](https://github.com/wandb/terraform-aws-wandb/commit/78d9be7c0b1126aada5e5df7539ae47ecc6b3368))
+
+### [4.21.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.0...v4.21.1) (2024-07-18)
+
+
+### Bug Fixes
+
+* Don't create KMS key and related resources for CH by default ([#244](https://github.com/wandb/terraform-aws-wandb/issues/244)) ([42d64ba](https://github.com/wandb/terraform-aws-wandb/commit/42d64bae1847a6d26b16bbf46cd341a39389ad0f))
+
+## [4.21.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.3...v4.21.0) (2024-07-17)
+
+
+### Features
+
+* Set up KMS key for clickhouse CMEK and endpoint for PL ([#243](https://github.com/wandb/terraform-aws-wandb/issues/243)) ([1d2fb92](https://github.com/wandb/terraform-aws-wandb/commit/1d2fb921792019b6356e0f89b7c117dda168339a))
+
 ### [4.20.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.20.2...v4.20.3) (2024-07-11)
 
 
