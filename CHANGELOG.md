@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.5](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.4...v4.21.5) (2024-07-24)
+
+
+### Bug Fixes
+
+* Use bucket KMS key arn if provided for W&B managed bucket, always use that key even if empty for customer provided buckets ([#248](https://github.com/wandb/terraform-aws-wandb/issues/248)) ([48131b7](https://github.com/wandb/terraform-aws-wandb/commit/48131b79219071b0a1311bbb5bc468a62c51e266))
+
 ### [4.21.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.3...v4.21.4) (2024-07-23)
 
 
