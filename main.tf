@@ -15,10 +15,10 @@ locals {
 
   default_kms_key                           = module.kms.key.arn
   clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
-  s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
   database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
   database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
   use_external_bucket                       = var.bucket_name != ""
+  s3_kms_key_arn                            = local.use_external_bucket || var.bucket_kms_key_arn != "" ? var.bucket_kms_key_arn : local.default_kms_key
   use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
