@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.6](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.5...v4.21.6) (2024-07-24)
+
+
+### Bug Fixes
+
+* Always let the node role have access to the `default_kms_key` ([#249](https://github.com/wandb/terraform-aws-wandb/issues/249)) ([d8fa06f](https://github.com/wandb/terraform-aws-wandb/commit/d8fa06f89da48443cb9fe0a45f491e5c13bb41cc))
+
 ### [4.21.5](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.4...v4.21.5) (2024-07-24)
 
 
