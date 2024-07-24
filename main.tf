@@ -12,7 +12,6 @@ module "kms" {
 }
 
 locals {
-
   default_kms_key                           = module.kms.key.arn
   clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
   database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
@@ -141,7 +140,11 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.s3_kms_key_arn
+  bucket_kms_key_arns = compact([
+    local.default_kms_key,
+    var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
+  ])
+
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
