@@ -3,9 +3,9 @@ variable "bucket_arn" {
   nullable = false
 }
 
-variable "bucket_kms_key_arn" {
+variable "bucket_kms_key_arns" {
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
-  type        = string
+  type        = list(string)
 }
 
 variable "fqdn" {
