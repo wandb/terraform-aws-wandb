@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.21.6](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.5...v4.21.6) (2024-07-24)
+
+
+### Bug Fixes
+
+* Always let the node role have access to the `default_kms_key` ([#249](https://github.com/wandb/terraform-aws-wandb/issues/249)) ([d8fa06f](https://github.com/wandb/terraform-aws-wandb/commit/d8fa06f89da48443cb9fe0a45f491e5c13bb41cc))
+
+### [4.21.5](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.4...v4.21.5) (2024-07-24)
+
+
+### Bug Fixes
+
+* Use bucket KMS key arn if provided for W&B managed bucket, always use that key even if empty for customer provided buckets ([#248](https://github.com/wandb/terraform-aws-wandb/issues/248)) ([48131b7](https://github.com/wandb/terraform-aws-wandb/commit/48131b79219071b0a1311bbb5bc468a62c51e266))
+
+### [4.21.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.3...v4.21.4) (2024-07-23)
+
+
+### Bug Fixes
+
+* Yace Yace Yace ([#247](https://github.com/wandb/terraform-aws-wandb/issues/247)) ([cf419bd](https://github.com/wandb/terraform-aws-wandb/commit/cf419bdd8d1a3c3996738bbfe8b292579db59d2f))
+
+### [4.21.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.2...v4.21.3) (2024-07-23)
+
+
+### Bug Fixes
+
+* YACE scoping ([#246](https://github.com/wandb/terraform-aws-wandb/issues/246)) ([47871c8](https://github.com/wandb/terraform-aws-wandb/commit/47871c846c13ed93ffa71b68c8177f0d2d99d7cf))
+
 ### [4.21.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.1...v4.21.2) (2024-07-18)
 
 
