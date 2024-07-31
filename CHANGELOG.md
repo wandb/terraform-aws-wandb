@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.22.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.6...v4.22.0) (2024-07-31)
+
+
+### Features
+
+* Bump operator image and chart versions ([#250](https://github.com/wandb/terraform-aws-wandb/issues/250)) ([1c60818](https://github.com/wandb/terraform-aws-wandb/commit/1c608185dc6dd68d560d7715060a65fc8719c895))
+
 ### [4.21.6](https://github.com/wandb/terraform-aws-wandb/compare/v4.21.5...v4.21.6) (2024-07-24)
 
 
