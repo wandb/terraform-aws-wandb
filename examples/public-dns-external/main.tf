@@ -91,6 +91,7 @@ module "wandb_app" {
 
   host                       = module.wandb_infra.url
   bucket                     = "s3://${module.wandb_infra.bucket_name}"
+  bucket_path                = var.bucket_path
   bucket_aws_region          = module.wandb_infra.bucket_region
   bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn

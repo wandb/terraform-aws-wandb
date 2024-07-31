@@ -77,6 +77,11 @@ variable "bucket_kms_key_arn" {
   default     = ""
 }
 
+variable "bucket_path" {
+  description = "path of where to store data for the instance-level bucket"
+  type        = string
+  default     = ""
+}
 
 variable "allowed_inbound_cidr" {
   default  = ["0.0.0.0/0"]
