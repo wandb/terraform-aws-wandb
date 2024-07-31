@@ -278,6 +278,7 @@ module "wandb" {
         bucket = {
           provider = "s3"
           name     = local.bucket_name
+          path     = var.bucket_path
           region   = data.aws_s3_bucket.file_storage.region
           kmsKey   = local.s3_kms_key_arn
         }
