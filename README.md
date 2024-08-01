@@ -288,7 +288,7 @@ bucket_kms_key_arn
 
 ### In order to allow cross account KMS keys. we need to allow kms keys to be accessed by WandB account.
 
-this can be donw by adding the following policy document.
+This can be donw by adding the following policy document.
 
 ```
 {
