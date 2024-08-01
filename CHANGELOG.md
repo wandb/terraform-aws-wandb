@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.22.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.1...v4.22.2) (2024-08-01)
+
+
+### Bug Fixes
+
+* Test TF Pipeline ([#253](https://github.com/wandb/terraform-aws-wandb/issues/253)) ([b46d6d2](https://github.com/wandb/terraform-aws-wandb/commit/b46d6d2fbac25af8374bb3121b410f2d78935bfc))
+
 ### [4.22.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.0...v4.22.1) (2024-08-01)
 
 
