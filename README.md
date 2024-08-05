@@ -111,7 +111,6 @@ Users can update the EKS cluster version to the latest version offered by AWS. T
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 
 <!-- BEGIN_TF_DOCS -->
-
 ## Requirements
 
 | Name | Version |
@@ -163,12 +162,13 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_aws_loadbalancer_controller_tags"></a> [aws\_loadbalancer\_controller\_tags](#input\_aws\_loadbalancer\_controller\_tags) | (Optional) A map of AWS tags to apply to all resources managed by the load balancer controller | `map(string)` | `{}` | no |
 | <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
+| <a name="input_clickhouse_endpoint_service_id"></a> [clickhouse\_endpoint\_service\_id](#input\_clickhouse\_endpoint\_service\_id) | The service ID of the VPC endpoint service for Clickhouse | `string` | `""` | no |
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
 | <a name="input_custom_domain_filter"></a> [custom\_domain\_filter](#input\_custom\_domain\_filter) | A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used. | `string` | `null` | no |
 | <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
-| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.05.2"` | no |
+| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.07.1"` | no |
 | <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
 | <a name="input_database_kms_key_arn"></a> [database\_kms\_key\_arn](#input\_database\_kms\_key\_arn) | n/a | `string` | `""` | no |
@@ -182,11 +182,14 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | EKS cluster kubernetes version | `string` | n/a | yes |
 | <a name="input_eks_policy_arns"></a> [eks\_policy\_arns](#input\_eks\_policy\_arns) | Additional IAM policy to apply to the EKS cluster | `list(string)` | `[]` | no |
 | <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy | `string` | `"cache.t2.medium"` | no |
+| <a name="input_enable_clickhouse"></a> [enable\_clickhouse](#input\_enable\_clickhouse) | Provision clickhouse resources | `bool` | `false` | no |
 | <a name="input_enable_dummy_dns"></a> [enable\_dummy\_dns](#input\_enable\_dummy\_dns) | Boolean indicating whether or not to enable dummy DNS for the old alb | `bool` | `false` | no |
 | <a name="input_enable_operator_alb"></a> [enable\_operator\_alb](#input\_enable\_operator\_alb) | Boolean indicating whether to use operatore ALB (true) or not (false). | `bool` | `false` | no |
 | <a name="input_enable_yace"></a> [enable\_yace](#input\_enable\_yace) | deploy yet another cloudwatch exporter to fetch aws resources metrics | `bool` | `true` | no |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | Using external DNS. A `subdomain` must also be specified if this value is true. | `bool` | `false` | no |
 | <a name="input_extra_fqdn"></a> [extra\_fqdn](#input\_extra\_fqdn) | Additional fqdn's must be in the same hosted zone as `domain_name`. | `list(string)` | `[]` | no |
+| <a name="input_kms_clickhouse_key_alias"></a> [kms\_clickhouse\_key\_alias](#input\_kms\_clickhouse\_key\_alias) | KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK. | `string` | `null` | no |
+| <a name="input_kms_clickhouse_key_policy"></a> [kms\_clickhouse\_key\_policy](#input\_kms\_clickhouse\_key\_policy) | The policy that will define the permissions for the clickhouse kms key. | `string` | `""` | no |
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `null` | no |
 | <a name="input_kms_key_deletion_window"></a> [kms\_key\_deletion\_window](#input\_kms\_key\_deletion\_window) | Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days. | `number` | `7` | no |
 | <a name="input_kms_key_policy"></a> [kms\_key\_policy](#input\_kms\_key\_policy) | The policy that will define the permissions for the kms key. | `string` | `""` | no |
@@ -245,6 +248,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_eks_node_instance_type"></a> [eks\_node\_instance\_type](#output\_eks\_node\_instance\_type) | n/a |
 | <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
 | <a name="output_internal_app_port"></a> [internal\_app\_port](#output\_internal\_app\_port) | n/a |
+| <a name="output_kms_clickhouse_key_arn"></a> [kms\_clickhouse\_key\_arn](#output\_kms\_clickhouse\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt Weave data at rest in Clickhouse. |
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The identity of the VPC in which resources are deployed. |
 | <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
@@ -252,7 +256,6 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_redis_instance_type"></a> [redis\_instance\_type](#output\_redis\_instance\_type) | n/a |
 | <a name="output_standardized_size"></a> [standardized\_size](#output\_standardized\_size) | n/a |
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
-
 <!-- END_TF_DOCS -->
 
 ## Migrations
