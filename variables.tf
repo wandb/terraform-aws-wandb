@@ -370,6 +370,18 @@ variable "kubernetes_node_count" {
   default     = 2
 }
 
+variable "min_node_count" {
+  description = "Number of nodes"
+  type        = number
+  default     = 1
+}
+
+variable "max_node_count" {
+  description = "Number of nodes"
+  type        = number
+  default     = 6
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"

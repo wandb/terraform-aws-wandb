@@ -122,6 +122,18 @@ variable "desired_capacity" {
   default     = 2
 }
 
+variable "min_capacity" {
+  description = "Minimum number of worker nodes."
+  type        = number
+  default     = 1
+}
+
+variable "max_capacity" {
+  description = "Maximum number of worker nodes."
+  type        = number
+  default     = 6
+}
+
 variable "system_reserved_cpu_millicores" {
   description = "(Optional) The amount of 'system-reserved' CPU millicores to pass to the kubelet. For example: 100.  A value of -1 disables the flag."
   type        = number

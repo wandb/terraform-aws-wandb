@@ -136,6 +136,8 @@ module "app_eks" {
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
+  min_capacity     = try(local.deployment_size[var.size].min_node_count, var.min_node_count)
+  max_capacity     = try(local.deployment_size[var.size].max_node_count, var.max_node_count)
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
@@ -383,7 +385,6 @@ module "wandb" {
           }
         }
       }
-
       mysql = { install = false }
       redis = { install = false }
 
