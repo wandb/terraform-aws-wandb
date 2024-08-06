@@ -62,3 +62,9 @@ variable "amazon_side_asn" {
   type        = string
   default     = "64512"
 }
+
+variable "clickhouse_endpoint_service_id" {
+  description = "The ID of the Clickhouse service endpoint"
+  type        = string
+  default     = ""
+}
