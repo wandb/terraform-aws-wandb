@@ -1,28 +1,33 @@
 module "kms" {
   source = "./modules/kms"
 
-  key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
 
+  key_alias  = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_policy = var.kms_key_policy
+
+  create_clickhouse_key = var.enable_clickhouse
+  clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
+  clickhouse_key_policy = var.kms_clickhouse_key_policy
 }
 
 locals {
-  kms_key_arn         = module.kms.key.arn
-  use_external_bucket = var.bucket_name != ""
-  use_internal_queue  = local.use_external_bucket || var.use_internal_queue
+  default_kms_key                           = module.kms.key.arn
+  clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
+  database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
+  database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
+  use_external_bucket                       = var.bucket_name != ""
+  s3_kms_key_arn                            = local.use_external_bucket || var.bucket_kms_key_arn != "" ? var.bucket_kms_key_arn : local.default_kms_key
+  use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
 module "file_storage" {
-  count     = var.create_bucket ? 1 : 0
-  source    = "./modules/file_storage"
-  namespace = var.namespace
-
-  create_queue = !local.use_internal_queue
-
-  sse_algorithm = "aws:kms"
-  kms_key_arn   = local.kms_key_arn
-
+  count               = var.create_bucket ? 1 : 0
+  source              = "./modules/file_storage"
+  namespace           = var.namespace
+  create_queue        = !local.use_internal_queue
+  sse_algorithm       = "aws:kms"
+  kms_key_arn         = local.s3_kms_key_arn
   deletion_protection = var.deletion_protection
 }
 
@@ -36,12 +41,13 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                      = var.network_cidr
-  private_subnet_cidrs      = var.network_private_subnet_cidrs
-  public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
-  create_elasticache_subnet = var.create_elasticache
-  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
+  cidr                           = var.network_cidr
+  private_subnet_cidrs           = var.network_private_subnet_cidrs
+  public_subnet_cidrs            = var.network_public_subnet_cidrs
+  database_subnet_cidrs          = var.network_database_subnet_cidrs
+  create_elasticache_subnet      = var.create_elasticache
+  elasticache_subnet_cidrs       = var.network_elasticache_subnet_cidrs
+  clickhouse_endpoint_service_id = var.clickhouse_endpoint_service_id
 }
 
 locals {
@@ -57,12 +63,21 @@ locals {
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
 }
 
+module "s3_endpoint" {
+  count                  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
+  source                 = "./modules/endpoint"
+  service_name           = "com.amazonaws.${data.aws_region.current.name}.s3"
+  network_id             = local.network_id
+  private_route_table_id = module.networking.private_route_table_ids
+  depends_on             = [module.networking]
+}
+
 module "database" {
   source = "./modules/database"
 
   namespace                        = var.namespace
-  kms_key_arn                      = local.kms_key_arn
-  performance_insights_kms_key_arn = var.database_performance_insights_kms_key_arn
+  kms_key_arn                      = local.database_kms_key_arn
+  performance_insights_kms_key_arn = local.database_performance_insights_kms_key_arn
 
   database_name   = var.database_name
   master_username = var.database_master_username
@@ -88,7 +103,7 @@ locals {
   fqdn = var.subdomain == null ? var.domain_name : "${var.subdomain}.${var.domain_name}"
 }
 
-# Create SSL Ceritifcation if applicable
+#Create SSL Ceritifcation if applicable
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
@@ -117,7 +132,7 @@ module "app_eks" {
   fqdn = local.domain_filter
 
   namespace   = var.namespace
-  kms_key_arn = local.kms_key_arn
+  kms_key_arn = local.default_kms_key
 
   instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
   desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
@@ -125,7 +140,11 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+  bucket_kms_key_arns = compact([
+    local.default_kms_key,
+    var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
+  ])
+
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -152,6 +171,11 @@ module "app_eks" {
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 }
 
+locals {
+  full_fqdn  = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
+  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old.${fqdn}"] : var.extra_fqdn
+}
+
 module "app_lb" {
   source = "./modules/app_lb"
 
@@ -160,29 +184,33 @@ module "app_lb" {
   acm_certificate_arn   = local.acm_certificate_arn
   zone_id               = var.zone_id
 
-  fqdn                      = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
-  extra_fqdn                = var.extra_fqdn
-  allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
-  target_port               = local.internal_app_port
+  fqdn                        = local.full_fqdn
+  extra_fqdn                  = local.extra_fqdn
+  allowed_inbound_cidr        = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
+  target_port                 = local.internal_app_port
+  network_id                  = local.network_id
+  network_private_subnets     = local.network_private_subnets
+  network_public_subnets      = local.network_public_subnets
+  enable_private_only_traffic = var.private_only_traffic
+  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
 
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
 }
 
 module "private_link" {
   count  = length(var.private_link_allowed_account_ids) > 0 ? 1 : 0
   source = "./modules/private_link"
 
-  namespace               = var.namespace
-  allowed_account_ids     = var.private_link_allowed_account_ids
-  deletion_protection     = var.deletion_protection
-  network_private_subnets = local.network_private_subnets
-  alb_name                = local.lb_name_truncated
-  vpc_id                  = local.network_id
-
+  namespace                   = var.namespace
+  allowed_account_ids         = var.private_link_allowed_account_ids
+  deletion_protection         = var.deletion_protection
+  network_private_subnets     = local.network_private_subnets
+  alb_name                    = local.lb_name_truncated
+  vpc_id                      = local.network_id
+  enable_private_only_traffic = var.private_only_traffic
+  nlb_security_group          = module.app_lb.nlb_security_group
   depends_on = [
+    module.app_lb,
     module.wandb
   ]
 }
@@ -211,12 +239,20 @@ module "redis" {
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
   node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
-  kms_key_arn             = local.kms_key_arn
+  kms_key_arn             = local.database_kms_key_arn
 }
 
 locals {
   max_lb_name_length = 32 - length("-alb-k8s")
   lb_name_truncated  = "${substr(var.namespace, 0, local.max_lb_name_length)}-alb-k8s"
+}
+
+module "iam_role" {
+  count                               = var.enable_yace ? 1 : 0
+  source                              = "./modules/iam_role"
+  yace_sa_name                        = var.yace_sa_name
+  namespace                           = var.namespace
+  aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
 module "wandb" {
@@ -228,22 +264,22 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
-  operator_chart_version = "1.1.2"
-  controller_image_tag   = "1.10.1"
+  controller_image_tag   = "1.12.0"
+  operator_chart_version = "1.2.4"
 
   spec = {
     values = {
       global = {
-        host    = local.url
-        license = var.license
-
-        extraEnv = var.other_wandb_env
+        host          = local.url
+        license       = var.license
+        cloudProvider = "aws"
+        extraEnv      = var.other_wandb_env
 
         bucket = {
           provider = "s3"
           name     = local.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+          kmsKey   = local.s3_kms_key_arn
         }
 
         mysql = {
@@ -270,12 +306,18 @@ module "wandb" {
           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
             ${join("\\,", var.allowed_inbound_cidr)}
           EOF
-          "external-dns.alpha.kubernetes.io/hostname"                = var.enable_operator_alb ? local.fqdn : ""
           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
           "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
           "alb.ingress.kubernetes.io/target-type"                    = "ip"
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
+          },
+          length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
+            "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
+              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
+            EOF
+            } : {
+            "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
           },
           length(var.kubernetes_alb_subnets) > 0 ? {
             "alb.ingress.kubernetes.io/subnets" = <<-EOF
@@ -289,6 +331,57 @@ module "wandb" {
         extraEnv = merge({
           "GORILLA_GLUE_LIST" = "true"
         }, var.app_wandb_env)
+      }
+
+      # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
+      yace = var.enable_yace ? {
+        install        = true
+        regions        = [data.aws_region.current.name]
+        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        searchTags = {
+          "Namespace" = var.namespace
+        }
+        } : {
+        install        = false
+        regions        = []
+        serviceAccount = {}
+        searchTags     = {}
+      }
+
+      otel = {
+        daemonset = var.enable_yace ? {
+          config = {
+            receivers = {
+              prometheus = {
+                config = {
+                  scrape_configs = [
+                    { job_name     = "yace"
+                      scheme       = "http"
+                      metrics_path = "/metrics"
+                      dns_sd_configs = [
+                        { names = ["wandb-yace"]
+                          type  = "A"
+                          port  = 5000
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+            service = {
+              pipelines = {
+                metrics = {
+                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
+                }
+              }
+            }
+          }
+          } : { config = {
+            receivers = {}
+            service   = {}
+          }
+        }
       }
 
       mysql = { install = false }

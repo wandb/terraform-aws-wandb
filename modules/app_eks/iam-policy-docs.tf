@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "node_kms" {
       "kms:DescribeKey"
     ]
     effect    = "Allow"
-    resources = var.bucket_kms_key_arn == "" || var.bucket_kms_key_arn == null ? ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.node.name}"] : [var.bucket_kms_key_arn]
+    resources = var.bucket_kms_key_arns
   }
 }
 

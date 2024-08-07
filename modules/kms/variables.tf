@@ -19,3 +19,21 @@ variable "key_policy" {
   type        = string
   default     = ""
 }
+
+variable "create_clickhouse_key" {
+  description = "Whether to create a KMS key for Clickhouse CMEK."
+  type        = bool
+  default     = false
+}
+
+variable "clickhouse_key_alias" {
+  description = "The key alias for AWS KMS Customer managed key."
+  type        = string
+  default     = "wandb-kms-clickhouse-key"
+}
+
+variable "clickhouse_key_policy" {
+  description = "The policy that will define the permissions for the kms clickhouse key."
+  type        = string
+  default     = ""
+}
