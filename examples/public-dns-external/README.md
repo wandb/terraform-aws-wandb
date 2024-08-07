@@ -31,6 +31,7 @@ namespace   = "wandb"
 subdomain   = "test"
 domain_name = "wandb.io"
 license     = "<license key>"
+zone_id     = "<route 53 zone ID>"
 ```
 
 This will deploy an instance at `test.wandb.io`.
