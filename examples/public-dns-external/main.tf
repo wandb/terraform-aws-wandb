@@ -39,6 +39,7 @@ module "wandb_infra" {
   license = var.wandb_license
 
   bucket_name        = var.bucket_name
+  bucket_path        = var.bucket_path
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
   size               = var.size
