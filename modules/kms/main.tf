@@ -22,14 +22,7 @@ resource "aws_kms_key" "key" {
           "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         },
         "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*",
-          "kms:Get*",
-          "kms:List*",
-          "kms:RevokeGrant"
+          "kms:*",
         ],
         "Resource" : "*"
       },
