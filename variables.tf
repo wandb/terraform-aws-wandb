@@ -18,10 +18,9 @@ variable "use_internal_queue" {
 }
 
 variable "size" {
-  default     = null
-  description = "Deployment size"
-  nullable    = true
+  description = "Deployment size for the instance"
   type        = string
+  default     = "small"
 }
 
 ##########################################
@@ -34,9 +33,9 @@ variable "database_engine_version" {
 }
 
 variable "database_instance_class" {
-  description = "Instance type to use by database master instance."
+  description = "Instance type to use by database master instance. Defaults to null and value from deployment-size.tf is used"
   type        = string
-  default     = "db.r5.large"
+  default     = null
 }
 
 variable "database_snapshot_identifier" {
@@ -359,15 +358,21 @@ variable "kubernetes_map_users" {
 }
 
 variable "kubernetes_instance_types" {
-  description = "EC2 Instance type for primary node group."
+  description = "EC2 Instance type for primary node group. Defaults to null and value from deployment-size.tf is used"
   type        = list(string)
-  default     = ["m5.large"]
+  default     = null
 }
 
 variable "kubernetes_node_count" {
-  description = "Number of nodes"
+  description = "Minimum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used"
   type        = number
-  default     = 2
+  default     = null
+}
+
+variable "kubernetes_max_node_count" {
+  description = "Maximum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used"
+  type        = number
+  default     = null
 }
 
 variable "eks_policy_arns" {
@@ -439,9 +444,9 @@ variable "create_elasticache" {
 }
 
 variable "elasticache_node_type" {
-  description = "The type of the redis cache node to deploy"
+  description = "The type of the redis cache node to deploy. Defaults to null and value from deployment-size.tf is used"
   type        = string
-  default     = "cache.t2.medium"
+  default     = null
 }
 
 ##########################################

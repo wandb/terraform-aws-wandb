@@ -46,7 +46,7 @@ module "eks" {
   node_groups = {
     primary = {
       create_launch_template               = local.create_launch_template,
-      desired_capacity                     = var.desired_capacity,
+      desired_capacity                     = var.min_nodes,
       disk_encrypted                       = local.encrypt_ebs_volume,
       disk_kms_key_id                      = var.kms_key_arn,
       disk_type                            = "gp3"
@@ -55,10 +55,10 @@ module "eks" {
       iam_role_arn                         = aws_iam_role.node.arn,
       instance_types                       = var.instance_types,
       kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-      max_capacity                         = 5,
+      max_capacity                         = var.max_nodes,
       metadata_http_put_response_hop_limit = 2
       metadata_http_tokens                 = "required",
-      min_capacity                         = var.desired_capacity,
+      min_capacity                         = var.min_nodes,
       version                              = var.cluster_version,
     }
   }
