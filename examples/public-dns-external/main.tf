@@ -117,6 +117,10 @@ output "bucket_name" {
   value = module.wandb_infra.bucket_name
 }
 
+output "bucket_path" {
+  value = module.wandb_infra.bucket_path
+}
+
 output "bucket_queue_name" {
   value = module.wandb_infra.bucket_queue_name
 }
