@@ -236,6 +236,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | n/a |
 | <a name="output_bucket_queue_name"></a> [bucket\_queue\_name](#output\_bucket\_queue\_name) | n/a |
 | <a name="output_bucket_region"></a> [bucket\_region](#output\_bucket\_region) | n/a |
+| <a name="output_bucket_path"></a> [bucket\_path](#output\_bucket\_path) | n/a |
 | <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | n/a |
 | <a name="output_cluster_node_role"></a> [cluster\_node\_role](#output\_cluster\_node\_role) | n/a |
 | <a name="output_database_connection_string"></a> [database\_connection\_string](#output\_database\_connection\_string) | n/a |
