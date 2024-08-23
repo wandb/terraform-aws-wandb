@@ -407,7 +407,7 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 ##########################################
-# External Bucket                        #
+# Existing S3 Bucket                     #
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
@@ -427,6 +427,19 @@ variable "bucket_kms_key_arn" {
     condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
     error_message = "Invalid value for bucket kms ARN"
   }
+}
+
+
+##########################################
+# Existing External Bucket               #
+##########################################
+# Most users will not need these settings. They are ment for users who want a
+# bucket from on-prem storage or a different cloud provider.
+
+variable "external_bucket" {
+  description = "config an external bucket"
+  type        = map(string)
+  default     = null
 }
 
 ##########################################

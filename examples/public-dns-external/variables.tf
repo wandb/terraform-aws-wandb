@@ -77,6 +77,12 @@ variable "bucket_kms_key_arn" {
   default     = ""
 }
 
+variable "external_bucket" {
+  description = "config an external bucket"
+  type        = map(string)
+  default     = null
+}
+
 variable "bucket_path" {
   description = "path of where to store data for the instance-level bucket"
   type        = string

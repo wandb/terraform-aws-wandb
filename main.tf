@@ -32,8 +32,18 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name // TODO var.external_bucket.name
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
+
+  s3_bucket_config = {
+    provider = "s3"
+    name     = local.bucket_name
+    path     = var.bucket_path
+    region   = data.aws_s3_bucket.file_storage.region
+    kmsKey   = local.s3_kms_key_arn
+  }
+
+  bucket_config = var.external_bucket != null ? var.external_bucket : local.s3_bucket_config
 }
 
 module "networking" {
@@ -275,13 +285,7 @@ module "wandb" {
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 
-        bucket = {
-          provider = "s3"
-          name     = local.bucket_name
-          path     = var.bucket_path
-          region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.s3_kms_key_arn
-        }
+        bucket = local.bucket_config
 
         mysql = {
           host     = module.database.endpoint
