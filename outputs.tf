@@ -1,14 +1,14 @@
 output "bucket_name" {
   value = local.bucket_name
 }
+output "bucket_path" {
+  value = var.bucket_path
+}
 output "bucket_queue_name" {
   value = local.bucket_queue_name
 }
 output "bucket_region" {
   value = data.aws_s3_bucket.file_storage.region
-}
-output "bucket_path" {
-  value = var.bucket_path
 }
 
 output "cluster_id" {
