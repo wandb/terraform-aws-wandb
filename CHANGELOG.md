@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.23.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.3...v4.23.0) (2024-08-23)
+
+
+### Features
+
+* Add optional path var for instance level bucket path ([#251](https://github.com/wandb/terraform-aws-wandb/issues/251)) ([9ccc357](https://github.com/wandb/terraform-aws-wandb/commit/9ccc357c5f991683394efdaa7310d78975ee69b7))
+
 ### [4.22.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.2...v4.22.3) (2024-08-01)
 
 
