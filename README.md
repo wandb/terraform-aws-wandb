@@ -163,6 +163,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_aws_loadbalancer_controller_tags"></a> [aws\_loadbalancer\_controller\_tags](#input\_aws\_loadbalancer\_controller\_tags) | (Optional) A map of AWS tags to apply to all resources managed by the load balancer controller | `map(string)` | `{}` | no |
 | <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
+| <a name="input_bucket_path"></a> [bucket\_path](#input\_bucket\_path) | path of where to store data for the instance-level bucket | `string` | `""` | no |
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
@@ -233,6 +234,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | Name | Description |
 |------|-------------|
 | <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | n/a |
+| <a name="output_bucket_path"></a> [bucket\_path](#output\_bucket\_path) | n/a |
 | <a name="output_bucket_queue_name"></a> [bucket\_queue\_name](#output\_bucket\_queue\_name) | n/a |
 | <a name="output_bucket_region"></a> [bucket\_region](#output\_bucket\_region) | n/a |
 | <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | n/a |

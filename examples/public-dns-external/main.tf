@@ -39,6 +39,7 @@ module "wandb_infra" {
   license = var.wandb_license
 
   bucket_name        = var.bucket_name
+  bucket_path        = var.bucket_path
   bucket_kms_key_arn = var.bucket_kms_key_arn
   use_internal_queue = true
   size               = var.size
@@ -91,6 +92,7 @@ module "wandb_app" {
 
   host                       = module.wandb_infra.url
   bucket                     = "s3://${module.wandb_infra.bucket_name}"
+  bucket_path                = var.bucket_path
   bucket_aws_region          = module.wandb_infra.bucket_region
   bucket_queue               = "internal://"
   bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
@@ -113,6 +115,10 @@ module "wandb_app" {
 
 output "bucket_name" {
   value = module.wandb_infra.bucket_name
+}
+
+output "bucket_path" {
+  value = module.wandb_infra.bucket_path
 }
 
 output "bucket_queue_name" {
