@@ -137,3 +137,12 @@ module "external_dns" {
 
   depends_on = [module.eks]
 }
+
+module "cluster-autoscaler" {
+  source = "./cluster-autoscaler"
+
+  namespace     = var.namespace
+  oidc_provider = aws_iam_openid_connect_provider.eks
+
+  depends_on = [module.eks]
+}
