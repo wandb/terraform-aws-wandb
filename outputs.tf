@@ -7,6 +7,10 @@ output "bucket_queue_name" {
 output "bucket_region" {
   value = data.aws_s3_bucket.file_storage.region
 }
+output "bucket_path" {
+  value = var.bucket_path
+}
+
 output "cluster_id" {
   value = module.app_eks.cluster_id
 }
