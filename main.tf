@@ -22,7 +22,7 @@ locals {
   elasticache_node_type = coalesce(var.elasticache_node_type, local.deployment_size[var.size].cache)
   database_instance_class = coalesce(var.database_instance_class, local.deployment_size[var.size].db)
   kubernetes_instance_types   = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
-  kubernetes_min_node_count = coalesce(var.kubernetes_node_count, local.deployment_size[var.size].min_node_count)
+  kubernetes_min_node_count = coalesce(var.kubernetes_min_node_count, local.deployment_size[var.size].min_node_count)
   kubernetes_max_node_count = coalesce(var.kubernetes_max_node_count, local.deployment_size[var.size].max_node_count)
 }
 

@@ -363,7 +363,7 @@ variable "kubernetes_instance_types" {
   default     = null
 }
 
-variable "kubernetes_node_count" {
+variable "kubernetes_min_node_count" {
   description = "Minimum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used"
   type        = number
   default     = null
