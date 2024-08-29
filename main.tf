@@ -349,42 +349,6 @@ module "wandb" {
         searchTags     = {}
       }
 
-      otel = {
-        daemonset = var.enable_yace ? {
-          config = {
-            receivers = {
-              prometheus = {
-                config = {
-                  scrape_configs = [
-                    { job_name     = "yace"
-                      scheme       = "http"
-                      metrics_path = "/metrics"
-                      dns_sd_configs = [
-                        { names = ["wandb-yace"]
-                          type  = "A"
-                          port  = 5000
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-            service = {
-              pipelines = {
-                metrics = {
-                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
-                }
-              }
-            }
-          }
-          } : { config = {
-            receivers = {}
-            service   = {}
-          }
-        }
-      }
-
       mysql = { install = false }
       redis = { install = false }
 
