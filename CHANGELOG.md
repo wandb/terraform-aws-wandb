@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.23.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.0...v4.23.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* Cleanup unneeded otel configs ([#259](https://github.com/wandb/terraform-aws-wandb/issues/259)) ([67f6fbe](https://github.com/wandb/terraform-aws-wandb/commit/67f6fbeb310da3e33d726d625bda8ad6b7baf8b1))
+
 ## [4.23.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.3...v4.23.0) (2024-08-23)
 
 
