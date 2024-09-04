@@ -29,8 +29,8 @@ variable "vpc_id" {
 }
 
 variable "enable_private_only_traffic" {
-  type        = bool
+  type = bool
 }
 variable "nlb_security_group" {
-  type        = string
+  type = string
 }
