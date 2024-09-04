@@ -1,0 +1,36 @@
+name: Terraform Lint and Format Check
+
+on: 
+  push: 
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform_checks:
+    name: Run Terraform Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "~1"
+
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Initialize TFLint
+        run: tflint --init
+
+      - name: Run tflint
+        run: tflint
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive

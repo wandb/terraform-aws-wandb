@@ -77,18 +77,6 @@ variable "database_master_username" {
   default     = "wandb"
 }
 
-variable "database_binlog_format" {
-  description = "Specifies the binlog_format value to set for the database"
-  type        = string
-  default     = "ROW"
-}
-
-variable "database_innodb_lru_scan_depth" {
-  description = "Specifies the innodb_lru_scan_depth value to set for the database"
-  type        = number
-  default     = 128
-}
-
 variable "database_performance_insights_kms_key_arn" {
   default     = ""
   description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
@@ -154,12 +142,6 @@ variable "extra_fqdn" {
 ##########################################
 # Load Balancer                          #
 ##########################################
-variable "ssl_policy" {
-  type        = string
-  default     = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
-  description = "SSL policy to use on ALB listener"
-}
-
 variable "acm_certificate_arn" {
   type        = string
   default     = null
