@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+locals {
+  policy_administrator_arn = var.policy_administrator_arn != "" ? var.policy_administrator_arn : data.aws_caller_identity.current.arn
+}
+
 resource "aws_kms_key" "key" {
   deletion_window_in_days = var.key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
@@ -11,7 +15,7 @@ resource "aws_kms_key" "key" {
       {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Principal" : { "AWS" : "${local.policy_administrator_arn}" },
         "Action" : "kms:*",
         "Resource" : "*"
       },

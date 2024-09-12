@@ -14,6 +14,12 @@ variable "iam_principal_arn" {
   default     = ""
 }
 
+variable "policy_administrator_arn" {
+  description = "The IAM principal (role or user) ARN that will be authorized to manage the key."
+  type        = string
+  default     = ""
+}
+
 variable "key_policy" {
   description = "The policy that will define the permissions for the kms key."
   type        = string
