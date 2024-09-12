@@ -199,6 +199,12 @@ variable "kms_key_policy" {
   default     = ""
 }
 
+variable "kms_key_policy_administrator_arn" {
+  type        = string
+  description = "The principal that will be allowed to manage the kms key."
+  default     = ""
+}
+
 variable "kms_clickhouse_key_alias" {
   type        = string
   description = "KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK."
