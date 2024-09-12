@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.23.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.2...v4.23.3) (2024-09-12)
+
+
+### Bug Fixes
+
+* Allow the admin arn to be set for the KMS key ([#277](https://github.com/wandb/terraform-aws-wandb/issues/277)) ([ce69cdd](https://github.com/wandb/terraform-aws-wandb/commit/ce69cdd1d5f3f9200dcf474670910406bcb9394d))
+
 ### [4.23.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.1...v4.23.2) (2024-09-12)
 
 
