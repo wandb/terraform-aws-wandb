@@ -272,8 +272,12 @@ module "wandb" {
   spec = {
     values = {
       global = {
-        host          = local.url
-        license       = var.license
+        host    = local.url
+        license = var.license
+        licenseSecret = {
+          name = var.license_secret_name, ## this will support wandb-operator chart version 0.17.9
+          key  = var.license_secret_key_name
+        }
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 

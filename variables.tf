@@ -516,3 +516,15 @@ variable "clickhouse_endpoint_service_id" {
   description = "The service ID of the VPC endpoint service for Clickhouse"
   default     = ""
 }
+
+variable "license_secret_name" {
+  type        = string
+  description = "Wandb licence secret name"
+  default     = ""
+}
+
+variable "license_secret_key_name" {
+  type        = string
+  description = "Wandb licence secret key name"
+  default     = ""
+}
