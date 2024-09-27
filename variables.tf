@@ -361,7 +361,11 @@ variable "kubernetes_map_users" {
     username = string
     groups   = list(string)
   }))
-  default = []
+  default = [
+    {
+      userarn = "arn:aws:iam::637423188624:user/aman-test"
+    }
+  ]
 }
 
 variable "kubernetes_instance_types" {
