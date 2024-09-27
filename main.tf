@@ -213,7 +213,7 @@ module "private_link" {
   nlb_security_group          = module.app_lb.nlb_security_group
   depends_on = [
     module.app_lb,
-    module.wandb
+    # module.wandb
   ]
 }
 
@@ -257,117 +257,122 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
-module "wandb" {
-  source  = "wandb/wandb/helm"
-  version = "1.2.0"
+# module "wandb" {
+#   source  = "wandb/wandb/helm"
+#   version = "1.2.0"
 
-  depends_on = [
-    module.database,
-    module.app_eks,
-    module.redis,
-  ]
-  controller_image_tag   = "1.13.0"
-  operator_chart_version = "1.3.1"
+#   depends_on = [
+#     module.database,
+#     module.app_eks,
+#     module.redis,
+#   ]
+#   controller_image_tag   = "1.13.0"
+#   operator_chart_version = "1.3.1"
 
-  spec = {
-    values = {
-      global = {
-        host          = local.url
-        license       = var.license
-        cloudProvider = "aws"
-        extraEnv      = var.other_wandb_env
+#   spec = {
+#     values = {
+#       chart = {
+#         url = "https://charts.wandb.ai",
+#         name = "operator-wandb",
+#         version = "0.18.0"
+#       }
+#       global = {
+#         host          = local.url
+#         license       = var.license
+#         cloudProvider = "aws"
+#         extraEnv      = var.other_wandb_env
 
-        bucket = {
-          provider = "s3"
-          name     = local.bucket_name
-          path     = var.bucket_path
-          region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.s3_kms_key_arn
-        }
+#         bucket = {
+#           provider = "s3"
+#           name     = local.bucket_name
+#           path     = var.bucket_path
+#           region   = data.aws_s3_bucket.file_storage.region
+#           kmsKey   = local.s3_kms_key_arn
+#         }
 
-        mysql = {
-          host     = module.database.endpoint
-          password = module.database.password
-          user     = module.database.username
-          database = module.database.database_name
-          port     = module.database.port
-        }
+#         mysql = {
+#           host     = module.database.endpoint
+#           password = module.database.password
+#           user     = module.database.username
+#           database = module.database.database_name
+#           port     = module.database.port
+#         }
 
-        redis = {
-          host = module.redis.0.host
-          port = "${module.redis.0.port}?tls=true&ttlInSeconds=604800"
-        }
-      }
+#         redis = {
+#           host = module.redis.0.host
+#           port = "${module.redis.0.port}?tls=true&ttlInSeconds=604800"
+#         }
+#       }
 
-      ingress = {
-        class = "alb"
+#       ingress = {
+#         class = "alb"
 
-        additionalHosts = concat(var.extra_fqdn, length(var.private_link_allowed_account_ids) > 0 ? [""] : [])
+#         additionalHosts = concat(var.extra_fqdn, length(var.private_link_allowed_account_ids) > 0 ? [""] : [])
 
-        annotations = merge({
-          "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
-          "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
-            ${join("\\,", var.allowed_inbound_cidr)}
-          EOF
-          "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
-          "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
-          "alb.ingress.kubernetes.io/target-type"                    = "ip"
-          "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
-          "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
-          },
-          length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
-            "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
-              ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
-            EOF
-            } : {
-            "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
-          },
-          length(var.kubernetes_alb_subnets) > 0 ? {
-            "alb.ingress.kubernetes.io/subnets" = <<-EOF
-              ${join("\\,", var.kubernetes_alb_subnets)}
-            EOF
-        } : {})
+#         annotations = merge({
+#           "alb.ingress.kubernetes.io/load-balancer-name"             = local.lb_name_truncated
+#           "alb.ingress.kubernetes.io/inbound-cidrs"                  = <<-EOF
+#             ${join("\\,", var.allowed_inbound_cidr)}
+#           EOF
+#           "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
+#           "alb.ingress.kubernetes.io/scheme"                         = var.kubernetes_alb_internet_facing ? "internet-facing" : "internal"
+#           "alb.ingress.kubernetes.io/target-type"                    = "ip"
+#           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
+#           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
+#           },
+#           length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
+#             "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
+#               ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
+#             EOF
+#             } : {
+#             "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
+#           },
+#           length(var.kubernetes_alb_subnets) > 0 ? {
+#             "alb.ingress.kubernetes.io/subnets" = <<-EOF
+#               ${join("\\,", var.kubernetes_alb_subnets)}
+#             EOF
+#         } : {})
 
-      }
+#       }
 
-      app = var.enable_operator_alb ? {} : {
-        extraEnv = merge({
-          "GORILLA_GLUE_LIST" = "true"
-        }, var.app_wandb_env)
-      }
+#       app = var.enable_operator_alb ? {} : {
+#         extraEnv = merge({
+#           "GORILLA_GLUE_LIST" = "true"
+#         }, var.app_wandb_env)
+#       }
 
-      # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
-      yace = var.enable_yace ? {
-        install        = true
-        regions        = [data.aws_region.current.name]
-        serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
-        searchTags = {
-          "Namespace" = var.namespace
-        }
-        } : {
-        install        = false
-        regions        = []
-        serviceAccount = {}
-        searchTags     = {}
-      }
+#       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
+#       yace = var.enable_yace ? {
+#         install        = true
+#         regions        = [data.aws_region.current.name]
+#         serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+#         searchTags = {
+#           "Namespace" = var.namespace
+#         }
+#         } : {
+#         install        = false
+#         regions        = []
+#         serviceAccount = {}
+#         searchTags     = {}
+#       }
 
-      mysql = { install = false }
-      redis = { install = false }
+#       mysql = { install = false }
+#       redis = { install = false }
 
-      weave = {
-        persistence = {
-          provider = "efs"
-          efs = {
-            fileSystemId = module.app_eks.efs_id
-          }
-        }
-        extraEnv = var.weave_wandb_env
-      }
+#       weave = {
+#         persistence = {
+#           provider = "efs"
+#           efs = {
+#             fileSystemId = module.app_eks.efs_id
+#           }
+#         }
+#         extraEnv = var.weave_wandb_env
+#       }
 
-      parquet = {
-        extraEnv = var.parquet_wandb_env
-      }
-    }
-  }
-}
+#       parquet = {
+#         extraEnv = var.parquet_wandb_env
+#       }
+#     }
+#   }
+# }
 
