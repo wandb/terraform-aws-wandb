@@ -20,14 +20,13 @@ module "eks" {
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
-
   vpc_id  = var.network_id
   subnets = var.network_private_subnets
 
   map_accounts = var.map_accounts
   map_roles    = var.map_roles
   map_users    = var.map_users
-
+  manage_aws_auth = false
   cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
