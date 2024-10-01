@@ -25,6 +25,20 @@ variable "size" {
 }
 
 ##########################################
+# Operator                               #
+##########################################
+variable "operator_chart_version" {
+  type        = string
+  description = "Version of the operator chart to deploy"
+}
+
+variable "controller_image_tag" {
+  type        = string
+  description = "Tag of the controller image to deploy"
+}
+
+
+##########################################
 # Database                               #
 ##########################################
 variable "database_engine_version" {
