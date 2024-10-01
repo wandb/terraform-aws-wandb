@@ -1,19 +1,25 @@
 module "kms" {
   source = "./modules/kms"
 
-  key_alias           = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_deletion_window = var.kms_key_deletion_window
 
+  key_alias  = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_policy = var.kms_key_policy
+
+  policy_administrator_arn = var.kms_key_policy_administrator_arn
+
+  create_clickhouse_key = var.enable_clickhouse
+  clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
+  clickhouse_key_policy = var.kms_clickhouse_key_policy
 }
 
 locals {
-
   default_kms_key                           = module.kms.key.arn
-  s3_kms_key_arn                            = length(var.bucket_kms_key_arn) > 0 ? var.bucket_kms_key_arn : local.default_kms_key
+  clickhouse_kms_key                        = var.enable_clickhouse ? module.kms.clickhouse_key.arn : null
   database_kms_key_arn                      = length(var.database_kms_key_arn) > 0 ? var.database_kms_key_arn : local.default_kms_key
   database_performance_insights_kms_key_arn = length(var.database_performance_insights_kms_key_arn) > 0 ? var.database_performance_insights_kms_key_arn : local.default_kms_key
   use_external_bucket                       = var.bucket_name != ""
+  s3_kms_key_arn                            = local.use_external_bucket || var.bucket_kms_key_arn != "" ? var.bucket_kms_key_arn : local.default_kms_key
   use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
 }
 
@@ -37,12 +43,13 @@ module "networking" {
   namespace  = var.namespace
   create_vpc = var.create_vpc
 
-  cidr                      = var.network_cidr
-  private_subnet_cidrs      = var.network_private_subnet_cidrs
-  public_subnet_cidrs       = var.network_public_subnet_cidrs
-  database_subnet_cidrs     = var.network_database_subnet_cidrs
-  create_elasticache_subnet = var.create_elasticache
-  elasticache_subnet_cidrs  = var.network_elasticache_subnet_cidrs
+  cidr                           = var.network_cidr
+  private_subnet_cidrs           = var.network_private_subnet_cidrs
+  public_subnet_cidrs            = var.network_public_subnet_cidrs
+  database_subnet_cidrs          = var.network_database_subnet_cidrs
+  create_elasticache_subnet      = var.create_elasticache
+  elasticache_subnet_cidrs       = var.network_elasticache_subnet_cidrs
+  clickhouse_endpoint_service_id = var.clickhouse_endpoint_service_id
 }
 
 locals {
@@ -135,7 +142,11 @@ module "app_eks" {
   map_roles        = var.kubernetes_map_roles
   map_users        = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.s3_kms_key_arn
+  bucket_kms_key_arns = compact([
+    local.default_kms_key,
+    var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
+  ])
+
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -255,6 +266,7 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
+
   operator_chart_version = var.operator_chart_version
   controller_image_tag   = var.controller_image_tag
 
@@ -269,6 +281,7 @@ module "wandb" {
         bucket = {
           provider = "s3"
           name     = local.bucket_name
+          path     = var.bucket_path
           region   = data.aws_s3_bucket.file_storage.region
           kmsKey   = local.s3_kms_key_arn
         }
@@ -329,46 +342,14 @@ module "wandb" {
         install        = true
         regions        = [data.aws_region.current.name]
         serviceAccount = { annotations = { "eks.amazonaws.com/role-arn" = module.iam_role[0].role_arn } }
+        searchTags = {
+          "Namespace" = var.namespace
+        }
         } : {
         install        = false
         regions        = []
         serviceAccount = {}
-      }
-
-      otel = {
-        daemonset = var.enable_yace ? {
-          config = {
-            receivers = {
-              prometheus = {
-                config = {
-                  scrape_configs = [
-                    { job_name     = "yace"
-                      scheme       = "http"
-                      metrics_path = "/metrics"
-                      dns_sd_configs = [
-                        { names = ["wandb-yace"]
-                          type  = "A"
-                          port  = 5000
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-            service = {
-              pipelines = {
-                metrics = {
-                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
-                }
-              }
-            }
-          }
-          } : { config = {
-            receivers = {}
-            service   = {}
-          }
-        }
+        searchTags     = {}
       }
 
       mysql = { install = false }

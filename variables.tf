@@ -213,6 +213,24 @@ variable "kms_key_policy" {
   default     = ""
 }
 
+variable "kms_key_policy_administrator_arn" {
+  type        = string
+  description = "The principal that will be allowed to manage the kms key."
+  default     = ""
+}
+
+variable "kms_clickhouse_key_alias" {
+  type        = string
+  description = "KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK."
+  default     = null
+}
+
+variable "kms_clickhouse_key_policy" {
+  type        = string
+  description = "The policy that will define the permissions for the clickhouse kms key."
+  default     = ""
+}
+
 ##########################################
 # Network                                #
 ##########################################
@@ -432,6 +450,18 @@ variable "bucket_kms_key_arn" {
 }
 
 ##########################################
+# Bucket path                            #
+##########################################
+# This setting is meant for users who want to store all of their instance-level
+# bucket's data at a specific path within their bucket. It can be set both for
+# external buckets or the bucket created by this module.
+variable "bucket_path" {
+  description = "path of where to store data for the instance-level bucket"
+  type        = string
+  default     = ""
+}
+
+##########################################
 # Redis                                  #
 ##########################################
 variable "create_elasticache" {
@@ -487,4 +517,16 @@ variable "enable_yace" {
 variable "yace_sa_name" {
   type    = string
   default = "wandb-yace"
+}
+
+variable "enable_clickhouse" {
+  type        = bool
+  description = "Provision clickhouse resources"
+  default     = false
+}
+
+variable "clickhouse_endpoint_service_id" {
+  type        = string
+  description = "The service ID of the VPC endpoint service for Clickhouse"
+  default     = ""
 }

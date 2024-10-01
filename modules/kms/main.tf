@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+locals {
+  policy_administrator_arn = var.policy_administrator_arn != "" ? var.policy_administrator_arn : data.aws_caller_identity.current.arn
+}
+
 resource "aws_kms_key" "key" {
   deletion_window_in_days = var.key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
@@ -11,7 +15,7 @@ resource "aws_kms_key" "key" {
       {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Principal" : { "AWS" : "${local.policy_administrator_arn}" },
         "Action" : "kms:*",
         "Resource" : "*"
       },
@@ -77,6 +81,76 @@ resource "aws_kms_grant" "main" {
 
   grantee_principal = var.iam_principal_arn
   key_id            = aws_kms_key.key.key_id
+  operations = [
+    "Decrypt",
+    "DescribeKey",
+    "Encrypt",
+    "GenerateDataKey",
+    "GenerateDataKeyPair",
+    "GenerateDataKeyPairWithoutPlaintext",
+    "GenerateDataKeyPairWithoutPlaintext",
+    "ReEncryptFrom",
+    "ReEncryptTo",
+  ]
+}
+
+resource "aws_kms_key" "clickhouse_key" {
+  count = var.create_clickhouse_key ? 1 : 0
+
+  deletion_window_in_days = var.key_deletion_window
+  description             = "AWS KMS Customer-managed key to encrypt Weave resources in Clickhouse"
+  key_usage               = "ENCRYPT_DECRYPT"
+
+  policy = var.clickhouse_key_policy != "" ? var.clickhouse_key_policy : jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Allow administration of the key",
+        "Effect" : "Allow",
+        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Action" : "kms:*",
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "Allow ClickHouse Access",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::576599896960:role/prod-kms-request-role"
+        },
+        "Action" : [
+          "kms:GetPublicKey",
+          "kms:Decrypt",
+          "kms:GenerateDataKeyPair",
+          "kms:Encrypt",
+          "kms:GetKeyRotationStatus",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ],
+        "Resource" : "*"
+      },
+    ]
+  })
+
+  tags = {
+    Name = "wandb-kms-clickhouse-key"
+  }
+}
+
+
+
+resource "aws_kms_alias" "clickhouse_key" {
+  count = var.create_clickhouse_key ? 1 : 0
+
+  name          = "alias/${var.clickhouse_key_alias}"
+  target_key_id = aws_kms_key.clickhouse_key[0].key_id
+}
+
+
+resource "aws_kms_grant" "clickhouse" {
+  count = var.create_clickhouse_key && (var.iam_principal_arn != "") ? 1 : 0
+
+  grantee_principal = var.iam_principal_arn
+  key_id            = aws_kms_key.clickhouse_key[0].key_id
   operations = [
     "Decrypt",
     "DescribeKey",

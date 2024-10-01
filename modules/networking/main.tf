@@ -37,3 +37,13 @@ module "vpc" {
     "kubernetes.io/role/elb" = "1"
   }
 }
+
+resource "aws_vpc_endpoint" "clickhouse" {
+  count = var.create_vpc && var.clickhouse_endpoint_service_id != "" ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  service_name        = var.clickhouse_endpoint_service_id
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = module.vpc.private_subnets
+  private_dns_enabled = true
+}

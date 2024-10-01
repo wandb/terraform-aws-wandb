@@ -1,12 +1,16 @@
 output "bucket_name" {
   value = local.bucket_name
 }
+output "bucket_path" {
+  value = var.bucket_path
+}
 output "bucket_queue_name" {
   value = local.bucket_queue_name
 }
 output "bucket_region" {
   value = data.aws_s3_bucket.file_storage.region
 }
+
 output "cluster_id" {
   value = module.app_eks.cluster_id
 }
@@ -50,6 +54,12 @@ output "internal_app_port" {
 output "kms_key_arn" {
   value       = local.default_kms_key
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
+}
+
+output "kms_clickhouse_key_arn" {
+  value       = local.clickhouse_kms_key
+  description = "The Amazon Resource Name of the KMS key used to encrypt Weave data at rest in Clickhouse."
+
 }
 
 output "network_id" {
