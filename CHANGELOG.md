@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.23.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.3...v4.23.4) (2024-10-01)
+
+
+### Bug Fixes
+
+* Use variables for operator helm release ([#295](https://github.com/wandb/terraform-aws-wandb/issues/295)) ([6c58fdb](https://github.com/wandb/terraform-aws-wandb/commit/6c58fdb3bfcb1cdb0f4fce19a495985bb295f58b))
+
 ### [4.23.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.2...v4.23.3) (2024-09-12)
 
 
