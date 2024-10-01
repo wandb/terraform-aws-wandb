@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+### [4.23.4](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.3...v4.23.4) (2024-10-01)
+
+
+### Bug Fixes
+
+* Use variables for operator helm release ([#295](https://github.com/wandb/terraform-aws-wandb/issues/295)) ([6c58fdb](https://github.com/wandb/terraform-aws-wandb/commit/6c58fdb3bfcb1cdb0f4fce19a495985bb295f58b))
+
+### [4.23.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.2...v4.23.3) (2024-09-12)
+
+
+### Bug Fixes
+
+* Allow the admin arn to be set for the KMS key ([#277](https://github.com/wandb/terraform-aws-wandb/issues/277)) ([ce69cdd](https://github.com/wandb/terraform-aws-wandb/commit/ce69cdd1d5f3f9200dcf474670910406bcb9394d))
+
+### [4.23.2](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.1...v4.23.2) (2024-09-12)
+
+
+### Bug Fixes
+
+* Bump operator chart and controller image ([#276](https://github.com/wandb/terraform-aws-wandb/issues/276)) ([f010519](https://github.com/wandb/terraform-aws-wandb/commit/f010519cb1ade5c71e002a860f74c12d4d09d474))
+
+### [4.23.1](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.0...v4.23.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* Cleanup unneeded otel configs ([#259](https://github.com/wandb/terraform-aws-wandb/issues/259)) ([67f6fbe](https://github.com/wandb/terraform-aws-wandb/commit/67f6fbeb310da3e33d726d625bda8ad6b7baf8b1))
+
+## [4.23.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.3...v4.23.0) (2024-08-23)
+
+
+### Features
+
+* Add optional path var for instance level bucket path ([#251](https://github.com/wandb/terraform-aws-wandb/issues/251)) ([9ccc357](https://github.com/wandb/terraform-aws-wandb/commit/9ccc357c5f991683394efdaa7310d78975ee69b7))
+
 ### [4.22.3](https://github.com/wandb/terraform-aws-wandb/compare/v4.22.2...v4.22.3) (2024-08-01)
 
 

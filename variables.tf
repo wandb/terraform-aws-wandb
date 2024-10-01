@@ -24,6 +24,21 @@ variable "size" {
 }
 
 ##########################################
+# Operator                               #
+##########################################
+variable "operator_chart_version" {
+  type        = string
+  description = "Version of the operator chart to deploy"
+  default     = "1.3.4"
+}
+
+variable "controller_image_tag" {
+  type        = string
+  description = "Tag of the controller image to deploy"
+  default     = "1.14.0"
+}
+
+##########################################
 # Database                               #
 ##########################################
 variable "database_engine_version" {
@@ -195,6 +210,12 @@ variable "kms_key_deletion_window" {
 variable "kms_key_policy" {
   type        = string
   description = "The policy that will define the permissions for the kms key."
+  default     = ""
+}
+
+variable "kms_key_policy_administrator_arn" {
+  type        = string
+  description = "The principal that will be allowed to manage the kms key."
   default     = ""
 }
 
@@ -432,6 +453,18 @@ variable "bucket_kms_key_arn" {
     condition     = can(regex("^arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-_]+$", var.bucket_kms_key_arn)) || var.bucket_kms_key_arn == ""
     error_message = "Invalid value for bucket kms ARN"
   }
+}
+
+##########################################
+# Bucket path                            #
+##########################################
+# This setting is meant for users who want to store all of their instance-level
+# bucket's data at a specific path within their bucket. It can be set both for
+# external buckets or the bucket created by this module.
+variable "bucket_path" {
+  description = "path of where to store data for the instance-level bucket"
+  type        = string
+  default     = ""
 }
 
 ##########################################

@@ -6,6 +6,8 @@ module "kms" {
   key_alias  = var.kms_key_alias == null ? "${var.namespace}-kms-alias" : var.kms_key_alias
   key_policy = var.kms_key_policy
 
+  policy_administrator_arn = var.kms_key_policy_administrator_arn
+
   create_clickhouse_key = var.enable_clickhouse
   clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
   clickhouse_key_policy = var.kms_clickhouse_key_policy
@@ -271,8 +273,9 @@ module "wandb" {
     module.app_eks,
     module.redis,
   ]
-  controller_image_tag   = "1.12.0"
-  operator_chart_version = "1.2.4"
+
+  operator_chart_version = var.operator_chart_version
+  controller_image_tag   = var.controller_image_tag
 
   spec = {
     values = {
@@ -285,6 +288,7 @@ module "wandb" {
         bucket = {
           provider = "s3"
           name     = local.bucket_name
+          path     = var.bucket_path
           region   = data.aws_s3_bucket.file_storage.region
           kmsKey   = local.s3_kms_key_arn
         }
@@ -353,42 +357,6 @@ module "wandb" {
         regions        = []
         serviceAccount = {}
         searchTags     = {}
-      }
-
-      otel = {
-        daemonset = var.enable_yace ? {
-          config = {
-            receivers = {
-              prometheus = {
-                config = {
-                  scrape_configs = [
-                    { job_name     = "yace"
-                      scheme       = "http"
-                      metrics_path = "/metrics"
-                      dns_sd_configs = [
-                        { names = ["wandb-yace"]
-                          type  = "A"
-                          port  = 5000
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-            service = {
-              pipelines = {
-                metrics = {
-                  receivers = ["hostmetrics", "k8s_cluster", "kubeletstats", "prometheus"]
-                }
-              }
-            }
-          }
-          } : { config = {
-            receivers = {}
-            service   = {}
-          }
-        }
       }
 
       mysql = { install = false }
