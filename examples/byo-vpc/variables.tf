@@ -103,18 +103,6 @@ variable "other_wandb_env" {
   default     = {}
 }
 
-variable "enable_operator_alb" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
-}
-
-variable "enable_dummy_dns" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
-}
-
 variable "vpc_id" {
   type        = string
   description = "VPC network ID"

@@ -23,7 +23,6 @@ resource "aws_iam_role" "irsa" {
   })
 }
 
-
 resource "aws_iam_policy" "irsa" {
   name        = "${var.namespace}-yace-irsa-policy"
   description = "IRSA IAM Policy"
