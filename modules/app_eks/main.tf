@@ -75,6 +75,7 @@ resource "kubernetes_annotations" "gp2" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
   force       = "true"
+  depends_on = [module.eks]
 
   metadata {
     name = "gp2"
@@ -91,6 +92,7 @@ resource "kubernetes_storage_class" "gp3" {
       "storageclass.kubernetes.io/is-default-class" = "true"
     }
   }
+  depends_on = [kubernetes_annotations.gp2]
   storage_provisioner = "kubernetes.io/aws-ebs"
   parameters = {
     fsType = "ext4"
