@@ -71,6 +71,36 @@ module "eks" {
   }
 }
 
+resource "kubernetes_annotations" "gp2" {
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
+  force       = "true"
+
+  metadata {
+    name = "gp2"
+  }
+  annotations = {
+    "storageclass.kubernetes.io/is-default-class" = "false"
+  }
+}
+
+resource "kubernetes_storage_class" "gp3" {
+  metadata {
+    name = "gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner = "kubernetes.io/aws-ebs"
+  parameters = {
+    fsType = "ext4"
+    type = "gp3"
+  }
+  reclaim_policy = "Delete"
+  volume_binding_mode = "WaitForFirstConsumer"
+  allow_volume_expansion = true
+}
+
 resource "aws_security_group" "primary_workers" {
   name        = "${var.namespace}-primary-workers"
   description = "EKS primary workers security group."
