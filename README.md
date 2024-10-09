@@ -281,13 +281,6 @@ See our upgrade guide [here](./docs/operator-migration/readme.md)
 
 ### Upgrading from 4.x -> 5.x
 
-#### AWS and EKS provider upgrade
-
-```shell
-terraform state mv 'module.wandb_infra.module.app_eks.module.eks.aws_iam_role.cluster[0]' 'module.wandb_infra.module.app_eks.module.eks.aws_iam_role.this[0]'
-terraform state mv 'module.wandb_infra.module.app_eks.aws_iam_openid_connect_provider.eks' 'module.wandb_infra.module.app_eks.aws_iam_openid_connect_provider.oidc_provider[0]'
-```
-
 5.0.0 introduced autoscaling to the EKS cluster and made the `size` variable the preferred way to set the cluster size.
 Previously, unless the `size` variable was set explicitly, there were default values for the following variables:
 - `kubernetes_instance_types`
