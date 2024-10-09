@@ -97,8 +97,8 @@ Available sizes are, `small`, `medium`, `large`, `xlarge`, and `xxlarge`.  Defau
 All the values set via `deployment-size.tf` can be overridden by setting the appropriate input variables.
 
 - `kubernetes_instance_types` - The instance type for the EKS nodes
-- `kubernetes_min_node_count` - The minimum number of nodes in the EKS cluster
-- `kubernetes_max_node_count` - The maximum number of nodes in the EKS cluster
+- `kubernetes_min_nodes_per_az` - The minimum number of nodes in the EKS cluster
+- `kubernetes_max_nodes_per_az` - The maximum number of nodes in the EKS cluster
 - `elasticache_node_type` - The instance type for the redis cluster
 - `database_instance_class` - The instance type for the database
 
@@ -291,15 +291,15 @@ Previously, unless the `size` variable was set explicitly, there were default va
 The `size` variable is now defaulted to `small`, and the following values to can be used to partially override the values
 set by the `size` variable:
 - `kubernetes_instance_types`
-- `kubernetes_min_node_count`
-- `kubernetes_max_node_count`
+- `kubernetes_min_nodes_per_az`
+- `kubernetes_max_nodes_per_az`
 - `elasticache_node_type`
 - `database_instance_class`
 
 For more information on the available sizes, see the [Cluster Sizing](#cluster-sizing) section.
 
-If having the cluster scale nodes in and out is not desired, the `kubernetes_min_node_count` and 
-`kubernetes_max_node_count` can be set to the same value to prevent the cluster from scaling.
+If having the cluster scale nodes in and out is not desired, the `kubernetes_min_nodes_per_az` and 
+`kubernetes_max_nodes_per_az` can be set to the same value to prevent the cluster from scaling.
 
 ### Upgrading from 3.x -> 4.x
 

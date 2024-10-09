@@ -39,12 +39,12 @@ output "elasticache_connection_string" {
   value = var.create_elasticache ? module.redis.0.connection_string : null
 }
 
-output "eks_min_node_count" {
-  value = local.kubernetes_min_node_count
+output "eks_min_nodes_per_az" {
+  value = local.kubernetes_min_nodes_per_az
 }
 
-output "eks_max_node_count" {
-  value = local.kubernetes_max_node_count
+output "eks_max_nodes_per_az" {
+  value = local.kubernetes_max_nodes_per_az
 }
 
 output "eks_node_instance_type" {

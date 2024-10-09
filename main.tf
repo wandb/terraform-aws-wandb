@@ -24,8 +24,8 @@ locals {
   elasticache_node_type = coalesce(var.elasticache_node_type, local.deployment_size[var.size].cache)
   database_instance_class = coalesce(var.database_instance_class, local.deployment_size[var.size].db)
   kubernetes_instance_types   = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
-  kubernetes_min_node_count = coalesce(var.kubernetes_min_node_count, local.deployment_size[var.size].min_node_count)
-  kubernetes_max_node_count = coalesce(var.kubernetes_max_node_count, local.deployment_size[var.size].max_node_count)
+  kubernetes_min_nodes_per_az = coalesce(var.kubernetes_min_nodes_per_az, local.deployment_size[var.size].min_nodes_per_az)
+  kubernetes_max_nodes_per_az = coalesce(var.kubernetes_max_nodes_per_az, local.deployment_size[var.size].max_nodes_per_az)
 }
 
 module "file_storage" {
@@ -142,8 +142,8 @@ module "app_eks" {
   kms_key_arn = local.default_kms_key
 
   instance_types   = local.kubernetes_instance_types
-  min_nodes = local.kubernetes_min_node_count
-  max_nodes = local.kubernetes_max_node_count
+  min_nodes = local.kubernetes_min_nodes_per_az
+  max_nodes = local.kubernetes_max_nodes_per_az
 
   map_accounts     = var.kubernetes_map_accounts
   map_roles        = var.kubernetes_map_roles
