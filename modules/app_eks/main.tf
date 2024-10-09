@@ -65,7 +65,7 @@ module "eks" {
 
   node_groups = {
     for subnet in data.aws_subnet.private : regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0] => {
-      subnet_id = subnet.id
+      subnets = [subnet.id]
       scaling_config = {
         desired_size = var.min_nodes
         max_size     = var.max_nodes
