@@ -65,12 +65,10 @@ module "eks" {
 
   node_groups = {
     for subnet in data.aws_subnet.private : regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0] => {
-      subnets = [subnet.id]
-      scaling_config = {
-        desired_capacity = var.min_nodes
-        max_capacity     = var.max_nodes
-        min_capacity     = var.min_nodes
-      }
+      subnets          = [subnet.id]
+      desired_capacity = var.min_nodes
+      max_capacity     = var.max_nodes
+      min_capacity     = var.min_nodes
     }
   }
 
@@ -86,7 +84,7 @@ resource "kubernetes_annotations" "gp2" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
   force       = "true"
-  depends_on = [module.eks]
+  depends_on  = [module.eks]
 
   metadata {
     name = "gp2"
@@ -103,14 +101,14 @@ resource "kubernetes_storage_class" "gp3" {
       "storageclass.kubernetes.io/is-default-class" = "true"
     }
   }
-  depends_on = [kubernetes_annotations.gp2]
+  depends_on          = [kubernetes_annotations.gp2]
   storage_provisioner = "kubernetes.io/aws-ebs"
   parameters = {
     fsType = "ext4"
-    type = "gp3"
+    type   = "gp3"
   }
-  reclaim_policy = "Delete"
-  volume_binding_mode = "WaitForFirstConsumer"
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = true
 }
 
