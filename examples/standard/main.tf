@@ -73,7 +73,6 @@ provider "helm" {
   }
 }
 
-
 output "bucket_name" {
   value = module.wandb_infra.bucket_name
 }

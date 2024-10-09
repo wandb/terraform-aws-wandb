@@ -51,10 +51,6 @@ output "eks_node_instance_type" {
   value = local.kubernetes_instance_types
 }
 
-output "internal_app_port" {
-  value = local.internal_app_port
-}
-
 output "kms_key_arn" {
   value       = local.default_kms_key
   description = "The Amazon Resource Name of the KMS key used to encrypt data at rest."
@@ -77,7 +73,7 @@ output "network_private_subnets" {
 }
 
 output "network_public_subnets" {
-  value       = local.network_public_subnets
+  value       = var.allowed_inbound_cidr
   description = "The identities of the public subnetworks deployed within the VPC."
 }
 

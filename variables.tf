@@ -42,9 +42,9 @@ variable "controller_image_tag" {
 # Database                               #
 ##########################################
 variable "database_engine_version" {
-  description = "Version for MySQL Auora"
+  description = "Version for MySQL Aurora"
   type        = string
-  default     = "8.0.mysql_aurora.3.05.2"
+  default     = "8.0.mysql_aurora.3.07.1"
 }
 
 variable "database_instance_class" {
@@ -145,19 +145,6 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
-variable "enable_dummy_dns" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
-}
-
-
-variable "enable_operator_alb" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
-}
-
 variable "extra_fqdn" {
   type        = list(string)
   description = "Additional fqdn's must be in the same hosted zone as `domain_name`."
@@ -190,7 +177,6 @@ variable "allowed_inbound_ipv6_cidr" {
   nullable    = false
   type        = list(string)
 }
-
 
 ##########################################
 # KMS                                    #
@@ -344,7 +330,6 @@ variable "kubernetes_public_access" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
   default     = false
 }
-
 
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
