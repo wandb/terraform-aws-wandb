@@ -161,13 +161,12 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.kms_key_arn
 
-  instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
-  desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
-  map_accounts     = var.kubernetes_map_accounts
-  map_roles        = var.kubernetes_map_roles
-  map_users        = var.kubernetes_map_users
+  instance_types = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
+  map_accounts   = var.kubernetes_map_accounts
+  map_roles      = var.kubernetes_map_roles
+  map_users      = var.kubernetes_map_users
 
-  bucket_kms_key_arn   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+  bucket_kms_key_arns  = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
@@ -202,20 +201,14 @@ locals {
 module "app_lb" {
   source = "../../modules/app_lb"
 
-  namespace             = var.namespace
-  load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"
-  acm_certificate_arn   = local.acm_certificate_arn
-  zone_id               = var.zone_id
-
-  fqdn                      = local.full_fqdn
-  extra_fqdn                = local.extra_fqdn
+  namespace                 = var.namespace
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
-  target_port               = local.internal_app_port
 
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
+  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
+  enable_private_only_traffic = var.enable_private_only_traffic
+
+  network_id = local.network_id
 }
 
 module "private_link" {
@@ -228,6 +221,9 @@ module "private_link" {
   network_private_subnets = local.network_private_subnets
   alb_name                = local.lb_name_truncated
   vpc_id                  = local.network_id
+
+  enable_private_only_traffic = var.enable_private_only_traffic
+  nlb_security_group          = module.app_lb.nlb_security_group
 
   depends_on = [
     module.wandb
