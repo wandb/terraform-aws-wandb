@@ -189,12 +189,3 @@ module "cluster_autoscaler" {
 
   depends_on = [module.eks]
 }
-
-# module "node_termination_handler" {
-#   source = "./node_termination_handler"
-#
-#   namespace     = var.namespace
-#   oidc_provider = aws_iam_openid_connect_provider.eks
-#
-#   depends_on = [module.eks]
-# }
