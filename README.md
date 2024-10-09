@@ -97,8 +97,8 @@ Available sizes are, `small`, `medium`, `large`, `xlarge`, and `xxlarge`.  Defau
 All the values set via `deployment-size.tf` can be overridden by setting the appropriate input variables.
 
 - `kubernetes_instance_types` - The instance type for the EKS nodes
-- `kubernetes_min_nodes_per_az` - The minimum number of nodes in the EKS cluster
-- `kubernetes_max_nodes_per_az` - The maximum number of nodes in the EKS cluster
+- `kubernetes_min_nodes_per_az` - The minimum number of nodes in each AZ for the EKS cluster
+- `kubernetes_max_nodes_per_az` - The maximum number of nodes in each AZ for the EKS cluster
 - `elasticache_node_type` - The instance type for the redis cluster
 - `database_instance_class` - The instance type for the database
 
