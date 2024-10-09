@@ -67,9 +67,9 @@ module "eks" {
     for subnet in data.aws_subnet.private : regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0] => {
       subnets = [subnet.id]
       scaling_config = {
-        desired_size = var.min_nodes
-        max_size     = var.max_nodes
-        min_size     = var.min_nodes
+        desired_capacity = var.min_nodes
+        max_capacity     = var.max_nodes
+        min_capacity     = var.min_nodes
       }
     }
   }
