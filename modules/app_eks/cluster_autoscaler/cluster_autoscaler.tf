@@ -26,4 +26,24 @@ resource "helm_release" "cluster-autoscaler" {
     name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
+
+  set {
+    name  = "extraArgs.balance-similar-node-groups"
+    value = "true"
+  }
+
+  set {
+    name  = "extraArgs.balancing-ignore-label"
+    value = "eks.amazonaws.com/nodegroup"
+  }
+
+  set {
+    name  = "extraArgs.balancing-ignore-label"
+    value = "eks.amazonaws.com/sourceLaunchTemplateId"
+  }
+
+  set {
+    name  = "extraArgs.balancing-ignore-label"
+    value = "topology.ebs.csi.aws.com/zone"
+  }
 }
