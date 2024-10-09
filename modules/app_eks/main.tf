@@ -13,53 +13,70 @@ locals {
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
 }
 
+data "aws_subnet" "private" {
+  count = length(var.network_private_subnets)
+  id    = var.network_private_subnets[count.index]
+}
+
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 17.23"
+  version = "~> 19.21.0"
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
   vpc_id  = var.network_id
-  subnets = var.network_private_subnets
+  subnet_ids = var.network_private_subnets
 
-  map_accounts = var.map_accounts
-  map_roles    = var.map_roles
-  map_users    = var.map_users
+  aws_auth_accounts = var.map_accounts
+  aws_auth_roles    = var.map_roles
+  aws_auth_users    = var.map_users
 
   cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cluster_log_retention_in_days        = 30
+  cloudwatch_log_group_retention_in_days        = 30
 
-  cluster_encryption_config = var.kms_key_arn != "" ? [
-    {
-      provider_key_arn = var.kms_key_arn
-      resources        = ["secrets"]
-    }
-  ] : null
+  #added for 17.x -> 18.x upgrade
+  create_kms_key                     = false
+  prefix_separator                   = ""
+  iam_role_name                      = var.namespace
+  cluster_security_group_name        = var.namespace
+  cluster_security_group_description = "EKS cluster security group."
 
-  worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
+  cluster_encryption_config = var.kms_key_arn != "" ? {
+    provider_key_arn = var.kms_key_arn
+    resources        = ["secrets"]
+  } : null
 
-  node_groups = {
-    primary = {
-      create_launch_template               = local.create_launch_template,
-      desired_capacity                     = var.min_nodes,
-      disk_encrypted                       = local.encrypt_ebs_volume,
-      disk_kms_key_id                      = var.kms_key_arn,
-      disk_type                            = "gp3"
-      enable_monitoring                    = true
-      force_update_version                 = local.encrypt_ebs_volume,
-      iam_role_arn                         = aws_iam_role.node.arn,
-      instance_types                       = var.instance_types,
-      kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-      max_capacity                         = var.max_nodes,
-      metadata_http_put_response_hop_limit = 2
-      metadata_http_tokens                 = "required",
-      min_capacity                         = var.min_nodes,
-      version                              = var.cluster_version,
+  node_security_group_enable_recommended_rules = false
+  node_security_group_id = aws_security_group.primary_workers.id
+  eks_managed_node_group_defaults = {
+    create_iam_role                      = false,
+    create_launch_template               = local.create_launch_template,
+    disk_encrypted                       = local.encrypt_ebs_volume,
+    disk_kms_key_id                      = var.kms_key_arn,
+    disk_type                            = "gp3"
+    enable_monitoring                    = true
+    force_update_version                 = local.encrypt_ebs_volume,
+    iam_role_arn                         = aws_iam_role.node.arn,
+    instance_types                       = var.instance_types,
+    kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
+    metadata_http_put_response_hop_limit = 2
+    metadata_http_tokens                 = "required",
+    version                              = var.cluster_version,
+  }
+
+  eks_managed_node_groups = {
+    for subnet in data.aws_subnet.private : "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}" => {
+      subnet_id = subnet.id
+      scaling_config = {
+        desired_size = var.min_nodes
+        max_size     = var.max_nodes
+        min_size     = var.min_nodes
+      }
     }
   }
 
@@ -138,11 +155,20 @@ module "external_dns" {
   depends_on = [module.eks]
 }
 
-module "cluster-autoscaler" {
-  source = "./cluster-autoscaler"
+module "cluster_autoscaler" {
+  source = "./cluster_autoscaler"
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
 
   depends_on = [module.eks]
 }
+
+# module "node_termination_handler" {
+#   source = "./node_termination_handler"
+#
+#   namespace     = var.namespace
+#   oidc_provider = aws_iam_openid_connect_provider.eks
+#
+#   depends_on = [module.eks]
+# }
