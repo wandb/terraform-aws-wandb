@@ -53,12 +53,10 @@ module "wandb_infra" {
 }
 
 data "aws_eks_cluster" "app_cluster" {
-  depends_on = [module.wandb_infra.cluster_name]
   name = module.wandb_infra.cluster_name
 }
 
 data "aws_eks_cluster_auth" "app_cluster" {
-  depends_on = [module.wandb_infra.cluster_name]
   name = module.wandb_infra.cluster_name
 }
 
