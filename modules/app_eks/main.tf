@@ -21,40 +21,34 @@ data "aws_subnet" "private" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21.0"
+  version = "~> 17.23"
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
   vpc_id  = var.network_id
-  subnet_ids = var.network_private_subnets
+  subnets = var.network_private_subnets
 
-  aws_auth_accounts = var.map_accounts
-  aws_auth_roles    = var.map_roles
-  aws_auth_users    = var.map_users
+  map_accounts = var.map_accounts
+  map_roles    = var.map_roles
+  map_users    = var.map_users
 
   cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
   cluster_endpoint_private_access      = true
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cloudwatch_log_group_retention_in_days        = 30
+  cluster_log_retention_in_days        = 30
 
-  #added for 17.x -> 18.x upgrade
-  create_kms_key                     = false
-  prefix_separator                   = ""
-  iam_role_name                      = var.namespace
-  cluster_security_group_name        = var.namespace
-  cluster_security_group_description = "EKS cluster security group."
+  cluster_encryption_config = var.kms_key_arn != "" ? [
+    {
+      provider_key_arn = var.kms_key_arn
+      resources        = ["secrets"]
+    }
+  ] : null
 
-  cluster_encryption_config = var.kms_key_arn != "" ? {
-    provider_key_arn = var.kms_key_arn
-    resources        = ["secrets"]
-  } : null
-
-  node_security_group_enable_recommended_rules = false
-  node_security_group_id = aws_security_group.primary_workers.id
-  eks_managed_node_group_defaults = {
-    create_iam_role                      = false,
+  # node_security_group_enable_recommended_rules = false
+  worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
+  node_groups_defaults = {
     create_launch_template               = local.create_launch_template,
     disk_encrypted                       = local.encrypt_ebs_volume,
     disk_kms_key_id                      = var.kms_key_arn,
@@ -69,8 +63,8 @@ module "eks" {
     version                              = var.cluster_version,
   }
 
-  eks_managed_node_groups = {
-    for subnet in data.aws_subnet.private : "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}" => {
+  node_groups = {
+    for subnet in data.aws_subnet.private : regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0] => {
       subnet_id = subnet.id
       scaling_config = {
         desired_size = var.min_nodes
