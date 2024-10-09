@@ -23,11 +23,11 @@ data "aws_sqs_queue" "file_storage" {
 }
 
 data "aws_eks_cluster" "app_cluster" {
-  name = module.app_eks.cluster_id
+  name = module.app_eks.cluster_name
 }
 
 data "aws_eks_cluster_auth" "app_cluster" {
-  name = module.app_eks.cluster_id
+  name = module.app_eks.cluster_name
 }
 
 provider "kubernetes" {
