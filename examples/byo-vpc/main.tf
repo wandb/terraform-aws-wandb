@@ -19,9 +19,6 @@ module "wandb_infra" {
   public_access = true
   external_dns  = true
 
-  enable_dummy_dns    = var.enable_dummy_dns
-  enable_operator_alb = var.enable_operator_alb
-
   deletion_protection = true
 
   create_vpc = false

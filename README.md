@@ -140,7 +140,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.67.0 |
 
 ## Modules
 
@@ -180,12 +180,14 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
 | <a name="input_bucket_path"></a> [bucket\_path](#input\_bucket\_path) | path of where to store data for the instance-level bucket | `string` | `""` | no |
+| <a name="input_clickhouse_endpoint_service_id"></a> [clickhouse\_endpoint\_service\_id](#input\_clickhouse\_endpoint\_service\_id) | The service ID of the VPC endpoint service for Clickhouse | `string` | `""` | no |
+| <a name="input_controller_image_tag"></a> [controller\_image\_tag](#input\_controller\_image\_tag) | Tag of the controller image to deploy | `string` | `"1.14.0"` | no |
 | <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
 | <a name="input_custom_domain_filter"></a> [custom\_domain\_filter](#input\_custom\_domain\_filter) | A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used. | `string` | `null` | no |
 | <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
-| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Auora | `string` | `"8.0.mysql_aurora.3.05.2"` | no |
+| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Aurora | `string` | `"8.0.mysql_aurora.3.07.1"` | no |
 | <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
 | <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
 | <a name="input_database_kms_key_arn"></a> [database\_kms\_key\_arn](#input\_database\_kms\_key\_arn) | n/a | `string` | `""` | no |
@@ -199,14 +201,16 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | EKS cluster kubernetes version | `string` | n/a | yes |
 | <a name="input_eks_policy_arns"></a> [eks\_policy\_arns](#input\_eks\_policy\_arns) | Additional IAM policy to apply to the EKS cluster | `list(string)` | `[]` | no |
 | <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy | `string` | `"cache.t2.medium"` | no |
-| <a name="input_enable_dummy_dns"></a> [enable\_dummy\_dns](#input\_enable\_dummy\_dns) | Boolean indicating whether or not to enable dummy DNS for the old alb | `bool` | `false` | no |
-| <a name="input_enable_operator_alb"></a> [enable\_operator\_alb](#input\_enable\_operator\_alb) | Boolean indicating whether to use operatore ALB (true) or not (false). | `bool` | `false` | no |
+| <a name="input_enable_clickhouse"></a> [enable\_clickhouse](#input\_enable\_clickhouse) | Provision clickhouse resources | `bool` | `false` | no |
 | <a name="input_enable_yace"></a> [enable\_yace](#input\_enable\_yace) | deploy yet another cloudwatch exporter to fetch aws resources metrics | `bool` | `true` | no |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | Using external DNS. A `subdomain` must also be specified if this value is true. | `bool` | `false` | no |
 | <a name="input_extra_fqdn"></a> [extra\_fqdn](#input\_extra\_fqdn) | Additional fqdn's must be in the same hosted zone as `domain_name`. | `list(string)` | `[]` | no |
+| <a name="input_kms_clickhouse_key_alias"></a> [kms\_clickhouse\_key\_alias](#input\_kms\_clickhouse\_key\_alias) | KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK. | `string` | `null` | no |
+| <a name="input_kms_clickhouse_key_policy"></a> [kms\_clickhouse\_key\_policy](#input\_kms\_clickhouse\_key\_policy) | The policy that will define the permissions for the clickhouse kms key. | `string` | `""` | no |
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `null` | no |
 | <a name="input_kms_key_deletion_window"></a> [kms\_key\_deletion\_window](#input\_kms\_key\_deletion\_window) | Duration in days to destroy the key after it is deleted. Must be between 7 and 30 days. | `number` | `7` | no |
 | <a name="input_kms_key_policy"></a> [kms\_key\_policy](#input\_kms\_key\_policy) | The policy that will define the permissions for the kms key. | `string` | `""` | no |
+| <a name="input_kms_key_policy_administrator_arn"></a> [kms\_key\_policy\_administrator\_arn](#input\_kms\_key\_policy\_administrator\_arn) | The principal that will be allowed to manage the kms key. | `string` | `""` | no |
 | <a name="input_kubernetes_alb_internet_facing"></a> [kubernetes\_alb\_internet\_facing](#input\_kubernetes\_alb\_internet\_facing) | Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal. | `bool` | `true` | no |
 | <a name="input_kubernetes_alb_subnets"></a> [kubernetes\_alb\_subnets](#input\_kubernetes\_alb\_subnets) | List of subnet ID's the ALB will use for ingress traffic. | `list(string)` | `[]` | no |
 | <a name="input_kubernetes_instance_types"></a> [kubernetes\_instance\_types](#input\_kubernetes\_instance\_types) | EC2 Instance type for primary node group. | `list(string)` | <pre>[<br>  "m5.large"<br>]</pre> | no |
@@ -228,6 +232,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_network_private_subnets"></a> [network\_private\_subnets](#input\_network\_private\_subnets) | A list of the identities of the private subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
 | <a name="input_network_public_subnet_cidrs"></a> [network\_public\_subnet\_cidrs](#input\_network\_public\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.0.0/24",<br>  "10.10.1.0/24"<br>]</pre> | no |
 | <a name="input_network_public_subnets"></a> [network\_public\_subnets](#input\_network\_public\_subnets) | A list of the identities of the public subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
+| <a name="input_operator_chart_version"></a> [operator\_chart\_version](#input\_operator\_chart\_version) | Version of the operator chart to deploy | `string` | `"1.3.4"` | no |
 | <a name="input_other_wandb_env"></a> [other\_wandb\_env](#input\_other\_wandb\_env) | Extra environment variables for W&B | `map(any)` | `{}` | no |
 | <a name="input_parquet_wandb_env"></a> [parquet\_wandb\_env](#input\_parquet\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
 | <a name="input_private_link_allowed_account_ids"></a> [private\_link\_allowed\_account\_ids](#input\_private\_link\_allowed\_account\_ids) | List of AWS account IDs allowed to access the VPC Endpoint Service | `list(string)` | `[]` | no |
@@ -262,7 +267,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_eks_node_count"></a> [eks\_node\_count](#output\_eks\_node\_count) | n/a |
 | <a name="output_eks_node_instance_type"></a> [eks\_node\_instance\_type](#output\_eks\_node\_instance\_type) | n/a |
 | <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
-| <a name="output_internal_app_port"></a> [internal\_app\_port](#output\_internal\_app\_port) | n/a |
+| <a name="output_kms_clickhouse_key_arn"></a> [kms\_clickhouse\_key\_arn](#output\_kms\_clickhouse\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt Weave data at rest in Clickhouse. |
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt data at rest. |
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The identity of the VPC in which resources are deployed. |
 | <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
@@ -300,6 +305,23 @@ For more information on the available sizes, see the [Cluster Sizing](#cluster-s
 
 If having the cluster scale nodes in and out is not desired, the `kubernetes_min_nodes_per_az` and 
 `kubernetes_max_nodes_per_az` can be set to the same value to prevent the cluster from scaling.
+
+This upgrade is also intended to be used when upgrading eks to 1.29.
+
+We have also upgraded the following Kubernetes addons:
+
+- MySQL Aurora (8.0.mysql_aurora.3.07.1)
+- redis (7.1)
+- external-dns helm chart (v1.15.0)
+- aws-efs-csi-driver (v2.0.7-eksbuild.1)
+- aws-ebs-csi-driver (v1.35.0-eksbuild.1)
+- coredns (v1.11.3-eksbuild.1)
+- kube-proxy (v1.29.7-eksbuild.9)
+- vpc-cni (v1.18.3-eksbuild.3)
+
+> :warning: Please remove the `enable_dummy_dns` and `enable_operator_alb` variables
+> as they are no longer valid flags. They were provided to support older versions of
+> the module that relied on an alb not created by the ingress controller.
 
 ### Upgrading from 3.x -> 4.x
 
