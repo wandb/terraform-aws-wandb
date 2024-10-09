@@ -13,6 +13,11 @@ locals {
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
 }
 
+data "aws_subnet" "private" {
+  count = length(var.network_private_subnets)
+  id    = var.network_private_subnets[count.index]
+}
+
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -41,25 +46,31 @@ module "eks" {
     }
   ] : null
 
+  # node_security_group_enable_recommended_rules = false
   worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
+  node_groups_defaults = {
+    create_launch_template               = local.create_launch_template,
+    disk_encrypted                       = local.encrypt_ebs_volume,
+    disk_kms_key_id                      = var.kms_key_arn,
+    disk_type                            = "gp3"
+    enable_monitoring                    = true
+    force_update_version                 = local.encrypt_ebs_volume,
+    iam_role_arn                         = aws_iam_role.node.arn,
+    instance_types                       = var.instance_types,
+    kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
+    metadata_http_put_response_hop_limit = 2
+    metadata_http_tokens                 = "required",
+    version                              = var.cluster_version,
+  }
 
   node_groups = {
-    primary = {
-      create_launch_template               = local.create_launch_template,
-      desired_capacity                     = var.desired_capacity,
-      disk_encrypted                       = local.encrypt_ebs_volume,
-      disk_kms_key_id                      = var.kms_key_arn,
-      disk_type                            = "gp3"
-      enable_monitoring                    = true
-      force_update_version                 = local.encrypt_ebs_volume,
-      iam_role_arn                         = aws_iam_role.node.arn,
-      instance_types                       = var.instance_types,
-      kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-      max_capacity                         = 5,
-      metadata_http_put_response_hop_limit = 2
-      metadata_http_tokens                 = "required",
-      min_capacity                         = var.desired_capacity,
-      version                              = var.cluster_version,
+    for subnet in data.aws_subnet.private : regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0] => {
+      subnets = [subnet.id]
+      scaling_config = {
+        desired_size = var.min_nodes
+        max_size     = var.max_nodes
+        min_size     = var.min_nodes
+      }
     }
   }
 
@@ -166,6 +177,15 @@ module "external_dns" {
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
+
+  depends_on = [module.eks]
+}
+
+module "cluster_autoscaler" {
+  source = "./cluster_autoscaler"
+
+  namespace     = var.namespace
+  oidc_provider = aws_iam_openid_connect_provider.eks
 
   depends_on = [module.eks]
 }
