@@ -21,6 +21,11 @@ locals {
   use_external_bucket                       = var.bucket_name != ""
   s3_kms_key_arn                            = local.use_external_bucket || var.bucket_kms_key_arn != "" ? var.bucket_kms_key_arn : local.default_kms_key
   use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
+  elasticache_node_type                     = coalesce(var.elasticache_node_type, local.deployment_size[var.size].cache)
+  database_instance_class                   = coalesce(var.database_instance_class, local.deployment_size[var.size].db)
+  kubernetes_instance_types                 = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
+  kubernetes_min_nodes_per_az               = coalesce(var.kubernetes_min_nodes_per_az, local.deployment_size[var.size].min_nodes_per_az)
+  kubernetes_max_nodes_per_az               = coalesce(var.kubernetes_max_nodes_per_az, local.deployment_size[var.size].max_nodes_per_az)
 }
 
 module "file_storage" {
@@ -84,7 +89,7 @@ module "database" {
   database_name   = var.database_name
   master_username = var.database_master_username
 
-  instance_class      = try(local.deployment_size[var.size].db, var.database_instance_class)
+  instance_class      = local.database_instance_class
   engine_version      = var.database_engine_version
   snapshot_identifier = var.database_snapshot_identifier
   sort_buffer_size    = var.database_sort_buffer_size
@@ -136,11 +141,13 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.default_kms_key
 
-  instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
-  desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
-  map_accounts     = var.kubernetes_map_accounts
-  map_roles        = var.kubernetes_map_roles
-  map_users        = var.kubernetes_map_users
+  instance_types = local.kubernetes_instance_types
+  min_nodes      = local.kubernetes_min_nodes_per_az
+  max_nodes      = local.kubernetes_max_nodes_per_az
+
+  map_accounts = var.kubernetes_map_accounts
+  map_roles    = var.kubernetes_map_roles
+  map_users    = var.kubernetes_map_users
 
   bucket_kms_key_arns = compact([
     local.default_kms_key,
@@ -222,7 +229,7 @@ module "redis" {
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
-  node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
+  node_type               = local.elasticache_node_type
   kms_key_arn             = local.database_kms_key_arn
 }
 
@@ -349,4 +356,3 @@ module "wandb" {
     }
   }
 }
-
