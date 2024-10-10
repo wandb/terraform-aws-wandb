@@ -11,8 +11,8 @@ output "bucket_region" {
   value = data.aws_s3_bucket.file_storage.region
 }
 
-output "cluster_id" {
-  value = module.app_eks.cluster_id
+output "cluster_name" {
+  value = module.app_eks.cluster_name
 }
 
 output "cluster_node_role" {
