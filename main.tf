@@ -206,10 +206,7 @@ module "private_link" {
   vpc_id                      = local.network_id
   enable_private_only_traffic = var.private_only_traffic
   nlb_security_group          = module.app_lb.nlb_security_group
-  depends_on = [
-    module.app_lb,
-    module.wandb
-  ]
+  depends_on                  = [module.app_lb]
 }
 
 locals {
