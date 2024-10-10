@@ -18,7 +18,6 @@ data "aws_subnet" "private" {
   id    = var.network_private_subnets[count.index]
 }
 
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 17.23"
