@@ -19,9 +19,6 @@ module "wandb_infra" {
   public_access = true
   external_dns  = true
 
-  enable_dummy_dns    = var.enable_dummy_dns
-  enable_operator_alb = var.enable_operator_alb
-
   deletion_protection = true
 
   create_vpc = false
@@ -63,11 +60,11 @@ module "wandb_infra" {
 }
 
 data "aws_eks_cluster" "app_cluster" {
-  name = module.wandb_infra.cluster_id
+  name = module.wandb_infra.cluster_name
 }
 
 data "aws_eks_cluster_auth" "app_cluster" {
-  name = module.wandb_infra.cluster_id
+  name = module.wandb_infra.cluster_name
 }
 
 provider "kubernetes" {

@@ -118,20 +118,14 @@ locals {
 module "app_lb" {
   source = "../../modules/app_lb"
 
-  namespace             = var.namespace
-  load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"
-  acm_certificate_arn   = local.acm_certificate_arn
-  zone_id               = var.zone_id
-
-  fqdn                      = local.full_fqdn
-  extra_fqdn                = local.extra_fqdn
+  namespace                 = var.namespace
   allowed_inbound_cidr      = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
-  target_port               = local.internal_app_port
 
-  network_id              = local.network_id
-  network_private_subnets = local.network_private_subnets
-  network_public_subnets  = local.network_public_subnets
+  private_endpoint_cidr       = var.allowed_private_endpoint_cidr
+  enable_private_only_traffic = var.enable_private_only_traffic
+
+  network_id = local.network_id
 }
 
 module "private_link" {
@@ -144,6 +138,9 @@ module "private_link" {
   network_private_subnets = local.network_private_subnets
   alb_name                = local.lb_name_truncated
   vpc_id                  = local.network_id
+
+  enable_private_only_traffic = var.enable_private_only_traffic
+  nlb_security_group          = module.app_lb.nlb_security_group
 
   depends_on = [
     module.wandb

@@ -232,6 +232,19 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
+variable "allowed_private_endpoint_cidr" {
+  description = "Private CIDRs allowed to access wandb-server."
+  nullable    = false
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_private_only_traffic" {
+  description = "Enable private only traffic from customer private network"
+  type        = bool
+  default     = false
+}
+
 variable "network_public_subnets" {
   description = "A list of the identities of the public subnetworks in which resources will be deployed."
   type        = list(string)
@@ -410,6 +423,7 @@ variable "bucket_kms_key_arn" {
   description = "The Amazon Resource Name of the KMS key with which S3 storage bucket objects will be encrypted."
   default     = ""
 }
+
 
 ##########################################
 # Redis                                  #

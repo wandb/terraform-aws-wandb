@@ -11,7 +11,6 @@ resource "aws_sqs_queue" "file_storage" {
   # kms_master_key_id = var.kms_key_arn
 }
 
-
 resource "aws_s3_bucket" "file_storage" {
   bucket = "${var.namespace}-file-storage-${random_pet.file_storage.id}"
 
@@ -66,9 +65,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "file_storage" {
     }
   }
 }
-
-
-
 
 # Give the bucket permission to send messages onto the queue. Looks like we
 # overide this value.

@@ -136,8 +136,6 @@ resource "aws_kms_key" "clickhouse_key" {
   }
 }
 
-
-
 resource "aws_kms_alias" "clickhouse_key" {
   count = var.create_clickhouse_key ? 1 : 0
 
