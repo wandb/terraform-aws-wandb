@@ -12,7 +12,7 @@ output "bucket_region" {
 }
 
 output "cluster_id" {
-  value = module.app_eks.cluster_name
+  value = module.app_eks.cluster_id
 }
 
 output "cluster_node_role" {

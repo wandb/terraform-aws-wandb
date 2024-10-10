@@ -191,7 +191,6 @@ module "app_lb" {
   network_id                  = local.network_id
   enable_private_only_traffic = var.private_only_traffic
   private_endpoint_cidr       = var.allowed_private_endpoint_cidr
-
 }
 
 module "private_link" {
