@@ -65,6 +65,7 @@ module "eks" {
   node_groups = {
     for idx, subnet in data.aws_subnet.private : "ng-${idx}" => {
       subnets          = [subnet.id]
+      name_prefix      = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
       desired_capacity = var.min_nodes
       max_capacity     = var.max_nodes
       min_capacity     = var.min_nodes
