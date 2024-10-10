@@ -1,16 +1,22 @@
 # Weights & Biases Secure Storage Connector Module
 
-This is a Terraform module for provisioning an s3 bucket to be used with Weights and Biases. 
-A KMS key used to encrypt S3 objects will also be created by default. To use this bucket with Weights and Biases
-multi-tenant cloud, pass `arn:aws:iam::725579432336:role/WandbIntegration` for the `aws_principal_arn` variable.
+## About
 
-## AWS Services Used
+Weights & Biases can connect to a S3 bucket created and owned by the customer. This is called BYOB (Bring your own bucket). More details (here)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector].
+
+This example does not deploy a Weights & Biases instance. It deploys all required resourfces (S3 bucket, KMS and permissions) in the customers account and grants the W&B AWS account access to the bucket and the KMS key.
+
+---
+
+## Using Terraform
+
+### AWS Services Used
 
 - AWS Identity & Access Management (IAM)
 - AWS Key Management System (KMS)
 - Amazon S3
 
-## How to Use This Module
+### How to Use This Module
 
 - Ensure account meets module pre-requisites from above.
 - Create a Terraform configuration that pulls in this module and specifies
@@ -35,20 +41,20 @@ module "secure_storage_connector" {
 
 <!-- BEGIN_TF_DOCS -->
 
-## Requirements
+### Requirements
 
 | Name                                                                        | Version |
 | --------------------------------------------------------------------------- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement_terraform)    | ~> 1.0  |
 | <a name="requirement_aws"></a> [aws](#requirement_aws)                      | ~> 3.60 |
 
-## Providers
+### Providers
 
 | Name                                             | Version |
 | ------------------------------------------------ | ------- |
 | <a name="provider_aws"></a> [aws](#provider_aws) | 3.61.0  |
 
-## Inputs
+### Inputs
 
 | Name                                                                                       | Description                                                                                                                                    | Type     | Default   | Required |
 |--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------|:--------:|
@@ -58,7 +64,7 @@ module "secure_storage_connector" {
 | <a name="input_sse_algorithm"></a> [sse_algorithm](#input_sse_algorithm)                   | The server-side encryption algorithm to use. Valid values are `AES256` and `aws:kms`                                                           | `string` | `aws:kms` |    no    |
 | <a name="input_aws_principal_arn"></a> [aws_principal_arn](#input_aws_principal_arn)       | AWS principal that can access the bucket                                                                                                       | `string` | `null`    |   yes    |
 
-## Outputs
+### Outputs
 
 | Name                                                                        | Description                                                             |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
@@ -67,3 +73,8 @@ module "secure_storage_connector" {
 | <a name="bucket_kms_key_arn"></a> [bucket_kms_key_arn](#bucket_kms_key_arn) | The arn of the kms key created                                          |
 
 <!-- END_TF_DOCS -->
+
+
+## Using AWS Console
+
+Please refer to the (public documentation)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector#provision-the-kms-key] on how to create all required resources manually.

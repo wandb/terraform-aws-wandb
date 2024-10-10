@@ -2,15 +2,11 @@
 
 ## About
 
-This example does not deploy an instance of Weights & Biases. Instead it is an
-example of the resources that need to be created to deploy use with an S3 bucket
-for.
+Weights & Biases can connect to a S3 bucket created and owned by the customer. This is called BYOB (Bring your own bucket). More details (here)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector].
+
+This example does not deploy a Weights & Biases instance. It deploys all required resourfces (S3 bucket, KMS and permissions) in the customers account and grants the W&B AWS account access to the bucket and the KMS key.
 
 ---
-
-When using bring your own bucket you will need to grant our account
-(`830241207209`) access to an S3 Bucket and KMS Key for encryption and decryption.
-decryption
 
 ## Using Terraform
 
@@ -40,94 +36,4 @@ can version, reuse, and share.
 
 ## Using AWS Console
 
-### Creating KMS Key
-
-We require you to provision a KMS Key which will be used to encrypt and decrypt
-your S3 bucket. Make sure to enable key usage type for `ENCRYPT_DECRYPT`
-purposes. It will require to have the following policy:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid" : "Internal",
-      "Effect" : "Allow",
-      "Principal" : { "AWS" : "<you account id>" },
-      "Action" : "kms:*",
-      "Resource" : "<aws_kms_key.key.arn>"
-    },
-    {
-      "Sid" : "External",
-      "Effect" : "Allow",
-      "Principal" : { "AWS" : "arn:aws:iam::830241207209:root" },
-      "Action" : [
-        "kms:Decrypt",
-        "kms:Describe*",
-        "kms:Encrypt",
-        "kms:ReEncrypt*",
-        "kms:GenerateDataKey*"
-      ],
-      "Resource" : "<aws_kms_key.key.arn>"
-    }
-  ]
-}
-```
-
-This policy gives access to your internal account, a swell while also providing
-our service account with the requires permissions. Please keep a record of the
-KMS ARN as we will need that during the deployment.
-
-### Creating S3 Bucket
-
-Lastly, you'll need to create the S3 bucket. Make sure to enable CORS access. Your CORS configuration should look like the following:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>HEAD</AllowedMethod>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-    <ExposeHeader>ETag</ExposeHeader>
-    <MaxAgeSeconds>3000</MaxAgeSeconds>
-</CORSRule>
-</CORSConfiguration>
-```
-
-Also, enable server side encryption and use the KMS key you just generated.
-
-Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Id": "WandBAccess",
-  "Statement": [
-    {
-      "Sid": "WAndBAccountAccess",
-      "Effect": "Allow",
-      "Principal": { "AWS": "arn:aws:iam::830241207209:root" },
-        "Action" : [
-          "s3:GetObject*",
-          "s3:GetEncryptionConfiguration",
-          "s3:ListBucket",
-          "s3:ListBucketMultipartUploads",
-          "s3:ListBucketVersions",
-          "s3:AbortMultipartUpload",
-          "s3:DeleteObject",
-          "s3:PutObject",
-          "s3:GetBucketCORS",
-          "s3:GetBucketLocation",
-          "s3:GetBucketVersioning"
-        ],
-      "Resource": [
-        "arn:aws:s3:::<WANDB_BUCKET>",
-        "arn:aws:s3:::<WANDB_BUCKET>/*"
-      ]
-    }
-  ]
-}
-```
+Please refer to the (public documentation)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector#provision-the-kms-key] on how to create all required resources manually.

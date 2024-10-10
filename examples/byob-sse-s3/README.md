@@ -2,17 +2,13 @@
 
 ## About
 
-This example does not deploy an instance of Weights & Biases. Instead it is an
-example of the resources that need to be created to deploy use with an S3 bucket
-for.
+Weights & Biases can connect to a S3 bucket created and owned by the customer. This is called BYOB (Bring your own bucket). More details (here)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector].
+
+This example does not deploy a Weights & Biases instance. It deploys all required resourfces (S3 bucket and permissions) in the customers account and grants the W&B AWS account access to the bucket and the KMS key.
 
 This module uses AE256 Encryption to protect the object store.
 
 ---
-
-When using bring your own bucket you will need to grant our account
-(`830241207209`) access to an S3 Bucket and KMS Key for encryption and decryption.
-decryption
 
 ## Using Terraform
 
