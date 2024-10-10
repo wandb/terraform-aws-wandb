@@ -15,6 +15,10 @@ output "cluster_name" {
   value = module.app_eks.cluster_name
 }
 
+output "eks" {
+  value = module.app_eks
+}
+
 output "cluster_node_role" {
   value = module.app_eks.node_role
 }
