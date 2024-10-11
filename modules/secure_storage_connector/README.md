@@ -4,7 +4,7 @@
 
 Weights & Biases can connect to a S3 bucket created and owned by the customer. This is called BYOB (Bring your own bucket). More details (here)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector].
 
-This example does not deploy a Weights & Biases instance. It deploys all required resourfces (S3 bucket, KMS and permissions) in the customers account and grants the W&B AWS account access to the bucket and the KMS key.
+This example does not deploy a Weights & Biases instance. It deploys all required resources (S3 bucket, KMS key and permissions) in the customer's account and grants the W&B AWS account access to them.
 
 ---
 
