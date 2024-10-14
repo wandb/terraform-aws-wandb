@@ -116,7 +116,13 @@ variable "service_port" {
   default = 32543
 }
 
-variable "desired_capacity" {
+variable "min_nodes" {
+  description = "Desired number of worker nodes."
+  type        = number
+  default     = 2
+}
+
+variable "max_nodes" {
   description = "Desired number of worker nodes."
   type        = number
   default     = 2
