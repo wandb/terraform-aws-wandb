@@ -427,6 +427,37 @@ variable "aws_loadbalancer_controller_tags" {
   default     = {}
 }
 
+variable "eks_addon_efs_csi_driver_version" {
+  description = "The version of the EFS CSI driver to install."
+  type        = string
+  default     = "v2.0.4-eksbuild.1"
+}
+
+variable "eks_addon_ebs_csi_driver_version" {
+  description = "The version of the EBS CSI driver to install."
+  type        = string
+  default     = "v1.31.0-eksbuild.1"
+}
+
+variable "eks_addon_coredns_version" {
+  description = "The version of the CoreDNS addon to install."
+  type        = string
+  default     = "v1.10.1-eksbuild.11"
+}
+
+variable "eks_addon_kube_proxy_version" {
+  description = "The version of the kube-proxy addon to install."
+  type        = string
+  default     = "v1.28.8-eksbuild.5"
+}
+
+variable "eks_addon_vpc_cni_version" {
+  description = "The version of the VPC CNI addon to install."
+  type        = string
+  default     = "v1.18.2-eksbuild.1"
+}
+
+
 ##########################################
 # External Bucket                        #
 ##########################################
