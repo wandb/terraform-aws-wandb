@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.24.0...v5.0.0) (2024-10-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* A number of variable defaults are removed and variables renamed for node counts.
+
+### Features
+
+* Release Kubernetes Autoscaling and EKS 1.29 Upgrade ([#301](https://github.com/wandb/terraform-aws-wandb/issues/301)) ([e9a5f02](https://github.com/wandb/terraform-aws-wandb/commit/e9a5f02a60f976562eb477b5f7e26c8c24012922)), closes [#257](https://github.com/wandb/terraform-aws-wandb/issues/257) [#296](https://github.com/wandb/terraform-aws-wandb/issues/296)
+
 ## [4.24.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.23.4...v4.24.0) (2024-10-07)
 
 
