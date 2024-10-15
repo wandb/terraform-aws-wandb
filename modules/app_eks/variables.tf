@@ -159,26 +159,26 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 variable "eks_addon_efs_csi_driver_version" {
-  description = "The version of the EFS CSI driver to install."
+  description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "The version of the EBS CSI driver to install."
+  description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }
 
 variable "eks_addon_coredns_version" {
-  description = "The version of the CoreDNS addon to install."
+  description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "The version of the kube-proxy addon to install."
+  description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install."
+  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }

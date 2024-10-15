@@ -418,33 +418,33 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 variable "eks_addon_efs_csi_driver_version" {
-  description = "The version of the EFS CSI driver to install."
+  description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v2.0.4-eksbuild.1"
+  default     = "v2.0.7-eksbuild.1"
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "The version of the EBS CSI driver to install."
+  description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v1.31.0-eksbuild.1"
+  default     = "v1.35.0-eksbuild.1"
 }
 
 variable "eks_addon_coredns_version" {
-  description = "The version of the CoreDNS addon to install."
+  description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v1.10.1-eksbuild.11"
+  default     = "v1.11.3-eksbuild.1"
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "The version of the kube-proxy addon to install."
+  description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v1.28.8-eksbuild.5"
+  default     = "v1.29.7-eksbuild.9"
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install."
+  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html.s"
   type        = string
-  default     = "v1.18.2-eksbuild.1"
+  default     = "v1.18.3-eksbuild.3"
 }
 
 
