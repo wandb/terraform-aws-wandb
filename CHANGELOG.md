@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+### [5.0.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.0.0...v5.0.1) (2024-10-15)
+
+
+### Bug Fixes
+
+* Allow EKS addons version config ([#303](https://github.com/wandb/terraform-aws-wandb/issues/303)) ([6316472](https://github.com/wandb/terraform-aws-wandb/commit/6316472e9bf5793c16c9c8653e43c1de5a7f340f))
+* Update CODEOWNERS ([#304](https://github.com/wandb/terraform-aws-wandb/issues/304)) ([0e7017b](https://github.com/wandb/terraform-aws-wandb/commit/0e7017b5bb1dbb0eae7a99bb43fee38d98b61af2))
+
 ## [5.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v4.24.0...v5.0.0) (2024-10-14)
 
 
