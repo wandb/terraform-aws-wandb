@@ -1,10 +1,10 @@
 data "aws_region" "current" {}
 
 resource "helm_release" "cluster-autoscaler" {
-  chart = "cluster-autoscaler"
-  name  = "cluster-autoscaler"
-  repository = "https://kubernetes.github.io/autoscaler"
-  namespace = "cluster-autoscaler"
+  chart            = "cluster-autoscaler"
+  name             = "cluster-autoscaler"
+  repository       = "https://kubernetes.github.io/autoscaler"
+  namespace        = "cluster-autoscaler"
   create_namespace = true
 
   set {

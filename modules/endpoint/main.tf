@@ -1,9 +1,9 @@
 resource "aws_vpc_endpoint" "default" {
-  vpc_id              = var.network_id
-  service_name        = var.service_name
-  vpc_endpoint_type   = "Gateway" 
-  auto_accept = true
-  route_table_ids  = var.private_route_table_id
+  vpc_id            = var.network_id
+  service_name      = var.service_name
+  vpc_endpoint_type = "Gateway"
+  auto_accept       = true
+  route_table_ids   = var.private_route_table_id
 
   policy = <<POLICY
 {
