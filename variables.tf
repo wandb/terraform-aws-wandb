@@ -18,10 +18,9 @@ variable "use_internal_queue" {
 }
 
 variable "size" {
-  default     = null
-  description = "Deployment size"
-  nullable    = true
+  description = "Deployment size for the instance"
   type        = string
+  default     = "small"
 }
 
 ##########################################
@@ -43,15 +42,15 @@ variable "controller_image_tag" {
 # Database                               #
 ##########################################
 variable "database_engine_version" {
-  description = "Version for MySQL Auora"
+  description = "Version for MySQL Aurora"
   type        = string
-  default     = "8.0.mysql_aurora.3.05.2"
+  default     = "8.0.mysql_aurora.3.07.1"
 }
 
 variable "database_instance_class" {
-  description = "Instance type to use by database master instance."
+  description = "Instance type to use by database master instance. Defaults to null and value from deployment-size.tf is used"
   type        = string
-  default     = "db.r5.large"
+  default     = null
 }
 
 variable "database_snapshot_identifier" {
@@ -146,19 +145,6 @@ variable "subdomain" {
   description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
 }
 
-variable "enable_dummy_dns" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether or not to enable dummy DNS for the old alb"
-}
-
-
-variable "enable_operator_alb" {
-  type        = bool
-  default     = false
-  description = "Boolean indicating whether to use operatore ALB (true) or not (false)."
-}
-
 variable "extra_fqdn" {
   type        = list(string)
   description = "Additional fqdn's must be in the same hosted zone as `domain_name`."
@@ -191,7 +177,6 @@ variable "allowed_inbound_ipv6_cidr" {
   nullable    = false
   type        = list(string)
 }
-
 
 ##########################################
 # KMS                                    #
@@ -346,7 +331,6 @@ variable "kubernetes_public_access" {
   default     = false
 }
 
-
 variable "kubernetes_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint."
   type        = list(string)
@@ -380,15 +364,21 @@ variable "kubernetes_map_users" {
 }
 
 variable "kubernetes_instance_types" {
-  description = "EC2 Instance type for primary node group."
+  description = "EC2 Instance type for primary node group. Defaults to null and value from deployment-size.tf is used"
   type        = list(string)
-  default     = ["m5.large"]
+  default     = null
 }
 
-variable "kubernetes_node_count" {
-  description = "Number of nodes"
+variable "kubernetes_min_nodes_per_az" {
+  description = "Minimum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used"
   type        = number
-  default     = 2
+  default     = null
+}
+
+variable "kubernetes_max_nodes_per_az" {
+  description = "Maximum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used"
+  type        = number
+  default     = null
 }
 
 variable "eks_policy_arns" {
@@ -503,9 +493,9 @@ variable "create_elasticache" {
 }
 
 variable "elasticache_node_type" {
-  description = "The type of the redis cache node to deploy"
+  description = "The type of the redis cache node to deploy. Defaults to null and value from deployment-size.tf is used"
   type        = string
-  default     = "cache.t2.medium"
+  default     = null
 }
 
 ##########################################

@@ -1,5 +1,5 @@
 locals {
-  redis_version = "6.x"
+  redis_version = "7.1"
 }
 
 resource "aws_elasticache_subnet_group" "default" {
@@ -15,7 +15,7 @@ resource "aws_elasticache_replication_group" "default" {
   port                 = 6379
 
   node_type            = var.node_type
-  parameter_group_name = "default.redis6.x"
+  parameter_group_name = "default.redis7"
   engine_version       = local.redis_version
 
   automatic_failover_enabled = true

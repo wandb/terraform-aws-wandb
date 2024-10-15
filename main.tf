@@ -21,6 +21,11 @@ locals {
   use_external_bucket                       = var.bucket_name != ""
   s3_kms_key_arn                            = local.use_external_bucket || var.bucket_kms_key_arn != "" ? var.bucket_kms_key_arn : local.default_kms_key
   use_internal_queue                        = local.use_external_bucket || var.use_internal_queue
+  elasticache_node_type                     = coalesce(var.elasticache_node_type, local.deployment_size[var.size].cache)
+  database_instance_class                   = coalesce(var.database_instance_class, local.deployment_size[var.size].db)
+  kubernetes_instance_types                 = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
+  kubernetes_min_nodes_per_az               = coalesce(var.kubernetes_min_nodes_per_az, local.deployment_size[var.size].min_nodes_per_az)
+  kubernetes_max_nodes_per_az               = coalesce(var.kubernetes_max_nodes_per_az, local.deployment_size[var.size].max_nodes_per_az)
 }
 
 module "file_storage" {
@@ -84,7 +89,7 @@ module "database" {
   database_name   = var.database_name
   master_username = var.database_master_username
 
-  instance_class      = try(local.deployment_size[var.size].db, var.database_instance_class)
+  instance_class      = local.database_instance_class
   engine_version      = var.database_engine_version
   snapshot_identifier = var.database_snapshot_identifier
   sort_buffer_size    = var.database_sort_buffer_size
@@ -136,11 +141,13 @@ module "app_eks" {
   namespace   = var.namespace
   kms_key_arn = local.default_kms_key
 
-  instance_types   = try([local.deployment_size[var.size].node_instance], var.kubernetes_instance_types)
-  desired_capacity = try(local.deployment_size[var.size].node_count, var.kubernetes_node_count)
-  map_accounts     = var.kubernetes_map_accounts
-  map_roles        = var.kubernetes_map_roles
-  map_users        = var.kubernetes_map_users
+  instance_types = local.kubernetes_instance_types
+  min_nodes      = local.kubernetes_min_nodes_per_az
+  max_nodes      = local.kubernetes_max_nodes_per_az
+
+  map_accounts = var.kubernetes_map_accounts
+  map_roles    = var.kubernetes_map_roles
+  map_users    = var.kubernetes_map_users
 
   bucket_kms_key_arns = compact([
     local.default_kms_key,
@@ -180,30 +187,17 @@ module "app_eks" {
 
 }
 
-locals {
-  full_fqdn  = var.enable_dummy_dns ? "old.${local.fqdn}" : local.fqdn
-  extra_fqdn = var.enable_dummy_dns ? [for fqdn in var.extra_fqdn : "old.${fqdn}"] : var.extra_fqdn
-}
 
 module "app_lb" {
   source = "./modules/app_lb"
 
-  namespace             = var.namespace
-  load_balancing_scheme = var.public_access ? "PUBLIC" : "PRIVATE"
-  acm_certificate_arn   = local.acm_certificate_arn
-  zone_id               = var.zone_id
+  namespace = var.namespace
 
-  fqdn                        = local.full_fqdn
-  extra_fqdn                  = local.extra_fqdn
   allowed_inbound_cidr        = var.allowed_inbound_cidr
   allowed_inbound_ipv6_cidr   = var.allowed_inbound_ipv6_cidr
-  target_port                 = local.internal_app_port
   network_id                  = local.network_id
-  network_private_subnets     = local.network_private_subnets
-  network_public_subnets      = local.network_public_subnets
   enable_private_only_traffic = var.private_only_traffic
   private_endpoint_cidr       = var.allowed_private_endpoint_cidr
-
 }
 
 module "private_link" {
@@ -218,16 +212,7 @@ module "private_link" {
   vpc_id                      = local.network_id
   enable_private_only_traffic = var.private_only_traffic
   nlb_security_group          = module.app_lb.nlb_security_group
-  depends_on = [
-    module.app_lb,
-    module.wandb
-  ]
-}
-
-resource "aws_autoscaling_attachment" "autoscaling_attachment" {
-  for_each               = module.app_eks.autoscaling_group_names
-  autoscaling_group_name = each.value
-  lb_target_group_arn    = module.app_lb.tg_app_arn
+  depends_on                  = [module.app_lb]
 }
 
 locals {
@@ -247,7 +232,7 @@ module "redis" {
   vpc_id                  = local.network_id
   redis_subnet_group_name = local.network_elasticache_subnet_group_name
   vpc_subnets_cidr_blocks = local.network_elasticache_subnet_cidrs
-  node_type               = try(local.deployment_size[var.size].cache, var.elasticache_node_type)
+  node_type               = local.elasticache_node_type
   kms_key_arn             = local.database_kms_key_arn
 }
 
@@ -323,12 +308,12 @@ module "wandb" {
           "alb.ingress.kubernetes.io/listen-ports"                   = "[{\\\"HTTPS\\\": 443}]"
           "alb.ingress.kubernetes.io/certificate-arn"                = local.acm_certificate_arn
           },
-          length(var.extra_fqdn) > 0 && var.enable_dummy_dns ? {
+          length(var.extra_fqdn) > 0 ? {
             "external-dns.alpha.kubernetes.io/hostname" = <<-EOF
               ${local.fqdn}\,${join("\\,", var.extra_fqdn)}\,${local.fqdn}
             EOF
             } : {
-            "external-dns.alpha.kubernetes.io/hostname" = var.enable_operator_alb ? local.fqdn : ""
+            "external-dns.alpha.kubernetes.io/hostname" = local.fqdn
           },
           length(var.kubernetes_alb_subnets) > 0 ? {
             "alb.ingress.kubernetes.io/subnets" = <<-EOF
@@ -338,11 +323,7 @@ module "wandb" {
 
       }
 
-      app = var.enable_operator_alb ? {} : {
-        extraEnv = merge({
-          "GORILLA_GLUE_LIST" = "true"
-        }, var.app_wandb_env)
-      }
+      app = {}
 
       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
       yace = var.enable_yace ? {
@@ -378,4 +359,3 @@ module "wandb" {
     }
   }
 }
-
