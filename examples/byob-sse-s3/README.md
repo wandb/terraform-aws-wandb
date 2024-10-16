@@ -2,17 +2,13 @@
 
 ## About
 
-This example does not deploy an instance of Weights & Biases. Instead it is an
-example of the resources that need to be created to deploy use with an S3 bucket
-for.
+Weights & Biases can connect to a S3 bucket created and owned by the customer. This is called BYOB (Bring your own bucket). More details (here)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector].
+
+This example does not deploy a Weights & Biases instance. It deploys all required resources (S3 bucket and permissions) in the customer's account and grants the W&B AWS account access to them.
 
 This module uses AE256 Encryption to protect the object store.
 
 ---
-
-When using bring your own bucket you will need to grant our account
-(`830241207209`) access to an S3 Bucket and KMS Key for encryption and decryption.
-decryption
 
 ## Using Terraform
 
@@ -59,54 +55,4 @@ Do not configure a KMS key on the object store. Your configuration should look l
 
 ### Creating S3 Bucket
 
-Lastly, you'll need to create the S3 bucket. Make sure to enable CORS access. Your CORS configuration should look like the following:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-<CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>HEAD</AllowedMethod>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-    <ExposeHeader>ETag</ExposeHeader>
-    <MaxAgeSeconds>3000</MaxAgeSeconds>
-</CORSRule>
-</CORSConfiguration>
-```
-
-As stated above, server side encryption will be handled via SSE-S3 encryption with AE256.
-
-Finally, grant the Weights & Biases Deployment account access to this S3 bucket:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Id": "WandBAccess",
-  "Statement": [
-    {
-      "Sid": "WAndBAccountAccess",
-      "Effect": "Allow",
-      "Principal": { "AWS": "arn:aws:iam::830241207209:root" },
-      "Action": [
-        "s3:GetObject*",
-        "s3:GetEncryptionConfiguration",
-        "s3:ListBucket",
-        "s3:ListBucketMultipartUploads",
-        "s3:ListBucketVersions",
-        "s3:AbortMultipartUpload",
-        "s3:DeleteObject",
-        "s3:PutObject",
-        "s3:GetBucketCORS",
-        "s3:GetBucketLocation",
-        "s3:GetBucketVersioning"
-      ],
-      "Resource": [
-        "arn:aws:s3:::<WANDB_BUCKET>",
-        "arn:aws:s3:::<WANDB_BUCKET>/*"
-      ]
-    }
-  ]
-}
-```
+Please refer to the (public documentation)[https://docs.wandb.ai/guides/hosting/data-security/secure-storage-connector#provision-the-kms-key] on how to create all required resources manually.
