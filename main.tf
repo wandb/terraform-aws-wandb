@@ -58,9 +58,7 @@ module "networking" {
 }
 
 locals {
-  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
-
+  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
@@ -130,8 +128,6 @@ locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
   domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
-
-  internal_app_port = 32543
 }
 
 module "app_eks" {

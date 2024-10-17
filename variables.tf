@@ -220,12 +220,6 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
-variable "network_public_subnets" {
-  default     = []
-  description = "A list of the identities of the public subnetworks in which resources will be deployed."
-  type        = list(string)
-}
-
 variable "network_database_subnets" {
   default     = []
   description = "A list of the identities of the database subnetworks in which resources will be deployed."
@@ -495,12 +489,6 @@ variable "other_wandb_env" {
 }
 
 variable "weave_wandb_env" {
-  type        = map(string)
-  description = "Extra environment variables for W&B"
-  default     = {}
-}
-
-variable "app_wandb_env" {
   type        = map(string)
   description = "Extra environment variables for W&B"
   default     = {}
