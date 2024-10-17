@@ -39,8 +39,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
-  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage[0].bucket_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage[0].bucket_queue_name
 }
 
 module "networking" {
@@ -58,13 +58,12 @@ module "networking" {
 }
 
 locals {
-  network_id             = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_public_subnets = var.create_vpc ? module.networking.public_subnets : var.network_public_subnets
-
+  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
-  network_database_subnets             = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
+  network_database_subnets = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
+  # tflint-ignore: terraform_unused_declarations
   network_database_subnet_cidrs        = var.create_vpc ? module.networking.database_subnet_cidrs : var.network_database_subnet_cidrs
   network_database_create_subnet_group = !var.create_vpc
   network_database_subnet_group_name   = var.create_vpc ? module.networking.database_subnet_group_name : "${var.namespace}-database-subnet"
@@ -129,8 +128,6 @@ locals {
   acm_certificate_arn = local.create_certificate ? module.acm.acm_certificate_arn : var.acm_certificate_arn
   url                 = local.acm_certificate_arn == null ? "http://${local.fqdn}" : "https://${local.fqdn}"
   domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
-
-  internal_app_port = 32543
 }
 
 module "app_eks" {
@@ -155,7 +152,7 @@ module "app_eks" {
   ])
 
   bucket_arn           = data.aws_s3_bucket.file_storage.arn
-  bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
+  bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage[0].arn
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
@@ -164,7 +161,7 @@ module "app_eks" {
   database_security_group_id   = module.database.security_group_id
 
   create_elasticache_security_group = var.create_elasticache
-  elasticache_security_group_id     = var.create_elasticache ? module.redis.0.security_group_id : null
+  elasticache_security_group_id     = var.create_elasticache ? module.redis[0].security_group_id : null
 
   cluster_version                      = var.eks_cluster_version
   cluster_endpoint_public_access       = var.kubernetes_public_access
@@ -287,8 +284,8 @@ module "wandb" {
         }
 
         redis = {
-          host = module.redis.0.host
-          port = "${module.redis.0.port}?tls=true&ttlInSeconds=604800"
+          host = module.redis[0].host
+          port = "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
         }
       }
 

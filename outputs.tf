@@ -36,7 +36,7 @@ output "database_instance_type" {
 }
 
 output "elasticache_connection_string" {
-  value = var.create_elasticache ? module.redis.0.connection_string : null
+  value = var.create_elasticache ? module.redis[0].connection_string : null
 }
 
 output "eks_min_nodes_per_az" {
