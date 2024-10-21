@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.0.1...v5.1.0) (2024-10-21)
+
+
+### Features
+
+* Configure tflint & tf format pipelines along with fixing any issues ([#255](https://github.com/wandb/terraform-aws-wandb/issues/255)) ([7d5c15f](https://github.com/wandb/terraform-aws-wandb/commit/7d5c15febe6498fd64fc62277579e5417b855309))
+
+
+### Bug Fixes
+
+* Improve BYOB Readme ([#302](https://github.com/wandb/terraform-aws-wandb/issues/302)) ([47975f1](https://github.com/wandb/terraform-aws-wandb/commit/47975f17a9205b614f9e24f64ac136cd7f20bc6a))
+
 ### [5.0.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.0.0...v5.0.1) (2024-10-15)
 
 
