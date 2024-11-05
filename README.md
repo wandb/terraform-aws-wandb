@@ -366,7 +366,8 @@ This can be donw by adding the following policy document.
         "kms:Decrypt",
         "kms:ReEncrypt*",
         "kms:GenerateDataKey*",
-        "kms:DescribeKey"
+        "kms:DescribeKey",
+        "kms:CreateGrant"
       ],
       "Resource": "*"
     }
