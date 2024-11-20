@@ -246,6 +246,10 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
+locals {
+  weave_trace_sa_name = "wandb-weave-trace"
+}
+
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "1.2.0"
@@ -320,7 +324,14 @@ module "wandb" {
 
       }
 
-      app = {}
+      app = {
+        internalJWTMap = [
+          {
+            "subject" = "system:serviceaccount:${var.namespace}:${local.weave_trace_sa_name}",
+            "issuer"  = var.weave_trace_service_account_issuer_url
+          }
+        ]
+      }
 
       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
       yace = var.enable_yace ? {
