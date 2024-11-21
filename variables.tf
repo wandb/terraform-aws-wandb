@@ -523,8 +523,12 @@ variable "clickhouse_endpoint_service_id" {
   default     = ""
 }
 
-variable "weave_trace_service_account_issuer_url" {
+##########################################
+# Internal Service                       #
+##########################################
+
+variable "kubernetes_cluster_oidc_issuer_url" {
   type        = string
-  description = "The issuer URL of the service account for Weave Trace"
+  description = "OIDC issuer URL for the Kubernetes cluster. Can be determined using `kubectl get --raw /.well-known/openid-configuration`"
   default     = ""
 }
