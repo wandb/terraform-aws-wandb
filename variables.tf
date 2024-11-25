@@ -44,7 +44,7 @@ variable "controller_image_tag" {
 variable "database_engine_version" {
   description = "Version for MySQL Aurora"
   type        = string
-  default     = "8.0.mysql_aurora.3.07.1"
+  default     = "8.0.mysql_aurora.3.08.0"
 }
 
 variable "database_instance_class" {
