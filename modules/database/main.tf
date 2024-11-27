@@ -59,6 +59,18 @@ resource "aws_db_parameter_group" "default" {
     value = var.innodb_lru_scan_depth
   }
 
+  parameter {
+    name         = "innodb_autoinc_lock_mode"
+    value        = var.innodb_autoinc_lock_mode
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name         = "innodb_print_all_deadlocks"
+    value        = var.innodb_print_all_deadlocks
+    apply_method = "pending-reboot"
+  }
+
   lifecycle {
     ignore_changes = [description]
   }
@@ -85,6 +97,12 @@ resource "aws_rds_cluster_parameter_group" "default" {
   parameter {
     name         = "binlog_row_image"
     value        = var.binlog_row_image
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name         = "binlog_row_value_options"
+    value        = var.binlog_row_value_options
     apply_method = "pending-reboot"
   }
 
