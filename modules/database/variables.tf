@@ -123,7 +123,7 @@ variable "innodb_autoinc_lock_mode" {
 variable "innodb_print_all_deadlocks" {
   description = "Specifies the innodb_print_all_deadlocks value to set for the database"
   type        = string
-  default     = "1"
+  default     = "off"
 }
 
 # Cluster parametes
