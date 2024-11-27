@@ -138,3 +138,9 @@ variable "binlog_row_value_options" {
   type        = string
   default     = "PARTIAL_JSON"
 }
+
+variable "innodb_io_capacity" {
+  description = "Specifies the innodb_io_capacity value to set for the database"
+  type        = number
+  default     = null
+}

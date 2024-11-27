@@ -71,6 +71,15 @@ resource "aws_db_parameter_group" "default" {
     apply_method = "pending-reboot"
   }
 
+  dynamic "parameter" {
+    for_each = var.innodb_io_capacity != null ? [var.innodb_io_capacity] : []
+    content {
+      name         = "innodb_io_capacity"
+      value        = parameter.value
+      apply_method = "pending-reboot"
+    }
+  }
+
   lifecycle {
     ignore_changes = [description]
   }
