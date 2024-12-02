@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.1.0...v5.2.0) (2024-12-02)
+
+
+### Features
+
+* Add internalJWTMap variables used for inter service request authentication ([#309](https://github.com/wandb/terraform-aws-wandb/issues/309)) ([f281ca4](https://github.com/wandb/terraform-aws-wandb/commit/f281ca486abe22d76f531051a870762d321b32ea))
+
 ## [5.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.0.1...v5.1.0) (2024-10-21)
 
 
