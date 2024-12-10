@@ -271,7 +271,7 @@ module "wandb" {
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 
-        bucket = {
+        defaultBucket = {
           provider = "s3"
           name     = local.bucket_name
           path     = var.bucket_path
