@@ -29,7 +29,7 @@ locals {
 }
 
 module "file_storage" {
-  count               = var.create_bucket ? 1 : 0
+  #count               = var.create_bucket ? 1 : 0
   source              = "./modules/file_storage"
   namespace           = var.namespace
   create_queue        = !local.use_internal_queue
@@ -39,8 +39,8 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage[0].bucket_name
-  bucket_queue_name = local.use_internal_queue ? null : module.file_storage[0].bucket_queue_name
+  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.bucket_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.bucket_queue_name
 }
 
 module "networking" {
@@ -271,12 +271,18 @@ module "wandb" {
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 
-        defaultBucket = {
+        bucket = var.create_bucket ? null : {
           provider = "s3"
-          name     = local.bucket_name
+          name     = var.bucket_name
           path     = var.bucket_path
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.s3_kms_key_arn
+          kmsKey   = var.bucket_kms_key_arn
+        }
+        defaultBucket = {
+          provider = "s3"
+          name     = module.file_storage.bucket_name
+          region   = module.file_storage.bucket_region
+          kmsKey   = module.kms.key.arn
         }
 
         mysql = {
