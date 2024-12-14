@@ -29,7 +29,6 @@ locals {
 }
 
 module "file_storage" {
-  #count               = var.create_bucket ? 1 : 0
   source              = "./modules/file_storage"
   namespace           = var.namespace
   create_queue        = !local.use_internal_queue
@@ -39,7 +38,6 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.bucket_name
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.bucket_queue_name
 }
 
