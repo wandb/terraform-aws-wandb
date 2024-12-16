@@ -174,12 +174,12 @@ module "wandb" {
 
         extraEnv = var.other_wandb_env
 
-        bucket = var.create_bucket ? null : {
+        bucket = var.bucket_name != "" ? {
           provider = "s3"
           name     = var.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
           kmsKey   = var.bucket_kms_key_arn
-        }
+        } : null
         defaultBucket = {
           provider = "s3"
           name     = module.file_storage.bucket_name

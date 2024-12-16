@@ -165,7 +165,7 @@ module "app_eks" {
   map_users      = var.kubernetes_map_users
 
   bucket_kms_key_arns  = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
-  bucket_arn           = var.create_bucket ? module.file_storage.bucket_arn : data.aws_s3_bucket.file_storage.arn
+  bucket_arn           = var.bucket_name == "" ? module.file_storage.bucket_arn : data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
   network_id              = local.network_id
@@ -279,12 +279,12 @@ module "wandb" {
 
         extraEnv = var.other_wandb_env
 
-        bucket = var.create_bucket ? null : {
+        bucket = var.bucket_name != "" ? {
           provider = "s3"
           name     = var.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
           kmsKey   = var.bucket_kms_key_arn
-        }
+        } : null
 
         defaultBucket = {
           provider = "s3"
