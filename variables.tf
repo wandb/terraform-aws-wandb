@@ -429,11 +429,6 @@ variable "eks_addon_vpc_cni_version" {
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
-variable "create_bucket" {
-  type    = bool
-  default = true
-}
-
 variable "bucket_name" {
   type    = string
   default = ""
