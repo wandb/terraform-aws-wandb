@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [5.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.0...v5.2.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Rate limiting of aws R53 ([#314](https://github.com/wandb/terraform-aws-wandb/issues/314)) ([55854a3](https://github.com/wandb/terraform-aws-wandb/commit/55854a3365b8294afdc39a85d812cc4f7c8df542))
+
 ## [5.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.1.0...v5.2.0) (2024-12-02)
 
 
