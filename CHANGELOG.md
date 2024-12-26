@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [5.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.1...v5.2.2) (2024-12-26)
+
+
+### Bug Fixes
+
+* Bump obsolete aws-mysql-engine verions in examples ([#316](https://github.com/wandb/terraform-aws-wandb/issues/316)) ([47a904e](https://github.com/wandb/terraform-aws-wandb/commit/47a904ea66d11afb55d11c3bbf79e1e1187be7b8))
+
 ### [5.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.0...v5.2.1) (2024-12-19)
 
 
