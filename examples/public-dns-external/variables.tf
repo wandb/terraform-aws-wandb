@@ -33,7 +33,7 @@ variable "wandb_license" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.02.2"
+  default     = "8.0.mysql_aurora.3.05.2"
 }
 
 variable "database_instance_class" {
