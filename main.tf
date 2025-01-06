@@ -262,6 +262,7 @@ module "wandb" {
 
   operator_chart_version = var.operator_chart_version
   controller_image_tag   = var.controller_image_tag
+  enable_helm_release    = var.enable_helm_release
 
   spec = {
     values = {
