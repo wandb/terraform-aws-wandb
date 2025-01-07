@@ -334,6 +334,12 @@ module "wandb" {
         ]
       }
 
+      console = {
+        extraEnv = {
+          "REFERENCE_IDENTITY" = module.app_eks.node_role.arn
+        }
+      }
+
       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
       yace = var.enable_yace ? {
         install        = true
