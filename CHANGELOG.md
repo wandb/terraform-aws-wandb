@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.2...v6.0.0) (2025-01-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 (#315)
+
+### Features
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 ([#315](https://github.com/wandb/terraform-aws-wandb/issues/315)) ([0f4b21c](https://github.com/wandb/terraform-aws-wandb/commit/0f4b21c35d9bfcc746cd52f159b1653892cff366))
+
 ### [5.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.1...v5.2.2) (2024-12-26)
 
 
