@@ -1,5 +1,5 @@
 output "bucket_name" {
-  value = local.bucket_name
+  value = local.main_bucket_name
 }
 output "bucket_path" {
   value = var.bucket_path

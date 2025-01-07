@@ -39,6 +39,7 @@ module "file_storage" {
 
 locals {
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.bucket_queue_name
+  main_bucket_name  = var.bucket_name != "" ? var.bucket_name : module.file_storage.bucket_name
 }
 
 module "networking" {
