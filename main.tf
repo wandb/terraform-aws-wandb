@@ -336,7 +336,7 @@ module "wandb" {
 
       console = {
         extraEnv = {
-          "REFERENCE_IDENTITY" = module.app_eks.node_role.arn
+          "BUCKET_ACCESS_IDENTITY" = module.app_eks.node_role.arn
         }
       }
 
