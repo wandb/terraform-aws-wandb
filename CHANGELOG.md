@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.0.0...v6.1.0) (2025-01-08)
+
+
+### Features
+
+* Add role passthrough ([#320](https://github.com/wandb/terraform-aws-wandb/issues/320)) ([1fa7e8a](https://github.com/wandb/terraform-aws-wandb/commit/1fa7e8a2d9d53b2c2aa1acb01a1f7a8c57fc531c))
+
 ## [6.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.2...v6.0.0) (2025-01-07)
 
 
