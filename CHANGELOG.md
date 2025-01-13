@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.0.0...v6.1.0) (2025-01-08)
+
+
+### Features
+
+* Add role passthrough ([#320](https://github.com/wandb/terraform-aws-wandb/issues/320)) ([1fa7e8a](https://github.com/wandb/terraform-aws-wandb/commit/1fa7e8a2d9d53b2c2aa1acb01a1f7a8c57fc531c))
+
+## [6.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.2...v6.0.0) (2025-01-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 (#315)
+
+### Features
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 ([#315](https://github.com/wandb/terraform-aws-wandb/issues/315)) ([0f4b21c](https://github.com/wandb/terraform-aws-wandb/commit/0f4b21c35d9bfcc746cd52f159b1653892cff366))
+
+### [5.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.1...v5.2.2) (2024-12-26)
+
+
+### Bug Fixes
+
+* Bump obsolete aws-mysql-engine verions in examples ([#316](https://github.com/wandb/terraform-aws-wandb/issues/316)) ([47a904e](https://github.com/wandb/terraform-aws-wandb/commit/47a904ea66d11afb55d11c3bbf79e1e1187be7b8))
+
+### [5.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.0...v5.2.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Rate limiting of aws R53 ([#314](https://github.com/wandb/terraform-aws-wandb/issues/314)) ([55854a3](https://github.com/wandb/terraform-aws-wandb/commit/55854a3365b8294afdc39a85d812cc4f7c8df542))
+
 ## [5.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.1.0...v5.2.0) (2024-12-02)
 
 
