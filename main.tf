@@ -252,7 +252,7 @@ locals {
 
 module "wandb" {
   source  = "wandb/wandb/helm"
-  version = "1.2.0"
+  version = "2.0.0"
 
   depends_on = [
     module.database,
@@ -332,6 +332,12 @@ module "wandb" {
             "issuer"  = var.kubernetes_cluster_oidc_issuer_url
           }
         ]
+      }
+
+      console = {
+        extraEnv = {
+          "BUCKET_ACCESS_IDENTITY" = module.app_eks.node_role.arn
+        }
       }
 
       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
