@@ -398,7 +398,9 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
-
+##########################################
+# EKS Cluster Addons                     #
+##########################################
 variable "eks_addon_efs_csi_driver_version" {
   description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string

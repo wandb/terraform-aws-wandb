@@ -189,6 +189,12 @@ module "app_eks" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+
+  eks_addon_efs_csi_driver_version = var.eks_addon_efs_csi_driver_version
+  eks_addon_ebs_csi_driver_version = var.eks_addon_ebs_csi_driver_version
+  eks_addon_coredns_version        = var.eks_addon_coredns_version
+  eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
+  eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
 }
 
 locals {
