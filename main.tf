@@ -379,3 +379,8 @@ module "wandb" {
     }
   }
 }
+
+moved {
+  from = "module.file_storage[0]"
+  to = "module.file_storage"
+}
