@@ -398,7 +398,9 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
-
+##########################################
+# EKS Cluster Addons                     #
+##########################################
 variable "eks_addon_efs_csi_driver_version" {
   description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
@@ -435,11 +437,6 @@ variable "eks_addon_vpc_cni_version" {
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
-variable "create_bucket" {
-  type    = bool
-  default = true
-}
-
 variable "bucket_name" {
   type    = string
   default = ""
