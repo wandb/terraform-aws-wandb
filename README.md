@@ -379,6 +379,7 @@ This can be donw by adding the following policy document.
 
 We are considering this a major change because of the terraform `moved` block which migrates the resource. After moving to a `v7` applying an earlier version of the module may result in terraform deleting your bucket.
 
+removed the `create_bucket` var due to the above.
 ### Upgrading from 2.x -> 3.x
 
 - No changes required by you
