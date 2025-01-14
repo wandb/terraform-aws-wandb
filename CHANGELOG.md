@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.1.0...v7.0.0) (2025-01-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use defaultBucket (#312) *BREAKING CHANGE*
+
+### Features
+
+* Use defaultBucket ([#312](https://github.com/wandb/terraform-aws-wandb/issues/312)) *BREAKING CHANGE* ([6044819](https://github.com/wandb/terraform-aws-wandb/commit/60448197c0298683fe3b16df1e7adc95a29dbd85))
+
 ## [6.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.0.0...v6.1.0) (2025-01-08)
 
 
