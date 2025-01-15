@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.0.0...v7.1.0) (2025-01-15)
+
+
+### Features
+
+* Add metric-server ([#321](https://github.com/wandb/terraform-aws-wandb/issues/321)) ([c8b96ca](https://github.com/wandb/terraform-aws-wandb/commit/c8b96cad59b896e01ca0c57f168638a6942f27ae))
+
 ## [7.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.1.0...v7.0.0) (2025-01-14)
 
 
