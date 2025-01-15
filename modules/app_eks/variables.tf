@@ -182,3 +182,8 @@ variable "eks_addon_vpc_cni_version" {
   description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
 }
+
+variable "eks_addon_metrics_server_version" {
+  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  type        = string
+}

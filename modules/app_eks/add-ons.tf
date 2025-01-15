@@ -78,3 +78,13 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
 }
+
+resource "aws_eks_addon" "metrics_server" {
+  depends_on = [
+    module.eks
+  ]
+  cluster_name      = var.namespace
+  addon_name        = "metrics-server"
+  addon_version     = var.eks_addon_metrics_server_version
+  resolve_conflicts = "OVERWRITE"
+}

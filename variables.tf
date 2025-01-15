@@ -431,6 +431,11 @@ variable "eks_addon_vpc_cni_version" {
   default     = "v1.18.3-eksbuild.3"
 }
 
+variable "eks_addon_metrics_server_version" {
+  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  type        = string
+  default     = "v0.7.2-eksbuild.1"
+}
 
 ##########################################
 # External Bucket                        #
