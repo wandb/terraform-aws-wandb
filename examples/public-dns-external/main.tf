@@ -11,6 +11,18 @@ provider "aws" {
   }
 }
 
+
+locals {
+  env_vars = merge(
+    {
+      "TAG_CUSTOMER_NS"    = var.namespace
+      "TAG_CLOUD"          = "AWS"
+    },
+    var.other_wandb_env
+  )
+}
+
+
 module "wandb_infra" {
   source = "../../"
 
@@ -37,6 +49,8 @@ module "wandb_infra" {
   subdomain   = var.subdomain
 
   license = var.wandb_license
+
+  other_wandb_env = local.env_vars
 
   bucket_name        = var.bucket_name
   bucket_path        = var.bucket_path
