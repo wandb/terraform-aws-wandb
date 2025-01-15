@@ -45,6 +45,12 @@ variable "create_elasticache_subnet" {
   default     = false
 }
 
+variable "enable_vpc_flow_logs" {
+  description = "Whether to enable VPC Flow Logs"
+  type        = bool
+  default     = false
+}
+
 variable "enable_vpn_gateway" {
   type        = bool
   description = "(Optional) Should be true if you want to create a new VPN Gateway resource and attach it to the VPC."
