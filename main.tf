@@ -180,7 +180,7 @@ module "app_eks" {
   eks_addon_coredns_version        = var.eks_addon_coredns_version
   eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
   eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
-
+  eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
 }
 
 
