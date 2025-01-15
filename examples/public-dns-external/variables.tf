@@ -131,3 +131,21 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "use_redis_in_cluster" {
+  type        = bool
+  default     = false
+  description = "Enable or disable redis in cluster"
+}
+
+variable "redis_service_name_prefix" {
+  type        = string
+  default     = null
+  description = "Prefix of the redis service name"
+}
+
+variable "redis_master_name" {
+  type        = string
+  default     = null
+  description = "Name of the redis master that sentinel uses to monitor"
+}
