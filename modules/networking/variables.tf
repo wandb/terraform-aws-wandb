@@ -45,7 +45,7 @@ variable "create_elasticache_subnet" {
   default     = false
 }
 
-variable "enable_flow_logs" {
+variable "enable_flow_log" {
   description = "Controls whether VPC Flow Logs are enabled"
   type        = bool
   default     = false
