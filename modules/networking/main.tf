@@ -20,7 +20,7 @@ module "vpc" {
   elasticache_subnets            = var.create_elasticache_subnet ? var.elasticache_subnet_cidrs : []
   enable_dns_hostnames           = true
   enable_dns_support             = true
-  enable_vpc_flow_logs           = var.enable_vpc_flow_logs
+  enable_flow_logs           = var.enable_flow_logs
   enable_nat_gateway             = true
   enable_vpn_gateway             = var.enable_vpn_gateway
   manage_default_security_group  = true
