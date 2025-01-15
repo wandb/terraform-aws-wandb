@@ -50,6 +50,10 @@ module "wandb_infra" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+
+  use_redis_in_cluster      = var.use_redis_in_cluster
+  redis_master_name         = var.redis_master_name
+  redis_service_name_prefix = var.redis_service_name_prefix
 }
 
 data "aws_eks_cluster" "app_cluster" {

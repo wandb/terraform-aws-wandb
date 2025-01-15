@@ -251,8 +251,9 @@ locals {
 }
 
 module "wandb" {
-  source  = "wandb/wandb/helm"
-  version = "2.0.0"
+  # source  = "wandb/wandb/helm"
+  # version = "2.0.0"
+  source  = "../terraform-helm-wandb"
 
   depends_on = [
     module.database,
@@ -263,6 +264,10 @@ module "wandb" {
   operator_chart_version = var.operator_chart_version
   controller_image_tag   = var.controller_image_tag
   enable_helm_release    = var.enable_helm_release
+
+  redis_master_name          = var.redis_master_name
+  redis_service_name_prefix  = var.redis_service_name_prefix
+  use_redis_in_cluster       = var.use_redis_in_cluster
 
   spec = {
     values = {
@@ -289,8 +294,8 @@ module "wandb" {
         }
 
         redis = {
-          host = module.redis[0].host
-          port = "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
+          host = var.use_redis_in_cluster ? "${var.redis_service_name_prefix}-redis" : module.redis[0].host
+          port = var.use_redis_in_cluster ? "26379?master=${var.redis_master_name}&ttlInSeconds=604800" : "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
         }
       }
 
