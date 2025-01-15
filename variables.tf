@@ -214,6 +214,12 @@ variable "create_vpc" {
   default     = true
 }
 
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
+}
+
 variable "network_id" {
   default     = ""
   description = "The identity of the VPC in which resources will be deployed."

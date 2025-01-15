@@ -46,6 +46,7 @@ module "networking" {
   source     = "./modules/networking"
   namespace  = var.namespace
   create_vpc = var.create_vpc
+  enable_flow_log = var.enable_flow_log
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs
