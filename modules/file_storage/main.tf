@@ -33,7 +33,7 @@ resource "aws_s3_bucket_policy" "https_only" {
         Effect    = "Deny",
         Principal = "*",
         Action    = "s3:*",
-        Resource  = [
+        Resource = [
           "arn:aws:s3:::${aws_s3_bucket.file_storage.bucket}",
           "arn:aws:s3:::${aws_s3_bucket.file_storage.bucket}/*"
         ],
