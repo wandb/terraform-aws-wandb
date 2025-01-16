@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.1.0...v7.2.0) (2025-01-16)
+
+
+### Features
+
+* Add VPC flow logs option + s3 https-only policy ([#322](https://github.com/wandb/terraform-aws-wandb/issues/322)) ([92d8559](https://github.com/wandb/terraform-aws-wandb/commit/92d8559c5fcfa8263603cd494635e9e770fa82ae))
+
 ## [7.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.0.0...v7.1.0) (2025-01-15)
 
 
