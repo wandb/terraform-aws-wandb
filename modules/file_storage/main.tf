@@ -21,6 +21,32 @@ resource "aws_s3_bucket" "file_storage" {
   depends_on = [aws_sqs_queue.file_storage]
 }
 
+# Apply an HTTPS-only bucket policy to each bucket
+resource "aws_s3_bucket_policy" "https_only" {
+  bucket = aws_s3_bucket.file_storage.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid       = "DenyHTTPRequests",
+        Effect    = "Deny",
+        Principal = "*",
+        Action    = "s3:*",
+        Resource  = [
+          "arn:aws:s3:::${aws_s3_bucket.file_storage.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.file_storage.bucket}/*"
+        ],
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket_acl" "file_storage" {
   depends_on = [aws_s3_bucket_ownership_controls.file_storage]
 
