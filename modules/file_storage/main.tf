@@ -23,6 +23,7 @@ resource "aws_s3_bucket" "file_storage" {
 
 # Apply an HTTPS-only bucket policy to each bucket
 resource "aws_s3_bucket_policy" "https_only" {
+  count  = var.enable_s3_https_only ? 1 : 0
   bucket = aws_s3_bucket.file_storage.id
 
   policy = jsonencode({
