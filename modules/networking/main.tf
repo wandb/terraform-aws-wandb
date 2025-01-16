@@ -50,7 +50,7 @@ resource "aws_vpc_endpoint" "clickhouse" {
 
 # VPC FLow Logs
 resource "aws_flow_log" "vpc_flow_logs" {
-  count = var.create_vpc && var.enable_flow_log != "" ? 1 : 0
+  count = var.create_vpc && var.enable_flow_log ? 1 : 0
 
   log_destination      = aws_s3_bucket.flow_log.arn
   log_destination_type = "s3"
