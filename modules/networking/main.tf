@@ -59,5 +59,7 @@ resource "aws_flow_log" "vpc_flow_logs" {
 }
 
 resource "aws_s3_bucket" "flow_log" {
+  count = var.create_vpc && var.enable_flow_log ? 1 : 0
+  
   bucket = "${var.namespace}-vpc-flow-logs"
 }
