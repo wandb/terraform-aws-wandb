@@ -52,7 +52,7 @@ resource "aws_vpc_endpoint" "clickhouse" {
 resource "aws_flow_log" "vpc_flow_logs" {
   count = var.create_vpc && var.enable_flow_log ? 1 : 0
 
-  log_destination      = aws_s3_bucket.flow_log.arn
+  log_destination      = aws_s3_bucket.flow_log[0].arn
   log_destination_type = "s3"
   traffic_type         = "REJECT"
   vpc_id               = module.vpc.vpc_id
