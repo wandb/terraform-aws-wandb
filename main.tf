@@ -29,12 +29,13 @@ locals {
 }
 
 module "file_storage" {
-  source              = "./modules/file_storage"
-  namespace           = var.namespace
-  create_queue        = !local.use_internal_queue
-  sse_algorithm       = "aws:kms"
-  kms_key_arn         = local.s3_kms_key_arn
-  deletion_protection = var.deletion_protection
+  source               = "./modules/file_storage"
+  namespace            = var.namespace
+  create_queue         = !local.use_internal_queue
+  sse_algorithm        = "aws:kms"
+  kms_key_arn          = local.s3_kms_key_arn
+  deletion_protection  = var.deletion_protection
+  enable_s3_https_only = var.enable_s3_https_only
 }
 
 locals {
@@ -43,9 +44,10 @@ locals {
 }
 
 module "networking" {
-  source     = "./modules/networking"
-  namespace  = var.namespace
-  create_vpc = var.create_vpc
+  source          = "./modules/networking"
+  namespace       = var.namespace
+  create_vpc      = var.create_vpc
+  enable_flow_log = var.enable_flow_log
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs

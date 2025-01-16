@@ -214,6 +214,12 @@ variable "create_vpc" {
   default     = true
 }
 
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
+}
+
 variable "network_id" {
   default     = ""
   description = "The identity of the VPC in which resources will be deployed."
@@ -438,6 +444,17 @@ variable "eks_addon_metrics_server_version" {
 }
 
 ##########################################
+# Bucket Policy                          #
+##########################################
+# This setting will ensure that s3 bucket objects will reject HTTP traffic with a 403
+# and will only accept HTTPS traffic
+variable "enable_s3_https_only" {
+  description = "Controls whether HTTPS-only is enabled for s3 buckets"
+  type        = bool
+  default     = false
+}
+
+##########################################
 # External Bucket                        #
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
@@ -540,3 +557,4 @@ variable "kubernetes_cluster_oidc_issuer_url" {
   description = "OIDC issuer URL for the Kubernetes cluster. Can be determined using `kubectl get --raw /.well-known/openid-configuration`"
   default     = ""
 }
+

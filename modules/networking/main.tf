@@ -39,11 +39,27 @@ module "vpc" {
 }
 
 resource "aws_vpc_endpoint" "clickhouse" {
-  count = var.create_vpc && var.clickhouse_endpoint_service_id != "" ? 1 : 0
+  count = var.create_vpc && length(var.clickhouse_endpoint_service_id) > 0 ? 1 : 0
 
   vpc_id              = module.vpc.vpc_id
   service_name        = var.clickhouse_endpoint_service_id
   vpc_endpoint_type   = "Interface"
   subnet_ids          = module.vpc.private_subnets
   private_dns_enabled = true
+}
+
+# VPC FLow Logs
+resource "aws_flow_log" "vpc_flow_logs" {
+  count = var.create_vpc && var.enable_flow_log ? 1 : 0
+
+  log_destination      = aws_s3_bucket.flow_log[0].arn
+  log_destination_type = "s3"
+  traffic_type         = "REJECT"
+  vpc_id               = module.vpc.vpc_id
+}
+
+resource "aws_s3_bucket" "flow_log" {
+  count = var.create_vpc && var.enable_flow_log ? 1 : 0
+
+  bucket = "${var.namespace}-vpc-flow-logs"
 }

@@ -68,3 +68,9 @@ variable "clickhouse_endpoint_service_id" {
   type        = string
   default     = ""
 }
+
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
+}
