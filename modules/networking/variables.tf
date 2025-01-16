@@ -45,12 +45,6 @@ variable "create_elasticache_subnet" {
   default     = false
 }
 
-variable "enable_flow_log" {
-  description = "Controls whether VPC Flow Logs are enabled"
-  type        = bool
-  default     = false
-}
-
 variable "enable_vpn_gateway" {
   type        = bool
   description = "(Optional) Should be true if you want to create a new VPN Gateway resource and attach it to the VPC."
@@ -73,4 +67,10 @@ variable "clickhouse_endpoint_service_id" {
   description = "The ID of the Clickhouse service endpoint"
   type        = string
   default     = ""
+}
+
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
 }

@@ -20,7 +20,6 @@ module "vpc" {
   elasticache_subnets            = var.create_elasticache_subnet ? var.elasticache_subnet_cidrs : []
   enable_dns_hostnames           = true
   enable_dns_support             = true
-  enable_flow_log                = var.enable_flow_log
   enable_nat_gateway             = true
   enable_vpn_gateway             = var.enable_vpn_gateway
   manage_default_security_group  = true
@@ -40,11 +39,25 @@ module "vpc" {
 }
 
 resource "aws_vpc_endpoint" "clickhouse" {
-  count = var.create_vpc && var.clickhouse_endpoint_service_id != "" ? 1 : 0
+  count = var.create_vpc && var.clickhouse_endpoint_service_id
 
   vpc_id              = module.vpc.vpc_id
   service_name        = var.clickhouse_endpoint_service_id
   vpc_endpoint_type   = "Interface"
   subnet_ids          = module.vpc.private_subnets
   private_dns_enabled = true
+}
+
+# VPC FLow Logs
+resource "aws_flow_log" "vpc_flow_logs" {
+  count = var.create_vpc && var.enable_flow_log != "" ? 1 : 0
+
+  log_destination      = aws_s3_bucket.flow_log.arn
+  log_destination_type = "s3"
+  traffic_type         = "REJECT"
+  vpc_id               = module.vpc.vpc_id
+}
+
+resource "aws_s3_bucket" "flow_log" {
+  bucket = "vpc-logs"
 }
