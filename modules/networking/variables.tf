@@ -74,3 +74,9 @@ variable "enable_flow_log" {
   type        = bool
   default     = false
 }
+
+variable "keep_flow_log_bucket" {
+  description = "Controls whether S3 bucket storing VPC Flow Logs will be kept"
+  type        = bool
+  default     = false
+}

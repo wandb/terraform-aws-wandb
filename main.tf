@@ -44,10 +44,11 @@ locals {
 }
 
 module "networking" {
-  source          = "./modules/networking"
-  namespace       = var.namespace
-  create_vpc      = var.create_vpc
-  enable_flow_log = var.enable_flow_log
+  source               = "./modules/networking"
+  namespace            = var.namespace
+  create_vpc           = var.create_vpc
+  enable_flow_log      = var.enable_flow_log
+  keep_flow_log_bucket = var.keep_flow_log_bucket
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs
