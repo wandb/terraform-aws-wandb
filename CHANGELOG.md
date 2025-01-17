@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.0...v7.2.1) (2025-01-17)
+
+
+### Bug Fixes
+
+* S3 bucket force destroy ([#324](https://github.com/wandb/terraform-aws-wandb/issues/324)) ([de63184](https://github.com/wandb/terraform-aws-wandb/commit/de631846f4d3fcb3454227872d419407e2b47d33))
+
 ## [7.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.1.0...v7.2.0) (2025-01-16)
 
 
