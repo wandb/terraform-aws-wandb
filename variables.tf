@@ -220,6 +220,12 @@ variable "enable_flow_log" {
   default     = false
 }
 
+variable "keep_flow_log_bucket" {
+  description = "Controls whether S3 bucket storing VPC Flow Logs will be kept"
+  type        = bool
+  default     = true
+}
+
 variable "network_id" {
   default     = ""
   description = "The identity of the VPC in which resources will be deployed."
