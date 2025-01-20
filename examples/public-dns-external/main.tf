@@ -84,6 +84,23 @@ provider "helm" {
   }
 }
 
+# Migration module: Migrate the public DNS to private DNS
+# This will include moving from a public ALB to a private NLB and updating the DNS records
+module "migrate_public_to_private" {
+  count = var.migrate_public_to_private ? 1 : 0
+
+  source = "../../modules/migrate-public-to-private/"
+
+  namespace              = var.namespace
+  subdomain              = var.subdomain
+  private_hosted_zone_id = var.private_hosted_zone_id
+
+  vpc_id         = module.wandb_infra.network_id
+  subnet_ids     = module.wandb_infra.network_private_subnets
+  vpc_cidr_block = module.wandb_infra.network_cidr
+}
+
+
 output "bucket_name" {
   value = module.wandb_infra.bucket_name
 }
@@ -110,4 +127,16 @@ output "redis_instance_type" {
 
 output "standardized_size" {
   value = var.size
+}
+
+output "network_id" {
+  value = module.wandb_infra.network_id
+}
+
+output "network_private_subnets" {
+  value = module.wandb_infra.network_private_subnets
+}
+
+output "network_private_subnet_cidrs" {
+  value = module.wandb_infra.network_private_subnet_cidrs
 }

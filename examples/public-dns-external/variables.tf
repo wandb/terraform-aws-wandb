@@ -131,3 +131,15 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "migrate_public_to_private" {
+  description = "value to determine if the migration should be done from public to private"
+  type        = bool
+  default     = false
+}
+
+variable "private_hosted_zone_id" {
+  description = "Private hosted zone id if migrating from public to private"
+  type        = string
+  default     = ""
+}
