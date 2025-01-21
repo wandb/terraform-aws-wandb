@@ -363,6 +363,12 @@ module "wandb" {
       mysql = { install = false }
       redis = { install = false }
 
+      redisInCluster = var.use_redis_in_cluster ? {
+        enabled = true
+      } : {
+        enabled = false
+      }
+
       weave = {
         persistence = {
           provider = "efs"
