@@ -36,7 +36,7 @@ locals {
 }
 data "aws_iam_policy_document" "node_kms" {
   statement {
-    actions = local.node_kms_actions
+    actions   = local.node_kms_actions
     effect    = "Allow"
     resources = var.bucket_kms_key_arns
   }
