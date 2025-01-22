@@ -275,7 +275,7 @@ module "wandb" {
 
   redis_master_name          = var.redis_master_name
   redis_service_name_prefix  = var.redis_service_name_prefix
-  use_redis_in_cluster       = var.use_redis_in_cluster
+  create_redis_in_cluster    = var.create_redis_in_cluster
 
   spec = {
     values = {

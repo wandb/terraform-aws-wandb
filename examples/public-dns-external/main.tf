@@ -51,6 +51,8 @@ module "wandb_infra" {
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 
+  create_elasticache        = var.create_elasticache
+  create_redis_in_cluster   = var.create_redis_in_cluster
   use_redis_in_cluster      = var.use_redis_in_cluster
   redis_master_name         = var.redis_master_name
   redis_service_name_prefix = var.redis_service_name_prefix
