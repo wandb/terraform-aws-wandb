@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.1...v7.2.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* S3 https-only ([#326](https://github.com/wandb/terraform-aws-wandb/issues/326)) ([24d85dd](https://github.com/wandb/terraform-aws-wandb/commit/24d85dd12be39a24d4b2ffc124b53fdce346db1d))
+
 ### [7.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.0...v7.2.1) (2025-01-17)
 
 
