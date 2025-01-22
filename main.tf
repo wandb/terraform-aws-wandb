@@ -49,6 +49,7 @@ module "networking" {
   create_vpc           = var.create_vpc
   enable_flow_log      = var.enable_flow_log
   keep_flow_log_bucket = var.keep_flow_log_bucket
+  enable_s3_https_only = var.enable_s3_https_only
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs

@@ -80,3 +80,9 @@ variable "keep_flow_log_bucket" {
   type        = bool
   default     = true
 }
+
+variable "enable_s3_https_only" {
+  description = "Controls whether HTTPS-only is enabled for s3 buckets"
+  type        = bool
+  default     = false
+}
