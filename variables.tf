@@ -489,7 +489,7 @@ variable "bucket_permissions_mode" {
   default = "strict"
 }
 variable "bucket_lax_accounts" {
-  type        = set(string)
+  type        = list(string)
   description = "List of allowed accounts when 'buckeet_permissions_mode' is 'lax'."
   default     = []
 }
