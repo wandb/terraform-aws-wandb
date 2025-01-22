@@ -104,13 +104,16 @@ All the values set via `deployment-size.tf` can be overridden by setting the app
 
 ## Bring Your Own Bucket (BYOB)
 We have added additional variable that make enabling BYOB easier to enable.
-`bucket_permissions_mode` accepts 1 of 3 values; `strict` the default requires an explict list of the buckets for proper access, the same as byob before `7.3.0`.
-`restricted` makes use of the new variable `bucket_restricted_accounts` which is a list of AWS account Id's where the BYOBs can be hosted from. ex: `["1234567890", "1234876590"]`
-`public` enables access to any BYOB properly configured not present in the the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
+`bucket_permissions_mode` accepts 1 of 3 values; 
+- `strict` the default requires an explict list of the buckets for proper access, the same as byob before `7.3.0`.
+- `restricted` makes use of the new variable `bucket_restricted_accounts` which is a list of AWS account Id's where the BYOBs can be hosted from. ex: `["1234567890", "1234876590"]`
+- `public` enables access to any BYOB properly configured not present in the the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
 
 > [!IMPORTANT]
 > Enabling BYOB or cross-account reguardless of `bucket_permissions_mode` still requires a policy attached to that bucket to allowing the eks node role to perform s3 actions.
+>
 > To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of module `cluster_node_role`
+>
 > You can use the [Secure Storage Connector submodule](https://github.com/wandb/terraform-aws-wandb/tree/main/modules/secure_storage_connector) to create a bucket that allows access for the deployed cluster
 
 ## Examples
