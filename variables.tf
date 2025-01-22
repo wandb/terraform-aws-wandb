@@ -482,7 +482,7 @@ variable "bucket_permissions_mode" {
   description = "Defines the bucket permissiones mode, which can be one of: strict, lax, or open."
 
   validation {
-    condition     = contains(["strict", "lax", "open"], var.access_mode)
+    condition     = contains(["strict", "lax", "open"], var.bucket_permissions_mode)
     error_message = "The bucket_permissions_mode must be one of: strict, lax, or open."
   }
 
