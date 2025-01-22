@@ -135,7 +135,19 @@ variable "aws_loadbalancer_controller_tags" {
 variable "use_redis_in_cluster" {
   type        = bool
   default     = false
-  description = "Enable or disable redis in cluster"
+  description = "whether to actually use redis in cluster"
+}
+
+variable "create_redis_in_cluster" {
+  type        = bool
+  default     = false
+  description = "whether to create an in-cluster redis"
+}
+
+variable "create_elasticache" {
+  type        = bool
+  default     = true
+  description = "whether to create an elasticache redis"
 }
 
 variable "redis_service_name_prefix" {

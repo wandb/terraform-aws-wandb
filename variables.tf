@@ -480,10 +480,16 @@ variable "elasticache_node_type" {
   default     = null
 }
 
+variable "create_redis_in_cluster" {
+  type        = bool
+  default     = false
+  description = "Create redis in cluster"
+}
+
 variable "use_redis_in_cluster" {
   type        = bool
   default     = false
-  description = "Enable or disable redis in cluster"
+  description = "whether to actually use the redis in cluster"
 }
 
 variable "redis_service_name_prefix" {
