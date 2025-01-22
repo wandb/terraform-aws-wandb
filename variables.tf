@@ -490,7 +490,7 @@ variable "bucket_permissions_mode" {
 }
 variable "bucket_restricted_accounts" {
   type        = list(string)
-  description = "List of allowed accounts when 'buckeet_permissions_mode' is 'restricted'."
+  description = "List of allowed accounts when 'bucket_permissions_mode' is 'restricted'."
   default     = []
 }
 ##########################################
