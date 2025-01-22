@@ -8,6 +8,18 @@ variable "bucket_kms_key_arns" {
   type        = list(string)
 }
 
+variable "map_bucket_permissions" {
+  description = "A Map of the parent modules 'bucket_permissions_mode' & 'bucket_lax_accounts' variables"
+  type = object({
+    mode     = string,
+    accounts = list(string)
+  })
+  default = {
+    mode     = "strict",
+    accounts = []
+  }
+}
+
 variable "fqdn" {
   type = string
 }

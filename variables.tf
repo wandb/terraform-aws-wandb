@@ -477,7 +477,22 @@ variable "bucket_kms_key_arn" {
     error_message = "Invalid value for bucket kms ARN"
   }
 }
+variable "bucket_permissions_mode" {
+  type        = string
+  description = "Defines the bucket permissiones mode, which can be one of: strict, lax, or open."
 
+  validation {
+    condition     = contains(["strict", "lax", "open"], var.access_mode)
+    error_message = "The bucket_permissions_mode must be one of: strict, lax, or open."
+  }
+
+  default = "strict"
+}
+variable "bucket_lax_accounts" {
+  type        = set(string)
+  description = "List of allowed accounts when 'buckeet_permissions_mode' is 'lax'."
+  default     = []
+}
 ##########################################
 # Bucket path                            #
 ##########################################

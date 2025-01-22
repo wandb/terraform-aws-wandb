@@ -56,6 +56,32 @@ data "aws_iam_policy_document" "node_s3" {
       "${var.bucket_arn}/*"
     ]
   }
+  dynamic "statement" {
+    for_each = var.map_bucket_permissions.mode == "open" ? [1] : []
+    content {
+      actions   = ["s3:*"]
+      effect    = "Allow"
+      resources = ["*"]
+      condition {
+        test     = "StringNotEquals"
+        variable = "s3:ResourceAccount"
+        values   = [data.aws_caller_identity.current.account_id]
+      }
+    }
+  }
+  dynamic "statement" {
+    for_each = var.map_bucket_permissions.mode == "lax" ? [1] : []
+    content {
+      actions   = ["s3:*"]
+      effect    = "Allow"
+      resources = ["*"]
+      condition {
+        test     = "StringEquals"
+        variable = "s3:ResourceAccount"
+        values   = var.map_bucket_permissions.accounts
+      }
+    }
+  }
 }
 
 data "aws_iam_policy_document" "secrets_manager" {
