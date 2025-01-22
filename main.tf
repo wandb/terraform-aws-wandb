@@ -150,7 +150,7 @@ module "app_eks" {
 
   map_bucket_permissions = {
     mode     = var.bucket_permissions_mode
-    accounts = var.bucket_lax_accounts
+    accounts = var.bucket_restricted_accounts
   }
 
   bucket_kms_key_arns = compact([

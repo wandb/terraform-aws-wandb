@@ -479,18 +479,18 @@ variable "bucket_kms_key_arn" {
 }
 variable "bucket_permissions_mode" {
   type        = string
-  description = "Defines the bucket permissiones mode, which can be one of: strict, lax, or open."
+  description = "Defines the bucket permissiones mode, which can be one of: strict, restricted, or public."
 
   validation {
-    condition     = contains(["strict", "lax", "open"], var.bucket_permissions_mode)
+    condition     = contains(["strict", "restricted", "public"], var.bucket_permissions_mode)
     error_message = "The bucket_permissions_mode must be one of: strict, lax, or open."
   }
 
   default = "strict"
 }
-variable "bucket_lax_accounts" {
+variable "bucket_restricted_accounts" {
   type        = list(string)
-  description = "List of allowed accounts when 'buckeet_permissions_mode' is 'lax'."
+  description = "List of allowed accounts when 'buckeet_permissions_mode' is 'restricted'."
   default     = []
 }
 ##########################################

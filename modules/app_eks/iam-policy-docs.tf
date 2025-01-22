@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "node_kms" {
     resources = var.bucket_kms_key_arns
   }
   dynamic "statement" {
-    for_each = var.map_bucket_permissions.mode == "open" ? [1] : []
+    for_each = var.map_bucket_permissions.mode == "public" ? [1] : []
     content {
       actions   = local.node_kms_actions
       effect    = "Allow"
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "node_kms" {
     }
   }
   dynamic "statement" {
-    for_each = var.map_bucket_permissions.mode == "lax" ? [1] : []
+    for_each = var.map_bucket_permissions.mode == "restricted" ? [1] : []
     content {
       actions   = local.node_kms_actions
       effect    = "Allow"
@@ -86,7 +86,7 @@ data "aws_iam_policy_document" "node_s3" {
     ]
   }
   dynamic "statement" {
-    for_each = var.map_bucket_permissions.mode == "open" ? [1] : []
+    for_each = var.map_bucket_permissions.mode == "public" ? [1] : []
     content {
       actions   = ["s3:*"]
       effect    = "Allow"
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "node_s3" {
     }
   }
   dynamic "statement" {
-    for_each = var.map_bucket_permissions.mode == "lax" ? [1] : []
+    for_each = var.map_bucket_permissions.mode == "restricted" ? [1] : []
     content {
       actions   = ["s3:*"]
       effect    = "Allow"

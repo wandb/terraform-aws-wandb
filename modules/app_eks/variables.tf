@@ -9,7 +9,7 @@ variable "bucket_kms_key_arns" {
 }
 
 variable "map_bucket_permissions" {
-  description = "A Map of the parent modules 'bucket_permissions_mode' & 'bucket_lax_accounts' variables"
+  description = "A Map of the parent modules 'bucket_permissions_mode' & 'bucket_restricted_accounts' variables"
   type = object({
     mode     = string,
     accounts = list(string)
