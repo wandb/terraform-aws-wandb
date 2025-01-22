@@ -112,7 +112,7 @@ We have added additional variable that make enabling BYOB easier to enable.
 > [!IMPORTANT]
 > Enabling BYOB or cross-account reguardless of `bucket_permissions_mode` still requires a policy attached to that bucket to allowing the eks node role to perform s3 actions.
 >
-> To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of module `cluster_node_role`
+> To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of the module `cluster_node_role`
 >
 > You can use the [Secure Storage Connector submodule](https://github.com/wandb/terraform-aws-wandb/tree/main/modules/secure_storage_connector) to create a bucket that allows access for the deployed cluster
 
