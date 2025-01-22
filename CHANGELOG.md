@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.2...v7.3.0) (2025-01-22)
+
+
+### Features
+
+* Allow flexible external bucket access ([#327](https://github.com/wandb/terraform-aws-wandb/issues/327)) ([f239513](https://github.com/wandb/terraform-aws-wandb/commit/f239513ed9a59a282157ca6486602bbabdcad2fb))
+
 ### [7.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.1...v7.2.2) (2025-01-22)
 
 
