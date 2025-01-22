@@ -477,7 +477,22 @@ variable "bucket_kms_key_arn" {
     error_message = "Invalid value for bucket kms ARN"
   }
 }
+variable "bucket_permissions_mode" {
+  type        = string
+  description = "Defines the bucket permissiones mode, which can be one of: strict, restricted, or public."
 
+  validation {
+    condition     = contains(["strict", "restricted", "public"], var.bucket_permissions_mode)
+    error_message = "The bucket_permissions_mode must be one of: strict, restricted, or public."
+  }
+
+  default = "strict"
+}
+variable "bucket_restricted_accounts" {
+  type        = list(string)
+  description = "List of allowed accounts when 'bucket_permissions_mode' is 'restricted'."
+  default     = []
+}
 ##########################################
 # Bucket path                            #
 ##########################################

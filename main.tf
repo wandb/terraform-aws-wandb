@@ -149,6 +149,11 @@ module "app_eks" {
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
 
+  map_bucket_permissions = {
+    mode     = var.bucket_permissions_mode
+    accounts = var.bucket_restricted_accounts
+  }
+
   bucket_kms_key_arns = compact([
     local.default_kms_key,
     var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
