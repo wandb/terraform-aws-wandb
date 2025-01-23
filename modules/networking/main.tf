@@ -73,12 +73,12 @@ resource "aws_s3_bucket_policy" "flow_log_https_only" {
     Statement = [
       # Allow VPC flow logs to write to the S3 bucket
       {
-        Sid       = "AllowVPCFlowLogsWrite",
-        Effect    = "Allow",
+        Sid    = "AllowVPCFlowLogsWrite",
+        Effect = "Allow",
         Principal = {
           Service = "delivery.logs.amazonaws.com"
         },
-        Action    = "s3:PutObject",
+        Action   = "s3:PutObject",
         Resource = "arn:aws:s3:::${aws_s3_bucket.flow_log[0].bucket}/*",
         Condition = {
           StringEquals = {
