@@ -49,6 +49,7 @@ module "networking" {
   create_vpc           = var.create_vpc
   enable_flow_log      = var.enable_flow_log
   keep_flow_log_bucket = var.keep_flow_log_bucket
+  enable_s3_https_only = var.enable_s3_https_only
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs
@@ -147,6 +148,11 @@ module "app_eks" {
   map_accounts = var.kubernetes_map_accounts
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
+
+  map_bucket_permissions = {
+    mode     = var.bucket_permissions_mode
+    accounts = var.bucket_restricted_accounts
+  }
 
   bucket_kms_key_arns = compact([
     local.default_kms_key,

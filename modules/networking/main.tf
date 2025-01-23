@@ -63,3 +63,31 @@ resource "aws_s3_bucket" "flow_log" {
   bucket        = "${var.namespace}-vpc-flow-logs"
   force_destroy = true
 }
+
+resource "aws_s3_bucket_policy" "flow_log_https_only" {
+  count  = var.enable_s3_https_only ? 1 : 0
+  bucket = aws_s3_bucket.flow_log[0].bucket
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid       = "DenyHTTPRequests",
+        Effect    = "Deny",
+        Principal = "*",
+        Action    = "s3:*",
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.flow_log[0].bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.flow_log[0].bucket}/*"
+        ],
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+
+  depends_on = [aws_s3_bucket.flow_log]
+}
