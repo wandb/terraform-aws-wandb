@@ -94,10 +94,11 @@ module "migrate_public_to_private" {
   namespace              = var.namespace
   subdomain              = var.subdomain
   private_hosted_zone_id = var.private_hosted_zone_id
+  vpc_id                 = var.private_dns_network_id
+  vpc_cidr_block         = var.private_dns_network_cidr_block
+  subnet_ids             = var.private_dns_network_private_subnets
 
-  vpc_id         = module.wandb_infra.network_id
-  subnet_ids     = module.wandb_infra.network_private_subnets
-  vpc_cidr_block = module.wandb_infra.network_cidr
+  k8s_alb_name = module.wandb_infra.k8s_alb_name
 }
 
 
@@ -129,14 +130,6 @@ output "standardized_size" {
   value = var.size
 }
 
-output "network_id" {
-  value = module.wandb_infra.network_id
-}
-
-output "network_private_subnets" {
-  value = module.wandb_infra.network_private_subnets
-}
-
-output "network_private_subnet_cidrs" {
-  value = module.wandb_infra.network_private_subnet_cidrs
+output "k8s_alb_name" {
+  value = module.wandb_infra.k8s_alb_name
 }

@@ -141,5 +141,20 @@ variable "migrate_public_to_private" {
 variable "private_hosted_zone_id" {
   description = "Private hosted zone id if migrating from public to private"
   type        = string
-  default     = ""
 }
+
+variable "private_dns_network_id" {
+  description = "value of the network id"
+  type        = string
+}
+
+variable "private_dns_network_cidr_block" {
+  type        = string
+  description = "CIDR block of the VPC for private DNS"
+}
+
+variable "private_dns_network_private_subnets" {
+  description = "value of the private network subnets"
+  type        = list(string)
+}
+

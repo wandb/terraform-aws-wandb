@@ -99,3 +99,7 @@ output "url" {
   value       = local.url
   description = "The URL to the W&B application"
 }
+
+output "k8s_alb_name" {
+  value = local.lb_name_truncated
+}

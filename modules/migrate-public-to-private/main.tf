@@ -1,6 +1,6 @@
 # get alb arn from the output of data
 data "aws_lb" "alb" {
-  name = "${var.namespace}-alb-k8s"
+  name = var.k8s_alb_name
 }
 
 # Private Network Load Balancer

@@ -27,3 +27,8 @@ variable "private_hosted_zone_id" {
   description = "value of the private hosted zone id"
   type        = string
 }
+
+variable "k8s_alb_name" {
+  description = "name of the k8s alb"
+  type        = string
+}
