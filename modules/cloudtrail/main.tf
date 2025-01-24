@@ -30,7 +30,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
         }
       },
       {
-        Sid       = "DenyPublicAccess",
+        Sid       = "DenyInsecureConnections",
         Effect    = "Deny",
         Principal = "*",
         Action    = "s3:*",
