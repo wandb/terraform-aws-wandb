@@ -91,5 +91,6 @@ resource "aws_cloudtrail" "s3_event_logs" {
     }
   }
 
-  tags = merge(var.tags, { Name = "CloudTrail" })
+  tags       = merge(var.tags, { Name = "CloudTrail" })
+  depends_on = [aws_s3_bucket_policy.cloudtrail_logs]
 }
