@@ -133,6 +133,24 @@ locals {
   domain_filter       = var.custom_domain_filter == null || var.custom_domain_filter == "" ? local.fqdn : var.custom_domain_filter
 }
 
+#Set up Cloudtrail logging for S3 events
+module "cloudtrail" {
+  source = "./modules/cloudtrail"
+
+  enable_cloudtrail_s3_logging  = var.enable_cloudtrail_s3_logging
+  cloudtrail_bucket_name        = "cloudtrail-s3-events-logs-bucket"
+  multi_region_trail            = true
+  include_global_service_events = true
+  enable_log_file_validation    = true
+  log_lifecycle = {
+    transition_days = 90
+    expiration_days = 365
+  }
+  tags = {
+    Environment = "production"
+  }
+}
+
 module "app_eks" {
   source = "./modules/app_eks"
 

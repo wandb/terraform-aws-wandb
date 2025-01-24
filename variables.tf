@@ -579,3 +579,12 @@ variable "kubernetes_cluster_oidc_issuer_url" {
   default     = ""
 }
 
+##########################################
+# Cloudtrail Logging                     #
+##########################################
+
+variable "enable_cloudtrail_s3_logging" {
+  description = "Enable or disable CloudTrail logging for S3 events"
+  type        = bool
+  default     = false
+}
