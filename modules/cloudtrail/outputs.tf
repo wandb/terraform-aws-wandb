@@ -10,10 +10,10 @@ output "cloudtrail_bucket_arn" {
 
 output "cloudtrail_name" {
   description = "Name of the CloudTrail instance"
-  value       = var.enable_cloudtrail_s3_logging ? aws_cloudtrail.example[0].name : null
+  value       = var.enable_cloudtrail_s3_logging ? aws_cloudtrail.s3_event_logs[0].name : null
 }
 
 output "cloudtrail_arn" {
   description = "ARN of the CloudTrail instance"
-  value       = var.enable_cloudtrail_s3_logging ? aws_cloudtrail.example[0].arn : null
+  value       = var.enable_cloudtrail_s3_logging ? aws_cloudtrail.s3_event_logs[0].arn : null
 }
