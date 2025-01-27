@@ -103,7 +103,7 @@ resource "aws_cloudtrail" "s3_event_logs" {
     data_resource {
       type = "AWS::S3::Object"
       values = [
-        "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}" # Specific bucket ARN
+        "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}/*"
       ]
     }
   }
