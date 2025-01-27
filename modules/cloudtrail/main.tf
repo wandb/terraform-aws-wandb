@@ -97,15 +97,18 @@ resource "aws_cloudtrail" "s3_event_logs" {
   enable_log_file_validation    = var.enable_log_file_validation
 
   event_selector {
-    read_write_type           = "All"
+    read_write_type           = "All" # Log both read and write events
     include_management_events = true
 
     data_resource {
-      type   = "AWS::S3::Object"
-      values = ["arn:aws:s3:::*"]
+      type = "AWS::S3::Object"
+      values = [
+        "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}" # Specific bucket ARN
+      ]
     }
   }
 
-  tags       = merge(var.tags, { Name = "CloudTrail" })
+  tags = merge(var.tags, { Name = "CloudTrail" })
+
   depends_on = [aws_s3_bucket_policy.cloudtrail_logs]
 }
