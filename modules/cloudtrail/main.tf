@@ -15,6 +15,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
+      # Allow CloudTrail to write logs to the bucket
       {
         Sid    = "AllowCloudTrailWrite",
         Effect = "Allow",
@@ -29,6 +30,20 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
           }
         }
       },
+      # Allow CloudTrail to validate the bucket's ACL
+      {
+        Sid    = "AllowCloudTrailBucketACL",
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        },
+        Action = [
+          "s3:GetBucketAcl",
+          "s3:PutBucketAcl"
+        ],
+        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}"
+      },
+      # Deny all HTTP (insecure) access
       {
         Sid       = "DenyInsecureConnections",
         Effect    = "Deny",
