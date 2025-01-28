@@ -1,15 +1,13 @@
 # S3 Bucket for CloudTrail logs
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  count         = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
   bucket        = var.cloudtrail_bucket_name
-  force_destroy = true
+  force_destroy = var.force_destroy
 
   tags = merge(var.tags, { Name = "CloudTrailLogs" })
 }
 
 # S3 Bucket Policy for CloudTrail
 resource "aws_s3_bucket_policy" "cloudtrail_logs" {
-  count  = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   policy = jsonencode({
@@ -65,7 +63,6 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
 
 # Lifecycle Rules for S3 Bucket
 resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
-  count  = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   rule {
@@ -87,7 +84,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
 
 # CloudTrail Configuration
 resource "aws_cloudtrail" "s3_event_logs" {
-  count                         = var.enable_cloudtrail_s3_logging ? 1 : 0
   name                          = "s3-events-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.cloudtrail_logs[0].id
   include_global_service_events = var.include_global_service_events

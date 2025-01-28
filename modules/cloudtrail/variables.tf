@@ -1,19 +1,7 @@
-variable "enable_cloudtrail_s3_logging" {
-  description = "Enable or disable CloudTrail logging for S3 events"
-  type        = bool
-  default     = false
-}
-
 variable "cloudtrail_bucket_name" {
   description = "Name of the S3 bucket for storing CloudTrail logs specific to S3 events"
   type        = string
   default     = "cloudtrail-s3-events-logs-bucket"
-}
-
-variable "keep_cloudtrail_bucket" {
-  description = "Controls whether S3 bucket storing Cloudtrail Logs will be kept"
-  type        = bool
-  default     = true
 }
 
 variable "multi_region_trail" {
@@ -44,6 +32,12 @@ variable "log_lifecycle" {
     transition_days = 90
     expiration_days = 730
   }
+}
+
+variable "force_destroy" {
+  description = "Whether to allow a force destroy of the S3 bucket and its contents. You must set this to true and apply the change before destroying the module."
+  type        = bool
+  default     = false
 }
 
 variable "tags" {

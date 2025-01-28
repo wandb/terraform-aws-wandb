@@ -578,19 +578,3 @@ variable "kubernetes_cluster_oidc_issuer_url" {
   description = "OIDC issuer URL for the Kubernetes cluster. Can be determined using `kubectl get --raw /.well-known/openid-configuration`"
   default     = ""
 }
-
-##########################################
-# Cloudtrail Logging                     #
-##########################################
-
-variable "enable_cloudtrail_s3_logging" {
-  description = "Enable or disable CloudTrail logging for S3 events"
-  type        = bool
-  default     = false
-}
-
-variable "keep_cloudtrail_bucket" {
-  description = "Controls whether S3 bucket storing Cloudtrail Logs will be kept"
-  type        = bool
-  default     = true
-}
