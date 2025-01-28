@@ -72,9 +72,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
     id     = "TransitionToGlacier"
     status = "Enabled"
 
-    filter {
-      prefix = ""
-    }
+    filter {}
 
     transition {
       days          = var.log_lifecycle.transition_days
