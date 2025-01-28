@@ -588,3 +588,9 @@ variable "enable_cloudtrail_s3_logging" {
   type        = bool
   default     = false
 }
+
+variable "keep_cloudtrail_bucket" {
+  description = "Controls whether S3 bucket storing Cloudtrail Logs will be kept"
+  type        = bool
+  default     = true
+}

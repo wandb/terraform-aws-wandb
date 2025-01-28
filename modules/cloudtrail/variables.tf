@@ -10,6 +10,12 @@ variable "cloudtrail_bucket_name" {
   default     = "cloudtrail-s3-events-logs-bucket"
 }
 
+variable "keep_cloudtrail_bucket" {
+  description = "Controls whether S3 bucket storing Cloudtrail Logs will be kept"
+  type        = bool
+  default     = true
+}
+
 variable "multi_region_trail" {
   description = "Enable multi-region CloudTrail logging"
   type        = bool

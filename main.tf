@@ -137,7 +137,9 @@ locals {
 module "cloudtrail" {
   source = "./modules/cloudtrail"
 
-  enable_cloudtrail_s3_logging  = var.enable_cloudtrail_s3_logging
+  enable_cloudtrail_s3_logging = var.enable_cloudtrail_s3_logging
+  keep_cloudtrail_bucket       = var.keep_cloudtrail_bucket
+
   cloudtrail_bucket_name        = "cloudtrail-s3-events-logs-bucket"
   multi_region_trail            = true
   include_global_service_events = true
