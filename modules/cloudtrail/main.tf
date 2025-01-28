@@ -1,6 +1,6 @@
 # S3 Bucket for CloudTrail logs
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  count         = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
+  count         = var.enable_cloudtrail_s3_logging ? 1 : 0
   bucket        = var.cloudtrail_bucket_name
   force_destroy = true
 
@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
 
 # S3 Bucket Policy for CloudTrail
 resource "aws_s3_bucket_policy" "cloudtrail_logs" {
-  count  = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
+  count  = var.enable_cloudtrail_s3_logging ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   policy = jsonencode({
@@ -65,7 +65,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
 
 # Lifecycle Rules for S3 Bucket
 resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
-  count  = var.enable_cloudtrail_s3_logging || var.keep_cloudtrail_bucket ? 1 : 0
+  count  = var.enable_cloudtrail_s3_logging ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail_logs[0].id
 
   rule {
