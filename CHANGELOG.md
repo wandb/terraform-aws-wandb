@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.3.1...v7.4.0) (2025-01-29)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#329](https://github.com/wandb/terraform-aws-wandb/issues/329)) ([fc572f9](https://github.com/wandb/terraform-aws-wandb/commit/fc572f9ade4c142f97ab45364e2decb90b02dbf8))
+
 ### [7.3.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.3.0...v7.3.1) (2025-01-23)
 
 
