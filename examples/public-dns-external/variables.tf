@@ -161,3 +161,9 @@ variable "redis_master_name" {
   default     = null
   description = "Name of the redis master that sentinel uses to monitor"
 }
+
+variable "kubernetes_alb_internet_facing" {
+  type        = bool
+  default     = true
+  description = "Whether to enable private only traffic"
+}

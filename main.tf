@@ -258,6 +258,8 @@ module "wandb" {
   depends_on = [
     module.database,
     module.app_eks,
+    module.app_lb,
+    module.networking,
     module.redis,
   ]
 

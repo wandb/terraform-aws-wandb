@@ -70,6 +70,8 @@ module "wandb_infra" {
   use_redis_in_cluster      = var.use_redis_in_cluster
   redis_master_name         = var.redis_master_name
   redis_service_name_prefix = var.redis_service_name_prefix
+
+  kubernetes_alb_internet_facing = var.kubernetes_alb_internet_facing
 }
 
 data "aws_eks_cluster" "app_cluster" {
