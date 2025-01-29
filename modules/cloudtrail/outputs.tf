@@ -19,6 +19,6 @@ output "cloudtrail_arn" {
 }
 
 output "force_destroy_warning" {
-  value       = "WARNING: The S3 bucket is configured to be forcefully destroyed."
-  condition   = var.force_destroy
+  value     = "WARNING: The S3 bucket is configured to be forcefully destroyed."
+  condition = var.force_destroy
 }
