@@ -11,7 +11,12 @@ locals {
     var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
+  defaultTags = jsonencode(merge({
+    "namespace" : var.namespace
+  },
+    var.aws_loadbalancer_controller_tags))
 }
+
 
 data "aws_subnet" "private" {
   count = length(var.network_private_subnets)
@@ -60,6 +65,7 @@ module "eks" {
     metadata_http_put_response_hop_limit = 2
     metadata_http_tokens                 = "required",
     version                              = var.cluster_version,
+    tags                                 = local.defaultTags,
   }
 
   node_groups = {
