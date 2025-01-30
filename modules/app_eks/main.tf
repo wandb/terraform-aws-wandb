@@ -60,6 +60,9 @@ module "eks" {
     metadata_http_put_response_hop_limit = 2
     metadata_http_tokens                 = "required",
     version                              = var.cluster_version,
+    tags                                 = {
+      "customer-ns" = var.namespace
+    }
   }
 
   node_groups = {

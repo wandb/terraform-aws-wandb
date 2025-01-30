@@ -146,6 +146,11 @@ module "app_eks" {
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
 
+  depends_on = [
+    module.app_lb,
+    module.networking,
+  ]
+
   bucket_kms_key_arns = compact([
     local.default_kms_key,
     var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
@@ -250,7 +255,7 @@ locals {
   weave_trace_sa_name = "wandb-weave-trace"
 }
 
-module "wandb" {
+module "wandb_with_cleanup_delay" {
   # source  = "wandb/wandb/helm"
   # version = "2.0.0"
   source  = "../terraform-helm-wandb"
@@ -258,8 +263,6 @@ module "wandb" {
   depends_on = [
     module.database,
     module.app_eks,
-    module.app_lb,
-    module.networking,
     module.redis,
   ]
 
