@@ -47,3 +47,8 @@ variable "tags" {
     Environment = "production"
   }
 }
+
+variable "namespace" {
+  type        = string
+  description = "(Required) The name prefix for all resources created."
+}

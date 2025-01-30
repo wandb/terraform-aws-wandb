@@ -1,6 +1,6 @@
 # S3 Bucket for CloudTrail logs
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket        = var.cloudtrail_bucket_name
+  bucket        = "${var.namespace}-${var.cloudtrail_bucket_name}"
   force_destroy = var.force_destroy
 
   tags = merge(var.tags, { Name = "CloudTrailLogs" })
