@@ -84,7 +84,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
 
 # CloudTrail Configuration
 resource "aws_cloudtrail" "s3_event_logs" {
-  name                          = "s3-events-cloudtrail"
+  name                          = "${var.namespace}-s3-events-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.id
   include_global_service_events = var.include_global_service_events
   is_multi_region_trail         = var.multi_region_trail
