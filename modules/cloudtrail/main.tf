@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
 
 # S3 Bucket Policy for CloudTrail
 resource "aws_s3_bucket_policy" "cloudtrail_logs" {
-  bucket = aws_s3_bucket.cloudtrail_logs[0].id
+  bucket = aws_s3_bucket.cloudtrail_logs.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -21,7 +21,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
           Service = "cloudtrail.amazonaws.com"
         },
         Action   = "s3:PutObject",
-        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}/*",
+        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.id}/*",
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -39,7 +39,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
           "s3:GetBucketAcl",
           "s3:PutBucketAcl"
         ],
-        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.id}"
       },
       # Deny all HTTP (insecure) access
       {
@@ -48,8 +48,8 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
         Principal = "*",
         Action    = "s3:*",
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}",
-          "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}/*"
+          "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.id}",
+          "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.id}/*"
         ],
         Condition = {
           Bool = {
@@ -63,7 +63,7 @@ resource "aws_s3_bucket_policy" "cloudtrail_logs" {
 
 # Lifecycle Rules for S3 Bucket
 resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
-  bucket = aws_s3_bucket.cloudtrail_logs[0].id
+  bucket = aws_s3_bucket.cloudtrail_logs.id
 
   rule {
     id     = "TransitionToGlacier"
@@ -85,7 +85,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
 # CloudTrail Configuration
 resource "aws_cloudtrail" "s3_event_logs" {
   name                          = "s3-events-cloudtrail"
-  s3_bucket_name                = aws_s3_bucket.cloudtrail_logs[0].id
+  s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.id
   include_global_service_events = var.include_global_service_events
   is_multi_region_trail         = var.multi_region_trail
   enable_log_file_validation    = var.enable_log_file_validation
@@ -97,7 +97,7 @@ resource "aws_cloudtrail" "s3_event_logs" {
     data_resource {
       type = "AWS::S3::Object"
       values = [
-        "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs[0].id}/*"
+        "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.id}/*"
       ]
     }
   }
