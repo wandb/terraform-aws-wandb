@@ -65,7 +65,6 @@ module "eks" {
     metadata_http_put_response_hop_limit = 2
     metadata_http_tokens                 = "required",
     version                              = var.cluster_version,
-    tags                                 = local.defaultTags,
   }
 
   node_groups = {
@@ -78,12 +77,12 @@ module "eks" {
     }
   }
 
-  tags = {
+  tags = merge(jsondecode(local.defaultTags), {
     GithubRepo         = "wandb"
     GithubOrg          = "terraform-aws-wandb"
     TerraformNamespace = var.namespace
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
-  }
+  })
 }
 
 resource "kubernetes_annotations" "gp2" {

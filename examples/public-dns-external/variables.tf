@@ -127,7 +127,7 @@ variable "system_reserved_pid" {
 }
 
 variable "aws_loadbalancer_controller_tags" {
-  description = "(Optional) A map of AWS tags to apply to all resources managed by the load balancer controller"
+  description = "(Optional) A map of AWS tags to apply to all resources managed by load balancer and cluster"
   type        = map(string)
   default     = {}
 }
