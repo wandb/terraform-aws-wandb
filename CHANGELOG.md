@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.0...v7.8.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* **dev:** INFRA-350 tag EC2 with customer-ns ([#336](https://github.com/wandb/terraform-aws-wandb/issues/336)) ([2c87899](https://github.com/wandb/terraform-aws-wandb/commit/2c87899c8d25b9f015ab2a85c65dffa542508e51))
+
 ## [7.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.7.0...v7.8.0) (2025-01-30)
 
 
