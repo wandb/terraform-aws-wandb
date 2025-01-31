@@ -13,8 +13,8 @@ locals {
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
   defaultTags = jsonencode(merge({
     "namespace" : var.namespace
-  },
-    var.aws_loadbalancer_controller_tags))
+    },
+  var.aws_loadbalancer_controller_tags))
 }
 
 

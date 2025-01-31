@@ -130,4 +130,4 @@ variable "aws_loadbalancer_controller_tags" {
   description = "(Optional) A map of AWS tags to apply to all resources managed by load balancer and cluster"
   type        = map(string)
   default     = {}
-} 
+}
