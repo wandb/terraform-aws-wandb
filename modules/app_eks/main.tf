@@ -11,7 +11,12 @@ locals {
     var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
+  defaultTags = jsonencode(merge({
+    "namespace" : var.namespace
+    },
+  var.aws_loadbalancer_controller_tags))
 }
+
 
 data "aws_subnet" "private" {
   count = length(var.network_private_subnets)
@@ -72,12 +77,12 @@ module "eks" {
     }
   }
 
-  tags = {
+  tags = merge(jsondecode(local.defaultTags), {
     GithubRepo         = "wandb"
     GithubOrg          = "terraform-aws-wandb"
     TerraformNamespace = var.namespace
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
-  }
+  })
 }
 
 resource "kubernetes_annotations" "gp2" {
