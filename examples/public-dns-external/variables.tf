@@ -131,3 +131,30 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "migrate_public_to_private" {
+  description = "value to determine if the migration should be done from public to private"
+  type        = bool
+  default     = false
+}
+
+variable "private_hosted_zone_id" {
+  description = "Private hosted zone id if migrating from public to private"
+  type        = string
+}
+
+variable "private_dns_network_id" {
+  description = "value of the network id"
+  type        = string
+}
+
+variable "private_dns_network_cidr_block" {
+  type        = string
+  description = "CIDR block of the VPC for private DNS"
+}
+
+variable "private_dns_network_private_subnets" {
+  description = "value of the private network subnets"
+  type        = list(string)
+}
+

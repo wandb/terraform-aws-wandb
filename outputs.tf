@@ -66,6 +66,16 @@ output "network_id" {
   value       = local.network_id
   description = "The identity of the VPC in which resources are deployed."
 }
+output "network_private_subnet_cidrs" {
+  value       = local.network_private_subnet_cidrs
+  description = "List of the private subnets cidrs deployed within the VPC."
+}
+
+output "network_cidr" {
+  value       = var.network_cidr
+  description = "The CIDR block of the VPC."
+
+}
 
 output "network_private_subnets" {
   value       = local.network_private_subnets
@@ -88,4 +98,8 @@ output "standardized_size" {
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
+}
+
+output "k8s_alb_name" {
+  value = local.lb_name_truncated
 }

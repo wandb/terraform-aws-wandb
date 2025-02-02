@@ -34,3 +34,7 @@ license     = "<license key>"
 ```
 
 This will deploy an instance at `test.wandb.io`.
+
+## Migrate from public to private dns stack
+
+To migrate from a public DNS to a private DNS, follow the instructions in [migrate.md](./migrate.md).
