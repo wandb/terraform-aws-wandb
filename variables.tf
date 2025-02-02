@@ -520,6 +520,30 @@ variable "elasticache_node_type" {
   default     = null
 }
 
+variable "create_redis_in_cluster" {
+  type        = bool
+  default     = false
+  description = "Create redis in cluster"
+}
+
+variable "use_redis_in_cluster" {
+  type        = bool
+  default     = false
+  description = "whether to actually use the redis in cluster"
+}
+
+variable "redis_service_name_prefix" {
+  type        = string
+  default     = null
+  description = "Used to infer the service name as `redis-service-name-prefix`-redis.`namespace`"
+}
+
+variable "redis_master_name" {
+  type        = string
+  default     = null
+  description = "Name used by sentinel to identify the set of redis nodes"
+}
+
 ##########################################
 # Weights & Biases                       #
 ##########################################

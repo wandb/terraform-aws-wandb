@@ -11,6 +11,18 @@ provider "aws" {
   }
 }
 
+
+locals {
+  env_vars = merge(
+    {
+      "TAG_CUSTOMER_NS"    = var.namespace
+      "TAG_CLOUD"          = "AWS"
+    },
+    var.other_wandb_env
+  )
+}
+
+
 module "wandb_infra" {
   source = "../../"
 
@@ -38,6 +50,8 @@ module "wandb_infra" {
 
   license = var.wandb_license
 
+  other_wandb_env = local.env_vars
+
   bucket_name        = var.bucket_name
   bucket_path        = var.bucket_path
   bucket_kms_key_arn = var.bucket_kms_key_arn
@@ -50,6 +64,14 @@ module "wandb_infra" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+
+  create_elasticache        = var.create_elasticache
+  create_redis_in_cluster   = var.create_redis_in_cluster
+  use_redis_in_cluster      = var.use_redis_in_cluster
+  redis_master_name         = var.redis_master_name
+  redis_service_name_prefix = var.redis_service_name_prefix
+
+  kubernetes_alb_internet_facing = var.kubernetes_alb_internet_facing
 }
 
 data "aws_eks_cluster" "app_cluster" {

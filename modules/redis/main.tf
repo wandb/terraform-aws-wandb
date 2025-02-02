@@ -29,6 +29,10 @@ resource "aws_elasticache_replication_group" "default" {
   kms_key_id                 = var.kms_key_arn
   at_rest_encryption_enabled = true
   transit_encryption_enabled = true
+
+  tags = {
+    Namespace = var.namespace
+  }
 }
 
 resource "aws_security_group" "redis" {
