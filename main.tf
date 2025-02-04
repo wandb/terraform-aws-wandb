@@ -259,9 +259,8 @@ locals {
 }
 
 module "wandb" {
-  # source  = "wandb/wandb/helm"
-  # version = "2.0.0"
-  source  = "../terraform-helm-wandb"
+  source  = "wandb/wandb/helm"
+  version = "2.0.0"
 
   depends_on = [
     module.database,
