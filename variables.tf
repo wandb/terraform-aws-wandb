@@ -520,29 +520,24 @@ variable "elasticache_node_type" {
   default     = null
 }
 
-variable "create_redis_in_cluster" {
+variable "use_core_managed_redis" {
   type        = bool
+  description = "Boolean indicating whether to use the redis instance created in core"
   default     = false
-  description = "Create redis in cluster"
 }
 
-variable "use_redis_in_cluster" {
-  type        = bool
-  default     = false
-  description = "whether to actually use the redis in cluster"
-}
-
-variable "redis_service_name_prefix" {
+variable "core_redis_host" {
   type        = string
+  description = "host for the redis instance created in core"
   default     = null
-  description = "Used to infer the service name as `redis-service-name-prefix`-redis.`namespace`"
 }
 
-variable "redis_master_name" {
+variable "core_redis_port" {
   type        = string
+  description = "port for the redis instance created in core"
   default     = null
-  description = "Name used by sentinel to identify the set of redis nodes"
 }
+
 
 ##########################################
 # Weights & Biases                       #
