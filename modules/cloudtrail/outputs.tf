@@ -1,19 +1,24 @@
-output "cloudtrail_bucket_name" {
-  description = "Name of the S3 bucket storing CloudTrail logs specific to S3 events"
-  value       = aws_s3_bucket.cloudtrail_logs.bucket
-}
-
-output "cloudtrail_bucket_arn" {
-  description = "ARN of the S3 bucket storing CloudTrail logs specific to S3 events"
-  value       = aws_s3_bucket.cloudtrail_logs.arn
+output "s3_bucket_name" {
+  description = "The name of the S3 bucket used for CloudTrail logs"
+  value       = aws_s3_bucket.cloudtrail_logs.id
 }
 
 output "cloudtrail_name" {
-  description = "Name of the CloudTrail instance"
-  value       = aws_cloudtrail.s3_event_logs.name
+  description = "The name of the CloudTrail"
+  value       = aws_cloudtrail.single_trail.name
 }
 
-output "cloudtrail_arn" {
-  description = "ARN of the CloudTrail instance"
-  value       = aws_cloudtrail.s3_event_logs.arn
+output "s3_bucket_arn" {
+  description = "The ARN of the S3 bucket storing CloudTrail logs"
+  value       = aws_s3_bucket.cloudtrail_logs.arn
+}
+
+output "s3_bucket_policy" {
+  description = "The policy attached to the CloudTrail S3 bucket"
+  value       = aws_s3_bucket_policy.cloudtrail_logs.id
+}
+
+output "namespace_folder" {
+  description = "The namespace prefix created in the S3 bucket for this deployment"
+  value       = "s3://${aws_s3_bucket.cloudtrail_logs.id}/${var.namespace}/"
 }
