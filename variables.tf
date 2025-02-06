@@ -578,3 +578,50 @@ variable "kubernetes_cluster_oidc_issuer_url" {
   description = "OIDC issuer URL for the Kubernetes cluster. Can be determined using `kubectl get --raw /.well-known/openid-configuration`"
   default     = ""
 }
+
+##########################################
+# Cloudtrail                             #
+##########################################
+
+variable "cloudtrail_bucket_name" {
+  description = "Name of the S3 bucket storing CloudTrail logs"
+  type        = string
+}
+
+variable "force_destroy" {
+  description = "Determines if the bucket should be forcefully deleted"
+  type        = bool
+  default     = false
+}
+
+variable "log_lifecycle" {
+  description = "Object containing transition and expiration days for logs"
+  type = object({
+    transition_days = number
+    expiration_days = number
+  })
+}
+
+variable "include_global_service_events" {
+  description = "Enable logging of global AWS service events"
+  type        = bool
+  default     = true
+}
+
+variable "multi_region_trail" {
+  description = "Enable CloudTrail across multiple regions"
+  type        = bool
+  default     = true
+}
+
+variable "enable_log_file_validation" {
+  description = "Enable CloudTrail log file validation"
+  type        = bool
+  default     = true
+}
+
+variable "tags" {
+  description = "Tags for CloudTrail resources"
+  type        = map(string)
+  default     = {}
+}

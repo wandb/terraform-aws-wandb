@@ -43,6 +43,22 @@ locals {
   main_bucket_name  = var.bucket_name != "" ? var.bucket_name : module.file_storage.bucket_name
 }
 
+module "cloudtrail" {
+  source = "./modules/cloudtrail"
+
+  # Required Variables
+  namespace              = var.namespace
+  cloudtrail_bucket_name = var.cloudtrail_bucket_name
+  force_destroy          = var.force_destroy
+  log_lifecycle          = var.log_lifecycle
+
+  # Optional Variables with Defaults
+  include_global_service_events = var.include_global_service_events
+  multi_region_trail            = var.multi_region_trail
+  enable_log_file_validation    = var.enable_log_file_validation
+  tags                          = var.tags
+}
+
 module "networking" {
   source               = "./modules/networking"
   namespace            = var.namespace

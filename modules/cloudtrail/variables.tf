@@ -20,7 +20,7 @@ variable "log_lifecycle" {
 variable "include_global_service_events" {
   description = "Whether to include global service events in the CloudTrail"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "multi_region_trail" {
