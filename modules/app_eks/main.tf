@@ -11,7 +11,7 @@ locals {
     var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
-  defaultTags = var.aws_loadbalancer_controller_tags
+  defaultTags            = var.aws_loadbalancer_controller_tags
 }
 
 
