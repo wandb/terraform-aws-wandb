@@ -288,7 +288,7 @@ module "wandb" {
           kmsKey   = var.bucket_kms_key_arn
         } : {}
         defaultBucket = {
-          provider = "s3"
+          proVider = "S3"
           name     = module.file_storage.bucket_name
           region   = module.file_storage.bucket_region
           kmsKey   = module.kms.key.arn
@@ -303,8 +303,8 @@ module "wandb" {
         }
 
         redis = {
-          host = var.use_core_managed_redis ? var.core_redis_host : module.redis[0].host
-          port = var.use_core_managed_redis ? var.core_redis_port : "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
+          host = var.use_core_managed_redis ? var.core_redis_host : (var.create_elasticache ? module.redis[0].host : "")
+          port = var.use_core_managed_redis ? var.core_redis_port : (var.create_elasticache ? "${module.redis[0].port}?tls=true&ttlInSeconds=604800" : "")
         }
       }
 
