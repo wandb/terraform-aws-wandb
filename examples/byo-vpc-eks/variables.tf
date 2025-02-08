@@ -92,32 +92,32 @@ variable "vpc_cidr" {
 }
 
 variable "network_private_subnets" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet IDs"
 }
 
 variable "network_public_subnets" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet IDs"
 }
 
 variable "network_database_subnets" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet IDs"
 }
 
 variable "network_private_subnet_cidrs" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet CIDRs"
 }
 
 variable "network_public_subnet_cidrs" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet CIDRs"
 }
 
 variable "network_database_subnet_cidrs" {
-  type        = list[string]
+  type        = list(string)
   description = "Subnet CIDRs"
 }
 
