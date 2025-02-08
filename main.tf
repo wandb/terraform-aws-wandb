@@ -255,7 +255,7 @@ module "iam_role" {
 }
 
 locals {
-  weave_trace_sa_name = "wandb    -weave-trace"
+  weave_trace_sa_name = "wandb-weave-trace"
 }
 
 module "wandb" {

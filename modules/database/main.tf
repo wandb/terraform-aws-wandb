@@ -140,9 +140,5 @@ module "aurora" {
   subnets                               = var.subnets
   vpc_id                                = var.vpc_id
 
-  tags = {
-    Namespace = var.namespace
-  }
-
 
 }
