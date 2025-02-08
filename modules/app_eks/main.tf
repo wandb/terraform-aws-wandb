@@ -11,10 +11,7 @@ locals {
     var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
-  defaultTags = jsonencode(merge({
-    "namespace" : var.namespace
-    },
-  var.aws_loadbalancer_controller_tags))
+  defaultTags = var.aws_loadbalancer_controller_tags
 }
 
 
@@ -77,7 +74,7 @@ module "eks" {
     }
   }
 
-  tags = merge(jsondecode(local.defaultTags), {
+  tags = merge(local.defaultTags, {
     GithubRepo         = "wandb"
     GithubOrg          = "terraform-aws-wandb"
     TerraformNamespace = var.namespace
