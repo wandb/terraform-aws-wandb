@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.8.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.1...v7.8.2) (2025-02-09)
+
+
+### Bug Fixes
+
+* **bug:** INFRA-473 remove eks case-insenstive tagging duplicates ([#338](https://github.com/wandb/terraform-aws-wandb/issues/338)) ([b7005b9](https://github.com/wandb/terraform-aws-wandb/commit/b7005b95eeda66f8ce54c807f2e6922300f88193))
+
 ### [7.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.0...v7.8.1) (2025-01-31)
 
 
