@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.9.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.0...v7.9.1) (2025-02-10)
+
+
+### Bug Fixes
+
+* More renaming of "core" to "external" redis ([#340](https://github.com/wandb/terraform-aws-wandb/issues/340)) ([7bdfc1b](https://github.com/wandb/terraform-aws-wandb/commit/7bdfc1bcd93181073434a9e838862ff6a3e5b84b))
+
 ## [7.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.2...v7.9.0) (2025-02-10)
 
 
