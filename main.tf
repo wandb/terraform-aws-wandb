@@ -303,8 +303,8 @@ module "wandb" {
         }
 
         redis = {
-          host = module.redis[0].host
-          port = "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
+          host = var.use_external_redis ? var.core_redis_host : (var.create_elasticache ? module.redis[0].host : "")
+          port = var.use_external_redis ? var.core_redis_port : (var.create_elasticache ? "${module.redis[0].port}?tls=true&ttlInSeconds=604800" : "")
         }
       }
 

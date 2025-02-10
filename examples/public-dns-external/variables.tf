@@ -131,3 +131,9 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "create_elasticache" {
+  type        = bool
+  default     = true
+  description = "whether to create an elasticache redis"
+}

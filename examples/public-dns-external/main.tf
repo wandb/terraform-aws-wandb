@@ -50,6 +50,8 @@ module "wandb_infra" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+
+  create_elasticache = var.create_elasticache
 }
 
 data "aws_eks_cluster" "app_cluster" {
