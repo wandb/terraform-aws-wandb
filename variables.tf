@@ -522,19 +522,19 @@ variable "elasticache_node_type" {
 
 variable "use_external_redis" {
   type        = bool
-  description = "Boolean indicating whether to use the redis instance created in core"
+  description = "Boolean indicating whether to use the redis instance created externally"
   default     = false
 }
 
-variable "core_redis_host" {
+variable "external_redis_host" {
   type        = string
-  description = "host for the redis instance created in core"
+  description = "host for the redis instance created externally"
   default     = null
 }
 
-variable "core_redis_port" {
+variable "external_redis_port" {
   type        = string
-  description = "port for the redis instance created in core"
+  description = "port for the redis instance created externally"
   default     = null
 }
 
