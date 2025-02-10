@@ -288,7 +288,7 @@ module "wandb" {
           kmsKey   = var.bucket_kms_key_arn
         } : {}
         defaultBucket = {
-          proVider = "S3"
+          provider = "s3"
           name     = module.file_storage.bucket_name
           region   = module.file_storage.bucket_region
           kmsKey   = module.kms.key.arn
