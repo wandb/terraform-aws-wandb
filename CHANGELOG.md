@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.2...v7.9.0) (2025-02-10)
+
+
+### Features
+
+* INFRA-383 to control elasticache creation via externalized var ([#339](https://github.com/wandb/terraform-aws-wandb/issues/339)) ([e799d1b](https://github.com/wandb/terraform-aws-wandb/commit/e799d1bb86825d3035611a49d016751a5d98e29d))
+
 ### [7.8.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.1...v7.8.2) (2025-02-09)
 
 
