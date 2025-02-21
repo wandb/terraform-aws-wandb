@@ -371,7 +371,7 @@ module "wandb" {
 
       mysql = { install = false }
       redis = {
-        install  = !var.create_elasticache && !var.use_external_redis
+        install  = false
         external = var.use_external_redis
       }
 
