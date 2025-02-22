@@ -303,8 +303,9 @@ module "wandb" {
         }
 
         redis = {
-          host = var.use_external_redis ? var.external_redis_host : (var.create_elasticache ? module.redis[0].host : "")
-          port = var.use_external_redis ? var.external_redis_port : (var.create_elasticache ? "${module.redis[0].port}?tls=true&ttlInSeconds=604800" : "")
+          host      = var.use_external_redis ? var.external_redis_host : (var.create_elasticache ? module.redis[0].host : "")
+          port      = var.use_external_redis ? var.external_redis_port : (var.create_elasticache ? "${module.redis[0].port}?tls=true&ttlInSeconds=604800" : "")
+          external  = var.use_external_redis
         }
       }
 
@@ -370,10 +371,7 @@ module "wandb" {
       }
 
       mysql = { install = false }
-      redis = {
-        install  = false
-        external = var.use_external_redis
-      }
+      redis = { install  = false }
 
       weave = {
         persistence = {
