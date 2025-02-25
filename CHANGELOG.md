@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.9.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.1...v7.9.2) (2025-02-25)
+
+
+### Bug Fixes
+
+* Expose externalized redis to helm for console metrics ([#341](https://github.com/wandb/terraform-aws-wandb/issues/341)) ([c14dc28](https://github.com/wandb/terraform-aws-wandb/commit/c14dc28c57adf9ab409b04dabc4394afa312e2ea))
+
 ### [7.9.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.0...v7.9.1) (2025-02-10)
 
 
