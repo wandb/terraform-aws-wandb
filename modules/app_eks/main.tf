@@ -80,7 +80,7 @@ module "eks" {
     TerraformNamespace = var.namespace
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
   })
-  
+
   lifecycle {
     ignore_changes = [tags]
   }
