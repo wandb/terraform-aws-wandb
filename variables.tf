@@ -38,10 +38,16 @@ variable "controller_image_tag" {
   default     = "1.14.0"
 }
 
-variable "enable_helm_release" {
+variable "enable_helm_operator" {
   type        = bool
   default     = true
-  description = "Enable or disable applying and releasing Helm chart"
+  description = "Enable or disable applying and releasing W&B Operator chart"
+}
+
+variable "enable_helm_wandb" {
+  type        = bool
+  default     = true
+  description = "Enable or disable applying and releasing CR chart"
 }
 
 ##########################################
