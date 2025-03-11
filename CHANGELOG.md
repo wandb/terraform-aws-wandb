@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.2...v7.10.0) (2025-03-11)
+
+
+### Features
+
+* Add helm chart toggles ([#343](https://github.com/wandb/terraform-aws-wandb/issues/343)) ([ff6bd95](https://github.com/wandb/terraform-aws-wandb/commit/ff6bd95797b9fa890151ea6306ad18c876f2740c))
+
 ### [7.9.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.1...v7.9.2) (2025-02-25)
 
 
