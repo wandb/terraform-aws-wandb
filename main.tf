@@ -273,7 +273,6 @@ module "wandb" {
   enable_helm_operator   = var.enable_helm_operator
   enable_helm_wandb      = var.enable_helm_wandb
 
-
   spec = {
     values = {
       global = {
