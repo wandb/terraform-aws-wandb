@@ -552,8 +552,8 @@ variable "external_redis_params" {
 
 variable "use_ctrlplane_redis" {
   description = "Whether redis is deployed in the cluster via ctrlplane"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 
