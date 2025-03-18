@@ -321,23 +321,23 @@ module "wandb" {
           params   = var.external_redis_params
           external = true
           } : var.create_elasticache ? {
-          host = module.redis[0].host
-          port = module.redis[0].port
-          params = {
+          host     = module.redis[0].host
+          port     = module.redis[0].port
+          external = false
+          params   = {
             tls          = true
             ttlInSeconds = 604800
             master       = ""
           }
-          external = false
           } : {
-          host = ""
-          port = 6379
-          params = {
+          host     = ""
+          port     = 6379
+          external = false
+          params   = {
             tls          = false
             ttlInSeconds = 0
             master       = ""
           }
-          external = false
         }
       }
 
