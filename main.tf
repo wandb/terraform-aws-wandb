@@ -313,17 +313,17 @@ module "wandb" {
         redis = var.use_ctrlplane_redis ? {
           host     = local.ctrlplane_redis_host
           port     = local.ctrlplane_redis_port
-          parameters   = local.ctrlplane_redis_params
+          params   = local.ctrlplane_redis_params
           external = true
           } : var.use_external_redis ? {
           host     = var.external_redis_host
           port     = var.external_redis_port
-          parameters   = var.external_redis_params
+          params   = var.external_redis_params
           external = true
           } : var.create_elasticache ? {
           host = module.redis[0].host
           port = module.redis[0].port
-          parameters = {
+          params = {
             tls          = true
             ttlInSeconds = 604800
             master       = ""
@@ -332,7 +332,7 @@ module "wandb" {
           } : {
           host = ""
           port = 6379
-          parameters = {
+          params = {
             tls          = false
             ttlInSeconds = 0
             master       = ""
