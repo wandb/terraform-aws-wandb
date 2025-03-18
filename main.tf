@@ -324,7 +324,7 @@ module "wandb" {
           host     = module.redis[0].host
           port     = module.redis[0].port
           external = false
-          params   = {
+          params = {
             tls          = true
             ttlInSeconds = 604800
             master       = ""
@@ -333,7 +333,7 @@ module "wandb" {
           host     = ""
           port     = 6379
           external = false
-          params   = {
+          params = {
             tls          = false
             ttlInSeconds = 0
             master       = ""
