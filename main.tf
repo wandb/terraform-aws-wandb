@@ -257,10 +257,11 @@ module "iam_role" {
 locals {
   weave_trace_sa_name  = "wandb-weave-trace"
   ctrlplane_redis_host = "redis.redis.svc.cluster.local"
-  ctrlplane_redis_port = 26379
+  ctrlplane_redis_port = "26379"
   ctrlplane_redis_params = {
-    ttlInSeconds = 604800
+    ttlInSeconds = "604800"
     master       = "gorilla"
+    tls          = false
   }
 }
 
@@ -325,6 +326,7 @@ module "wandb" {
           params = {
             tls          = true
             ttlInSeconds = 604800
+            master       = ""
           }
           external = false
           } : {
@@ -333,6 +335,7 @@ module "wandb" {
           params = {
             tls          = false
             ttlInSeconds = 0
+            master       = ""
           }
           external = false
         }
