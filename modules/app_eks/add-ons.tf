@@ -27,7 +27,7 @@ resource "aws_iam_role" "oidc" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role.json
 }
 
-### add-ons for eks version 1.29
+### add-ons for eks version 1.30
 resource "aws_eks_addon" "aws_efs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
