@@ -255,7 +255,12 @@ module "iam_role" {
 }
 
 locals {
-  weave_trace_sa_name = "wandb-weave-trace"
+  weave_trace_sa_name  = "wandb-weave-trace"
+  ctrlplane_redis_host = "redis.redis.svc.cluster.local"
+  ctrlplane_redis_port = "26379"
+  ctrlplane_redis_params = {
+    master = "gorilla"
+  }
 }
 
 module "wandb" {
@@ -303,10 +308,31 @@ module "wandb" {
           port     = module.database.port
         }
 
-        redis = {
-          host     = var.use_external_redis ? var.external_redis_host : (var.create_elasticache ? module.redis[0].host : "")
-          port     = var.use_external_redis ? var.external_redis_port : (var.create_elasticache ? "${module.redis[0].port}?tls=true&ttlInSeconds=604800" : "")
-          external = var.use_external_redis
+        redis = var.use_ctrlplane_redis ? {
+          host     = local.ctrlplane_redis_host
+          port     = local.ctrlplane_redis_port
+          params   = local.ctrlplane_redis_params
+          external = true
+          } : var.use_external_redis ? {
+          host     = var.external_redis_host
+          port     = var.external_redis_port
+          params   = var.external_redis_params
+          external = true
+          } : var.create_elasticache ? {
+          host     = module.redis[0].host
+          port     = module.redis[0].port
+          external = false
+          params = {
+            master = ""
+            tls    = true
+          }
+          } : {
+          host     = ""
+          port     = 6379
+          external = false
+          params = {
+            master = ""
+          }
         }
       }
 

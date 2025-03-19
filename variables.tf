@@ -544,6 +544,18 @@ variable "external_redis_port" {
   default     = null
 }
 
+variable "external_redis_params" {
+  type        = object({})
+  description = "queryVar params for redis instance created externally"
+  default     = null
+}
+
+variable "use_ctrlplane_redis" {
+  description = "Whether redis is deployed in the cluster via ctrlplane"
+  type        = bool
+  default     = false
+}
+
 
 ##########################################
 # Weights & Biases                       #
