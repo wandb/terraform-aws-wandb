@@ -324,6 +324,7 @@ module "wandb" {
           external = false
           params = {
             master       = ""
+            tls          = true
           }
           } : {
           host     = ""
