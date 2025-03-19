@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.10.0...v7.11.0) (2025-03-19)
+
+
+### Features
+
+* **deploy:** Support ctrlplane redis ([#344](https://github.com/wandb/terraform-aws-wandb/issues/344)) ([6f3fba2](https://github.com/wandb/terraform-aws-wandb/commit/6f3fba24cccb415f2074404cf975d6134c33b163))
+
 ## [7.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.2...v7.10.0) (2025-03-11)
 
 
