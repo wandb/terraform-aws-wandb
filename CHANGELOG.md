@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.0...v7.12.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* Add tag to cloud-managed k8s for cache_size ([#347](https://github.com/wandb/terraform-aws-wandb/issues/347)) ([d466f01](https://github.com/wandb/terraform-aws-wandb/commit/d466f01d9c2d18c2947e2405f86ce5c3da1d2489))
+
 ## [7.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.11.0...v7.12.0) (2025-03-20)
 
 
