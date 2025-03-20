@@ -199,3 +199,13 @@ variable "eks_addon_metrics_server_version" {
   description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
   type        = string
 }
+
+variable "cache_size" {
+  description = "Size of the redis cache, when use_ctrlplane_redis is true. These values map to preset sizes in the bitnami helm chart."
+  type        = string
+  default     = "nano"
+  validation {
+    condition     = contains(["nano", "micro", "small", "medium", "large", "xlarge", "2xlarge"], var.cache_size)
+    error_message = "Invalid value specified for 'cache_size'; must be one of 'nano', 'micro', 'small', 'medium', 'large'"
+  }
+}
