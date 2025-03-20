@@ -38,10 +38,16 @@ variable "controller_image_tag" {
   default     = "1.14.0"
 }
 
-variable "enable_helm_release" {
+variable "enable_helm_operator" {
   type        = bool
   default     = true
-  description = "Enable or disable applying and releasing Helm chart"
+  description = "Enable or disable applying and releasing W&B Operator chart"
+}
+
+variable "enable_helm_wandb" {
+  type        = bool
+  default     = true
+  description = "Enable or disable applying and releasing CR chart"
 }
 
 ##########################################
@@ -536,6 +542,18 @@ variable "external_redis_port" {
   type        = string
   description = "port for the redis instance created externally"
   default     = null
+}
+
+variable "external_redis_params" {
+  type        = object({})
+  description = "queryVar params for redis instance created externally"
+  default     = null
+}
+
+variable "use_ctrlplane_redis" {
+  description = "Whether redis is deployed in the cluster via ctrlplane"
+  type        = bool
+  default     = false
 }
 
 
