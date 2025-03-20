@@ -320,7 +320,7 @@ For more information on the available sizes, see the [Cluster Sizing](#cluster-s
 If having the cluster scale nodes in and out is not desired, the `kubernetes_min_nodes_per_az` and 
 `kubernetes_max_nodes_per_az` can be set to the same value to prevent the cluster from scaling.
 
-This upgrade is also intended to be used when upgrading eks to 1.29.
+This upgrade is also intended to be used when upgrading eks to 1.30.
 
 We have upgraded the following dependencies and Kubernetes addons:
 
@@ -330,7 +330,7 @@ We have upgraded the following dependencies and Kubernetes addons:
 - aws-efs-csi-driver (v2.0.7-eksbuild.1)
 - aws-ebs-csi-driver (v1.35.0-eksbuild.1)
 - coredns (v1.11.3-eksbuild.1)
-- kube-proxy (v1.29.7-eksbuild.9)
+- kube-proxy (v1.30.0-eksbuild.1)
 - vpc-cni (v1.18.3-eksbuild.3)
 
 > :warning: Please remove the `enable_dummy_dns` and `enable_operator_alb` variables

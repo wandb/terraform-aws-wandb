@@ -440,7 +440,7 @@ variable "eks_addon_coredns_version" {
 variable "eks_addon_kube_proxy_version" {
   description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v1.29.7-eksbuild.9"
+  default     = "v1.30.0-eksbuild.1"
 }
 
 variable "eks_addon_vpc_cni_version" {
