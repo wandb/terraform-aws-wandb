@@ -173,7 +173,6 @@ module "lb_controller" {
   depends_on = [module.eks]
 }
 
-
 module "external_dns" {
   source = "./external_dns"
 
