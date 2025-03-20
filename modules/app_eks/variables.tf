@@ -56,6 +56,12 @@ variable "database_security_group_id" {
   type = string
 }
 
+variable "eks_policy_arns" {
+  description = "Additional IAM policy to apply to the EKS cluster"
+  type        = list(string)
+  default     = []
+}
+
 variable "elasticache_security_group_id" {
   type    = string
   default = null
