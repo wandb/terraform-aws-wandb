@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.11.0...v7.12.0) (2025-03-20)
+
+
+### Features
+
+* **dev:** Update eks version in provider ([#346](https://github.com/wandb/terraform-aws-wandb/issues/346)) ([e939ab4](https://github.com/wandb/terraform-aws-wandb/commit/e939ab43ac5d34f81be3723903cf53d581743245))
+
 ## [7.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.10.0...v7.11.0) (2025-03-19)
 
 
