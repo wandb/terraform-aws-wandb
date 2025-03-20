@@ -1,6 +1,7 @@
 data "aws_region" "current" {}
 
 resource "helm_release" "cluster-autoscaler" {
+  count            = var.enable_cluster_autoscaler ? 1 : 0
   chart            = "cluster-autoscaler"
   name             = "cluster-autoscaler"
   repository       = "https://kubernetes.github.io/autoscaler"
@@ -46,4 +47,9 @@ resource "helm_release" "cluster-autoscaler" {
     name  = "extraArgs.balancing-ignore-label"
     value = "topology.ebs.csi.aws.com/zone"
   }
+}
+
+moved {
+  from = helm_release.cluster-autoscaler
+  to   = helm_release.cluster-autoscaler[0]
 }

@@ -6,6 +6,7 @@ locals {
 }
 
 resource "helm_release" "aws_load_balancer_controller" {
+  count      = var.enable_aws_loadbalancer_controller ? 1 : 0
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
@@ -35,4 +36,9 @@ EOT
   ]
 
   depends_on = [aws_iam_role_policy_attachment.default]
+}
+
+moved {
+  from = helm_release.aws_load_balancer_controller
+  to   = helm_release.aws_load_balancer_controller[0]
 }

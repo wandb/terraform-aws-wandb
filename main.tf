@@ -182,7 +182,10 @@ module "app_eks" {
   system_reserved_ephemeral_megabytes = var.system_reserved_ephemeral_megabytes
   system_reserved_pid                 = var.system_reserved_pid
 
-  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+  aws_loadbalancer_controller_tags   = var.aws_loadbalancer_controller_tags
+  enable_aws_loadbalancer_controller = var.enable_aws_loadbalancer_controller
+  enable_external_dns                = var.enable_external_dns
+  enable_cluster_autoscaler          = var.enable_cluster_autoscaler
 
   eks_addon_efs_csi_driver_version = var.eks_addon_efs_csi_driver_version
   eks_addon_ebs_csi_driver_version = var.eks_addon_ebs_csi_driver_version

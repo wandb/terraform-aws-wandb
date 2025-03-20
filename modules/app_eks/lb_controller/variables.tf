@@ -12,3 +12,9 @@ variable "oidc_provider" {
 variable "aws_loadbalancer_controller_tags" {
   type = map(string)
 }
+
+variable "enable_aws_loadbalancer_controller" {
+  description = "Whether to enable the AWS Load Balancer Controller addon"
+  type        = bool
+  default     = true
+}

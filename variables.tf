@@ -23,6 +23,12 @@ variable "size" {
   default     = "small"
 }
 
+variable "enable_cluster_autoscaler" {
+  type        = bool
+  description = "Whether to enable the cluster autoscaler addon"
+  default     = true
+}
+
 ##########################################
 # Operator                               #
 ##########################################
@@ -117,6 +123,12 @@ variable "external_dns" {
   type        = bool
   default     = false
   description = "Using external DNS. A `subdomain` must also be specified if this value is true."
+}
+
+variable "enable_external_dns" {
+  description = "Whether to enable the external dns addon"
+  type        = bool
+  default     = true
 }
 
 variable "custom_domain_filter" {
@@ -415,6 +427,12 @@ variable "aws_loadbalancer_controller_tags" {
   description = "(Optional) A map of AWS tags to apply to all resources managed by the load balancer controller"
   type        = map(string)
   default     = {}
+}
+
+variable "enable_aws_loadbalancer_controller" {
+  description = "Whether to enable the AWS Load Balancer Controller addon"
+  type        = bool
+  default     = true
 }
 ##########################################
 # EKS Cluster Addons                     #
