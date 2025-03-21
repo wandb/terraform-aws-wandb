@@ -79,8 +79,11 @@ module "eks" {
     GithubOrg          = "terraform-aws-wandb"
     TerraformNamespace = var.namespace
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
-    cache_size         = var.cache_size
   })
+
+  cluster_tags = {
+    cache_size         = var.cache_size
+  }
 }
 
 resource "kubernetes_annotations" "gp2" {
