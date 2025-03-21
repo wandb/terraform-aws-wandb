@@ -82,7 +82,7 @@ module "eks" {
   })
 
   cluster_tags = {
-    cache_size         = var.cache_size
+    cache_size = var.cache_size
   }
 }
 
