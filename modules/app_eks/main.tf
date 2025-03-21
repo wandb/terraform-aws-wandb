@@ -172,6 +172,8 @@ module "lb_controller" {
   oidc_provider                    = aws_iam_openid_connect_provider.eks
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
 
+  enable_aws_loadbalancer_controller = var.enable_aws_loadbalancer_controller
+
   depends_on = [module.eks]
 }
 
@@ -182,6 +184,8 @@ module "external_dns" {
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
 
+  enable_external_dns = var.enable_external_dns
+
   depends_on = [module.eks]
 }
 
@@ -190,6 +194,8 @@ module "cluster_autoscaler" {
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
+
+  enable_cluster_autoscaler = var.enable_cluster_autoscaler
 
   depends_on = [module.eks]
 }

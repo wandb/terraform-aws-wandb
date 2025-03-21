@@ -1,4 +1,5 @@
 resource "helm_release" "external_dns" {
+  count      = var.enable_external_dns ? 1 : 0
   name       = "external-dns"
   namespace  = "kube-system"
   chart      = "external-dns"
@@ -39,4 +40,9 @@ resource "helm_release" "external_dns" {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
+}
+
+moved {
+  from = helm_release.external_dns
+  to   = helm_release.external_dns[0]
 }

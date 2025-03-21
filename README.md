@@ -298,6 +298,14 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 See our upgrade guide [here](./docs/operator-migration/readme.md)
 
+### Upgrading from 1.x -> 2.x
+
+- ~>4.0 version required for AWS Provider
+
+### Upgrading from 2.x -> 3.x
+
+- No changes required by you
+
 ### Upgrading from 4.x -> 5.x
 
 5.0.0 introduced autoscaling to the EKS cluster and made the `size` variable the preferred way to set the cluster size.
@@ -394,10 +402,9 @@ This can be donw by adding the following policy document.
 We are considering this a major change because of the terraform `moved` block which migrates the resource. After moving to a `v7` applying an earlier version of the module may result in terraform deleting your bucket.
 
 removed the `create_bucket` var due to the above.
-### Upgrading from 2.x -> 3.x
 
-- No changes required by you
+### 7.x -> 8.x 
 
-### Upgrading from 1.x -> 2.x
+`v8` allows for consumers of this terraform module so specify if they want to install `external-dns`, `aws-load-balancer-controller`, or `cluster-autoscaler` or not.
 
-- ~>4.0 version required for AWS Provider
+They will continue to install by default. However, the new `moved` blocks to migrate them may cause the helm charts to be removed and reinstalled if you try and downgrade.
