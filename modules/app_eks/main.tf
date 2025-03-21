@@ -81,6 +81,10 @@ module "eks" {
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
     cache_size         = var.cache_size
   })
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "kubernetes_annotations" "gp2" {
