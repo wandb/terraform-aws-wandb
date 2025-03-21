@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.1...v7.12.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* Tag the aws eks with cache_size, not all resources ([#348](https://github.com/wandb/terraform-aws-wandb/issues/348)) ([3439bba](https://github.com/wandb/terraform-aws-wandb/commit/3439bba56f90b3e24f0d3f1ec6e20335569b78ce))
+
 ### [7.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.0...v7.12.1) (2025-03-20)
 
 
