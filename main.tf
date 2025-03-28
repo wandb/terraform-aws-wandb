@@ -283,6 +283,7 @@ module "wandb" {
   spec = {
     values = {
       global = {
+        size          = var.size
         host          = local.url
         license       = var.license
         cloudProvider = "aws"
