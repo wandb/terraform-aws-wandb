@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.12.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.2...v7.12.3) (2025-03-28)
+
+
+### Bug Fixes
+
+* Patch deploy ([#351](https://github.com/wandb/terraform-aws-wandb/issues/351)) ([45378f0](https://github.com/wandb/terraform-aws-wandb/commit/45378f060194f8acaab2a50290d4fd210620d7d8))
+
 ### [7.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.1...v7.12.2) (2025-03-21)
 
 
