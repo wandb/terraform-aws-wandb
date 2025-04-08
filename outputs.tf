@@ -89,3 +89,8 @@ output "url" {
   value       = local.url
   description = "The URL to the W&B application"
 }
+
+output "wandb_spec" {
+  value     = local.spec
+  sensitive = true
+}
