@@ -358,7 +358,7 @@ locals {
         internalJWTMap = [
           {
             "subject" = "system:serviceaccount:default:${local.weave_trace_sa_name}",
-            "issuer"  = module.app_eks.aws_iam_openid_connect_provider
+            "issuer"  = "https://${module.app_eks.aws_iam_openid_connect_provider}"
           }
         ]
       }
