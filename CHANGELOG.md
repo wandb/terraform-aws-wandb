@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.12.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.3...v7.12.4) (2025-04-09)
+
+
+### Bug Fixes
+
+* pass output of cr spec ([#352](https://github.com/wandb/terraform-aws-wandb/issues/352)) ([41ac77b](https://github.com/wandb/terraform-aws-wandb/commit/41ac77b2ff48f4b8fc43370a07dfbb5dd8941a97))
+
 ### [7.12.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.2...v7.12.3) (2025-03-28)
 
 
