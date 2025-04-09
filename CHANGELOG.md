@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.4...v7.13.0) (2025-04-09)
+
+
+### Features
+
+* Bump version ([#353](https://github.com/wandb/terraform-aws-wandb/issues/353)) ([d4e0151](https://github.com/wandb/terraform-aws-wandb/commit/d4e01519b18a350963a7518e68a3f4f38a8f20cd))
+
 ### [7.12.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.3...v7.12.4) (2025-04-09)
 
 
