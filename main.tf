@@ -358,7 +358,7 @@ locals {
         internalJWTMap = [
           {
             "subject" = "system:serviceaccount:default:${local.weave_trace_sa_name}",
-            "issuer"  = var.kubernetes_cluster_oidc_issuer_url
+            "issuer"  = module.eks.cluster.oidc_issuer_url
           }
         ]
       }
