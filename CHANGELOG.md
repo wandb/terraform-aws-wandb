@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.13.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.0...v7.13.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* Use internal oidc issuer url instead of variable ([#354](https://github.com/wandb/terraform-aws-wandb/issues/354)) ([78a9728](https://github.com/wandb/terraform-aws-wandb/commit/78a9728a34bd068fbb842ec2fde3a3d81ad6eef2))
+
 ## [7.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.4...v7.13.0) (2025-04-09)
 
 
