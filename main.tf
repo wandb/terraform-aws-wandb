@@ -358,7 +358,7 @@ locals {
         internalJWTMap = [
           {
             "subject" = "system:serviceaccount:default:${local.weave_trace_sa_name}",
-            "issuer"  = module.eks.cluster.oidc_issuer_url
+            "issuer"  = module.app_eks.aws_iam_openid_connect_provider
           }
         ]
       }
@@ -426,5 +426,3 @@ moved {
   from = module.file_storage[0]
   to   = module.file_storage
 }
-
-
