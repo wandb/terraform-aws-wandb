@@ -313,6 +313,13 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+
+variable "eks_cluster_tags" {
+  description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
+  type        = map(string)
+  default     = {}
+}
+
 variable "kubernetes_alb_internet_facing" {
   type        = bool
   description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
