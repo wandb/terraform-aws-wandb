@@ -13,7 +13,7 @@ locals {
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
   defaultTags            = var.aws_loadbalancer_controller_tags
   cluster_tags = merge(
-    var.eks_cluster_tags, {
+    var.cluster_tags, {
       cache_size = var.cache_size
     }
   )
