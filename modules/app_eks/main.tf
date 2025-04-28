@@ -12,6 +12,11 @@ locals {
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
   defaultTags            = var.aws_loadbalancer_controller_tags
+  cluster_tags = merge(
+    var.cluster_tags, {
+      cache_size = var.cache_size
+    }
+  )
 }
 
 
@@ -81,9 +86,7 @@ module "eks" {
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
   })
 
-  cluster_tags = {
-    cache_size = var.cache_size
-  }
+  cluster_tags = local.cluster_tags
 }
 
 resource "kubernetes_annotations" "gp2" {

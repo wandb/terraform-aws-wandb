@@ -47,6 +47,12 @@ variable "cluster_version" {
   type        = string
 }
 
+variable "cluster_tags" {
+  description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
+  type        = map(string)
+  default     = {}
+}
+
 variable "create_elasticache_security_group" {
   type    = bool
   default = false
