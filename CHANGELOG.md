@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.1...v7.14.0) (2025-04-28)
+
+
+### Features
+
+* Tag clusters ([#355](https://github.com/wandb/terraform-aws-wandb/issues/355)) ([bd7e65a](https://github.com/wandb/terraform-aws-wandb/commit/bd7e65a9f7187c29114a10b9c8241f86af0afc2e))
+
 ### [7.13.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.0...v7.13.1) (2025-04-09)
 
 
