@@ -194,6 +194,10 @@ module "app_eks" {
   eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
 
   cache_size = var.cache_size
+
+  depends_on = [
+    module.networking,
+  ]
 }
 
 
@@ -414,6 +418,8 @@ module "wandb" {
     module.database,
     module.app_eks,
     module.redis,
+    module.acm,
+    module.networking.public_subnets
   ]
 
   operator_chart_version = var.operator_chart_version
