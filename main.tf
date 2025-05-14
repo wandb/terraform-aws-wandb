@@ -410,16 +410,23 @@ locals {
   }
 }
 
+resource "time_sleep" "wait_for_deletion_reconcile" {
+  depends_on = [module.app_eks]
+
+  # external-dns has a 5m reconcile timer, so we need to give it time to clean up the DNS records
+  destroy_duration = "5m"
+}
+
 module "wandb" {
   source  = "wandb/wandb/helm"
   version = "3.0.0"
 
   depends_on = [
     module.database,
-    module.app_eks,
     module.redis,
     module.acm,
-    module.networking.public_subnets
+    module.networking.public_subnets,
+    time_sleep.wait_for_deletion_reconcile
   ]
 
   operator_chart_version = var.operator_chart_version
