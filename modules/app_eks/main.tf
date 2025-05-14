@@ -196,7 +196,7 @@ module "cluster_autoscaler" {
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
-  depends_on    = [
+  depends_on = [
     module.eks,
     module.lb_controller
   ]
