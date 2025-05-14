@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.0...v7.14.1) (2025-05-14)
+
+
+### Bug Fixes
+
+* Add explicit dependencies so TF destroy resources in the correct order. ([#356](https://github.com/wandb/terraform-aws-wandb/issues/356)) ([db1e25d](https://github.com/wandb/terraform-aws-wandb/commit/db1e25d51f4f41a54f78b1039f6c7f19a275232e))
+
 ## [7.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.1...v7.14.0) (2025-04-28)
 
 
