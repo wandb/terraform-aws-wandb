@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.1...v7.14.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* Bump max node sizes to ensure reliability as we increase HA deployments ([#357](https://github.com/wandb/terraform-aws-wandb/issues/357)) ([ecd8f9b](https://github.com/wandb/terraform-aws-wandb/commit/ecd8f9b8b4ebabdf0b5e7df66534e8a2f56fb527))
+
 ### [7.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.0...v7.14.1) (2025-05-14)
 
 
