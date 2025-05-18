@@ -24,6 +24,9 @@ module "wandb_infra" {
   domain_name = var.domain
   zone_id     = aws_route53_zone.public.zone_id
   subdomain   = var.subdomain
+
+  allowed_inbound_cidr = ["0.0.0.0/0"]
+  allowed_inbound_ipv6_cidr = ["::/0"]
 }
 
 data "aws_eks_cluster" "app_cluster" {
