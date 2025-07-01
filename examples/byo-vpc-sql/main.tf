@@ -13,7 +13,7 @@ provider "aws" {
 }
 data "aws_s3_bucket" "file_storage" {
   depends_on = [module.file_storage]
-  bucket     = local.bucket_name
+  bucket     = var.bucket_name
 }
 
 data "aws_sqs_queue" "file_storage" {
@@ -102,7 +102,6 @@ locals {
 }
 
 module "file_storage" {
-  count  = var.create_bucket ? 1 : 0
   source = "../../modules/file_storage"
 
   create_queue        = !local.use_internal_queue
@@ -113,7 +112,6 @@ module "file_storage" {
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage.0.bucket_name
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.0.bucket_queue_name
 }
 
@@ -167,7 +165,7 @@ module "app_eks" {
   map_users      = var.kubernetes_map_users
 
   bucket_kms_key_arns  = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
-  bucket_arn           = data.aws_s3_bucket.file_storage.arn
+  bucket_arn           = var.bucket_name == "" ? module.file_storage.bucket_arn : data.aws_s3_bucket.file_storage.arn
   bucket_sqs_queue_arn = local.use_internal_queue ? null : data.aws_sqs_queue.file_storage.0.arn
 
   network_id              = local.network_id
@@ -191,6 +189,13 @@ module "app_eks" {
   system_reserved_pid                 = var.system_reserved_pid
 
   aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+
+  eks_addon_efs_csi_driver_version = var.eks_addon_efs_csi_driver_version
+  eks_addon_ebs_csi_driver_version = var.eks_addon_ebs_csi_driver_version
+  eks_addon_coredns_version        = var.eks_addon_coredns_version
+  eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
+  eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
+  eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
 }
 
 locals {
@@ -264,7 +269,7 @@ locals {
 
 module "wandb" {
   source  = "wandb/wandb/helm"
-  version = "1.2.0"
+  version = "2.0.0"
 
   depends_on = [
     module.app_eks,
@@ -281,11 +286,18 @@ module "wandb" {
 
         extraEnv = var.other_wandb_env
 
-        bucket = {
+        bucket = var.bucket_name != "" ? {
           provider = "s3"
-          name     = local.bucket_name
+          name     = var.bucket_name
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.use_external_bucket ? var.bucket_kms_key_arn : local.kms_key_arn
+          kmsKey   = var.bucket_kms_key_arn
+        } : null
+
+        defaultBucket = {
+          provider = "s3"
+          name     = module.file_storage.bucket_name
+          region   = module.file_storage.bucket_region
+          kmsKey   = module.kms.key.arn
         }
 
         mysql = {

@@ -8,6 +8,18 @@ variable "bucket_kms_key_arns" {
   type        = list(string)
 }
 
+variable "map_bucket_permissions" {
+  description = "A Map of the parent modules 'bucket_permissions_mode' & 'bucket_restricted_accounts' variables"
+  type = object({
+    mode     = string,
+    accounts = list(string)
+  })
+  default = {
+    mode     = "strict",
+    accounts = []
+  }
+}
+
 variable "fqdn" {
   type = string
 }
@@ -33,6 +45,12 @@ variable "cluster_version" {
   description = "Indicates AWS EKS cluster version"
   nullable    = false
   type        = string
+}
+
+variable "cluster_tags" {
+  description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
+  type        = map(string)
+  default     = {}
 }
 
 variable "create_elasticache_security_group" {
@@ -181,4 +199,19 @@ variable "eks_addon_kube_proxy_version" {
 variable "eks_addon_vpc_cni_version" {
   description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
+}
+
+variable "eks_addon_metrics_server_version" {
+  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  type        = string
+}
+
+variable "cache_size" {
+  description = "Size of the redis cache, when use_ctrlplane_redis is true. These values map to preset sizes in the bitnami helm chart."
+  type        = string
+  default     = "nano"
+  validation {
+    condition     = contains(["nano", "micro", "small", "medium", "large", "xlarge", "2xlarge"], var.cache_size)
+    error_message = "Invalid value specified for 'cache_size'; must be one of 'nano', 'micro', 'small', 'medium', 'large'"
+  }
 }

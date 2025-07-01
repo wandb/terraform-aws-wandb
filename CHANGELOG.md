@@ -2,6 +2,252 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.1...v7.14.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* Bump max node sizes to ensure reliability as we increase HA deployments ([#357](https://github.com/wandb/terraform-aws-wandb/issues/357)) ([ecd8f9b](https://github.com/wandb/terraform-aws-wandb/commit/ecd8f9b8b4ebabdf0b5e7df66534e8a2f56fb527))
+
+### [7.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.0...v7.14.1) (2025-05-14)
+
+
+### Bug Fixes
+
+* Add explicit dependencies so TF destroy resources in the correct order. ([#356](https://github.com/wandb/terraform-aws-wandb/issues/356)) ([db1e25d](https://github.com/wandb/terraform-aws-wandb/commit/db1e25d51f4f41a54f78b1039f6c7f19a275232e))
+
+## [7.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.1...v7.14.0) (2025-04-28)
+
+
+### Features
+
+* Tag clusters ([#355](https://github.com/wandb/terraform-aws-wandb/issues/355)) ([bd7e65a](https://github.com/wandb/terraform-aws-wandb/commit/bd7e65a9f7187c29114a10b9c8241f86af0afc2e))
+
+### [7.13.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.0...v7.13.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* Use internal oidc issuer url instead of variable ([#354](https://github.com/wandb/terraform-aws-wandb/issues/354)) ([78a9728](https://github.com/wandb/terraform-aws-wandb/commit/78a9728a34bd068fbb842ec2fde3a3d81ad6eef2))
+
+## [7.13.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.4...v7.13.0) (2025-04-09)
+
+
+### Features
+
+* Bump version ([#353](https://github.com/wandb/terraform-aws-wandb/issues/353)) ([d4e0151](https://github.com/wandb/terraform-aws-wandb/commit/d4e01519b18a350963a7518e68a3f4f38a8f20cd))
+
+### [7.12.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.3...v7.12.4) (2025-04-09)
+
+
+### Bug Fixes
+
+* pass output of cr spec ([#352](https://github.com/wandb/terraform-aws-wandb/issues/352)) ([41ac77b](https://github.com/wandb/terraform-aws-wandb/commit/41ac77b2ff48f4b8fc43370a07dfbb5dd8941a97))
+
+### [7.12.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.2...v7.12.3) (2025-03-28)
+
+
+### Bug Fixes
+
+* Patch deploy ([#351](https://github.com/wandb/terraform-aws-wandb/issues/351)) ([45378f0](https://github.com/wandb/terraform-aws-wandb/commit/45378f060194f8acaab2a50290d4fd210620d7d8))
+
+### [7.12.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.1...v7.12.2) (2025-03-21)
+
+
+### Bug Fixes
+
+* Tag the aws eks with cache_size, not all resources ([#348](https://github.com/wandb/terraform-aws-wandb/issues/348)) ([3439bba](https://github.com/wandb/terraform-aws-wandb/commit/3439bba56f90b3e24f0d3f1ec6e20335569b78ce))
+
+### [7.12.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.12.0...v7.12.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* Add tag to cloud-managed k8s for cache_size ([#347](https://github.com/wandb/terraform-aws-wandb/issues/347)) ([d466f01](https://github.com/wandb/terraform-aws-wandb/commit/d466f01d9c2d18c2947e2405f86ce5c3da1d2489))
+
+## [7.12.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.11.0...v7.12.0) (2025-03-20)
+
+
+### Features
+
+* **dev:** Update eks version in provider ([#346](https://github.com/wandb/terraform-aws-wandb/issues/346)) ([e939ab4](https://github.com/wandb/terraform-aws-wandb/commit/e939ab43ac5d34f81be3723903cf53d581743245))
+
+## [7.11.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.10.0...v7.11.0) (2025-03-19)
+
+
+### Features
+
+* **deploy:** Support ctrlplane redis ([#344](https://github.com/wandb/terraform-aws-wandb/issues/344)) ([6f3fba2](https://github.com/wandb/terraform-aws-wandb/commit/6f3fba24cccb415f2074404cf975d6134c33b163))
+
+## [7.10.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.2...v7.10.0) (2025-03-11)
+
+
+### Features
+
+* Add helm chart toggles ([#343](https://github.com/wandb/terraform-aws-wandb/issues/343)) ([ff6bd95](https://github.com/wandb/terraform-aws-wandb/commit/ff6bd95797b9fa890151ea6306ad18c876f2740c))
+
+### [7.9.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.1...v7.9.2) (2025-02-25)
+
+
+### Bug Fixes
+
+* Expose externalized redis to helm for console metrics ([#341](https://github.com/wandb/terraform-aws-wandb/issues/341)) ([c14dc28](https://github.com/wandb/terraform-aws-wandb/commit/c14dc28c57adf9ab409b04dabc4394afa312e2ea))
+
+### [7.9.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.9.0...v7.9.1) (2025-02-10)
+
+
+### Bug Fixes
+
+* More renaming of "core" to "external" redis ([#340](https://github.com/wandb/terraform-aws-wandb/issues/340)) ([7bdfc1b](https://github.com/wandb/terraform-aws-wandb/commit/7bdfc1bcd93181073434a9e838862ff6a3e5b84b))
+
+## [7.9.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.2...v7.9.0) (2025-02-10)
+
+
+### Features
+
+* INFRA-383 to control elasticache creation via externalized var ([#339](https://github.com/wandb/terraform-aws-wandb/issues/339)) ([e799d1b](https://github.com/wandb/terraform-aws-wandb/commit/e799d1bb86825d3035611a49d016751a5d98e29d))
+
+### [7.8.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.1...v7.8.2) (2025-02-09)
+
+
+### Bug Fixes
+
+* **bug:** INFRA-473 remove eks case-insenstive tagging duplicates ([#338](https://github.com/wandb/terraform-aws-wandb/issues/338)) ([b7005b9](https://github.com/wandb/terraform-aws-wandb/commit/b7005b95eeda66f8ce54c807f2e6922300f88193))
+
+### [7.8.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.8.0...v7.8.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* **dev:** INFRA-350 tag EC2 with customer-ns ([#336](https://github.com/wandb/terraform-aws-wandb/issues/336)) ([2c87899](https://github.com/wandb/terraform-aws-wandb/commit/2c87899c8d25b9f015ab2a85c65dffa542508e51))
+
+## [7.8.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.7.0...v7.8.0) (2025-01-30)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#335](https://github.com/wandb/terraform-aws-wandb/issues/335)) ([27ad989](https://github.com/wandb/terraform-aws-wandb/commit/27ad98941793dfc466c45381eeb1a1c62944b11c))
+
+## [7.7.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.6.0...v7.7.0) (2025-01-30)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#334](https://github.com/wandb/terraform-aws-wandb/issues/334)) ([7a0ad6d](https://github.com/wandb/terraform-aws-wandb/commit/7a0ad6dcc8b8353c4f70e10066e66a7f990c0e51))
+
+## [7.6.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.5.0...v7.6.0) (2025-01-30)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#333](https://github.com/wandb/terraform-aws-wandb/issues/333)) ([6aeb94f](https://github.com/wandb/terraform-aws-wandb/commit/6aeb94f88b0f872e8874c0178bceaa12d0773890))
+
+## [7.5.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.4.0...v7.5.0) (2025-01-29)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#331](https://github.com/wandb/terraform-aws-wandb/issues/331)) ([406aa58](https://github.com/wandb/terraform-aws-wandb/commit/406aa580e2cf8268284770381c1dc57f0315e02c))
+
+## [7.4.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.3.1...v7.4.0) (2025-01-29)
+
+
+### Features
+
+* Cloudtrail logging for s3 events ([#329](https://github.com/wandb/terraform-aws-wandb/issues/329)) ([fc572f9](https://github.com/wandb/terraform-aws-wandb/commit/fc572f9ade4c142f97ab45364e2decb90b02dbf8))
+
+### [7.3.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.3.0...v7.3.1) (2025-01-23)
+
+
+### Bug Fixes
+
+* S3 https-only policy for VPC Flow Logs bucket ([#328](https://github.com/wandb/terraform-aws-wandb/issues/328)) ([bdf9aa4](https://github.com/wandb/terraform-aws-wandb/commit/bdf9aa4c2d2ebca7dc7a4952919772e1d59aab9b))
+
+## [7.3.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.2...v7.3.0) (2025-01-22)
+
+
+### Features
+
+* Allow flexible external bucket access ([#327](https://github.com/wandb/terraform-aws-wandb/issues/327)) ([f239513](https://github.com/wandb/terraform-aws-wandb/commit/f239513ed9a59a282157ca6486602bbabdcad2fb))
+
+### [7.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.1...v7.2.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* S3 https-only ([#326](https://github.com/wandb/terraform-aws-wandb/issues/326)) ([24d85dd](https://github.com/wandb/terraform-aws-wandb/commit/24d85dd12be39a24d4b2ffc124b53fdce346db1d))
+
+### [7.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.2.0...v7.2.1) (2025-01-17)
+
+
+### Bug Fixes
+
+* S3 bucket force destroy ([#324](https://github.com/wandb/terraform-aws-wandb/issues/324)) ([de63184](https://github.com/wandb/terraform-aws-wandb/commit/de631846f4d3fcb3454227872d419407e2b47d33))
+
+## [7.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.1.0...v7.2.0) (2025-01-16)
+
+
+### Features
+
+* Add VPC flow logs option + s3 https-only policy ([#322](https://github.com/wandb/terraform-aws-wandb/issues/322)) ([92d8559](https://github.com/wandb/terraform-aws-wandb/commit/92d8559c5fcfa8263603cd494635e9e770fa82ae))
+
+## [7.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.0.0...v7.1.0) (2025-01-15)
+
+
+### Features
+
+* Add metric-server ([#321](https://github.com/wandb/terraform-aws-wandb/issues/321)) ([c8b96ca](https://github.com/wandb/terraform-aws-wandb/commit/c8b96cad59b896e01ca0c57f168638a6942f27ae))
+
+## [7.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.1.0...v7.0.0) (2025-01-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use defaultBucket (#312) *BREAKING CHANGE*
+
+### Features
+
+* Use defaultBucket ([#312](https://github.com/wandb/terraform-aws-wandb/issues/312)) *BREAKING CHANGE* ([6044819](https://github.com/wandb/terraform-aws-wandb/commit/60448197c0298683fe3b16df1e7adc95a29dbd85))
+
+## [6.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v6.0.0...v6.1.0) (2025-01-08)
+
+
+### Features
+
+* Add role passthrough ([#320](https://github.com/wandb/terraform-aws-wandb/issues/320)) ([1fa7e8a](https://github.com/wandb/terraform-aws-wandb/commit/1fa7e8a2d9d53b2c2aa1acb01a1f7a8c57fc531c))
+
+## [6.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.2...v6.0.0) (2025-01-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 (#315)
+
+### Features
+
+* Bump helm-wandb vers to v2.0.0, requires TF > 1.9 ([#315](https://github.com/wandb/terraform-aws-wandb/issues/315)) ([0f4b21c](https://github.com/wandb/terraform-aws-wandb/commit/0f4b21c35d9bfcc746cd52f159b1653892cff366))
+
+### [5.2.2](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.1...v5.2.2) (2024-12-26)
+
+
+### Bug Fixes
+
+* Bump obsolete aws-mysql-engine verions in examples ([#316](https://github.com/wandb/terraform-aws-wandb/issues/316)) ([47a904e](https://github.com/wandb/terraform-aws-wandb/commit/47a904ea66d11afb55d11c3bbf79e1e1187be7b8))
+
+### [5.2.1](https://github.com/wandb/terraform-aws-wandb/compare/v5.2.0...v5.2.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* Rate limiting of aws R53 ([#314](https://github.com/wandb/terraform-aws-wandb/issues/314)) ([55854a3](https://github.com/wandb/terraform-aws-wandb/commit/55854a3365b8294afdc39a85d812cc4f7c8df542))
+
+## [5.2.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.1.0...v5.2.0) (2024-12-02)
+
+
+### Features
+
+* Add internalJWTMap variables used for inter service request authentication ([#309](https://github.com/wandb/terraform-aws-wandb/issues/309)) ([f281ca4](https://github.com/wandb/terraform-aws-wandb/commit/f281ca486abe22d76f531051a870762d321b32ea))
+
 ## [5.1.0](https://github.com/wandb/terraform-aws-wandb/compare/v5.0.1...v5.1.0) (2024-10-21)
 
 

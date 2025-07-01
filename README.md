@@ -18,7 +18,7 @@ audit logging and SAML single sign-on.
 This module is intended to run in an AWS account with minimal preparation,
 however it does have the following pre-requisites:
 
-### Terrafom version >= 1.5
+### Terrafom version >= 1.9
 
 ### Credentials / Permissions
 
@@ -101,6 +101,20 @@ All the values set via `deployment-size.tf` can be overridden by setting the app
 - `kubernetes_max_nodes_per_az` - The maximum number of nodes in each AZ for the EKS cluster
 - `elasticache_node_type` - The instance type for the redis cluster
 - `database_instance_class` - The instance type for the database
+
+## Bring Your Own Bucket (BYOB)
+We have added additional variable that make enabling BYOB easier to enable.
+`bucket_permissions_mode` accepts 1 of 3 values; 
+- `strict` the default requires an explict list of the buckets for proper access, the same as byob before `7.3.0`.
+- `restricted` makes use of the new variable `bucket_restricted_accounts` which is a list of AWS account Id's where the BYOBs can be hosted from. ex: `["1234567890", "1234876590"]`
+- `public` enables access to any BYOB properly configured not present in the the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
+
+> [!IMPORTANT]
+> Enabling BYOB or cross-account reguardless of `bucket_permissions_mode` still requires a policy attached to that bucket to allowing the eks node role to perform s3 actions.
+>
+> To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of the module `cluster_node_role`
+>
+> You can use the [Secure Storage Connector submodule](https://github.com/wandb/terraform-aws-wandb/tree/main/modules/secure_storage_connector) to create a bucket that allows access for the deployed cluster
 
 ## Examples
 
@@ -306,7 +320,7 @@ For more information on the available sizes, see the [Cluster Sizing](#cluster-s
 If having the cluster scale nodes in and out is not desired, the `kubernetes_min_nodes_per_az` and 
 `kubernetes_max_nodes_per_az` can be set to the same value to prevent the cluster from scaling.
 
-This upgrade is also intended to be used when upgrading eks to 1.29.
+This upgrade is also intended to be used when upgrading eks to 1.30.
 
 We have upgraded the following dependencies and Kubernetes addons:
 
@@ -316,7 +330,7 @@ We have upgraded the following dependencies and Kubernetes addons:
 - aws-efs-csi-driver (v2.0.7-eksbuild.1)
 - aws-ebs-csi-driver (v1.35.0-eksbuild.1)
 - coredns (v1.11.3-eksbuild.1)
-- kube-proxy (v1.29.7-eksbuild.9)
+- kube-proxy (v1.30.0-eksbuild.1)
 - vpc-cni (v1.18.3-eksbuild.3)
 
 > :warning: Please remove the `enable_dummy_dns` and `enable_operator_alb` variables
@@ -373,6 +387,13 @@ This can be donw by adding the following policy document.
     }
 ```
 
+### 6.x -> 7.x
+
+`v7` changes how the module references storage from using terraform's `count` to always creating a "defaultBucket" which can be overidden latter or but providing some initial bucket.
+
+We are considering this a major change because of the terraform `moved` block which migrates the resource. After moving to a `v7` applying an earlier version of the module may result in terraform deleting your bucket.
+
+removed the `create_bucket` var due to the above.
 ### Upgrading from 2.x -> 3.x
 
 - No changes required by you

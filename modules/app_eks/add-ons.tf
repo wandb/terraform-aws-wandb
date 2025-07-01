@@ -27,7 +27,7 @@ resource "aws_iam_role" "oidc" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role.json
 }
 
-### add-ons for eks version 1.29
+### add-ons for eks version 1.30
 resource "aws_eks_addon" "aws_efs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
@@ -77,4 +77,14 @@ resource "aws_eks_addon" "vpc_cni" {
   addon_version            = var.eks_addon_vpc_cni_version
   resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
+}
+
+resource "aws_eks_addon" "metrics_server" {
+  depends_on = [
+    module.eks
+  ]
+  cluster_name      = var.namespace
+  addon_name        = "metrics-server"
+  addon_version     = var.eks_addon_metrics_server_version
+  resolve_conflicts = "OVERWRITE"
 }

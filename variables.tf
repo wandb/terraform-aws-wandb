@@ -38,6 +38,18 @@ variable "controller_image_tag" {
   default     = "1.14.0"
 }
 
+variable "enable_helm_operator" {
+  type        = bool
+  default     = true
+  description = "Enable or disable applying and releasing W&B Operator chart"
+}
+
+variable "enable_helm_wandb" {
+  type        = bool
+  default     = true
+  description = "Enable or disable applying and releasing CR chart"
+}
+
 ##########################################
 # Database                               #
 ##########################################
@@ -208,6 +220,18 @@ variable "create_vpc" {
   default     = true
 }
 
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
+}
+
+variable "keep_flow_log_bucket" {
+  description = "Controls whether S3 bucket storing VPC Flow Logs will be kept"
+  type        = bool
+  default     = true
+}
+
 variable "network_id" {
   default     = ""
   description = "The identity of the VPC in which resources will be deployed."
@@ -289,6 +313,13 @@ variable "eks_cluster_version" {
   nullable    = false
   type        = string
 }
+
+variable "eks_cluster_tags" {
+  description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
+  type        = map(string)
+  default     = {}
+}
+
 variable "kubernetes_alb_internet_facing" {
   type        = bool
   description = "Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal."
@@ -392,7 +423,9 @@ variable "aws_loadbalancer_controller_tags" {
   type        = map(string)
   default     = {}
 }
-
+##########################################
+# EKS Cluster Addons                     #
+##########################################
 variable "eks_addon_efs_csi_driver_version" {
   description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
@@ -414,7 +447,7 @@ variable "eks_addon_coredns_version" {
 variable "eks_addon_kube_proxy_version" {
   description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
-  default     = "v1.29.7-eksbuild.9"
+  default     = "v1.30.0-eksbuild.1"
 }
 
 variable "eks_addon_vpc_cni_version" {
@@ -423,17 +456,28 @@ variable "eks_addon_vpc_cni_version" {
   default     = "v1.18.3-eksbuild.3"
 }
 
+variable "eks_addon_metrics_server_version" {
+  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  type        = string
+  default     = "v0.7.2-eksbuild.1"
+}
+
+##########################################
+# Bucket Policy                          #
+##########################################
+# This setting will ensure that s3 bucket objects will reject HTTP traffic with a 403
+# and will only accept HTTPS traffic
+variable "enable_s3_https_only" {
+  description = "Controls whether HTTPS-only is enabled for s3 buckets"
+  type        = bool
+  default     = false
+}
 
 ##########################################
 # External Bucket                        #
 ##########################################
 # Most users will not need these settings. They are ment for users who want a
 # bucket and sqs that are in a different account.
-variable "create_bucket" {
-  type    = bool
-  default = true
-}
-
 variable "bucket_name" {
   type    = string
   default = ""
@@ -446,7 +490,22 @@ variable "bucket_kms_key_arn" {
     error_message = "Invalid value for bucket kms ARN"
   }
 }
+variable "bucket_permissions_mode" {
+  type        = string
+  description = "Defines the bucket permissions mode, which can be one of: strict, restricted, or public."
 
+  validation {
+    condition     = contains(["strict", "restricted", "public"], var.bucket_permissions_mode)
+    error_message = "The bucket_permissions_mode must be one of: strict, restricted, or public."
+  }
+
+  default = "strict"
+}
+variable "bucket_restricted_accounts" {
+  type        = list(string)
+  description = "List of allowed accounts when 'bucket_permissions_mode' is 'restricted'."
+  default     = []
+}
 ##########################################
 # Bucket path                            #
 ##########################################
@@ -472,6 +531,46 @@ variable "elasticache_node_type" {
   description = "The type of the redis cache node to deploy. Defaults to null and value from deployment-size.tf is used"
   type        = string
   default     = null
+}
+
+variable "use_external_redis" {
+  type        = bool
+  description = "Boolean indicating whether to use the redis instance created externally"
+  default     = false
+}
+
+variable "external_redis_host" {
+  type        = string
+  description = "host for the redis instance created externally"
+  default     = null
+}
+
+variable "external_redis_port" {
+  type        = string
+  description = "port for the redis instance created externally"
+  default     = null
+}
+
+variable "external_redis_params" {
+  type        = object({})
+  description = "queryVar params for redis instance created externally"
+  default     = null
+}
+
+variable "use_ctrlplane_redis" {
+  description = "Whether redis is deployed in the cluster via ctrlplane"
+  type        = bool
+  default     = false
+}
+
+variable "cache_size" {
+  description = "Size of the redis cache, when use_ctrlplane_redis is true. These values map to preset sizes in the bitnami helm chart."
+  type        = string
+  default     = "nano"
+  validation {
+    condition     = contains(["nano", "micro", "small", "medium", "large", "xlarge", "2xlarge"], var.cache_size)
+    error_message = "Invalid value specified for 'cache_size'; must be one of 'nano', 'micro', 'small', 'medium', 'large'"
+  }
 }
 
 ##########################################

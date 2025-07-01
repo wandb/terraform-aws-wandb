@@ -29,24 +29,27 @@ locals {
 }
 
 module "file_storage" {
-  count               = var.create_bucket ? 1 : 0
-  source              = "./modules/file_storage"
-  namespace           = var.namespace
-  create_queue        = !local.use_internal_queue
-  sse_algorithm       = "aws:kms"
-  kms_key_arn         = local.s3_kms_key_arn
-  deletion_protection = var.deletion_protection
+  source               = "./modules/file_storage"
+  namespace            = var.namespace
+  create_queue         = !local.use_internal_queue
+  sse_algorithm        = "aws:kms"
+  kms_key_arn          = local.s3_kms_key_arn
+  deletion_protection  = var.deletion_protection
+  enable_s3_https_only = var.enable_s3_https_only
 }
 
 locals {
-  bucket_name       = local.use_external_bucket ? var.bucket_name : module.file_storage[0].bucket_name
-  bucket_queue_name = local.use_internal_queue ? null : module.file_storage[0].bucket_queue_name
+  bucket_queue_name = local.use_internal_queue ? null : module.file_storage.bucket_queue_name
+  main_bucket_name  = var.bucket_name != "" ? var.bucket_name : module.file_storage.bucket_name
 }
 
 module "networking" {
-  source     = "./modules/networking"
-  namespace  = var.namespace
-  create_vpc = var.create_vpc
+  source               = "./modules/networking"
+  namespace            = var.namespace
+  create_vpc           = var.create_vpc
+  enable_flow_log      = var.enable_flow_log
+  keep_flow_log_bucket = var.keep_flow_log_bucket
+  enable_s3_https_only = var.enable_s3_https_only
 
   cidr                           = var.network_cidr
   private_subnet_cidrs           = var.network_private_subnet_cidrs
@@ -146,6 +149,11 @@ module "app_eks" {
   map_roles    = var.kubernetes_map_roles
   map_users    = var.kubernetes_map_users
 
+  map_bucket_permissions = {
+    mode     = var.bucket_permissions_mode
+    accounts = var.bucket_restricted_accounts
+  }
+
   bucket_kms_key_arns = compact([
     local.default_kms_key,
     var.bucket_kms_key_arn != "" && var.bucket_kms_key_arn != null ? var.bucket_kms_key_arn : null
@@ -163,7 +171,9 @@ module "app_eks" {
   create_elasticache_security_group = var.create_elasticache
   elasticache_security_group_id     = var.create_elasticache ? module.redis[0].security_group_id : null
 
-  cluster_version                      = var.eks_cluster_version
+  cluster_version = var.eks_cluster_version
+  cluster_tags    = var.eks_cluster_tags
+
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
 
@@ -181,7 +191,13 @@ module "app_eks" {
   eks_addon_coredns_version        = var.eks_addon_coredns_version
   eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
   eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
+  eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
 
+  cache_size = var.cache_size
+
+  depends_on = [
+    module.networking,
+  ]
 }
 
 
@@ -246,33 +262,35 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
-module "wandb" {
-  source  = "wandb/wandb/helm"
-  version = "1.2.0"
-
-  depends_on = [
-    module.database,
-    module.app_eks,
-    module.redis,
-  ]
-
-  operator_chart_version = var.operator_chart_version
-  controller_image_tag   = var.controller_image_tag
+locals {
+  weave_trace_sa_name  = "wandb-weave-trace"
+  ctrlplane_redis_host = "redis.redis.svc.cluster.local"
+  ctrlplane_redis_port = "26379"
+  ctrlplane_redis_params = {
+    master = "gorilla"
+  }
 
   spec = {
     values = {
       global = {
+        size          = var.size
         host          = local.url
         license       = var.license
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 
-        bucket = {
+        bucket = var.bucket_name != "" ? {
           provider = "s3"
-          name     = local.bucket_name
+          name     = var.bucket_name
           path     = var.bucket_path
           region   = data.aws_s3_bucket.file_storage.region
-          kmsKey   = local.s3_kms_key_arn
+          kmsKey   = var.bucket_kms_key_arn
+        } : {}
+        defaultBucket = {
+          provider = "s3"
+          name     = module.file_storage.bucket_name
+          region   = module.file_storage.bucket_region
+          kmsKey   = module.kms.key.arn
         }
 
         mysql = {
@@ -283,9 +301,31 @@ module "wandb" {
           port     = module.database.port
         }
 
-        redis = {
-          host = module.redis[0].host
-          port = "${module.redis[0].port}?tls=true&ttlInSeconds=604800"
+        redis = var.use_ctrlplane_redis ? {
+          host     = local.ctrlplane_redis_host
+          port     = local.ctrlplane_redis_port
+          params   = local.ctrlplane_redis_params
+          external = true
+          } : var.use_external_redis ? {
+          host     = var.external_redis_host
+          port     = var.external_redis_port
+          params   = var.external_redis_params
+          external = true
+          } : var.create_elasticache ? {
+          host     = module.redis[0].host
+          port     = module.redis[0].port
+          external = false
+          params = {
+            master = ""
+            tls    = true
+          }
+          } : {
+          host     = ""
+          port     = 6379
+          external = false
+          params = {
+            master = ""
+          }
         }
       }
 
@@ -320,7 +360,20 @@ module "wandb" {
 
       }
 
-      app = {}
+      app = {
+        internalJWTMap = [
+          {
+            "subject" = "system:serviceaccount:default:${local.weave_trace_sa_name}",
+            "issuer"  = "https://${module.app_eks.aws_iam_openid_connect_provider}"
+          }
+        ]
+      }
+
+      console = {
+        extraEnv = {
+          "BUCKET_ACCESS_IDENTITY" = module.app_eks.node_role.arn
+        }
+      }
 
       # To support otel rds and redis metrics, we need operator-wandb chart min version 0.13.8 (yace subchart)
       yace = var.enable_yace ? {
@@ -355,4 +408,36 @@ module "wandb" {
       }
     }
   }
+}
+
+resource "time_sleep" "wait_for_deletion_reconcile" {
+  depends_on = [module.app_eks]
+
+  # external-dns has a 5m reconcile timer, so we need to give it time to clean up the DNS records
+  destroy_duration = "5m"
+}
+
+module "wandb" {
+  source  = "wandb/wandb/helm"
+  version = "3.0.0"
+
+  depends_on = [
+    module.database,
+    module.redis,
+    module.acm,
+    module.networking.public_subnets,
+    time_sleep.wait_for_deletion_reconcile
+  ]
+
+  operator_chart_version = var.operator_chart_version
+  controller_image_tag   = var.controller_image_tag
+  enable_helm_operator   = var.enable_helm_operator
+  enable_helm_wandb      = var.enable_helm_wandb
+
+  spec = local.spec
+}
+
+moved {
+  from = module.file_storage[0]
+  to   = module.file_storage
 }

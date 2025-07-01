@@ -68,3 +68,21 @@ variable "clickhouse_endpoint_service_id" {
   type        = string
   default     = ""
 }
+
+variable "enable_flow_log" {
+  description = "Controls whether VPC Flow Logs are enabled"
+  type        = bool
+  default     = false
+}
+
+variable "keep_flow_log_bucket" {
+  description = "Controls whether S3 bucket storing VPC Flow Logs will be kept"
+  type        = bool
+  default     = true
+}
+
+variable "enable_s3_https_only" {
+  description = "Controls whether HTTPS-only is enabled for s3 buckets"
+  type        = bool
+  default     = false
+}

@@ -11,7 +11,14 @@ locals {
     var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
+  defaultTags            = var.aws_loadbalancer_controller_tags
+  cluster_tags = merge(
+    var.cluster_tags, {
+      cache_size = var.cache_size
+    }
+  )
 }
+
 
 data "aws_subnet" "private" {
   count = length(var.network_private_subnets)
@@ -72,12 +79,14 @@ module "eks" {
     }
   }
 
-  tags = {
+  tags = merge(local.defaultTags, {
     GithubRepo         = "wandb"
     GithubOrg          = "terraform-aws-wandb"
     TerraformNamespace = var.namespace
     TerraformModule    = "terraform-aws-wandb/module/app_eks"
-  }
+  })
+
+  cluster_tags = local.cluster_tags
 }
 
 resource "kubernetes_annotations" "gp2" {
@@ -176,7 +185,10 @@ module "external_dns" {
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
 
-  depends_on = [module.eks]
+  depends_on = [
+    module.eks,
+    module.lb_controller
+  ]
 }
 
 module "cluster_autoscaler" {
@@ -184,6 +196,8 @@ module "cluster_autoscaler" {
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
-
-  depends_on = [module.eks]
+  depends_on = [
+    module.eks,
+    module.lb_controller
+  ]
 }

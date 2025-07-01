@@ -1,5 +1,5 @@
 output "bucket_name" {
-  value = local.bucket_name
+  value = local.main_bucket_name
 }
 output "bucket_path" {
   value = var.bucket_path
@@ -88,4 +88,9 @@ output "standardized_size" {
 output "url" {
   value       = local.url
   description = "The URL to the W&B application"
+}
+
+output "wandb_spec" {
+  value     = local.spec
+  sensitive = true
 }
