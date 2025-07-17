@@ -1,9 +1,9 @@
 terraform {
-  backend "s3" {
-    bucket = "<bucket-name>" #TODO: Replace with bucket name where you want to store the Terraform state
-    key    = "wandb-tf-state"
-    region = "<region-name>" #TODO: Replace if region is different
-  }
+  # backend "s3" {
+  #   bucket = "<bucket-name>" #TODO: Replace with bucket name where you want to store the Terraform state
+  #   key    = "wandb-tf-state"
+  #   region = "<region-name>" #TODO: Replace if region is different
+  # }
 
   required_providers {
     aws = {
@@ -18,7 +18,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "<region-name>" #TODO: Replace this with region name
+  region = var.region #"<region-name>" #TODO: Replace this with region name
 
   default_tags {
     tags = {
@@ -30,8 +30,9 @@ provider "aws" {
 }
 
 module "wandb_infra" {
-  source  = "wandb/wandb/aws"
-  version = "3.0.0"
+  source = "../../"
+  #source  = "wandb/wandb/aws"
+  #version = "3.0.0"
 
   namespace     = var.namespace
   public_access = true
@@ -43,7 +44,7 @@ module "wandb_infra" {
   network_cidr = var.vpc_cidr
 
   network_private_subnets       = var.network_private_subnets
-  network_public_subnets        = var.network_public_subnets
+  #network_public_subnets        = var.network_public_subnets
   network_database_subnets      = var.network_database_subnets
   network_private_subnet_cidrs  = var.network_private_subnet_cidrs
   network_public_subnet_cidrs   = var.network_public_subnet_cidrs
@@ -68,6 +69,7 @@ module "wandb_infra" {
   domain_name = var.domain_name
   zone_id     = var.zone_id
   subdomain   = var.subdomain
+  license = var.wandb_license
 
   bucket_name        = var.bucket_name
   bucket_kms_key_arn = var.bucket_kms_key_arn
@@ -89,8 +91,8 @@ provider "kubernetes" {
 }
 
 module "wandb_app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
-
+  #source = "github.com/wandb/terraform-kubernetes-wandb"
+  source = "wandb/wandb/kubernetes"
   license = var.wandb_license
 
   host                       = module.wandb_infra.url
@@ -103,7 +105,7 @@ module "wandb_app" {
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
 
-  service_port = module.wandb_infra.internal_app_port
+  service_port = 32543 #module.wandb_infra.internal_app_port
 
   depends_on = [module.wandb_infra]
 }

@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region = var.region 
 
 
   default_tags {
@@ -7,7 +7,7 @@ provider "aws" {
       GithubRepo = "terraform-aws-wandb"
       GithubOrg  = "wandb"
       Enviroment = "Example"
-      Example    = "PublicDnsExternal"
+      Example    = "byo-vpc"
     }
   }
 }
@@ -29,7 +29,7 @@ module "wandb_infra" {
   network_cidr = var.vpc_cidr
 
   network_private_subnets       = var.network_private_subnets
-  network_public_subnets        = var.network_public_subnets
+  #network_public_subnets        = var.network_public_subnets
   network_database_subnets      = var.network_database_subnets
   network_private_subnet_cidrs  = var.network_private_subnet_cidrs
   network_public_subnet_cidrs   = var.network_public_subnet_cidrs
@@ -108,7 +108,7 @@ module "wandb_app" {
   wandb_image   = var.wandb_image
   wandb_version = var.wandb_version
 
-  service_port = module.wandb_infra.internal_app_port
+  service_port = 32543 #module.wandb_infra.internal_app_port
 
   # If we dont wait, tf will start trying to deploy while the work group is
   # still spinning up
