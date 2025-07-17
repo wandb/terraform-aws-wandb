@@ -185,7 +185,10 @@ module "external_dns" {
   oidc_provider = aws_iam_openid_connect_provider.eks
   fqdn          = var.fqdn
 
-  depends_on = [module.eks]
+  depends_on = [
+    module.eks,
+    module.lb_controller
+  ]
 }
 
 module "cluster_autoscaler" {
@@ -193,5 +196,8 @@ module "cluster_autoscaler" {
 
   namespace     = var.namespace
   oidc_provider = aws_iam_openid_connect_provider.eks
-  depends_on    = [module.eks]
+  depends_on = [
+    module.eks,
+    module.lb_controller
+  ]
 }

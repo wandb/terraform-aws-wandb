@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.2...v7.14.3) (2025-07-03)
+
+
+### Bug Fixes
+
+* Bump operator chart and image versions to latest ([#358](https://github.com/wandb/terraform-aws-wandb/issues/358)) ([244b70d](https://github.com/wandb/terraform-aws-wandb/commit/244b70d0ce9ea45b0715b75d90d51501f7a27897))
+
+### [7.14.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.1...v7.14.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* Bump max node sizes to ensure reliability as we increase HA deployments ([#357](https://github.com/wandb/terraform-aws-wandb/issues/357)) ([ecd8f9b](https://github.com/wandb/terraform-aws-wandb/commit/ecd8f9b8b4ebabdf0b5e7df66534e8a2f56fb527))
+
+### [7.14.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.0...v7.14.1) (2025-05-14)
+
+
+### Bug Fixes
+
+* Add explicit dependencies so TF destroy resources in the correct order. ([#356](https://github.com/wandb/terraform-aws-wandb/issues/356)) ([db1e25d](https://github.com/wandb/terraform-aws-wandb/commit/db1e25d51f4f41a54f78b1039f6c7f19a275232e))
+
 ## [7.14.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.13.1...v7.14.0) (2025-04-28)
 
 

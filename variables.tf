@@ -29,13 +29,13 @@ variable "size" {
 variable "operator_chart_version" {
   type        = string
   description = "Version of the operator chart to deploy"
-  default     = "1.3.4"
+  default     = "1.4.2"
 }
 
 variable "controller_image_tag" {
   type        = string
   description = "Tag of the controller image to deploy"
-  default     = "1.14.0"
+  default     = "1.20.0"
 }
 
 variable "enable_helm_operator" {
@@ -492,7 +492,7 @@ variable "bucket_kms_key_arn" {
 }
 variable "bucket_permissions_mode" {
   type        = string
-  description = "Defines the bucket permissiones mode, which can be one of: strict, restricted, or public."
+  description = "Defines the bucket permissions mode, which can be one of: strict, restricted, or public."
 
   validation {
     condition     = contains(["strict", "restricted", "public"], var.bucket_permissions_mode)
