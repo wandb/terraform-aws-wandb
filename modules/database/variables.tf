@@ -19,7 +19,7 @@ variable "vpc_id" {
 }
 
 variable "engine_version" {
-  description = "Version for MySQL Auora to use"
+  description = "Version for MySQL Auora to use -- major version only"
   type        = string
   default     = "8.0"
 }
