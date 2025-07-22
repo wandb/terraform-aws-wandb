@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.3...v7.14.4) (2025-07-22)
+
+
+### Bug Fixes
+
+* **bug:** INFRA-1007 Use mysql major version in var, only ([#359](https://github.com/wandb/terraform-aws-wandb/issues/359)) ([44ca372](https://github.com/wandb/terraform-aws-wandb/commit/44ca372f63b776d8de39e8aefdbec21beab79324))
+
 ### [7.14.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.2...v7.14.3) (2025-07-03)
 
 
