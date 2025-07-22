@@ -56,7 +56,7 @@ variable "enable_helm_wandb" {
 variable "database_engine_version" {
   description = "Version for MySQL Aurora"
   type        = string
-  default     = "8.0.mysql_aurora.3.07.1"
+  default     = "8.0"
 }
 
 variable "database_instance_class" {
