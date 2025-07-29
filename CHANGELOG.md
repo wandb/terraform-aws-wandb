@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.14.5](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.4...v7.14.5) (2025-07-29)
+
+
+### Bug Fixes
+
+* Increase instance sizes on all sizes up to large ([#360](https://github.com/wandb/terraform-aws-wandb/issues/360)) ([922c45a](https://github.com/wandb/terraform-aws-wandb/commit/922c45a9f9e72d3eb251fda98f1aa61e66cb9fc2))
+
 ### [7.14.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.3...v7.14.4) (2025-07-22)
 
 
