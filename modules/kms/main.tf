@@ -117,7 +117,7 @@ resource "aws_kms_key" "clickhouse_key" {
         "Principal" : {
           "AWS" : [
             "arn:aws:iam::576599896960:role/prod-kms-request-role",
-            var.clickhouse_tde_arn
+            "${var.clickhouse_tde_arn}"
           ]
         },
         "Action" : [
