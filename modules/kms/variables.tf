@@ -43,3 +43,9 @@ variable "clickhouse_key_policy" {
   type        = string
   default     = ""
 }
+
+variable "clickhouse_tde_arn" {
+  description = "The ARN TDE string to allow Clickhouse encryption."
+  type        = string
+  default     = ""
+}
