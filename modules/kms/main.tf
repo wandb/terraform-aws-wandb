@@ -115,7 +115,10 @@ resource "aws_kms_key" "clickhouse_key" {
         "Sid" : "Allow ClickHouse Access",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::576599896960:role/prod-kms-request-role"
+          "AWS" : [
+            "arn:aws:iam::576599896960:role/prod-kms-request-role",
+            "arn:aws:iam::426924874929:role/CH-TDE-uw2-83-Role-3132952005b1"
+          ]
         },
         "Action" : [
           "kms:GetPublicKey",
