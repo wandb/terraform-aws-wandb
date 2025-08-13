@@ -124,7 +124,8 @@ resource "aws_kms_key" "clickhouse_key" {
           "kms:Encrypt",
           "kms:GetKeyRotationStatus",
           "kms:GenerateDataKey",
-          "kms:DescribeKey"
+          "kms:DescribeKey",
+          "kms:ReEncrypt*"
         ],
         "Resource" : "*"
       },
