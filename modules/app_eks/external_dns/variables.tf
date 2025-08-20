@@ -21,5 +21,5 @@ variable "external_dns_image" {
 variable "external_dns_version" {
   type        = string
   description = "The tag of the external-dns to deploy."
-  default     = "0.15.0"
+  default     = null
 }

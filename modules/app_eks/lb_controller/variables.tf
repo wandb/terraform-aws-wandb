@@ -22,5 +22,5 @@ variable "aws_loadbalancer_controller_image" {
 variable "aws_loadbalancer_controller_version" {
   type        = string
   description = "The tag of the aws-loadbalancer-controller to deploy."
-  default     = "v2.7.2"
+  default     = null
 }

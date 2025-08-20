@@ -18,5 +18,5 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_version" {
   type        = string
   description = "The tag of the cluster-autoscaler to deploy."
-  default     = "v1.31.0"
+  default     = null
 }
