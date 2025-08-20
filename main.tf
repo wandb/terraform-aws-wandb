@@ -144,6 +144,8 @@ module "app_eks" {
   aws_loadbalancer_controller_image   = var.aws_loadbalancer_controller_image
   aws_loadbalancer_controller_version = var.aws_loadbalancer_controller_version
 
+  cluster_autoscaler_image   = var.cluster_autoscaler_image
+  cluster_autoscaler_version = var.cluster_autoscaler_version
 
   namespace   = var.namespace
   kms_key_arn = local.default_kms_key

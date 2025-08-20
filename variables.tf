@@ -624,19 +624,19 @@ variable "clickhouse_endpoint_service_id" {
 
 variable "external_dns_image" {
   type        = string
-  description = "The registry of the external-dns to deploy."
+  description = "The image repository of the external-dns to deploy."
   default     = "registry.k8s.io/external-dns/external-dns"
 }
 
 variable "external_dns_version" {
   type        = string
   description = "The tag of the external-dns to deploy."
-  default     = "v0.15.0"
+  default     = "0.15.0"
 }
 
 variable "aws_loadbalancer_controller_image" {
   type        = string
-  description = "The image of the aws-loadbalancer-controller to deploy."
+  description = "The image repository of the aws-loadbalancer-controller to deploy."
   default     = "public.ecr.aws/eks/aws-load-balancer-controller"
 }
 
@@ -644,4 +644,16 @@ variable "aws_loadbalancer_controller_version" {
   type        = string
   description = "The tag of the aws-loadbalancer-controller to deploy."
   default     = "v2.7.2"
+}
+
+variable "cluster_autoscaler_image" {
+  type        = string
+  description = "The image repository of the external-dns to deploy."
+  default     = "registry.k8s.io/autoscaling/cluster-autoscaler"
+}
+
+variable "cluster_autoscaler_version" {
+  type        = string
+  description = "The tag of the cluster-autoscaler to deploy."
+  default     = "v1.31.0"
 }

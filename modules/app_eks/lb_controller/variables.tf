@@ -15,7 +15,7 @@ variable "aws_loadbalancer_controller_tags" {
 
 variable "aws_loadbalancer_controller_image" {
   type        = string
-  description = "The image of the aws-loadbalancer-controller to deploy."
+  description = "The image repository of the aws-loadbalancer-controller to deploy."
   default     = "public.ecr.aws/eks/aws-load-balancer-controller"
 }
 

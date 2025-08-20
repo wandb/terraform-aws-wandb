@@ -198,8 +198,10 @@ module "external_dns" {
 module "cluster_autoscaler" {
   source = "./cluster_autoscaler"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
+  namespace                  = var.namespace
+  oidc_provider              = aws_iam_openid_connect_provider.eks
+  cluster_autoscaler_image   = var.cluster_autoscaler_image
+  cluster_autoscaler_version = var.cluster_autoscaler_version
   depends_on = [
     module.eks,
     module.lb_controller

@@ -12,10 +12,9 @@ variable "oidc_provider" {
 variable "fqdn" {
   type = string
 }
-
 variable "external_dns_image" {
   type        = string
-  description = "The registry of the external-dns to deploy."
+  description = "The image repository of the external-dns to deploy."
   default     = "registry.k8s.io/external-dns/external-dns"
 }
 
