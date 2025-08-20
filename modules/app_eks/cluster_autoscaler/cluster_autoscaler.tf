@@ -46,4 +46,13 @@ resource "helm_release" "cluster-autoscaler" {
     name  = "extraArgs.balancing-ignore-label"
     value = "topology.ebs.csi.aws.com/zone"
   }
+
+  set {
+    name  = "image.repository"
+    value = var.cluster_autoscaler_image
+  }
+  set {
+    name  = "image.tag"
+    value = var.cluster_autoscaler_version
+  }
 }

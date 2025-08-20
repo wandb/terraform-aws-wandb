@@ -27,6 +27,15 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = aws_iam_role.default.arn
   }
 
+  set {
+    name  = "image.repository"
+    value = var.aws_loadbalancer_controller_image
+  }
+  set {
+    name  = "image.tag"
+    value = var.aws_loadbalancer_controller_version
+  }
+
   values = [
     <<EOT
 defaultTags:

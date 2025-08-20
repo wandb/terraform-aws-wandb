@@ -171,9 +171,11 @@ resource "aws_iam_openid_connect_provider" "eks" {
 module "lb_controller" {
   source = "./lb_controller"
 
-  namespace                        = var.namespace
-  oidc_provider                    = aws_iam_openid_connect_provider.eks
-  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+  namespace                           = var.namespace
+  oidc_provider                       = aws_iam_openid_connect_provider.eks
+  aws_loadbalancer_controller_tags    = var.aws_loadbalancer_controller_tags
+  aws_loadbalancer_controller_image   = var.aws_loadbalancer_controller_image
+  aws_loadbalancer_controller_version = var.aws_loadbalancer_controller_version
 
   depends_on = [module.eks]
 }
@@ -181,9 +183,11 @@ module "lb_controller" {
 module "external_dns" {
   source = "./external_dns"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
-  fqdn          = var.fqdn
+  namespace            = var.namespace
+  oidc_provider        = aws_iam_openid_connect_provider.eks
+  fqdn                 = var.fqdn
+  external_dns_image   = var.external_dns_image
+  external_dns_version = var.external_dns_version
 
   depends_on = [
     module.eks,

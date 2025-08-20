@@ -138,6 +138,13 @@ module "app_eks" {
 
   fqdn = local.domain_filter
 
+  external_dns_image   = var.external_dns_image
+  external_dns_version = var.external_dns_version
+
+  aws_loadbalancer_controller_image   = var.aws_loadbalancer_controller_image
+  aws_loadbalancer_controller_version = var.aws_loadbalancer_controller_version
+
+
   namespace   = var.namespace
   kms_key_arn = local.default_kms_key
 

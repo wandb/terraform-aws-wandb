@@ -39,4 +39,13 @@ resource "helm_release" "external_dns" {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = aws_iam_role.default.arn
   }
+
+  set {
+    name  = "image.repository"
+    value = var.external_dns_image
+  }
+  set {
+    name  = "image.tag"
+    value = var.external_dns_version
+  }
 }
