@@ -55,7 +55,7 @@ resource "helm_release" "cluster-autoscaler" {
   dynamic "set" {
     for_each = var.cluster_autoscaler_image_tag != null ? [var.cluster_autoscaler_image_tag] : []
     content {
-      name = "image.tag"
+      name  = "image.tag"
       value = set.value
     }
   }

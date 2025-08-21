@@ -35,7 +35,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   dynamic "set" {
     for_each = var.aws_loadbalancer_controller_image_tag != null ? [var.aws_loadbalancer_controller_image_tag] : []
     content {
-      name = "image.tag"
+      name  = "image.tag"
       value = set.value
     }
   }
