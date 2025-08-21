@@ -44,8 +44,12 @@ resource "helm_release" "external_dns" {
     name  = "image.repository"
     value = var.external_dns_image
   }
-  set {
-    name  = "image.tag"
-    value = var.external_dns_version
+
+  dynamic "set" {
+    for_each = var.external_dns_version != null ? [var.external_dns_version] : []
+    content {
+      name = "image.tag"
+      value = set.value
+    }
   }
 }

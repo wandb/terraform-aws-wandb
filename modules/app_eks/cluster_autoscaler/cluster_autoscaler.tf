@@ -51,8 +51,12 @@ resource "helm_release" "cluster-autoscaler" {
     name  = "image.repository"
     value = var.cluster_autoscaler_image
   }
-  set {
-    name  = "image.tag"
-    value = var.cluster_autoscaler_version
+
+  dynamic "set" {
+    for_each = var.cluster_autoscaler_version != null ? [var.cluster_autoscaler_version] : []
+    content {
+      name = "image.tag"
+      value = set.value
+    }
   }
 }

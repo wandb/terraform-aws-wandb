@@ -631,7 +631,7 @@ variable "external_dns_image" {
 variable "external_dns_version" {
   type        = string
   description = "The tag of the external-dns to deploy."
-  default     = "0.15.0"
+  default     = null
 }
 
 variable "aws_loadbalancer_controller_image" {
@@ -643,7 +643,7 @@ variable "aws_loadbalancer_controller_image" {
 variable "aws_loadbalancer_controller_version" {
   type        = string
   description = "The tag of the aws-loadbalancer-controller to deploy."
-  default     = "v2.7.2"
+  default     = null
 }
 
 variable "cluster_autoscaler_image" {
@@ -655,5 +655,5 @@ variable "cluster_autoscaler_image" {
 variable "cluster_autoscaler_version" {
   type        = string
   description = "The tag of the cluster-autoscaler to deploy."
-  default     = "v1.31.0"
+  default     = null
 }
