@@ -11,7 +11,7 @@ variable "oidc_provider" {
 
 variable "cluster_autoscaler_image_repository" {
   type        = string
-  description = "The image repository of the external-dns to deploy."
+  description = "The image repository of the cluster-autoscaler to deploy."
   default     = "registry.k8s.io/autoscaling/cluster-autoscaler"
 }
 
