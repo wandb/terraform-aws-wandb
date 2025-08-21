@@ -59,6 +59,7 @@ module "eks" {
     disk_encrypted                       = local.encrypt_ebs_volume,
     disk_kms_key_id                      = var.kms_key_arn,
     disk_type                            = "gp3"
+    disk_size                            = var.disk_size,
     enable_monitoring                    = true
     force_update_version                 = local.encrypt_ebs_volume,
     iam_role_arn                         = aws_iam_role.node.arn,

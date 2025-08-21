@@ -84,6 +84,13 @@ variable "instance_types" {
   type        = list(string)
 }
 
+variable "disk_size" {
+  description = "The size of the EBS volume in GiB for the root block device of node group instances."
+  nullable    = false
+  type        = number
+  default     = 100
+}
+
 variable "lb_security_group_inbound_id" {
   type = string
 }

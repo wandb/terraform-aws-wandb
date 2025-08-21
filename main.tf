@@ -26,6 +26,7 @@ locals {
   kubernetes_instance_types                 = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
   kubernetes_min_nodes_per_az               = coalesce(var.kubernetes_min_nodes_per_az, local.deployment_size[var.size].min_nodes_per_az)
   kubernetes_max_nodes_per_az               = coalesce(var.kubernetes_max_nodes_per_az, local.deployment_size[var.size].max_nodes_per_az)
+  kubernetes_node_disk_size_gb              = coalesce(var.kubernetes_node_disk_size_gb, local.deployment_size[var.size].root_volume_size)
 }
 
 module "file_storage" {
@@ -142,6 +143,7 @@ module "app_eks" {
   kms_key_arn = local.default_kms_key
 
   instance_types = local.kubernetes_instance_types
+  disk_size      = local.kubernetes_node_disk_size_gb
   min_nodes      = local.kubernetes_min_nodes_per_az
   max_nodes      = local.kubernetes_max_nodes_per_az
 
