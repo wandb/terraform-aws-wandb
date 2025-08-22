@@ -733,12 +733,12 @@ variable "wandb_weave_python_image_tag" {
 variable "enable_wandb_prometheus" {
   type        = bool
   description = "Enable or disable deploying prometheus resources"
-  default     = true
+  default     = null
 }
 
 variable "enable_wandb_otel" {
   type        = bool
   description = "Enable or disable deploying otel resources"
-  default     = true
+  default     = null
 }
 
