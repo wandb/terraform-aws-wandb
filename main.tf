@@ -426,8 +426,8 @@ locals {
         image = {
           # After chart operator-wandb 0.32.9 replace with wandb/weave-python
           # repository: wandb/weave-python
-          repository = var.wandb_local_image_repository
-          tag        = var.wandb_local_image_tag
+          repository = var.wandb_weave_python_image_repository
+          tag        = var.wandb_weave_python_image_tag
         }
       }
 
@@ -436,37 +436,45 @@ locals {
         image = {
           # After chart operator-wandb 0.32.9 replace with wandb/megabinary
           # repository: wandb/megabinary
-          repository = var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_local_image_tag
         }
       }
 
       settingsMigrationJob = {
         image = {
-          repository = var.wandb_megabinary_image_repository
+          repository = var.wandb_local_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
 
       api = {
         image = {
-          repository = var.wandb_megabinary_image_repository
+          repository = var.wandb_local_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
 
       glue = {
         image = {
-          repository = var.wandb_megabinary_image_repository
+          repository = var.wandb_local_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
 
       executor = {
         image = {
-          repository = var.wandb_megabinary_image_repository
+          repository = var.wandb_local_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
+      }
+
+      prometheus = {
+        install = var.enable_wandb_prometheus
+      }
+
+      otel = {
+        install = var.enable_wandb_otel
       }
     }
   }

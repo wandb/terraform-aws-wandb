@@ -717,3 +717,28 @@ variable "wandb_operator_chart_name" {
   description = "wandb/operator chart name"
   default     = "operator-wandb"
 }
+
+variable "wandb_weave_python_image_repository" {
+  type        = string
+  description = "wandb/weave-python image repository"
+  default     = "wandb/weave-python"
+}
+
+variable "wandb_weave_python_image_tag" {
+  type        = string
+  description = "wandb/weave-python image tag"
+  default     = null
+}
+
+variable "enable_wandb_prometheus" {
+  type        = bool
+  description = "Enable or disable deploying prometheus resources"
+  default     = true
+}
+
+variable "enable_wandb_otel" {
+  type        = bool
+  description = "Enable or disable deploying otel resources"
+  default     = true
+}
+
