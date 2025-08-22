@@ -376,11 +376,19 @@ locals {
             "issuer"  = "https://${module.app_eks.aws_iam_openid_connect_provider}"
           }
         ]
+        image = {
+          repository = var.wandb_local_image_repository
+          tag        = var.wandb_local_image_tag
+        }
       }
 
       console = {
         extraEnv = {
           "BUCKET_ACCESS_IDENTITY" = module.app_eks.node_role.arn
+        }
+        image = {
+          repository = var.wandb_console_image_repository
+          tag        = var.wandb_console_image_tag
         }
       }
 
@@ -410,10 +418,50 @@ locals {
           }
         }
         extraEnv = var.weave_wandb_env
+        image = {
+          # After chart operator-wandb 0.32.9 replace with wandb/weave-python
+          # repository: wandb/weave-python
+          repository = var.wandb_local_image_repository
+          tag        = var.wandb_local_image_tag
+        }
       }
 
       parquet = {
         extraEnv = var.parquet_wandb_env
+        image = {
+          # After chart operator-wandb 0.32.9 replace with wandb/megabinary
+          # repository: wandb/megabinary
+          repository = var.wandb_local_image_repository
+          tag        = var.wandb_local_image_tag
+        }
+      }
+
+      settingsMigrationJob = {
+        image = {
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      api = {
+        image = {
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      glue = {
+        image = {
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      executor = {
+        image = {
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
       }
     }
   }
@@ -427,8 +475,9 @@ resource "time_sleep" "wait_for_deletion_reconcile" {
 }
 
 module "wandb" {
-  source  = "wandb/wandb/helm"
-  version = "3.0.0"
+  # source  = "wandb/wandb/helm"
+  # version = "3.0.0"
+  source = "github.com/wandb/terraform-helm-wandb?ref=expose_wandb_container_images"
 
   depends_on = [
     module.database,
@@ -438,10 +487,11 @@ module "wandb" {
     time_sleep.wait_for_deletion_reconcile
   ]
 
-  operator_chart_version = var.operator_chart_version
-  controller_image_tag   = var.controller_image_tag
-  enable_helm_operator   = var.enable_helm_operator
-  enable_helm_wandb      = var.enable_helm_wandb
+  operator_chart_version      = var.operator_chart_version
+  controller_image_repository = var.controller_image_repository
+  controller_image_tag        = var.controller_image_tag
+  enable_helm_operator        = var.enable_helm_operator
+  enable_helm_wandb           = var.enable_helm_wandb
 
   spec = local.spec
 }

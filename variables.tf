@@ -32,6 +32,12 @@ variable "operator_chart_version" {
   default     = "1.4.2"
 }
 
+variable "controller_image_repository" {
+  type        = string
+  description = "wandb/controller image repository"
+  default     = "wandb/controller"
+}
+
 variable "controller_image_tag" {
   type        = string
   description = "Tag of the controller image to deploy"
@@ -655,5 +661,41 @@ variable "cluster_autoscaler_image_repository" {
 variable "cluster_autoscaler_image_tag" {
   type        = string
   description = "The tag of the cluster-autoscaler to deploy."
+  default     = null
+}
+
+variable "wandb_local_image_repository" {
+  type        = string
+  description = "wandb/local image repository"
+  default     = "wandb/local"
+}
+
+variable "wandb_local_image_tag" {
+  type        = string
+  description = "wandb/local image tag"
+  default     = null
+}
+
+variable "wandb_console_image_repository" {
+  type        = string
+  description = "wandb/console image repository"
+  default     = "wandb/console"
+}
+
+variable "wandb_console_image_tag" {
+  type        = string
+  description = "wandb/console image tag"
+  default     = null
+}
+
+variable "wandb_megabinary_image_repository" {
+  type        = string
+  description = "wandb/megabinary image repository"
+  default     = "wandb/megabinary"
+}
+
+variable "wandb_megabinary_image_tag" {
+  type        = string
+  description = "wandb/megabinary image tag"
   default     = null
 }
