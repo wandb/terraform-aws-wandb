@@ -280,6 +280,11 @@ locals {
   }
 
   spec = {
+    chart = {
+      url     = var.wandb_operator_chart_repository
+      name    = var.wandb_operator_chart_name
+      version = var.wandb_operator_chart_version
+    }
     values = {
       global = {
         size          = var.size

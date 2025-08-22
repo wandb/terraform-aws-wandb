@@ -699,3 +699,21 @@ variable "wandb_megabinary_image_tag" {
   description = "wandb/megabinary image tag"
   default     = null
 }
+
+variable "wandb_operator_chart_repository" {
+  type        = string
+  description = "wandb/operator chart repository"
+  default     = "https://charts.wandb.ai"
+}
+
+variable "wandb_operator_chart_version" {
+  type        = string
+  description = "wandb/operator chart version"
+  default     = null
+}
+
+variable "wandb_operator_chart_name" {
+  type        = string
+  description = "wandb/operator chart name"
+  default     = "operator-wandb"
+}
