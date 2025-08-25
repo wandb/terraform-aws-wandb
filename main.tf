@@ -275,12 +275,10 @@ locals {
   chart_version_parts = split(".", var.wandb_operator_chart_version)
   major               = tonumber(local.chart_version_parts[0])
   minor               = tonumber(local.chart_version_parts[1])
-  patch               = tonumber(local.chart_version_parts[2])
 
   chart_version_is_newer = (
     local.major > 0 ||
-    (local.major == 0 && local.minor > 32) ||
-    (local.major == 0 && local.minor == 32 && local.patch > 9)
+    (local.major == 0 && local.minor > 32)
   )
 }
 
@@ -441,7 +439,8 @@ locals {
         image = {
           # After chart operator-wandb 0.32.9 replace with wandb/weave-python
           # repository: wandb/weave-python
-          repository = local.chart_version_is_newer ? var.wandb_weave_python_image_repository : var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_weave_python_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_weave_python_image_tag
         }
       }
@@ -451,7 +450,8 @@ locals {
         image = {
           # After chart operator-wandb 0.32.9 replace with wandb/megabinary
           # repository: wandb/megabinary
-          repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_local_image_tag
         }
       }
@@ -474,7 +474,8 @@ locals {
         # After chart operator-wandb 0.32.9 replace with wandb/megabinary
         # repository: wandb/megabinary
         image = {
-          repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
@@ -483,7 +484,8 @@ locals {
         # After chart operator-wandb 0.32.9 replace with wandb/megabinary
         # repository: wandb/megabinary
         image = {
-          repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
