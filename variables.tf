@@ -730,6 +730,18 @@ variable "wandb_weave_python_image_tag" {
   default     = null
 }
 
+variable "helm_hooks_image_repository" {
+  type        = string
+  description = "Helm Chart pre and post hook's image"
+  default     = "alpine/k8s"
+}
+
+variable "helm_hook_image_tag" {
+  type        = string
+  description = "Helm Chart pre and post hook's image tag"
+  default     = null
+}
+
 variable "enable_wandb_prometheus" {
   type        = bool
   description = "Enable or disable deploying prometheus resources"

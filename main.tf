@@ -507,6 +507,20 @@ locals {
         }
       }
 
+      appRenamePreHook = {
+        image = {
+          repository = var.helm_hooks_image_repository
+          tag        = var.helm_hook_image_tag
+        }
+      }
+
+      appRenamePostHook = {
+        image = {
+          repository = var.helm_hooks_image_repository
+          tag        = var.helm_hook_image_tag
+        }
+      }
+
       prometheus = { install = var.enable_wandb_prometheus }
       otel       = { install = var.enable_wandb_otel }
 
