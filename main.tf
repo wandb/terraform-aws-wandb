@@ -271,18 +271,16 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
-locals {
-  chart_version_parts = split(".", var.wandb_operator_chart_version)
-  major               = tonumber(local.chart_version_parts[0])
-  minor               = tonumber(local.chart_version_parts[1])
+# locals {
+#   chart_version_parts = split(".", var.wandb_operator_chart_version)
+#   major               = tonumber(local.chart_version_parts[0])
+#   minor               = tonumber(local.chart_version_parts[1])
 
-  chart_version_is_newer = (
-    local.major > 0 ||
-    (local.major == 0 && local.minor > 32)
-  )
-}
-
-
+#   chart_version_is_newer = (
+#     local.major > 0 ||
+#     (local.major == 0 && local.minor > 32)
+#   )
+# }
 
 locals {
   weave_trace_sa_name  = "wandb-weave-trace"
