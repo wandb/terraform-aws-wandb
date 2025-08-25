@@ -306,6 +306,18 @@ locals {
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
 
+        api = {
+          enabled = true
+        }
+
+        glue = {
+          enabled = true
+        }
+
+        executor = {
+          enabled = true
+        }
+
         bucket = var.bucket_name != "" ? {
           provider = "s3"
           name     = var.bucket_name
@@ -464,6 +476,7 @@ locals {
       }
 
       api = {
+        install = true
         image = {
           repository = var.wandb_local_image_repository
           tag        = var.wandb_megabinary_image_tag
@@ -471,6 +484,7 @@ locals {
       }
 
       glue = {
+        install = true
         # After chart operator-wandb 0.32.9 replace with wandb/megabinary
         # repository: wandb/megabinary
         image = {
@@ -481,6 +495,7 @@ locals {
       }
 
       executor = {
+        install = true
         # After chart operator-wandb 0.32.9 replace with wandb/megabinary
         # repository: wandb/megabinary
         image = {
