@@ -452,7 +452,7 @@ locals {
           # After chart operator-wandb 0.32.9 replace with wandb/weave-python
           # repository: wandb/weave-python
           # repository = local.chart_version_is_newer ? var.wandb_weave_python_image_repository : var.wandb_local_image_repository
-          repository = var.wandb_megabinary_image_repository
+          repository = var.wandb_weave_python_image_repository
           tag        = var.wandb_weave_python_image_tag
         }
       }
@@ -470,7 +470,8 @@ locals {
 
       settingsMigrationJob = {
         image = {
-          repository = var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
@@ -478,7 +479,8 @@ locals {
       api = {
         install = true
         image = {
-          repository = var.wandb_local_image_repository
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
           tag        = var.wandb_megabinary_image_tag
         }
       }
