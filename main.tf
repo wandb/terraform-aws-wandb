@@ -534,9 +534,8 @@ resource "time_sleep" "wait_for_deletion_reconcile" {
 }
 
 module "wandb" {
-  # source  = "wandb/wandb/helm"
-  # version = "3.0.0"
-  source = "github.com/wandb/terraform-helm-wandb?ref=expose_wandb_container_images"
+  source  = "wandb/wandb/helm"
+  version = "4.0.0"
 
   depends_on = [
     module.database,
