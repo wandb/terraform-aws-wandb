@@ -116,7 +116,8 @@ resource "aws_kms_key" "clickhouse_key" {
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : [
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/prod-kms-request-role"
+            "arn:aws:iam::576599896960:role/prod-kms-request-role",
+            "${var.clickhouse_tde_arn}"
           ]
         },
         "Action" : [
