@@ -11,6 +11,7 @@ module "kms" {
   create_clickhouse_key = var.enable_clickhouse
   clickhouse_key_alias  = var.kms_clickhouse_key_alias == null ? "${var.namespace}-kms-clickhouse-alias" : var.kms_clickhouse_key_alias
   clickhouse_key_policy = var.kms_clickhouse_key_policy
+  clickhouse_tde_arn    = var.clickhouse_tde_arn
 }
 
 locals {

@@ -107,7 +107,7 @@ resource "aws_kms_key" "clickhouse_key" {
       {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : "${data.aws_caller_identity.current.arn}" },
+        "Principal" : { "AWS" : data.aws_caller_identity.current.arn },
         "Action" : "kms:*",
         "Resource" : "*"
       },
@@ -116,8 +116,8 @@ resource "aws_kms_key" "clickhouse_key" {
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : [
-            "arn:aws:iam::576599896960:role/prod-kms-request-role",
-            "${var.clickhouse_tde_arn}"
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/prod-kms-request-role",
+            var.clickhouse_tde_arn
           ]
         },
         "Action" : [

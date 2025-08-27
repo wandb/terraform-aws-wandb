@@ -211,6 +211,13 @@ variable "kms_clickhouse_key_policy" {
   default     = ""
 }
 
+variable "clickhouse_tde_arn" {
+  description = "The ARN TDE string to allow Clickhouse encryption."
+  type        = string
+  default     = ""
+}
+
+
 ##########################################
 # Network                                #
 ##########################################
