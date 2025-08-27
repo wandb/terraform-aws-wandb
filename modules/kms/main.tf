@@ -107,7 +107,7 @@ resource "aws_kms_key" "clickhouse_key" {
       {
         "Sid" : "Allow administration of the key",
         "Effect" : "Allow",
-        "Principal" : { "AWS" : data.aws_caller_identity.current.arn },
+        "Principal" : { "AWS" :  "${local.policy_administrator_arn}" },
         "Action" : "kms:*",
         "Resource" : "*"
       },
