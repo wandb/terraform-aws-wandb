@@ -181,7 +181,7 @@ module "app_eks" {
   elasticache_security_group_id     = var.create_elasticache ? module.redis[0].security_group_id : null
 
   cluster_version = var.eks_cluster_version
-  cluster_tags    = var.eks_cluster_tags
+  cluster_tags    = merge({ size = var.size }, sizevar.eks_cluster_tags)
 
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs
@@ -201,8 +201,6 @@ module "app_eks" {
   eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
   eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
   eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
-
-  cache_size = var.cache_size
 
   depends_on = [
     module.networking,
@@ -278,6 +276,11 @@ locals {
   ctrlplane_redis_params = {
     master = "gorilla"
   }
+  chainguard_redis_host = "redis.redis-cg.svc.cluster.local"
+  chainguard_redis_port = "26379"
+  chainguard_redis_params = {
+    master = "gorilla"
+  }
 
   spec = {
     values = {
@@ -314,6 +317,11 @@ locals {
           host     = local.ctrlplane_redis_host
           port     = local.ctrlplane_redis_port
           params   = local.ctrlplane_redis_params
+          external = true
+          } : var.use_chainguard_redis ? {
+          host     = local.chainguard_redis_host
+          port     = local.chainguard_redis_port
+          params   = local.chainguard_redis_params
           external = true
           } : var.use_external_redis ? {
           host     = var.external_redis_host
