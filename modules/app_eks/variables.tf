@@ -222,3 +222,39 @@ variable "cache_size" {
     error_message = "Invalid value specified for 'cache_size'; must be one of 'nano', 'micro', 'small', 'medium', 'large'"
   }
 }
+
+variable "external_dns_image_repository" {
+  type        = string
+  description = "The image repository of the external-dns to deploy."
+  default     = "registry.k8s.io/external-dns/external-dns"
+}
+
+variable "external_dns_image_tag" {
+  type        = string
+  description = "The tag of the external-dns to deploy."
+  default     = null
+}
+
+variable "aws_loadbalancer_controller_image_repository" {
+  type        = string
+  description = "The image repository of the aws-loadbalancer-controller to deploy."
+  default     = "public.ecr.aws/eks/aws-load-balancer-controller"
+}
+
+variable "aws_loadbalancer_controller_image_tag" {
+  type        = string
+  description = "The tag of the aws-loadbalancer-controller to deploy."
+  default     = null
+}
+
+variable "cluster_autoscaler_image_repository" {
+  type        = string
+  description = "The image repository of the cluster-autoscaler to deploy."
+  default     = "registry.k8s.io/autoscaling/cluster-autoscaler"
+}
+
+variable "cluster_autoscaler_image_tag" {
+  type        = string
+  description = "The tag of the cluster-autoscaler to deploy."
+  default     = null
+}

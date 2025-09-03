@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.6...v7.15.0) (2025-08-21)
+
+
+### Features
+
+* Allow container image configuration ([#363](https://github.com/wandb/terraform-aws-wandb/issues/363)) ([6929082](https://github.com/wandb/terraform-aws-wandb/commit/6929082fea2b4e3bef6b7ceb5ff660f598562e7b))
+
 ### [7.14.6](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.5...v7.14.6) (2025-08-13)
 
 
