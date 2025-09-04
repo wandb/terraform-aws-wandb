@@ -537,6 +537,10 @@ variable "use_external_redis" {
   type        = bool
   description = "Boolean indicating whether to use the redis instance created externally"
   default     = false
+  validation {
+    condition     = (var.use_ctrlplane_redis ? 1 : 0) + (var.use_chainguard_redis ? 1 : 0) + (var.use_external_redis ? 1 : 0) <= 1
+    error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+  }
 }
 
 variable "external_redis_host" {
@@ -561,12 +565,20 @@ variable "use_ctrlplane_redis" {
   description = "Whether redis is deployed in the cluster via ctrlplane"
   type        = bool
   default     = false
+  validation {
+    condition     = (var.use_ctrlplane_redis ? 1 : 0) + (var.use_chainguard_redis ? 1 : 0) + (var.use_external_redis ? 1 : 0) <= 1
+    error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+  }
 }
 
 variable "use_chainguard_redis" {
   description = "Whether CHAINGUARD redis is deployed in the cluster"
   type        = bool
   default     = false
+  validation {
+    condition     = (var.use_ctrlplane_redis ? 1 : 0) + (var.use_chainguard_redis ? 1 : 0) + (var.use_external_redis ? 1 : 0) <= 1
+    error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+  }
 }
 
 ##########################################
