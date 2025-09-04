@@ -456,9 +456,9 @@ module "wandb" {
 
 resource "null_resource" "use_redis_validation" {
   triggers = {
-    use_ctrlplane_redis = var.use_ctrlplane_redis
+    use_ctrlplane_redis  = var.use_ctrlplane_redis
     use_chainguard_redis = var.use_chainguard_redis
-    use_external_redis = var.use_external_redis
+    use_external_redis   = var.use_external_redis
   }
 
   lifecycle {
