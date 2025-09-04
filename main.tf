@@ -438,6 +438,13 @@ module "wandb" {
   source  = "wandb/wandb/helm"
   version = "3.0.0"
 
+  lifecycle {
+    precondition {
+      condition     = length([for b in [var.use_ctrlplane_redis, var.use_chainguard_redis, var.use_external_redis] : b if b]) <= 1
+      error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+    }
+  }
+
   depends_on = [
     module.database,
     module.redis,
