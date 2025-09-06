@@ -1,6 +1,6 @@
 # S3 Bucket for CloudTrail logs
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket        = "${var.namespace}-${var.cloudtrail_bucket_name}"
+  bucket        = var.cloudtrail_bucket_name
   force_destroy = var.force_destroy
 
   tags = merge(var.tags, { Name = "CloudTrailLogs" })
@@ -69,8 +69,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
     id     = "TransitionToGlacier"
     status = "Enabled"
 
-    filter {}
-
     transition {
       days          = var.log_lifecycle.transition_days
       storage_class = "GLACIER"
@@ -82,16 +80,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_logs" {
   }
 }
 
-# CloudTrail Configuration
+# Single CloudTrail for the Account
 resource "aws_cloudtrail" "s3_event_logs" {
-  name                          = "${var.namespace}-s3-events-cloudtrail"
+  name                          = "deployments-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.id
   include_global_service_events = var.include_global_service_events
   is_multi_region_trail         = var.multi_region_trail
   enable_log_file_validation    = var.enable_log_file_validation
 
   event_selector {
-    read_write_type           = "All" # Log both read and write events
+    read_write_type           = "All"
     include_management_events = true
 
     data_resource {
@@ -102,7 +100,13 @@ resource "aws_cloudtrail" "s3_event_logs" {
     }
   }
 
-  tags = merge(var.tags, { Name = "CloudTrail" })
+  tags = merge(var.tags, { Name = "SingleAccountCloudTrail" })
 
   depends_on = [aws_s3_bucket_policy.cloudtrail_logs]
+}
+
+# Log Separation by Namespace using S3 Prefixes
+resource "aws_s3_object" "namespace_prefix" {
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+  key    = "${var.namespace}/"
 }
