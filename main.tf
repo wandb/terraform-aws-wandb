@@ -204,8 +204,6 @@ module "app_eks" {
   eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
   eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
 
-  cache_size = var.cache_size
-
   depends_on = [
     module.networking,
   ]
@@ -280,6 +278,11 @@ locals {
   ctrlplane_redis_params = {
     master = "gorilla"
   }
+  chainguard_redis_host = "redis.redis-cg.svc.cluster.local"
+  chainguard_redis_port = "26379"
+  chainguard_redis_params = {
+    master = "gorilla"
+  }
 
   spec = {
     values = {
@@ -316,6 +319,11 @@ locals {
           host     = local.ctrlplane_redis_host
           port     = local.ctrlplane_redis_port
           params   = local.ctrlplane_redis_params
+          external = true
+          } : var.use_chainguard_redis ? {
+          host     = local.chainguard_redis_host
+          port     = local.chainguard_redis_port
+          params   = local.chainguard_redis_params
           external = true
           } : var.use_external_redis ? {
           host     = var.external_redis_host
@@ -446,6 +454,21 @@ module "wandb" {
   enable_helm_wandb      = var.enable_helm_wandb
 
   spec = local.spec
+}
+
+resource "null_resource" "use_redis_validation" {
+  triggers = {
+    use_ctrlplane_redis  = var.use_ctrlplane_redis
+    use_chainguard_redis = var.use_chainguard_redis
+    use_external_redis   = var.use_external_redis
+  }
+
+  lifecycle {
+    precondition {
+      condition     = (var.use_ctrlplane_redis ? 1 : 0) + (var.use_chainguard_redis ? 1 : 0) + (var.use_external_redis ? 1 : 0) <= 1
+      error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+    }
+  }
 }
 
 moved {

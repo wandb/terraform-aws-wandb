@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.15.0...v7.16.0) (2025-09-04)
+
+
+### Features
+
+* Add option for chainguard redis ([#366](https://github.com/wandb/terraform-aws-wandb/issues/366)) ([4970638](https://github.com/wandb/terraform-aws-wandb/commit/4970638c2b3d9be6436375c8b42a4ac1aaa0344d))
+
 ## [7.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.6...v7.15.0) (2025-08-21)
 
 
