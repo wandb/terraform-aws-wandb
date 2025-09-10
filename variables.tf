@@ -388,6 +388,12 @@ variable "kubernetes_max_nodes_per_az" {
   default     = null
 }
 
+variable "kubernetes_node_disk_size_gb" {
+  type        = number
+  description = "Size of the node root volume in GB."
+  default     = null
+}
+
 variable "eks_policy_arns" {
   type        = list(string)
   description = "Additional IAM policy to apply to the EKS cluster"
