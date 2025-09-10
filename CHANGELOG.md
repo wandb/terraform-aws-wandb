@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.17.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.16.0...v7.17.0) (2025-09-10)
+
+
+### Features
+
+* Add adjustable root volumes sizes and defaults by deployment size ([#365](https://github.com/wandb/terraform-aws-wandb/issues/365)) ([670f198](https://github.com/wandb/terraform-aws-wandb/commit/670f198c662e329b1530a2217f34452cc56b5116))
+
 ## [7.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.15.0...v7.16.0) (2025-09-04)
 
 
