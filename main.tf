@@ -271,6 +271,17 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
+# locals {
+#   chart_version_parts = split(".", var.wandb_operator_chart_version)
+#   major               = tonumber(local.chart_version_parts[0])
+#   minor               = tonumber(local.chart_version_parts[1])
+
+#   chart_version_is_newer = (
+#     local.major > 0 ||
+#     (local.major == 0 && local.minor > 32)
+#   )
+# }
+
 locals {
   weave_trace_sa_name  = "wandb-weave-trace"
   ctrlplane_redis_host = "redis.redis.svc.cluster.local"
@@ -285,6 +296,11 @@ locals {
   }
 
   spec = {
+    chart = {
+      url     = var.wandb_operator_chart_repository
+      name    = var.wandb_operator_chart_name
+      version = var.wandb_operator_chart_version
+    }
     values = {
       global = {
         size          = var.size
@@ -292,6 +308,18 @@ locals {
         license       = var.license
         cloudProvider = "aws"
         extraEnv      = var.other_wandb_env
+
+        api = {
+          enabled = true
+        }
+
+        glue = {
+          enabled = true
+        }
+
+        executor = {
+          enabled = true
+        }
 
         bucket = var.bucket_name != "" ? {
           provider = "s3"
@@ -386,11 +414,19 @@ locals {
             "issuer"  = "https://${module.app_eks.aws_iam_openid_connect_provider}"
           }
         ]
+        image = {
+          repository = var.wandb_local_image_repository
+          tag        = var.wandb_local_image_tag
+        }
       }
 
       console = {
         extraEnv = {
           "BUCKET_ACCESS_IDENTITY" = module.app_eks.node_role.arn
+        }
+        image = {
+          repository = var.wandb_console_image_repository
+          tag        = var.wandb_console_image_tag
         }
       }
 
@@ -420,11 +456,82 @@ locals {
           }
         }
         extraEnv = var.weave_wandb_env
+        image = {
+          # After chart operator-wandb 0.32.9 replace with wandb/weave-python
+          # repository: wandb/weave-python
+          # repository = local.chart_version_is_newer ? var.wandb_weave_python_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_weave_python_image_repository
+          tag        = var.wandb_weave_python_image_tag
+        }
       }
 
       parquet = {
         extraEnv = var.parquet_wandb_env
+        image = {
+          # After chart operator-wandb 0.32.9 replace with wandb/megabinary
+          # repository: wandb/megabinary
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_local_image_tag
+        }
       }
+
+      settingsMigrationJob = {
+        image = {
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      api = {
+        install = true
+        image = {
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      glue = {
+        install = true
+        # After chart operator-wandb 0.32.9 replace with wandb/megabinary
+        # repository: wandb/megabinary
+        image = {
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      executor = {
+        install = true
+        # After chart operator-wandb 0.32.9 replace with wandb/megabinary
+        # repository: wandb/megabinary
+        image = {
+          # repository = local.chart_version_is_newer ? var.wandb_megabinary_image_repository : var.wandb_local_image_repository
+          repository = var.wandb_megabinary_image_repository
+          tag        = var.wandb_megabinary_image_tag
+        }
+      }
+
+      appRenamePreHook = {
+        image = {
+          repository = var.helm_hooks_image_repository
+          tag        = var.helm_hook_image_tag
+        }
+      }
+
+      appRenamePostHook = {
+        image = {
+          repository = var.helm_hooks_image_repository
+          tag        = var.helm_hook_image_tag
+        }
+      }
+
+      prometheus = { install = var.enable_wandb_prometheus }
+      otel       = { install = var.enable_wandb_otel }
+
     }
   }
 }
@@ -438,7 +545,7 @@ resource "time_sleep" "wait_for_deletion_reconcile" {
 
 module "wandb" {
   source  = "wandb/wandb/helm"
-  version = "3.0.0"
+  version = "4.0.0"
 
   depends_on = [
     module.database,
@@ -448,10 +555,11 @@ module "wandb" {
     time_sleep.wait_for_deletion_reconcile
   ]
 
-  operator_chart_version = var.operator_chart_version
-  controller_image_tag   = var.controller_image_tag
-  enable_helm_operator   = var.enable_helm_operator
-  enable_helm_wandb      = var.enable_helm_wandb
+  operator_chart_version      = var.operator_chart_version
+  controller_image_repository = var.controller_image_repository
+  controller_image_tag        = var.controller_image_tag
+  enable_helm_operator        = var.enable_helm_operator
+  enable_helm_wandb           = var.enable_helm_wandb
 
   spec = local.spec
 }

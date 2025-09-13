@@ -32,6 +32,12 @@ variable "operator_chart_version" {
   default     = "1.4.2"
 }
 
+variable "controller_image_repository" {
+  type        = string
+  description = "wandb/controller image repository"
+  default     = "wandb/controller"
+}
+
 variable "controller_image_tag" {
   type        = string
   description = "Tag of the controller image to deploy"
@@ -659,3 +665,94 @@ variable "cluster_autoscaler_image_tag" {
   description = "The tag of the cluster-autoscaler to deploy."
   default     = null
 }
+
+variable "wandb_local_image_repository" {
+  type        = string
+  description = "wandb/local image repository"
+  default     = "wandb/local"
+}
+
+variable "wandb_local_image_tag" {
+  type        = string
+  description = "wandb/local image tag"
+  default     = null
+}
+
+variable "wandb_console_image_repository" {
+  type        = string
+  description = "wandb/console image repository"
+  default     = "wandb/console"
+}
+
+variable "wandb_console_image_tag" {
+  type        = string
+  description = "wandb/console image tag"
+  default     = null
+}
+
+variable "wandb_megabinary_image_repository" {
+  type        = string
+  description = "wandb/megabinary image repository"
+  default     = "wandb/megabinary"
+}
+
+variable "wandb_megabinary_image_tag" {
+  type        = string
+  description = "wandb/megabinary image tag"
+  default     = null
+}
+
+variable "wandb_operator_chart_repository" {
+  type        = string
+  description = "wandb/operator chart repository"
+  default     = "https://charts.wandb.ai"
+}
+
+variable "wandb_operator_chart_version" {
+  type        = string
+  description = "wandb/operator chart version"
+  default     = null
+}
+
+variable "wandb_operator_chart_name" {
+  type        = string
+  description = "wandb/operator chart name"
+  default     = "operator-wandb"
+}
+
+variable "wandb_weave_python_image_repository" {
+  type        = string
+  description = "wandb/weave-python image repository"
+  default     = "wandb/weave-python"
+}
+
+variable "wandb_weave_python_image_tag" {
+  type        = string
+  description = "wandb/weave-python image tag"
+  default     = null
+}
+
+variable "helm_hooks_image_repository" {
+  type        = string
+  description = "Helm Chart pre and post hook's image"
+  default     = "alpine/k8s"
+}
+
+variable "helm_hook_image_tag" {
+  type        = string
+  description = "Helm Chart pre and post hook's image tag"
+  default     = null
+}
+
+variable "enable_wandb_prometheus" {
+  type        = bool
+  description = "Enable or disable deploying prometheus resources"
+  default     = null
+}
+
+variable "enable_wandb_otel" {
+  type        = bool
+  description = "Enable or disable deploying otel resources"
+  default     = null
+}
+
