@@ -19,9 +19,9 @@ variable "vpc_id" {
 }
 
 variable "engine_version" {
-  description = "Version for MySQL Auora to use"
+  description = "Version for MySQL Auora to use -- major version only"
   type        = string
-  default     = "8.0.mysql_aurora.3.05.2"
+  default     = "8.0"
 }
 
 variable "create_db_subnet_group" {

@@ -12,11 +12,7 @@ locals {
   ]))
   create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
   defaultTags            = var.aws_loadbalancer_controller_tags
-  cluster_tags = merge(
-    var.cluster_tags, {
-      cache_size = var.cache_size
-    }
-  )
+  cluster_tags           = var.cluster_tags
 }
 
 
@@ -59,6 +55,7 @@ module "eks" {
     disk_encrypted                       = local.encrypt_ebs_volume,
     disk_kms_key_id                      = var.kms_key_arn,
     disk_type                            = "gp3"
+    disk_size                            = var.disk_size,
     enable_monitoring                    = true
     force_update_version                 = local.encrypt_ebs_volume,
     iam_role_arn                         = aws_iam_role.node.arn,
@@ -171,9 +168,11 @@ resource "aws_iam_openid_connect_provider" "eks" {
 module "lb_controller" {
   source = "./lb_controller"
 
-  namespace                        = var.namespace
-  oidc_provider                    = aws_iam_openid_connect_provider.eks
-  aws_loadbalancer_controller_tags = var.aws_loadbalancer_controller_tags
+  namespace                                    = var.namespace
+  oidc_provider                                = aws_iam_openid_connect_provider.eks
+  aws_loadbalancer_controller_tags             = var.aws_loadbalancer_controller_tags
+  aws_loadbalancer_controller_image_repository = var.aws_loadbalancer_controller_image_repository
+  aws_loadbalancer_controller_image_tag        = var.aws_loadbalancer_controller_image_tag
 
   depends_on = [module.eks]
 }
@@ -181,9 +180,11 @@ module "lb_controller" {
 module "external_dns" {
   source = "./external_dns"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
-  fqdn          = var.fqdn
+  namespace                     = var.namespace
+  oidc_provider                 = aws_iam_openid_connect_provider.eks
+  fqdn                          = var.fqdn
+  external_dns_image_repository = var.external_dns_image_repository
+  external_dns_image_tag        = var.external_dns_image_tag
 
   depends_on = [
     module.eks,
@@ -194,8 +195,10 @@ module "external_dns" {
 module "cluster_autoscaler" {
   source = "./cluster_autoscaler"
 
-  namespace     = var.namespace
-  oidc_provider = aws_iam_openid_connect_provider.eks
+  namespace                           = var.namespace
+  oidc_provider                       = aws_iam_openid_connect_provider.eks
+  cluster_autoscaler_image_repository = var.cluster_autoscaler_image_repository
+  cluster_autoscaler_image_tag        = var.cluster_autoscaler_image_tag
   depends_on = [
     module.eks,
     module.lb_controller

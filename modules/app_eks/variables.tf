@@ -84,6 +84,13 @@ variable "instance_types" {
   type        = list(string)
 }
 
+variable "disk_size" {
+  description = "The size of the EBS volume in GiB for the root block device of node group instances."
+  nullable    = false
+  type        = number
+  default     = 100
+}
+
 variable "lb_security_group_inbound_id" {
   type = string
 }
@@ -206,12 +213,38 @@ variable "eks_addon_metrics_server_version" {
   type        = string
 }
 
-variable "cache_size" {
-  description = "Size of the redis cache, when use_ctrlplane_redis is true. These values map to preset sizes in the bitnami helm chart."
+variable "external_dns_image_repository" {
   type        = string
-  default     = "nano"
-  validation {
-    condition     = contains(["nano", "micro", "small", "medium", "large", "xlarge", "2xlarge"], var.cache_size)
-    error_message = "Invalid value specified for 'cache_size'; must be one of 'nano', 'micro', 'small', 'medium', 'large'"
-  }
+  description = "The image repository of the external-dns to deploy."
+  default     = "registry.k8s.io/external-dns/external-dns"
+}
+
+variable "external_dns_image_tag" {
+  type        = string
+  description = "The tag of the external-dns to deploy."
+  default     = null
+}
+
+variable "aws_loadbalancer_controller_image_repository" {
+  type        = string
+  description = "The image repository of the aws-loadbalancer-controller to deploy."
+  default     = "public.ecr.aws/eks/aws-load-balancer-controller"
+}
+
+variable "aws_loadbalancer_controller_image_tag" {
+  type        = string
+  description = "The tag of the aws-loadbalancer-controller to deploy."
+  default     = null
+}
+
+variable "cluster_autoscaler_image_repository" {
+  type        = string
+  description = "The image repository of the cluster-autoscaler to deploy."
+  default     = "registry.k8s.io/autoscaling/cluster-autoscaler"
+}
+
+variable "cluster_autoscaler_image_tag" {
+  type        = string
+  description = "The tag of the cluster-autoscaler to deploy."
+  default     = null
 }

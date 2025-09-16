@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.17.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.16.0...v7.17.0) (2025-09-10)
+
+
+### Features
+
+* Add adjustable root volumes sizes and defaults by deployment size ([#365](https://github.com/wandb/terraform-aws-wandb/issues/365)) ([670f198](https://github.com/wandb/terraform-aws-wandb/commit/670f198c662e329b1530a2217f34452cc56b5116))
+
+## [7.16.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.15.0...v7.16.0) (2025-09-04)
+
+
+### Features
+
+* Add option for chainguard redis ([#366](https://github.com/wandb/terraform-aws-wandb/issues/366)) ([4970638](https://github.com/wandb/terraform-aws-wandb/commit/4970638c2b3d9be6436375c8b42a4ac1aaa0344d))
+
+## [7.15.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.6...v7.15.0) (2025-08-21)
+
+
+### Features
+
+* Allow container image configuration ([#363](https://github.com/wandb/terraform-aws-wandb/issues/363)) ([6929082](https://github.com/wandb/terraform-aws-wandb/commit/6929082fea2b4e3bef6b7ceb5ff660f598562e7b))
+
+### [7.14.6](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.5...v7.14.6) (2025-08-13)
+
+
+### Bug Fixes
+
+* Release update ([#362](https://github.com/wandb/terraform-aws-wandb/issues/362)) ([3eead98](https://github.com/wandb/terraform-aws-wandb/commit/3eead98b4be0ab05500d64dc6628b037b444dff2))
+
+### [7.14.5](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.4...v7.14.5) (2025-07-29)
+
+
+### Bug Fixes
+
+* Increase instance sizes on all sizes up to large ([#360](https://github.com/wandb/terraform-aws-wandb/issues/360)) ([922c45a](https://github.com/wandb/terraform-aws-wandb/commit/922c45a9f9e72d3eb251fda98f1aa61e66cb9fc2))
+
+### [7.14.4](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.3...v7.14.4) (2025-07-22)
+
+
+### Bug Fixes
+
+* **bug:** INFRA-1007 Use mysql major version in var, only ([#359](https://github.com/wandb/terraform-aws-wandb/issues/359)) ([44ca372](https://github.com/wandb/terraform-aws-wandb/commit/44ca372f63b776d8de39e8aefdbec21beab79324))
+
 ### [7.14.3](https://github.com/wandb/terraform-aws-wandb/compare/v7.14.2...v7.14.3) (2025-07-03)
 
 

@@ -26,6 +26,7 @@ locals {
   kubernetes_instance_types                 = coalesce(var.kubernetes_instance_types, [local.deployment_size[var.size].node_instance])
   kubernetes_min_nodes_per_az               = coalesce(var.kubernetes_min_nodes_per_az, local.deployment_size[var.size].min_nodes_per_az)
   kubernetes_max_nodes_per_az               = coalesce(var.kubernetes_max_nodes_per_az, local.deployment_size[var.size].max_nodes_per_az)
+  kubernetes_node_disk_size_gb              = coalesce(var.kubernetes_node_disk_size_gb, local.deployment_size[var.size].root_volume_size)
 }
 
 module "file_storage" {
@@ -138,10 +139,20 @@ module "app_eks" {
 
   fqdn = local.domain_filter
 
+  external_dns_image_repository = var.external_dns_image_repository
+  external_dns_image_tag        = var.external_dns_image_tag
+
+  aws_loadbalancer_controller_image_repository = var.aws_loadbalancer_controller_image_repository
+  aws_loadbalancer_controller_image_tag        = var.aws_loadbalancer_controller_image_tag
+
+  cluster_autoscaler_image_repository = var.cluster_autoscaler_image_repository
+  cluster_autoscaler_image_tag        = var.cluster_autoscaler_image_tag
+
   namespace   = var.namespace
   kms_key_arn = local.default_kms_key
 
   instance_types = local.kubernetes_instance_types
+  disk_size      = local.kubernetes_node_disk_size_gb
   min_nodes      = local.kubernetes_min_nodes_per_az
   max_nodes      = local.kubernetes_max_nodes_per_az
 
@@ -192,8 +203,6 @@ module "app_eks" {
   eks_addon_kube_proxy_version     = var.eks_addon_kube_proxy_version
   eks_addon_vpc_cni_version        = var.eks_addon_vpc_cni_version
   eks_addon_metrics_server_version = var.eks_addon_metrics_server_version
-
-  cache_size = var.cache_size
 
   depends_on = [
     module.networking,
@@ -269,6 +278,11 @@ locals {
   ctrlplane_redis_params = {
     master = "gorilla"
   }
+  chainguard_redis_host = "redis.redis-cg.svc.cluster.local"
+  chainguard_redis_port = "26379"
+  chainguard_redis_params = {
+    master = "gorilla"
+  }
 
   spec = {
     values = {
@@ -305,6 +319,11 @@ locals {
           host     = local.ctrlplane_redis_host
           port     = local.ctrlplane_redis_port
           params   = local.ctrlplane_redis_params
+          external = true
+          } : var.use_chainguard_redis ? {
+          host     = local.chainguard_redis_host
+          port     = local.chainguard_redis_port
+          params   = local.chainguard_redis_params
           external = true
           } : var.use_external_redis ? {
           host     = var.external_redis_host
@@ -435,6 +454,21 @@ module "wandb" {
   enable_helm_wandb      = var.enable_helm_wandb
 
   spec = local.spec
+}
+
+resource "null_resource" "use_redis_validation" {
+  triggers = {
+    use_ctrlplane_redis  = var.use_ctrlplane_redis
+    use_chainguard_redis = var.use_chainguard_redis
+    use_external_redis   = var.use_external_redis
+  }
+
+  lifecycle {
+    precondition {
+      condition     = (var.use_ctrlplane_redis ? 1 : 0) + (var.use_chainguard_redis ? 1 : 0) + (var.use_external_redis ? 1 : 0) <= 1
+      error_message = "Enable at most one of: use_ctrlplane_redis, use_chainguard_redis, use_external_redis."
+    }
+  }
 }
 
 moved {
