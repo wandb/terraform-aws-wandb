@@ -36,6 +36,7 @@ provider "aws" {
     tags = {
       GithubRepo  = "terraform-aws-wandb"
       GithubOrg   = "wandb"
+      App        = "wandb"
       Environment = "Production"
     }
   }

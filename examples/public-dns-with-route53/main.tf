@@ -1,3 +1,24 @@
+terraform {
+  required_version = ">= 1.3"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.4.1"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.11.0"
+    }
+  }
+}
+
+
+
 provider "aws" {
   region = "us-east-2"
 
@@ -16,7 +37,7 @@ resource "aws_route53_zone" "public" {
 }
 
 module "wandb_infra" {
-  source = "../../"
+  source = "github.com/wandb/terraform-aws-wandb"
 
   namespace     = var.namespace
   public_access = true
@@ -24,6 +45,11 @@ module "wandb_infra" {
   domain_name = var.domain
   zone_id     = aws_route53_zone.public.zone_id
   subdomain   = var.subdomain
+
+  license = var.wandb_license
+  eks_cluster_version = "1.32"
+  allowed_inbound_cidr = var.allowed_inbound_cidr
+  allowed_inbound_ipv6_cidr = var.allowed_inbound_ipv6_cidr
 }
 
 data "aws_eks_cluster" "app_cluster" {
