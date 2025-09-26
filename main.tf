@@ -145,6 +145,7 @@ module "app_eks" {
   aws_loadbalancer_controller_image_repository = var.aws_loadbalancer_controller_image_repository
   aws_loadbalancer_controller_image_tag        = var.aws_loadbalancer_controller_image_tag
 
+  cluster_autoscaler_enabled          = var.cluster_autoscaler_enabled
   cluster_autoscaler_image_repository = var.cluster_autoscaler_image_repository
   cluster_autoscaler_image_tag        = var.cluster_autoscaler_image_tag
 

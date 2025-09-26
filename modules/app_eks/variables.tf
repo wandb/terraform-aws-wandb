@@ -237,6 +237,12 @@ variable "aws_loadbalancer_controller_image_tag" {
   default     = null
 }
 
+variable "cluster_autoscaler_enabled" {
+  type        = bool
+  description = "Whether to deploy the cluster-autoscaler."
+  default     = true
+}
+
 variable "cluster_autoscaler_image_repository" {
   type        = string
   description = "The image repository of the cluster-autoscaler to deploy."

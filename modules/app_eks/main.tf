@@ -193,6 +193,8 @@ module "external_dns" {
 }
 
 module "cluster_autoscaler" {
+  count = var.cluster_autoscaler_enabled ? 1 : 0
+
   source = "./cluster_autoscaler"
 
   namespace                           = var.namespace
