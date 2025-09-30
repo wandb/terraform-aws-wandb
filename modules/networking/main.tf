@@ -38,6 +38,18 @@ module "vpc" {
   }
 }
 
+resource "aws_subnet" "pod_subnets" {
+  count = var.create_vpc ? length(var.pod_subnet_cidrs) : 0
+
+  vpc_id = module.vpc.vpc_id
+  cidr_block = var.pod_subnet_cidrs[count.index]
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "${var.namespace}-vpc-pods-${data.aws_availability_zones.available.names[count.index]}"
+  }
+}
+
 resource "aws_vpc_endpoint" "clickhouse" {
   count = var.create_vpc && length(var.clickhouse_endpoint_service_id) > 0 ? 1 : 0
 

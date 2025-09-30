@@ -136,6 +136,11 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
+variable "network_pod_subnets" {
+  description = "(Required) A list of the identities of the pod subnetworks from which pods will be assigned IP addresses."
+  type        = list(string)
+}
+
 variable "service_port" {
   type    = number
   default = 32543

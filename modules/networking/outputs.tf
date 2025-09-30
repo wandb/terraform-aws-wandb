@@ -18,6 +18,11 @@ output "private_subnets" {
   description = "A list of the identities of the private subnetworks in which resources will be deployed."
 }
 
+output "pod_subnets" {
+  value       = aws_subnet.pod_subnets[*].id
+  description = "A list of the identities of the private subnetworks in which pods will be deployed."
+}
+
 output "public_subnets" {
   value       = module.vpc.public_subnets
   description = "A list of the identities of the public subnetworks in which resources will be deployed."
@@ -26,6 +31,11 @@ output "public_subnets" {
 output "private_subnet_cidrs" {
   value       = module.vpc.private_subnets_cidr_blocks
   description = "A list of the CIDR blocks which comprise the private subnetworks."
+}
+
+output "pod_subnet_cidrs" {
+  value       = aws_subnet.pod_subnets[*].cidr_block
+  description = "A list of the CIDR blocks which comprise the pod subnetworks."
 }
 
 output "database_subnets" {
