@@ -81,7 +81,7 @@ resource "aws_eks_addon" "vpc_cni" {
   configuration_values = jsonencode({
     env = {
       AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = length(var.network_pod_subnets) > 0 ? "true" : "false"
-      ENI_CONFIG_LABEL_DEF = "topology.kubernetes.io/zone"
+      ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
     }
   })
 }
