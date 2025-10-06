@@ -94,3 +94,8 @@ output "wandb_spec" {
   value     = local.spec
   sensitive = true
 }
+
+output "bufstream_bucket_name" {
+  description = "The name of the Bufstream storage bucket"
+  value       = var.bufstream.enabled ? module.bufstream[0].bucket_name : null
+}
