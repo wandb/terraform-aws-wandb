@@ -206,24 +206,36 @@ module "cluster_autoscaler" {
 }
 
 # Weave worker authentication token
-resource "random_password" "weave_worker_auth" {
-  length  = 32
-  special = false
+# Note: Uncomment the resources below once TerraformDeploy role has secretsmanager:* permissions
+# For now, create the secret manually using: /tmp/jabanga/secrets.sh
+
+# resource "random_password" "weave_worker_auth" {
+#   length  = 32
+#   special = false
+# }
+
+# resource "aws_secretsmanager_secret" "weave_worker_auth" {
+#   name                    = "${var.namespace}-weave-worker-auth"
+#   recovery_window_in_days = 0
+#
+#   tags = {
+#     TerraformNamespace = var.namespace
+#     TerraformModule    = "terraform-aws-wandb/module/app_eks"
+#   }
+# }
+
+# resource "aws_secretsmanager_secret_version" "weave_worker_auth" {
+#   secret_id     = aws_secretsmanager_secret.weave_worker_auth.id
+#   secret_string = random_password.weave_worker_auth.result
+# }
+
+# Temporary: Use data sources to reference manually created secret
+data "aws_secretsmanager_secret" "weave_worker_auth" {
+  name = "${var.namespace}-weave-worker-auth"
 }
 
-resource "aws_secretsmanager_secret" "weave_worker_auth" {
-  name                    = "${var.namespace}-weave-worker-auth"
-  recovery_window_in_days = 0
-
-  tags = {
-    TerraformNamespace = var.namespace
-    TerraformModule    = "terraform-aws-wandb/module/app_eks"
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "weave_worker_auth" {
-  secret_id     = aws_secretsmanager_secret.weave_worker_auth.id
-  secret_string = random_password.weave_worker_auth.result
+data "aws_secretsmanager_secret_version" "weave_worker_auth" {
+  secret_id = data.aws_secretsmanager_secret.weave_worker_auth.id
 }
 
 # IAM policy to allow reading the secret
@@ -260,7 +272,7 @@ resource "kubernetes_secret" "weave_worker_auth" {
   }
 
   data = {
-    "WEAVE_WORKER_AUTH" = random_password.weave_worker_auth.result
+    "WEAVE_WORKER_AUTH" = data.aws_secretsmanager_secret_version.weave_worker_auth.secret_string
   }
 
   depends_on = [module.eks]
