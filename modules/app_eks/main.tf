@@ -204,3 +204,64 @@ module "cluster_autoscaler" {
     module.lb_controller
   ]
 }
+
+# Weave worker authentication token
+resource "random_password" "weave_worker_auth" {
+  length  = 32
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "weave_worker_auth" {
+  name                    = "${var.namespace}-weave-worker-auth"
+  recovery_window_in_days = 0
+
+  tags = {
+    TerraformNamespace = var.namespace
+    TerraformModule    = "terraform-aws-wandb/module/app_eks"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "weave_worker_auth" {
+  secret_id     = aws_secretsmanager_secret.weave_worker_auth.id
+  secret_string = random_password.weave_worker_auth.result
+}
+
+# IAM policy to allow reading the secret
+resource "aws_iam_policy" "weave_worker_auth_secret_reader" {
+  name        = "${var.namespace}-weave-worker-auth-secret-reader"
+  description = "Allow reading weave worker auth secret from Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = aws_secretsmanager_secret.weave_worker_auth.arn
+      }
+    ]
+  })
+}
+
+# Attach the policy to the node role
+resource "aws_iam_role_policy_attachment" "weave_worker_auth_secret_reader" {
+  role       = aws_iam_role.node.name
+  policy_arn = aws_iam_policy.weave_worker_auth_secret_reader.arn
+}
+
+# Create Kubernetes secret with the token
+resource "kubernetes_secret" "weave_worker_auth" {
+  metadata {
+    name      = "weave-worker-auth"
+    namespace = var.namespace
+  }
+
+  data = {
+    "WEAVE_WORKER_AUTH" = random_password.weave_worker_auth.result
+  }
+
+  depends_on = [module.eks]
+}
