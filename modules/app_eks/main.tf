@@ -252,7 +252,7 @@ resource "aws_iam_policy" "weave_worker_auth_secret_reader" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = aws_secretsmanager_secret.weave_worker_auth.arn
+        Resource = data.aws_secretsmanager_secret.weave_worker_auth.arn
       }
     ]
   })
