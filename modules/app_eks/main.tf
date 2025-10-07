@@ -234,9 +234,9 @@ data "aws_secretsmanager_secret" "weave_worker_auth" {
   name = "${var.namespace}-weave-worker-auth"
 }
 
-data "aws_secretsmanager_secret_version" "weave_worker_auth" {
-  secret_id = data.aws_secretsmanager_secret.weave_worker_auth.id
-}
+# data "aws_secretsmanager_secret_version" "weave_worker_auth" {
+#   secret_id = data.aws_secretsmanager_secret.weave_worker_auth.id
+# }
 
 # IAM policy to allow reading the secret
 resource "aws_iam_policy" "weave_worker_auth_secret_reader" {
