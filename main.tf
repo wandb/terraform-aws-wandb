@@ -275,9 +275,9 @@ module "bufstream" {
   count  = var.bufstream.enabled ? 1 : 0
   source = "./modules/bufstream"
 
-  namespace          = var.namespace
-  cluster_name       = module.app_eks.cluster_name
-  node_role_name     = module.app_eks.node_role.name
+  namespace           = var.namespace
+  cluster_name        = module.app_eks.cluster_name
+  node_role_name      = module.app_eks.node_role.name
   deletion_protection = var.deletion_protection
   tags = {
     Namespace = var.namespace
