@@ -148,8 +148,9 @@ module "app_eks" {
   cluster_autoscaler_image_repository = var.cluster_autoscaler_image_repository
   cluster_autoscaler_image_tag        = var.cluster_autoscaler_image_tag
 
-  namespace   = var.namespace
-  kms_key_arn = local.default_kms_key
+  namespace     = var.namespace
+  k8s_namespace = var.k8s_namespace
+  kms_key_arn   = local.default_kms_key
 
   instance_types = local.kubernetes_instance_types
   disk_size      = local.kubernetes_node_disk_size_gb
