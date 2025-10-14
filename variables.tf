@@ -659,3 +659,13 @@ variable "cluster_autoscaler_image_tag" {
   description = "The tag of the cluster-autoscaler to deploy."
   default     = null
 }
+
+##########################################
+# Kubernetes                             #
+##########################################
+
+variable "k8s_namespace" {
+  type        = string
+  description = "The Kubernetes namespace where W&B resources will be deployed"
+  default     = "default"
+}

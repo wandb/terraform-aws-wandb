@@ -126,6 +126,12 @@ variable "namespace" {
   description = "(Required) The name prefix for all resources created."
 }
 
+variable "k8s_namespace" {
+  type        = string
+  description = "The Kubernetes namespace where W&B resources will be deployed"
+  default     = "default"
+}
+
 variable "network_id" {
   description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
   type        = string
