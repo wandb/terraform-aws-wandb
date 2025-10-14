@@ -661,20 +661,6 @@ variable "cluster_autoscaler_image_tag" {
 }
 
 ##########################################
-# Bufstream                              #
-##########################################
-
-variable "bufstream" {
-  type = object({
-    enabled = bool
-  })
-  description = "Configuration for Bufstream storage. When enabled, provisions an S3 bucket and attaches access policy to the node IAM role."
-  default = {
-    enabled = false
-  }
-}
-
-##########################################
 # Kubernetes                             #
 ##########################################
 

@@ -272,19 +272,6 @@ module "iam_role" {
   aws_iam_openid_connect_provider_url = module.app_eks.aws_iam_openid_connect_provider
 }
 
-module "bufstream" {
-  count  = var.bufstream.enabled ? 1 : 0
-  source = "./modules/bufstream"
-
-  namespace           = var.namespace
-  cluster_name        = module.app_eks.cluster_name
-  node_role_name      = module.app_eks.node_role.name
-  deletion_protection = var.deletion_protection
-  tags = {
-    Namespace = var.namespace
-  }
-}
-
 locals {
   weave_trace_sa_name  = "wandb-weave-trace"
   ctrlplane_redis_host = "redis.redis.svc.cluster.local"
