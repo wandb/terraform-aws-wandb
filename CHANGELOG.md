@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.18.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.17.0...v7.18.0) (2025-10-14)
+
+
+### Features
+
+* Add Weave worker authentication for AWS deployments ([#370](https://github.com/wandb/terraform-aws-wandb/issues/370)) ([cc0adc4](https://github.com/wandb/terraform-aws-wandb/commit/cc0adc4a17d3756165c6867eb1579f0b9d44a59f))
+
 ## [7.17.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.16.0...v7.17.0) (2025-09-10)
 
 
