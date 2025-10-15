@@ -23,8 +23,3 @@ variable "secrets_store_csi_driver_provider_aws_version" {
   type        = string
   description = "The version of the AWS Secrets Manager Provider for Secrets Store CSI Driver Helm chart to install."
 }
-
-variable "weave_worker_auth_secret_name" {
-  type        = string
-  description = "The name of the AWS Secrets Manager secret for weave worker auth"
-}

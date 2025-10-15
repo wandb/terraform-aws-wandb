@@ -21,3 +21,8 @@ output "primary_workers_security_group_id" {
 output "aws_iam_openid_connect_provider" {
   value = aws_iam_openid_connect_provider.eks.url
 }
+
+output "weave_worker_auth_secret_name" {
+  value       = aws_secretsmanager_secret.weave_worker_auth.name
+  description = "Name of the AWS Secrets Manager secret containing the weave worker auth token (used by SecretProviderClass)"
+}

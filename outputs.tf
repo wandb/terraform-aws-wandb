@@ -94,3 +94,8 @@ output "wandb_spec" {
   value     = local.spec
   sensitive = true
 }
+
+output "weave_worker_auth_secret_name" {
+  value       = module.app_eks.weave_worker_auth_secret_name
+  description = "Name of the AWS Secrets Manager secret containing the weave worker auth token. Use this value in the Helm chart's secretsStore.aws.secretName configuration."
+}
