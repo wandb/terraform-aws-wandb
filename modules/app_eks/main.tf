@@ -269,7 +269,7 @@ resource "aws_iam_role_policy_attachment" "weave_worker_auth_secret_reader" {
 # Create Kubernetes secret with the token
 resource "kubernetes_secret" "weave_worker_auth" {
   metadata {
-    name      = "weave-worker-auth"
+    name      = "weave-worker-auth-to-be-deleted"
     namespace = var.k8s_namespace
   }
 
