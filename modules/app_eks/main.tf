@@ -205,6 +205,22 @@ module "cluster_autoscaler" {
   ]
 }
 
+module "secrets_store" {
+  source = "./secrets_store"
+
+  namespace                                        = var.namespace
+  oidc_provider                                    = aws_iam_openid_connect_provider.eks
+  k8s_namespace                                    = var.k8s_namespace
+  secrets_store_csi_driver_version                 = var.secrets_store_csi_driver_version
+  secrets_store_csi_driver_provider_aws_version    = var.secrets_store_csi_driver_provider_aws_version
+  weave_worker_auth_secret_name                    = aws_secretsmanager_secret.weave_worker_auth.name
+
+  depends_on = [
+    module.eks,
+    aws_secretsmanager_secret_version.weave_worker_auth
+  ]
+}
+
 # Weave worker authentication token
 resource "random_password" "weave_worker_auth" {
   length  = 32
