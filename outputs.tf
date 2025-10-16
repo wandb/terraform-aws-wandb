@@ -104,3 +104,8 @@ output "secrets_store_iam_role_arn" {
   value       = module.app_eks.secrets_store_iam_role_arn
   description = "ARN of the IAM role for Kubernetes service accounts to access AWS Secrets Manager. Annotate service accounts with eks.amazonaws.com/role-arn=<this value>"
 }
+
+output "secrets_store_iam_role_trust_policy" {
+  value       = module.app_eks.secrets_store_iam_role_trust_policy
+  description = "Trust policy for the secrets store IAM role - verify that it allows system:serviceaccount:default:* to assume the role"
+}

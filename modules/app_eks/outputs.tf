@@ -31,3 +31,8 @@ output "secrets_store_iam_role_arn" {
   value       = module.secrets_store.iam_role_arn
   description = "ARN of the IAM role for service accounts to access AWS Secrets Manager via CSI driver"
 }
+
+output "secrets_store_iam_role_trust_policy" {
+  value       = module.secrets_store.iam_role_trust_policy
+  description = "Trust policy for the secrets store IAM role - shows which service accounts can assume this role"
+}
