@@ -109,3 +109,8 @@ output "secrets_store_iam_role_trust_policy" {
   value       = module.app_eks.secrets_store_iam_role_trust_policy
   description = "Trust policy for the secrets store IAM role - verify that it allows system:serviceaccount:default:* to assume the role"
 }
+
+output "secrets_store_iam_role_permissions_policy" {
+  value       = module.app_eks.secrets_store_iam_role_permissions_policy
+  description = "Permissions policy for the secrets store IAM role - verify that it allows access to the secret"
+}
