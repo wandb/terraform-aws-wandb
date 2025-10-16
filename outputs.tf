@@ -99,3 +99,8 @@ output "weave_worker_auth_secret_name" {
   value       = module.app_eks.weave_worker_auth_secret_name
   description = "Name of the AWS Secrets Manager secret containing the weave worker auth token. Use this value in the Helm chart's secretsStore.aws.secretName configuration."
 }
+
+output "secrets_store_iam_role_arn" {
+  value       = module.app_eks.secrets_store_iam_role_arn
+  description = "ARN of the IAM role for Kubernetes service accounts to access AWS Secrets Manager. Annotate service accounts with eks.amazonaws.com/role-arn=<this value>"
+}

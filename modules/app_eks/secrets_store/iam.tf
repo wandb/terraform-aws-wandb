@@ -19,15 +19,16 @@ resource "aws_iam_policy" "default" {
 }
 
 # IAM Assume Role Policy Document for IRSA
+# Allow service accounts in the application namespace to assume this role
 data "aws_iam_policy_document" "default" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
 
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "${replace(var.oidc_provider.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:secrets-store-csi-driver"]
+      values   = ["system:serviceaccount:${var.k8s_namespace}:*"]
     }
 
     condition {
@@ -53,4 +54,10 @@ resource "aws_iam_role" "default" {
 resource "aws_iam_role_policy_attachment" "default" {
   policy_arn = aws_iam_policy.default.arn
   role       = aws_iam_role.default.name
+}
+
+# Output the IAM role ARN for service account annotation
+output "iam_role_arn" {
+  value       = aws_iam_role.default.arn
+  description = "ARN of the IAM role for service accounts to access AWS Secrets Manager"
 }
