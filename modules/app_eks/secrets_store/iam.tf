@@ -61,15 +61,3 @@ output "iam_role_arn" {
   value       = aws_iam_role.default.arn
   description = "ARN of the IAM role for service accounts to access AWS Secrets Manager"
 }
-
-# Output the IAM role trust policy for verification
-output "iam_role_trust_policy" {
-  value       = aws_iam_role.default.assume_role_policy
-  description = "Trust policy (assume role policy) for the IAM role - shows which service accounts can assume this role"
-}
-
-# Output the IAM permissions policy for verification
-output "iam_role_permissions_policy" {
-  value       = data.aws_iam_policy_document.secrets_manager_access.json
-  description = "Permissions policy for the IAM role - shows which secrets can be accessed"
-}
