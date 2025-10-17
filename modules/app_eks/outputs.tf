@@ -27,7 +27,7 @@ output "weave_worker_auth_secret_name" {
   description = "Name of the AWS Secrets Manager secret containing the weave worker auth token (used by SecretProviderClass)"
 }
 
-output "secrets_store_iam_role_arn" {
-  value       = module.secrets_store.iam_role_arn
-  description = "ARN of the IAM role for service accounts to access AWS Secrets Manager via CSI driver"
+output "weave_worker_iam_role_arn" {
+  value       = aws_iam_role.weave_worker.arn
+  description = "ARN of the IAM role for weave worker service accounts to access AWS Secrets Manager via CSI driver"
 }

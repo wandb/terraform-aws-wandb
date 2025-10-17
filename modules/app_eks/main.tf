@@ -226,7 +226,7 @@ resource "random_password" "weave_worker_auth" {
 }
 
 resource "aws_secretsmanager_secret" "weave_worker_auth" {
-  # TODO(aravind): remove the -00 suffix.
+  # TODO(aravind): come back and remove the -00 suffix
   name                    = "${var.namespace}-weave-worker-auth-00"
   recovery_window_in_days = 0
 
@@ -267,7 +267,8 @@ resource "aws_iam_role_policy_attachment" "weave_worker_auth_secret_reader" {
   policy_arn = aws_iam_policy.weave_worker_auth_secret_reader.arn
 }
 
-# NOTE: The Kubernetes secret is now created by the Secrets Store CSI Driver
+
+# NOTE: The Kubernetes secrets are now created by the Secrets Store CSI Driver
 # via the SecretProviderClass defined in the operator-wandb Helm chart.
 # This eliminates the need to manage secrets in both Terraform and Kubernetes,
 # and provides automatic secret rotation capabilities.

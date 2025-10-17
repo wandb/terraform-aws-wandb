@@ -427,6 +427,22 @@ locals {
         extraEnv = var.parquet_wandb_env
       }
 
+      weave-trace-worker = {
+        serviceAccount = {
+          annotations = {
+            "eks.amazonaws.com/role-arn" = module.app_eks.weave_worker_iam_role_arn
+          }
+        }
+      }
+
+      weave-evaluate-model-worker = {
+        serviceAccount = {
+          annotations = {
+            "eks.amazonaws.com/role-arn" = module.app_eks.weave_worker_iam_role_arn
+          }
+        }
+      }
+
       secretsStore = {
         enabled  = true
         provider = "aws"
