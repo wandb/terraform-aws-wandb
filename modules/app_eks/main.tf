@@ -226,8 +226,7 @@ resource "random_password" "weave_worker_auth" {
 }
 
 resource "aws_secretsmanager_secret" "weave_worker_auth" {
-  # TODO(aravind): change the name of the secret back to weave-worker-auth
-  name                    = "${var.namespace}-ww-auth"
+  name                    = "${var.namespace}-weave-worker-auth"
   recovery_window_in_days = 0
 
   tags = {
