@@ -452,7 +452,7 @@ resource "time_sleep" "wait_for_deletion_reconcile" {
 
 module "wandb" {
   source  = "wandb/wandb/helm"
-  version = "3.0.0"
+  version = "0.35.10-PR507-a61f880e"
 
   depends_on = [
     module.database,
