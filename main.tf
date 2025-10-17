@@ -426,6 +426,19 @@ locals {
       parquet = {
         extraEnv = var.parquet_wandb_env
       }
+
+      secretsStore = {
+        enabled  = true
+        provider = "aws"
+        secrets = [
+          {
+            name            = "weave-worker-auth"
+            cloudSecretName = module.app_eks.weave_worker_auth_secret_name
+            k8sSecretName   = "weave-worker-auth"
+            k8sSecretKey    = "key"
+          }
+        ]
+      }
     }
   }
 }
