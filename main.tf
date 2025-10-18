@@ -433,6 +433,9 @@ locals {
             "eks.amazonaws.com/role-arn" = module.app_eks.weave_worker_iam_role_arn
           }
         }
+        secretsStore = {
+          enabled = true
+        }
       }
 
       weave-evaluate-model-worker = {
@@ -440,6 +443,9 @@ locals {
           annotations = {
             "eks.amazonaws.com/role-arn" = module.app_eks.weave_worker_iam_role_arn
           }
+        }
+        secretsStore = {
+          enabled = true
         }
       }
 
