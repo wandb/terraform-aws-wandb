@@ -208,9 +208,6 @@ module "cluster_autoscaler" {
 module "secrets_store" {
   source = "./secrets_store"
 
-  namespace                                     = var.namespace
-  oidc_provider                                 = aws_iam_openid_connect_provider.eks
-  k8s_namespace                                 = var.k8s_namespace
   secrets_store_csi_driver_version              = var.secrets_store_csi_driver_version
   secrets_store_csi_driver_provider_aws_version = var.secrets_store_csi_driver_provider_aws_version
 
