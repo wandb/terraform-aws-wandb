@@ -94,8 +94,3 @@ output "wandb_spec" {
   value     = local.spec
   sensitive = true
 }
-
-output "weave_worker_iam_role_arn" {
-  value       = module.app_eks.weave_worker_iam_role_arn
-  description = "ARN of the IAM role for weave worker service accounts to access AWS Secrets Manager. Annotate service accounts with eks.amazonaws.com/role-arn=<this value>"
-}
