@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.18.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.18.0...v7.18.1) (2025-10-21)
+
+
+### Bug Fixes
+
+* Fix kubernetes secrets resource paramenter ([#372](https://github.com/wandb/terraform-aws-wandb/issues/372)) ([bc0f3b6](https://github.com/wandb/terraform-aws-wandb/commit/bc0f3b6c0a7c8af6647e36a5fc0cc4221ebeb3db))
+
 ## [7.18.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.17.0...v7.18.0) (2025-10-14)
 
 
