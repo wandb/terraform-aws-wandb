@@ -59,3 +59,9 @@ resource "aws_iam_policy_attachment" "irsa" {
   roles      = [aws_iam_role.irsa.name]
   policy_arn = aws_iam_policy.irsa.arn
 }
+
+# Attach Weave Worker Policy to Weave Worker Role
+resource "aws_iam_role_policy_attachment" "weave_worker" {
+  role       = aws_iam_role.weave_worker.name
+  policy_arn = aws_iam_policy.weave_worker.arn
+}
