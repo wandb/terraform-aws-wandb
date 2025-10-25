@@ -124,6 +124,12 @@ resource "aws_security_group" "primary_workers" {
   vpc_id      = var.network_id
 }
 
+resource "aws_security_group" "pods" {
+  name        = "${var.namespace}-pods"
+  description = "Pod security group."
+  vpc_id      = var.network_id
+}
+
 resource "aws_security_group_rule" "lb" {
   description              = "Allow container NodePort service to receive load balancer traffic."
   protocol                 = "tcp"
@@ -144,12 +150,33 @@ resource "aws_security_group_rule" "database" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "database_pods" {
+  description              = "Allow inbound traffic from pods to database"
+  protocol                 = "tcp"
+  security_group_id        = var.database_security_group_id
+  source_security_group_id = aws_security_group.pods.id
+  from_port                = local.mysql_port
+  to_port                  = local.mysql_port
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "elasticache" {
   count                    = var.create_elasticache_security_group ? 1 : 0
   description              = "Allow inbound traffic from EKS workers to elasticache"
   protocol                 = "tcp"
   security_group_id        = var.elasticache_security_group_id
   source_security_group_id = aws_security_group.primary_workers.id
+  from_port                = local.redis_port
+  to_port                  = local.redis_port
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "elasticache_pods" {
+  count                    = var.create_elasticache_security_group ? 1 : 0
+  description              = "Allow inbound traffic from pods to elasticache"
+  protocol                 = "tcp"
+  security_group_id        = var.elasticache_security_group_id
+  source_security_group_id = aws_security_group.pods.id
   from_port                = local.redis_port
   to_port                  = local.redis_port
   type                     = "ingress"

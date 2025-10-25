@@ -77,6 +77,38 @@ resource "aws_eks_addon" "vpc_cni" {
   addon_version            = var.eks_addon_vpc_cni_version
   resolve_conflicts        = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
+
+  configuration_values = jsonencode({
+    env = {
+      AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = length(var.network_pod_subnets) > 0 ? "true" : "false"
+      ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
+    }
+  })
+}
+
+data "aws_subnet" "pod_subnets" {
+  count = length(var.network_pod_subnets)
+  id    = var.network_pod_subnets[count.index]
+}
+
+resource "kubectl_manifest" "vpc_eni_config" {
+  count = length(data.aws_subnet.pod_subnets)
+
+  yaml_body = <<YAML
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ${data.aws_subnet.pod_subnets[count.index].availability_zone}
+spec:
+  subnet: ${data.aws_subnet.pod_subnets[count.index].id}
+  securityGroups:
+    - ${module.eks.worker_security_group_id}
+    - ${aws_security_group.pods.id}
+YAML
+
+  depends_on = [
+    aws_eks_addon.vpc_cni
+  ]
 }
 
 resource "aws_eks_addon" "metrics_server" {
