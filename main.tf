@@ -61,6 +61,7 @@ module "networking" {
   clickhouse_endpoint_service_id = var.clickhouse_endpoint_service_id
 }
 
+
 locals {
   network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
@@ -80,6 +81,14 @@ module "s3_endpoint" {
   network_id             = local.network_id
   private_route_table_id = module.networking.private_route_table_ids
   depends_on             = [module.networking]
+}
+
+module "msk" {
+  source    = "./modules/msk"
+  namespace = var.namespace
+
+  private_subnets = local.network_private_subnets
+  vpc_id          = local.network_id
 }
 
 module "database" {
