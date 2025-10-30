@@ -223,7 +223,7 @@ resource "random_password" "weave_worker_auth" {
 }
 
 resource "aws_secretsmanager_secret" "weave_worker_auth" {
-  name                    = "${var.namespace}-ww-auth"
+  name                    = "${var.namespace}-weave-worker-auth"
   recovery_window_in_days = 0
 
   tags = {
