@@ -254,3 +254,15 @@ variable "cluster_autoscaler_image_tag" {
   description = "The tag of the cluster-autoscaler to deploy."
   default     = null
 }
+
+variable "secrets_store_csi_driver_version" {
+  type        = string
+  description = "The version of the Secrets Store CSI Driver Helm chart to install."
+  default     = "1.4.7"
+}
+
+variable "secrets_store_csi_driver_provider_aws_version" {
+  type        = string
+  description = "The version of the AWS Secrets Manager Provider for Secrets Store CSI Driver Helm chart to install."
+  default     = "0.3.9"
+}

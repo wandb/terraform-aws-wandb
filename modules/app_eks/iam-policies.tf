@@ -63,3 +63,10 @@ resource "aws_iam_policy" "irsa" {
     ]
   })
 }
+
+# IAM Policy for Weave Workers
+resource "aws_iam_policy" "weave_worker" {
+  name        = "${var.namespace}-weave-worker-secrets-access"
+  description = "Weave worker IRSA policy for accessing secrets"
+  policy      = data.aws_iam_policy_document.weave_worker_secrets_access.json
+}

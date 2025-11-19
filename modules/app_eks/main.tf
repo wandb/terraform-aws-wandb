@@ -205,6 +205,17 @@ module "cluster_autoscaler" {
   ]
 }
 
+module "secrets_store" {
+  source = "./secrets_store"
+
+  secrets_store_csi_driver_version              = var.secrets_store_csi_driver_version
+  secrets_store_csi_driver_provider_aws_version = var.secrets_store_csi_driver_provider_aws_version
+
+  depends_on = [
+    module.eks
+  ]
+}
+
 # Weave worker authentication token
 resource "random_password" "weave_worker_auth" {
   length  = 32
@@ -212,7 +223,7 @@ resource "random_password" "weave_worker_auth" {
 }
 
 resource "aws_secretsmanager_secret" "weave_worker_auth" {
-  name                    = "${var.namespace}-weave-worker-auth"
+  name                    = "${var.namespace}-weave-worker-auth-00"
   recovery_window_in_days = 0
 
   tags = {
