@@ -263,8 +263,16 @@ resource "aws_iam_role_policy_attachment" "weave_worker_auth_secret_reader" {
   policy_arn = aws_iam_policy.weave_worker_auth_secret_reader.arn
 }
 
+# Create Kubernetes secret with the token
+resource "kubernetes_secret" "weave_worker_auth" {
+  metadata {
+    name      = "weave-worker-auth"
+    namespace = var.k8s_namespace
+  }
 
-# NOTE: The Kubernetes secrets are now created by the Secrets Store CSI Driver
-# via the SecretProviderClass defined in the operator-wandb Helm chart.
-# This eliminates the need to manage secrets in both Terraform and Kubernetes,
-# and provides automatic secret rotation capabilities.
+  binary_data = {
+    "key" = random_password.weave_worker_auth.result
+  }
+
+  depends_on = [module.eks]
+}
