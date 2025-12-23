@@ -1,0 +1,103 @@
+apiVersion: "clickhouse-keeper.altinity.com/v1"
+kind: "ClickHouseKeeperInstallation"
+metadata:
+  name: wandb
+  annotations: {}
+  namespace: clickhouse
+spec:
+  # Default templates for all clusters
+  # I'm using specific templates, but we can move all configuration
+  # to default templates and suppress the templates section in the cluster configuration
+  defaults:
+    templates:
+      podTemplate: keeper
+      dataVolumeClaimTemplate: data
+
+  # Clickhouse Keeper cluster templates
+  templates:
+    podTemplates:
+      - name: keeper
+        metadata:
+          annotations: {}
+          labels:
+            app: clickhouse-keeper
+        spec:
+          # Pod security context: Need to work for OpenShift
+          # securityContext:
+          #   runAsNonRoot: true
+          #   runAsUser: 101 # Your OpenShift user ID
+          #   runAsGroup: 0
+          #   fsGroup: 101 # Your OpenShift user ID
+          #   fsGroupChangePolicy: "Always"
+          #   seccompProfile:
+          #     type: "RuntimeDefault"
+
+          # Recommended for multiple nodes
+          # affinity:
+          #   podAntiAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       - labelSelector:
+          #           matchExpressions:
+          #             - key: "app"
+          #               operator: In
+          #               values:
+          #                 - clickhouse-keeper
+          #         topologyKey: "kubernetes.io/hostname"
+
+          # Container configuration
+          containers:
+            - name: clickhouse-keeper
+              imagePullPolicy: IfNotPresent
+              image: "clickhouse/clickhouse-keeper:25.6"
+              resources:
+                requests:
+                  memory: "256M"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+
+              # Container security context: Need to work for OpenShift
+              # securityContext:
+              #   allowPrivilegeEscalation: false
+              #   capabilities:
+              #     drop:
+              #       - ALL
+              #     add:
+              #       - NET_ADMIN
+              #   privileged: false
+              #   readOnlyRootFilesystem: false
+
+    # Data volume claim template
+    volumeClaimTemplates:
+      - name: data
+        metadata:
+          labels:
+            app: clickhouse-keeper
+        spec:
+          storageClassName: gp2-immediate # Replace with your storage class
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+  # CliCkhouse Keeper cluster configuration
+  configuration:
+    clusters:
+      - name: keeper
+        layout:
+          replicasCount: 3
+        # Templates for the cluster (not the default templates)
+        templates:
+          podTemplate: keeper
+          dataVolumeClaimTemplate: data
+
+    # For details, see:
+    # https://clickhouse.com/docs/guides/sre/keeper/clickhouse-keeper#configuration
+    settings:
+      logger/level: "information"
+      logger/console: "true"
+      listen_host: "0.0.0.0"
+      keeper_server/four_letter_word_white_list: "*"
+      keeper_server/coordination_settings/raft_logs_level: "information"

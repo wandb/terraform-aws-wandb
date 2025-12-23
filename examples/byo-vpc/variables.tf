@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  description = "Region to deploy resources"
+  default     = "us-west-2"
+}
+
 variable "namespace" {
   type        = string
   description = "Name prefix used for resources"
@@ -26,13 +32,13 @@ variable "wandb_license" {
 variable "database_engine_version" {
   description = "Version for MySQL Auora"
   type        = string
-  default     = "8.0.mysql_aurora.3.05.2"
+  default     = "8.0.mysql_aurora.3.07.1"
 }
 
 variable "database_instance_class" {
   description = "Instance type to use by database master instance."
   type        = string
-  default     = "db.r5.large"
+  default     = "db.r6g.large"
 }
 
 variable "database_snapshot_identifier" {
@@ -118,6 +124,20 @@ variable "network_private_subnets" {
   description = "Subnet IDs"
 }
 
+
+variable "enable_dummy_dns" {
+  type        = bool
+  description = "Enable dummy DNS"
+  default     = false
+}
+
+
+variable "enable_operator_alb" {
+  type        = bool
+  description = "Enable operator ALB"
+  default     = false
+}
+
 variable "network_public_subnets" {
   type        = list(string)
   description = "Subnet IDs"
@@ -147,3 +167,9 @@ variable "network_elasticache_subnets" {
   type        = list(string)
   description = "Subnet CIDRs"
 }
+
+variable "network_elasticache_subnet_cidrs" {
+  type        = list(string)
+  description = "Subnet CIDRs"
+}
+

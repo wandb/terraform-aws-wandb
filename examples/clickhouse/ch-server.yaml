@@ -1,0 +1,118 @@
+apiVersion: clickhouse.altinity.com/v1
+kind: ClickHouseInstallation
+metadata:
+  name: clickhouse
+  namespace: ${namespace}
+spec:
+  defaults:
+    templates:
+      podTemplate: clickhouse
+      dataVolumeClaimTemplate: data
+      serviceTemplate: service-template
+  templates:
+    podTemplates:
+      - name: clickhouse
+        metadata:
+          annotations: {}
+          labels:
+            app: clickhouse-server
+        spec:
+          serviceAccountName: ${service_account}
+          # Pod security context: Need to work for OpenShift
+          # securityContext:
+          #   runAsNonRoot: true
+          #   runAsUser: 101 # Your OpenShift user ID
+          #   runAsGroup: 0
+          #   fsGroup: 101 # Your OpenShift user ID
+          #   fsGroupChangePolicy: "Always"
+          #   seccompProfile:
+          #     type: "RuntimeDefault"
+
+          # Recommended for multiple nodes
+          # affinity:
+          #   podAntiAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       - labelSelector:
+          #           matchExpressions:
+          #             - key: "app"
+          #               operator: In
+          #               values:
+          #                 - clickhouse-server
+          #         topologyKey: "kubernetes.io/hostname"
+
+          containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:25.6
+              resources:
+                requests:
+                  memory: 512Mi
+                  cpu: 500m
+                limits:
+                  memory: 1Gi
+                  cpu: 1
+%{ if use_aws_access_keys }
+              # Using AWS access keys for S3 authentication
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: ch-bucket-cred
+                      key: access_key
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: ch-bucket-cred
+                      key: secret_key
+%{ endif }
+
+              # Container security context: Need to work for OpenShift
+              # securityContext:
+              #   allowPrivilegeEscalation: false
+              #   capabilities:
+              #     drop:
+              #       - ALL
+              #     add:
+              #       - NET_ADMIN
+              #   privileged: false
+              #   readOnlyRootFilesystem: false
+
+    volumeClaimTemplates:
+      - name: data
+        metadata:
+          labels:
+            app: clickhouse-server
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: ${clickhouse_storage}
+          storageClassName: ${storage_class}
+
+
+  configuration:
+    zookeeper:
+      nodes:
+      - host: chk-wandb-keeper-0-0.${namespace}.svc.cluster.local
+        port: 2181
+      - host: chk-wandb-keeper-0-1.${namespace}.svc.cluster.local
+        port: 2181
+      - host: chk-wandb-keeper-0-2.${namespace}.svc.cluster.local
+        port: 2181
+    users:
+      weave/password: ${clickhouse_password}
+      weave/networks/ip:
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+      - "192.168.0.0/16"
+    clusters:
+    - name: clickhouse
+      layout:
+        shardsCount: 1
+        replicasCount: 3
+    profiles:
+      default/readonly: "0"
+    settings:
+      # Create wandb_weave database on startup
+      startup_system_queries:
+      - "CREATE DATABASE IF NOT EXISTS wandb_weave"

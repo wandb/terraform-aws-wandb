@@ -1,9 +1,10 @@
-# Deploy W&B required infrastructure to an existing VPC and existing EKS
+# Deploy W&B to an existing VPC and existing EKS cluster
 
 ## About
 
-This example is a minimal example of what is needed to deploy an instance of 
-Weights & Biases that uses an external DNS into an already existing VPC and EKS cluster.
+This example demonstrates deploying Weights & Biases to an existing VPC and EKS cluster.
+
+⚠️ **Current Limitation**: The main terraform-aws-wandb module does not support conditional EKS creation. This example provides the framework but requires manual infrastructure setup.
 
 ## Module Prerequites
 
