@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [7.18.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.18.1...v7.18.2) (2026-01-13)
+
+
+### Bug Fixes
+
+* Output privatelink information ([#375](https://github.com/wandb/terraform-aws-wandb/issues/375)) ([4b57c1f](https://github.com/wandb/terraform-aws-wandb/commit/4b57c1fb0c4b64b23a652ae44c36a35a1bd9892a))
+
 ### [7.18.1](https://github.com/wandb/terraform-aws-wandb/compare/v7.18.0...v7.18.1) (2025-10-21)
 
 
