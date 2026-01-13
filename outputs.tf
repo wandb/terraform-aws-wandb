@@ -96,6 +96,11 @@ output "wandb_spec" {
 }
 
 # Private Link outputs - only available when private_link_allowed_account_ids is configured
+output "private_link_service_name" {
+  description = "The service name of the VPC Endpoint Service for Private Link"
+  value       = length(var.private_link_allowed_account_ids) > 0 ? module.private_link[0].service_name : null
+}
+
 output "private_link_service_id" {
   description = "The ID of the VPC Endpoint Service for Private Link"
   value       = length(var.private_link_allowed_account_ids) > 0 ? module.private_link[0].service_id : null
