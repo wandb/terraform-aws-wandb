@@ -271,7 +271,7 @@ variable "network_public_subnet_cidrs" {
 variable "network_private_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.10.0/24", "10.10.11.0/24"]
+  default     = ["10.10.10.0/24", "10.10.11.0/24", "10.10.12.0/24", "10.10.13.0/24"]
 }
 
 variable "network_database_subnet_cidrs" {
