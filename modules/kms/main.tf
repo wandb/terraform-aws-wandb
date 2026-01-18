@@ -34,6 +34,9 @@ resource "aws_kms_key" "key" {
           "kms:Get*",
           "kms:List*",
           "kms:RevokeGrant"
+	  "kms:PutKeyPolicy",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion",
         ],
         "Resource" : "*"
       },
