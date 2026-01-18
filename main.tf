@@ -56,6 +56,7 @@ module "networking" {
   private_subnet_cidrs           = var.network_private_subnet_cidrs
   public_subnet_cidrs            = var.network_public_subnet_cidrs
   database_subnet_cidrs          = var.network_database_subnet_cidrs
+  pod_subnet_cidrs               = var.network_pod_subnet_cidrs
   create_elasticache_subnet      = var.create_elasticache
   elasticache_subnet_cidrs       = var.network_elasticache_subnet_cidrs
   clickhouse_endpoint_service_id = var.clickhouse_endpoint_service_id
@@ -65,6 +66,8 @@ locals {
   network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
   network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
+  network_pod_subnets          = var.create_vpc ? module.networking.pod_subnets : var.network_pod_subnets
+  network_pod_subnet_cidrs     = var.create_vpc ? module.networking.pod_subnet_cidrs : var.network_pod_subnet_cidrs
 
   network_database_subnets = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
   # tflint-ignore: terraform_unused_declarations
@@ -104,7 +107,7 @@ module "database" {
   db_subnet_group_name   = local.network_database_subnet_group_name
   subnets                = local.network_database_subnets
 
-  allowed_cidr_blocks = local.network_private_subnet_cidrs
+  allowed_cidr_blocks = concat(local.network_private_subnet_cidrs, local.network_pod_subnet_cidrs)
 }
 
 locals {
@@ -176,6 +179,7 @@ module "app_eks" {
 
   network_id              = local.network_id
   network_private_subnets = local.network_private_subnets
+  network_pod_subnets     = local.network_pod_subnets
 
   lb_security_group_inbound_id = module.app_lb.security_group_inbound_id
   database_security_group_id   = module.database.security_group_id
