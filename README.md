@@ -18,7 +18,7 @@ audit logging and SAML single sign-on.
 This module is intended to run in an AWS account with minimal preparation,
 however it does have the following pre-requisites:
 
-### Terrafom version >= 1.9
+### Terraform version >= 1.9
 
 ### Credentials / Permissions
 
@@ -55,8 +55,8 @@ resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/reso
 
 ### ACM Certificate
 
-While this is not required, it is recommend to already have an existing ACM
-certification. Certificate validation can take up two hours, causing timeouts
+While this is not required, it is recommended to already have an existing ACM
+certificate. Certificate validation can take up to two hours, causing timeouts
 during module apply if the cert is generated as one of the resources contained
 in the module.
 
@@ -103,14 +103,14 @@ All the values set via `deployment-size.tf` can be overridden by setting the app
 - `database_instance_class` - The instance type for the database
 
 ## Bring Your Own Bucket (BYOB)
-We have added additional variable that make enabling BYOB easier to enable.
+We have added additional variables that make enabling BYOB easier.
 `bucket_permissions_mode` accepts 1 of 3 values; 
-- `strict` the default requires an explict list of the buckets for proper access, the same as byob before `7.3.0`.
-- `restricted` makes use of the new variable `bucket_restricted_accounts` which is a list of AWS account Id's where the BYOBs can be hosted from. ex: `["1234567890", "1234876590"]`
-- `public` enables access to any BYOB properly configured not present in the the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
+- `strict` the default requires an explicit list of the buckets for proper access, the same as byob before `7.3.0`.
+- `restricted` makes use of the new variable `bucket_restricted_accounts` which is a list of AWS account IDs where the BYOBs can be hosted from. ex: `["1234567890", "1234876590"]`
+- `public` enables access to any BYOB properly configured not present in the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
 
 > [!IMPORTANT]
-> Enabling BYOB or cross-account reguardless of `bucket_permissions_mode` still requires a policy attached to that bucket to allowing the eks node role to perform s3 actions.
+> Enabling BYOB or cross-account regardless of `bucket_permissions_mode` still requires a policy attached to that bucket allowing the eks node role to perform s3 actions.
 >
 > To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of the module `cluster_node_role`
 >
@@ -352,7 +352,7 @@ module "wandb" {
 }
 ```
 
-### Alow customer specific customer-managed keys for S3 and RDS
+### Allow customer specific customer-managed keys for S3 and RDS
 
 - we can provide external kms key to encrypt database, redis and S3 buckets.
 - To provide kms keys we need to provide kms arn values in
@@ -364,7 +364,7 @@ bucket_kms_key_arn
 
 ### In order to allow cross account KMS keys. we need to allow kms keys to be accessed by WandB account.
 
-This can be donw by adding the following policy document.
+This can be done by adding the following policy document.
 
 ```
 {
@@ -389,7 +389,7 @@ This can be donw by adding the following policy document.
 
 ### 6.x -> 7.x
 
-`v7` changes how the module references storage from using terraform's `count` to always creating a "defaultBucket" which can be overidden latter or but providing some initial bucket.
+`v7` changes how the module references storage from using terraform's `count` to always creating a "defaultBucket" which can be overridden later or by providing some initial bucket.
 
 We are considering this a major change because of the terraform `moved` block which migrates the resource. After moving to a `v7` applying an earlier version of the module may result in terraform deleting your bucket.
 
