@@ -110,7 +110,7 @@ We have added additional variables that make enabling BYOB easier.
 - `public` enables access to any BYOB properly configured not present in the calling account. Effectively this enables cross account s3 access to ANY aws s3 account.
 
 > [!IMPORTANT]
-> Enabling BYOB or cross-account regardless of `bucket_permissions_mode` still requires a policy attached to that bucket allowing the eks node role to perform s3 actions.
+> Enabling BYOB or cross-account regardless of `bucket_permissions_mode` still requires a policy attached to that bucket allowing the EKS node role to perform S3 actions.
 >
 > To find out the role which needs to be allowed access to your BYOB go to bucket section of `https://YOUR_WANDB_DEPLOYMENT/console/settings/system` or see the output of the module `cluster_node_role`
 >
