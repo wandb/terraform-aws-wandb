@@ -48,7 +48,7 @@ resource "aws_vpc_endpoint" "clickhouse" {
   private_dns_enabled = true
 }
 
-# VPC FLow Logs
+# VPC Flow Logs
 resource "aws_flow_log" "vpc_flow_logs" {
   count = var.create_vpc && var.enable_flow_log ? 1 : 0
 

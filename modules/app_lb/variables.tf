@@ -23,7 +23,7 @@ variable "allowed_inbound_ipv6_cidr" {
 }
 
 variable "network_id" {
-  description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
+  description = "(Required) The identity of the VPC in which the security group attached to the ALB will be deployed."
   type        = string
 }
 

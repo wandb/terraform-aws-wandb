@@ -91,7 +91,7 @@ variable "database_master_username" {
 
 variable "database_performance_insights_kms_key_arn" {
   default     = ""
-  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled was enabled out of band"
   nullable    = true
   type        = string
 }
@@ -110,7 +110,7 @@ variable "database_kms_key_arn" {
 variable "public_access" {
   type        = bool
   default     = false
-  description = "Is this instance accessable a public domain."
+  description = "Is this instance accessible via a public domain."
 }
 
 variable "external_dns" {
@@ -125,8 +125,8 @@ variable "custom_domain_filter" {
   default     = null
 }
 
-# Sometimes domain name and zone name dont match, so lets explicitly ask for
-# both. Also is just life easier to have both even though in most cause it may
+# Sometimes domain name and zone name don't match, so let's explicitly ask for
+# both. Also it's just easier to have both even though in most cases it may
 # be redundant info.
 # https://github.com/hashicorp/terraform-aws-terraform-enterprise/pull/41#issuecomment-563501858
 variable "zone_id" {
@@ -142,7 +142,7 @@ variable "domain_name" {
 variable "subdomain" {
   type        = string
   default     = null
-  description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route."
+  description = "Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 zone apex."
 }
 
 variable "extra_fqdn" {
@@ -264,7 +264,7 @@ variable "network_cidr" {
 
 variable "network_public_subnet_cidrs" {
   type        = list(string)
-  description = "List of private subnet CIDR ranges to create in VPC."
+  description = "List of public subnet CIDR ranges to create in VPC."
   default     = ["10.10.0.0/24", "10.10.1.0/24"]
 }
 
@@ -328,7 +328,7 @@ variable "kubernetes_alb_internet_facing" {
 
 variable "kubernetes_alb_subnets" {
   type        = list(string)
-  description = "List of subnet ID's the ALB will use for ingress traffic."
+  description = "List of subnet IDs the ALB will use for ingress traffic."
   default     = []
 }
 
@@ -457,7 +457,7 @@ variable "eks_addon_kube_proxy_version" {
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html.s"
+  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
   type        = string
   default     = "v1.18.3-eksbuild.3"
 }
@@ -482,7 +482,7 @@ variable "enable_s3_https_only" {
 ##########################################
 # External Bucket                        #
 ##########################################
-# Most users will not need these settings. They are ment for users who want a
+# Most users will not need these settings. They are meant for users who want a
 # bucket and sqs that are in a different account.
 variable "bucket_name" {
   type    = string

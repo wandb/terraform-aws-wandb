@@ -94,7 +94,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "file_storage" {
 }
 
 # Give the bucket permission to send messages onto the queue. Looks like we
-# overide this value.
+# override this value.
 resource "aws_sqs_queue_policy" "file_storage" {
   count = var.create_queue && var.create_queue_policy ? 1 : 0
 

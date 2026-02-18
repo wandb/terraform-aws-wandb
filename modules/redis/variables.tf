@@ -17,7 +17,7 @@ variable "redis_subnets" {
 
 variable "redis_create_subnet_group" {
   default     = false
-  description = "Whether to create a new subnet group atop subnets provided via `redis_subnets`. If we bringing our own VPC this will not be created via the `network` module, and we must generate it."
+  description = "Whether to create a new subnet group atop subnets provided via `redis_subnets`. If we are bringing our own VPC this will not be created via the `network` module, and we must generate it."
   type        = bool
 }
 

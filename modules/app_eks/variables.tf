@@ -133,12 +133,12 @@ variable "k8s_namespace" {
 }
 
 variable "network_id" {
-  description = "(Required) The identity of the VPC in which the security group attached to the MySQL Aurora instances will be deployed."
+  description = "(Required) The identity of the VPC in which the security group attached to the EKS cluster will be deployed."
   type        = string
 }
 
 variable "network_private_subnets" {
-  description = "(Required) A list of the identities of the private subnetworks in which the MySQL Aurora instances will be deployed."
+  description = "(Required) A list of the identities of the private subnetworks in which the EKS worker nodes will be deployed."
   type        = list(string)
 }
 
