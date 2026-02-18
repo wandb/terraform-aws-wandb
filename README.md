@@ -352,7 +352,7 @@ module "wandb" {
 }
 ```
 
-### Allow customer specific customer-managed keys for S3 and RDS
+### Allow customer-specific customer-managed keys for S3 and RDS
 
 - we can provide external kms key to encrypt database, redis and S3 buckets.
 - To provide kms keys we need to provide kms arn values in
