@@ -19,7 +19,7 @@
 #### Does the user running this terraform need specialized knowledge of AWS services?
 
 > Typically, to run terraform the user must know to configure awscli with the right credentials and run `terraform apply`. It is recommended
-> to have a certain level of knowledge on [these list of resources](https://github.com/wandb/terraform-aws-wandb/tree/main#aws-services-used) to be able to deploy and maintain W&B successfully.
+> to have a certain level of knowledge on [this list of resources](https://github.com/wandb/terraform-aws-wandb/tree/main#aws-services-used) to be able to deploy and maintain W&B successfully.
 
 #### How does the W&B private cloud architecture look like?
 
