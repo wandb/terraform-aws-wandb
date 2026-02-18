@@ -123,7 +123,7 @@ installation scenarios for Weights & Biases, as well as examples for supporting
 resources that lack official modules.
 
 - [Private Access Only](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/private-access-only)
-- [Private Existing Network](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/private-existing-network)
+- [Private Existing Network](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/byo-vpc)
 - [Public External DNS](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/public-dns-external)
 - [Public Route 53 DNS](https://github.com/wandb/terraform-aws-wandb/tree/main/examples/public-dns-with-route53)
 
