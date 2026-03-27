@@ -127,3 +127,14 @@ data "aws_iam_policy_document" "secrets_manager" {
     resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.namespace}*"]
   }
 }
+
+data "aws_iam_policy_document" "weave_worker_secrets_access" {
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+    ]
+    effect    = "Allow"
+    resources = ["arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.namespace}-*"]
+  }
+}

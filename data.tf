@@ -10,3 +10,5 @@ data "aws_sqs_queue" "file_storage" {
 }
 
 data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}

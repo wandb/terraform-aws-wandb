@@ -426,6 +426,30 @@ locals {
       parquet = {
         extraEnv = var.parquet_wandb_env
       }
+
+      weave-trace-worker = {
+        serviceAccount = {
+          annotations = {
+            "eks.amazonaws.com/role-arn" = module.app_eks.weave_worker_iam_role_arn
+          }
+        }
+        secretsStore = {
+          enabled = true
+        }
+      }
+
+      secretsStore = {
+        enabled  = true
+        provider = "aws"
+        secrets = [
+          {
+            name            = "weave-worker-auth"
+            cloudSecretName = module.app_eks.weave_worker_auth_secret_name
+            k8sSecretName   = "weave-worker-auth"
+            k8sSecretKey    = "key"
+          }
+        ]
+      }
     }
   }
 }
