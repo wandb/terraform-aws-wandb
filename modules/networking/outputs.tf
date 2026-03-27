@@ -1,6 +1,6 @@
 output "vpc_id" {
   value       = module.vpc.vpc_id
-  description = "The identity of the VPC in which resources will be delpoyed."
+  description = "The identity of the VPC in which resources will be deployed."
 }
 
 output "vgw_id" {

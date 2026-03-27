@@ -4,7 +4,7 @@ variable "kms_key_arn" {
 }
 
 variable "performance_insights_kms_key_arn" {
-  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled is was enabled out of band"
+  description = "Specifies an existing KMS key ARN to encrypt the performance insights data if performance_insights_enabled was enabled out of band"
   type        = string
 }
 
@@ -19,13 +19,13 @@ variable "vpc_id" {
 }
 
 variable "engine_version" {
-  description = "Version for MySQL Auora to use -- major version only"
+  description = "Version for MySQL Aurora to use -- major version only"
   type        = string
   default     = "8.0"
 }
 
 variable "create_db_subnet_group" {
-  description = "Determines whether to create the databae subnet group or use existing"
+  description = "Determines whether to create the database subnet group or use existing"
   type        = string
   default     = true
 }
@@ -114,7 +114,7 @@ variable "innodb_lru_scan_depth" {
   default     = 128
 }
 
-# Cluster parametes
+# Cluster parameters
 variable "binlog_row_image" {
   description = "Value for binlog_row_image"
   type        = string

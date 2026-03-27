@@ -16,7 +16,7 @@ variable "kms_key_arn" {
 }
 
 variable "deletion_protection" {
-  description = "If the DB instance should have deletion protection enabled. The database can't be deleted when this value is set to `true`."
+  description = "If the S3 bucket should have deletion protection enabled. The bucket can't be deleted when this value is set to `true`."
   type        = bool
   default     = true
 }

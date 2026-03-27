@@ -19,7 +19,7 @@
 #### Does the user running this terraform need specialized knowledge of AWS services?
 
 > Typically, to run terraform the user must know to configure awscli with the right credentials and run `terraform apply`. It is recommended
-> to have a certain level of knowledge on [these list of resources](https://github.com/wandb/terraform-aws-wandb/tree/venky/add-faq-section#aws-services-used) to be able to deploy and maintain W&B successfully.
+> to have a certain level of knowledge on [this list of resources](https://github.com/wandb/terraform-aws-wandb/tree/main#aws-services-used) to be able to deploy and maintain W&B successfully.
 
 #### How does the W&B private cloud architecture look like?
 
@@ -28,7 +28,7 @@
 
 #### What are the different subnets created as part of the W&B deployment?
 
-> The W&B AWS terraform spins up atleast two subnets, one per availability zone in a region to account for fail over. If the deployment is private, then W&B creates two public subnets and two private subnets.
+> The W&B AWS terraform spins up at least two subnets, one per availability zone in a region to account for failover. If the deployment is private, then W&B creates two public subnets and two private subnets.
 
 #### What permissions should be granted to the W&B deployment?
 
@@ -84,7 +84,7 @@ You can supply your own KMS key to our terraform module via the **kms_key_alias*
 
 > Customer sensitive data is stored in an S3 bucket. Once authenticated a user can access S3 bucket resource through pre-signed urls. The user must have access to the project to view these resources.
 
-#### What are the different data encrytion configurations in place?
+#### What are the different data encryption configurations in place?
 
 ```
 - S3 bucket is encrypted by a customer defined KMS key
