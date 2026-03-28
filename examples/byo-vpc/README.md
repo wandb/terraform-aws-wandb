@@ -1,4 +1,4 @@
-# Deploy W&B required infrastructure to an existing VPC and existing EKS
+# Deploy W&B required infrastructure to an existing VPC
 
 ## About
 

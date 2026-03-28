@@ -1,9 +1,9 @@
 terraform {
-  backend "s3" {
-    bucket = "<bucket-name>" #TODO: Replace with bucket name where you want to store the Terraform state
-    key    = "wandb-tf-state"
-    region = "<region-name>" #TODO: Replace if region is different
-  }
+  # backend "s3" {
+  #   bucket = "<bucket-name>" #TODO: Replace with bucket name where you want to store the Terraform state
+  #   key    = "wandb-tf-state"
+  #   region = "<region-name>" #TODO: Replace if region is different
+  # }
 
   required_providers {
     aws = {
@@ -14,104 +14,216 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.6"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.9"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.12"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.4"
+    }
   }
 }
 
 provider "aws" {
-  region = "<region-name>" #TODO: Replace this with region name
+  region = var.region #"<region-name>" #TODO: Replace this with region name
 
   default_tags {
     tags = {
       GithubRepo  = "terraform-aws-wandb"
       GithubOrg   = "wandb"
+      App        = "wandb"
       Environment = "Production"
     }
   }
 }
 
-module "wandb_infra" {
-  source  = "wandb/wandb/aws"
-  version = "3.0.0"
+# Create database only if create_database is true
+module "database" {
+  count  = var.create_database ? 1 : 0
+  source = "../../modules/database"
 
-  namespace     = var.namespace
-  public_access = true
-  external_dns  = true
+  namespace = var.namespace
 
-  create_vpc = false
+  database_name   = "wandb"
+  master_username = "wandb"
 
-  network_id   = var.vpc_id
-  network_cidr = var.vpc_cidr
-
-  network_private_subnets       = var.network_private_subnets
-  network_public_subnets        = var.network_public_subnets
-  network_database_subnets      = var.network_database_subnets
-  network_private_subnet_cidrs  = var.network_private_subnet_cidrs
-  network_public_subnet_cidrs   = var.network_public_subnet_cidrs
-  network_database_subnet_cidrs = var.network_database_subnet_cidrs
+  instance_class      = var.database_instance_class
+  engine_version      = var.database_engine_version
+  snapshot_identifier = var.database_snapshot_identifier
+  sort_buffer_size    = var.database_sort_buffer_size
 
   deletion_protection = false
 
-  database_instance_class      = var.database_instance_class
-  database_engine_version      = var.database_engine_version
-  database_snapshot_identifier = var.database_snapshot_identifier
-  database_sort_buffer_size    = var.database_sort_buffer_size
+  vpc_id                 = var.vpc_id
+  create_db_subnet_group = true
+  db_subnet_group_name   = "${var.namespace}-database-subnet"
+  subnets                = var.network_database_subnets
 
-  allowed_inbound_cidr      = var.allowed_inbound_cidr
-  allowed_inbound_ipv6_cidr = ["::/0"]
+  allowed_cidr_blocks = var.network_private_subnet_cidrs
 
-  eks_cluster_version            = var.eks_cluster_version
-  kubernetes_public_access       = true
-  kubernetes_public_access_cidrs = ["0.0.0.0/0"]
+  kms_key_arn                      = var.bucket_kms_key_arn
+  performance_insights_kms_key_arn = var.bucket_kms_key_arn
+}
 
-  create_elasticache = false
-
-  domain_name = var.domain_name
-  zone_id     = var.zone_id
-  subdomain   = var.subdomain
-
-  bucket_name        = var.bucket_name
-  bucket_kms_key_arn = var.bucket_kms_key_arn
-  use_internal_queue = true
+# Local values for database connection
+locals {
+  database_connection_string = var.create_database ? "mysql://${module.database[0].username}:${module.database[0].password}@${module.database[0].endpoint}:${module.database[0].port}/${module.database[0].database_name}" : var.existing_database_connection_string
 }
 
 data "aws_eks_cluster" "app_cluster" {
-  name = module.wandb_infra.cluster_name
+  name = var.existing_eks_cluster_name
 }
 
 data "aws_eks_cluster_auth" "app_cluster" {
-  name = module.wandb_infra.cluster_name
+  name = var.existing_eks_cluster_name
 }
 
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.app_cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.app_cluster.token
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.app_cluster.name]
+    command     = "aws"
+  }
 }
 
-module "wandb_app" {
-  source = "github.com/wandb/terraform-kubernetes-wandb"
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.app_cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_cluster.certificate_authority[0].data)
 
-  license = var.wandb_license
-
-  host                       = module.wandb_infra.url
-  bucket                     = "s3://${module.wandb_infra.bucket_name}"
-  bucket_aws_region          = module.wandb_infra.bucket_region
-  bucket_queue               = "internal://"
-  bucket_kms_key_arn         = module.wandb_infra.kms_key_arn
-  database_connection_string = "mysql://${module.wandb_infra.database_connection_string}"
-
-  wandb_image   = var.wandb_image
-  wandb_version = var.wandb_version
-
-  service_port = module.wandb_infra.internal_app_port
-
-  depends_on = [module.wandb_infra]
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.app_cluster.name]
+      command     = "aws"
+    }
+  }
 }
 
-output "bucket_name" {
-  value = module.wandb_infra.bucket_name
+# The wandb app deployment is commented out because it requires infrastructure resources
+# that are not created when using BYO EKS cluster. You'll need to:
+# 1. Manually create RDS database, S3 bucket, KMS keys, etc.
+# 2. Update the variables below with your actual resource values
+# 3. Uncomment this module
+
+# module "wandb_app" {
+#   source  = "wandb/wandb/kubernetes"
+#   license = var.wandb_license
+
+#   host                       = "https://${var.subdomain}.${var.domain_name}"
+#   bucket                     = "s3://${var.bucket_name}"
+#   bucket_aws_region          = var.region
+#   bucket_queue               = "internal://"
+#   bucket_kms_key_arn         = var.bucket_kms_key_arn
+#   database_connection_string = local.database_connection_string
+
+#   wandb_image   = var.wandb_image
+#   wandb_version = var.wandb_version
+
+#   service_port = 32543
+
+#   depends_on = [module.database]
+# }
+
+
+locals {
+  fqdn = "${var.subdomain}.${var.domain_name}"
+  url  = "https://${local.fqdn}"
 }
 
-output "bucket_queue_name" {
-  value = module.wandb_infra.bucket_queue_name
+# WandB Helm Chart Configuration for BYO EKS
+locals {
+  spec = {
+    values = {
+      global = {
+        host          = local.url
+        license       = var.wandb_license
+        cloudProvider = "aws"
+        extraEnv      = var.other_wandb_env != null ? var.other_wandb_env : {}
+
+        bucket = {
+          provider = "s3"
+          name     = var.bucket_name
+          region   = var.region
+          kmsKey   = var.bucket_kms_key_arn
+        }
+
+        mysql = var.create_database ? {
+          host     = module.database[0].endpoint
+          password = module.database[0].password
+          user     = module.database[0].username
+          database = module.database[0].database_name
+          port     = module.database[0].port
+        } : {
+          host     = var.mysql_host
+          password = var.mysql_password
+          user     = var.mysql_user
+          database = var.mysql_database
+          port     = var.mysql_port
+        }
+
+        redis = {
+          host     = ""
+          port     = 6379
+          external = false
+        }
+      }
+
+      ingress = {
+        class = "alb"
+        annotations = {
+          "alb.ingress.kubernetes.io/scheme"          = "internet-facing"
+          "alb.ingress.kubernetes.io/target-type"     = "ip"
+          "alb.ingress.kubernetes.io/listen-ports"    = "[{\\\"HTTPS\\\": 443}]"
+          "alb.ingress.kubernetes.io/inbound-cidrs"   = join(",", var.allowed_inbound_cidr)
+          "external-dns.alpha.kubernetes.io/hostname" = local.fqdn
+        }
+      }
+
+      mysql = { install = false }
+      redis = { install = true }
+    }
+  }
 }
+
+module "wandb" {
+  source  = "wandb/wandb/helm"
+  version = "3.0.0"
+
+  depends_on = [
+    module.database
+  ]
+
+  operator_chart_version   = var.operator_chart_version
+  controller_image_tag     = var.controller_image_tag
+  enable_helm_operator     = var.enable_helm_operator
+  enable_helm_wandb        = var.enable_helm_wandb
+  operator_chart_namespace = var.operator_chart_namespace
+  wandb_namespace          = var.wandb_chart_namespace
+
+  spec = local.spec
+}
+output "cluster_name" {
+  value = var.existing_eks_cluster_name
+}
+
+output "wandb_url" {
+  value = local.url
+}
+
+# These outputs are only available when infrastructure modules are uncommented:
+# output "bucket_name" {
+#   value = module.wandb_infra.bucket_name
+# }
+# 
+# output "database_connection_string" {
+#   value = module.wandb_infra.database_connection_string
+#   sensitive = true
+# }

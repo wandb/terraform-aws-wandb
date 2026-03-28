@@ -404,44 +404,44 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 
-##########################################
-# EKS Cluster Addons                     #
-##########################################
-variable "eks_addon_efs_csi_driver_version" {
-  description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
-  type        = string
-  default     = "v2.0.7-eksbuild.1"
-}
+# ##########################################
+# # EKS Cluster Addons                     #
+# ##########################################
+# variable "eks_addon_efs_csi_driver_version" {
+#   description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+#   type        = string
+#   default     = "v2.1.7-eksbuild.1"
+# }
 
-variable "eks_addon_ebs_csi_driver_version" {
-  description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
-  type        = string
-  default     = "v1.35.0-eksbuild.1"
-}
+# variable "eks_addon_ebs_csi_driver_version" {
+#   description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+#   type        = string
+#   default     = "v1.42.0-eksbuild.1"
+# }
 
-variable "eks_addon_coredns_version" {
-  description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
-  type        = string
-  default     = "v1.11.3-eksbuild.1"
-}
+# variable "eks_addon_coredns_version" {
+#   description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+#   type        = string
+#   default     = "v1.11.4-eksbuild.2"
+# }
 
-variable "eks_addon_kube_proxy_version" {
-  description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
-  type        = string
-  default     = "v1.30.0-eksbuild.1"
-}
+# variable "eks_addon_kube_proxy_version" {
+#   description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+#   type        = string
+#   default     = "v1.32.0-eksbuild.2"
+# }
 
-variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html.s"
-  type        = string
-  default     = "v1.18.3-eksbuild.3"
-}
+# variable "eks_addon_vpc_cni_version" {
+#   description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html.s"
+#   type        = string
+#   default     = "v1.18.3-eksbuild.3"
+# }
 
-variable "eks_addon_metrics_server_version" {
-  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
-  type        = string
-  default     = "v0.7.2-eksbuild.1"
-}
+# variable "eks_addon_metrics_server_version" {
+#   description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+#   type        = string
+#   default     = "v2.15.0-eksbuild.3"
+# }
 
 ##########################################
 # External Bucket                        #

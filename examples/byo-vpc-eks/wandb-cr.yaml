@@ -1,0 +1,61 @@
+---
+# Source: wandb-cr/templates/operator.yaml
+apiVersion: apps.wandb.com/v1
+kind: WeightsAndBiases
+metadata:
+  name: wandb
+  namespace: byo-vpc-eks
+  labels:
+    app.kubernetes.io/name: weightsandbiases
+    app.kubernetes.io/instance: wandb
+spec: 
+  "values":
+    "global":
+      "bucket":
+        "kmsKey": "arn:aws:kms:us-east-2:423623857229:key/c7fafa10-ab32-4897-aca9-fe7a082de26c"
+        "name": "lsahu-s3-bucket"
+        "provider": "s3"
+        "region": "us-east-2"
+      "cloudProvider": "aws"
+      "extraEnv": {}
+      "host": "https://lsahu-byo-vpc-eks.wandb.ml"
+      "license": "xxx"
+      "mysql":
+        "database": "wandb_local"
+        "host": "mysql.cluster-ctu6yug0q669.us-east-2.rds.amazonaws.com"
+        "password": "SOME_PASSWORD"
+        "port": 3306
+        "user": "wandb_local"
+      clickhouse:
+        host: clickhouse-clickhouse.clickhouse.svc.cluster.local
+        port: 8123
+        password: weave123
+        user: weave
+        database: wandb_weave
+        # This option must be true if replicating data across multiple nodes
+        replicated: true
+      weave-trace:
+        enabled: true
+      "redis":
+        "external": false
+        "host": ""
+        "port": 6379
+    weave-trace:
+      install: true
+      extraEnv:
+        WF_CLICKHOUSE_REPLICATED: "true"
+        WF_CLICKHOUSE_REPLICATED_CLUSTER: "clickhouse"
+
+    "ingress":
+      "annotations":
+        "alb.ingress.kubernetes.io/inbound-cidrs": "0.0.0.0/0"
+        "alb.ingress.kubernetes.io/listen-ports": "[{\"HTTPS\": 443}]"
+        "alb.ingress.kubernetes.io/scheme": "internet-facing"
+        "alb.ingress.kubernetes.io/target-type": "ip"
+        "external-dns.alpha.kubernetes.io/hostname": "lsahu-byo-vpc-eks.wandb.ml"
+      "class": "alb"
+    "mysql":
+      "install": false
+    "redis":
+      "install": true
+
