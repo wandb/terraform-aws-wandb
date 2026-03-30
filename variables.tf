@@ -244,6 +244,12 @@ variable "network_private_subnets" {
   type        = list(string)
 }
 
+variable "network_pod_subnets" {
+  default     = []
+  description = "A list of the identities of the private subnetworks in which pods will be deployed."
+  type        = list(string)
+}
+
 variable "network_database_subnets" {
   default     = []
   description = "A list of the identities of the database subnetworks in which resources will be deployed."
@@ -284,6 +290,12 @@ variable "network_elasticache_subnet_cidrs" {
   type        = list(string)
   description = "List of private subnet CIDR ranges to create in VPC."
   default     = ["10.10.30.0/24", "10.10.31.0/24"]
+}
+
+variable "network_pod_subnet_cidrs" {
+  type        = list(string)
+  description = "List of private subnet CIDR ranges to create in VPC."
+  default     = ["10.10.32.0/21", "10.10.40.0/21"]
 }
 
 variable "private_link_allowed_account_ids" {

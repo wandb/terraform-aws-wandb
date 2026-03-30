@@ -11,32 +11,33 @@ variable "namespace" {
 
 variable "cidr" {
   type        = string
-  description = "(Optional) CIDR block for VPC."
-  default     = "10.10.0.0/16"
+  description = "(Required) CIDR block for VPC."
 }
 
 variable "private_subnet_cidrs" {
   type        = list(string)
-  description = "(Optional) List of private subnet CIDR ranges to create in VPC."
-  default     = ["10.10.0.0/24", "10.10.1.0/24"]
+  description = "(Required) List of private subnet CIDR ranges to create in VPC."
 }
 
 variable "public_subnet_cidrs" {
   type        = list(string)
-  description = "(Optional) List of public subnet CIDR ranges to create in VPC."
-  default     = ["10.10.10.0/24", "10.10.11.0/24"]
+  description = "(Required) List of public subnet CIDR ranges to create in VPC."
 }
 
 variable "database_subnet_cidrs" {
   type        = list(string)
-  description = "(Optional) List of database subnet CIDR ranges to create in VPC."
-  default     = ["10.10.20.0/24", "10.10.21.0/24"]
+  description = "(Required) List of database subnet CIDR ranges to create in VPC."
 }
 
 variable "elasticache_subnet_cidrs" {
   type        = list(string)
   description = "(Optional) List of redis subnet CIDR ranges to create in VPC."
-  default     = ["10.10.30.0/24", "10.10.31.0/24"]
+  default     = []
+}
+
+variable "pod_subnet_cidrs" {
+  type        = list(string)
+  description = "(Required) List of pod subnet CIDR ranges to create in VPC."
 }
 
 variable "create_elasticache_subnet" {
