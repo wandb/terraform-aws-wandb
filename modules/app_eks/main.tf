@@ -23,56 +23,96 @@ data "aws_subnet" "private" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 17.23"
+  version = "~> 20.37"
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
-  vpc_id  = var.network_id
-  subnets = var.network_private_subnets
+  # handled by wandb TF prior to eks module support in v18+
+  enable_irsa = false
 
-  map_accounts = var.map_accounts
-  map_roles    = var.map_roles
-  map_users    = var.map_users
+  vpc_id     = var.network_id
+  subnet_ids = var.network_private_subnets
 
-  cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
-  cluster_endpoint_private_access      = true
-  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cluster_log_retention_in_days        = 30
-
-  cluster_encryption_config = var.kms_key_arn != "" ? [
+  authentication_mode                      = "API_AND_CONFIG_MAP"
+  enable_cluster_creator_admin_permissions = true
+  access_entries = merge(
     {
-      provider_key_arn = var.kms_key_arn
-      resources        = ["secrets"]
+      for r in var.map_roles : r.username => {
+        principal_arn       = r.rolearn
+        kubernetes_groups   = r.groups
+        policy_associations = {}
+      }
+    },
+    {
+      for u in var.map_users : u.username => {
+        principal_arn       = u.userarn
+        kubernetes_groups   = u.groups
+        policy_associations = {}
+      }
     }
-  ] : null
+  )
 
-  # node_security_group_enable_recommended_rules = false
-  worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
-  node_groups_defaults = {
-    create_launch_template               = local.create_launch_template,
-    disk_encrypted                       = local.encrypt_ebs_volume,
-    disk_kms_key_id                      = var.kms_key_arn,
-    disk_type                            = "gp3"
-    disk_size                            = var.disk_size,
-    enable_monitoring                    = true
-    force_update_version                 = local.encrypt_ebs_volume,
-    iam_role_arn                         = aws_iam_role.node.arn,
-    instance_types                       = var.instance_types,
-    kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-    metadata_http_put_response_hop_limit = 2
-    metadata_http_tokens                 = "required",
-    version                              = var.cluster_version,
+  cluster_enabled_log_types              = ["api", "audit", "controllerManager", "scheduler"]
+  cluster_endpoint_private_access        = true
+  cluster_endpoint_public_access         = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs   = var.cluster_endpoint_public_access_cidrs
+  cloudwatch_log_group_retention_in_days = 30
+
+  create_kms_key = false
+  cluster_encryption_config = {
+    provider_key_arn = var.kms_key_arn
+    resources        = ["secrets"]
   }
 
-  node_groups = {
+  node_security_group_additional_rules = {
+    primary_workers_all = {
+      description              = "Allow traffic from primary_workers security group"
+      protocol                 = "-1"
+      from_port                = 0
+      to_port                  = 0
+      type                     = "ingress"
+      source_security_group_id = aws_security_group.primary_workers.id
+    }
+  }
+
+  eks_managed_node_group_defaults = {
+    create_launch_template = local.create_launch_template
+    create_iam_role        = false
+    iam_role_arn           = aws_iam_role.node.arn
+    instance_types         = var.instance_types
+    enable_monitoring      = true
+    force_update_version   = local.encrypt_ebs_volume
+    cluster_version        = var.cluster_version
+    bootstrap_extra_args   = local.system_reserved != "" ? "--kubelet-extra-args '--system-reserved=${local.system_reserved}'" : ""
+
+    metadata_options = {
+      http_put_response_hop_limit = 2
+      http_tokens                 = "required"
+    }
+
+    block_device_mappings = {
+      xvda = {
+        device_name = "/dev/xvda"
+        ebs = {
+          volume_size = var.disk_size
+          volume_type = "gp3"
+          encrypted   = local.encrypt_ebs_volume
+          kms_key_id  = var.kms_key_arn != "" ? var.kms_key_arn : null
+        }
+      }
+    }
+  }
+
+  eks_managed_node_groups = {
     for idx, subnet in data.aws_subnet.private : "ng-${idx}" => {
-      subnets          = [subnet.id]
-      name_prefix      = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
-      desired_capacity = var.min_nodes
-      max_capacity     = var.max_nodes
-      min_capacity     = var.min_nodes
+      subnet_ids             = [subnet.id]
+      name                   = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
+      use_name_prefix        = true
+      desired_size           = var.min_nodes
+      max_size               = var.max_nodes
+      min_size               = var.min_nodes
+      vpc_security_group_ids = [aws_security_group.primary_workers.id]
     }
   }
 

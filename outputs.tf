@@ -15,6 +15,14 @@ output "cluster_name" {
   value = module.app_eks.cluster_name
 }
 
+output "cluster_endpoint" {
+  value = module.app_eks.cluster_endpoint
+}
+
+output "cluster_certificate_authority_data" {
+  value = module.app_eks.cluster_certificate_authority_data
+}
+
 output "cluster_node_role" {
   value = module.app_eks.node_role
 }
