@@ -1042,19 +1042,21 @@ were rolled fresh (~6 minutes old at first observation, on
 
 ### Stage 3 — EKS 1.33 -> 1.34
 
-Same shape as Stage 2 plan:
+Same shape as Stage 2:
 
 | | |
 | --- | --- |
 | `terraform plan` headline | `1 to add, 8 to change, 1 to destroy`, 1 forced replacement (the `time_sleep.this[0]` again — same reason as Stage 2). |
+| Apply outcome | `Apply complete! Resources: 1 added, 4 changed, 1 destroyed.` |
 | `aws_eks_cluster.this[0]` | in-place version update (`1.33 -> 1.34`); control-plane upgrade completed in **7m9s**. |
-| Both managed node groups | in-place update with AMI rolls to `v1.34.x`-eks compatible. |
-| Add-ons | auto-resolved to 1.34-compatible versions same as Stage 2. |
+| Both managed node groups | in-place update; AMI rolls to `v1.34.7-eks-40737a8`. ng-0 in 5m38s, ng-1 in 7m39s (parallel). |
+| Add-ons | auto-resolved to 1.34-compatible versions; kube-proxy refreshed in 14s. |
+| Total apply duration | ~15 minutes (cluster sequential, then node groups parallel, then add-on). |
 
-No surgical workarounds. Apply still in flight at time of writing — node
-groups rolling — so the total elapsed-time number for Stage 3 is omitted
-here pending the run completing; expectation is parity with Stage 2 (~13
-minutes).
+No surgical workarounds. `terraform plan` after the apply: `No changes`.
+HTTPS endpoint returned 200 throughout. Cluster `roleArn` unchanged from
+Stage 1, confirming three sequential applies preserved cluster identity
+end-to-end.
 
 ### Stage 4 — retire the aws-auth ConfigMap
 
@@ -1072,12 +1074,17 @@ auth path. The runbook step 10 covers the procedure.
 
 ### Cumulative AWS impact (stages 1–3 verified)
 
-Across stages 1, 2, and 3, the cluster ID, role ARN, OIDC issuer URL,
-KMS key, networking (VPC, subnets, NAT, route tables), database (RDS),
-cache (ElastiCache), object store (S3), Route53 zone, and ACM
-certificate all remained unchanged. The data plane experienced one
-rolling node-group refresh per EKS minor bump (so two refreshes total
-across stages 2 and 3); no workload outage was observed during the test.
+Across stages 1, 2, and 3, the cluster ID, **role ARN
+(`<account>:role/<namespace><random-suffix>` — the literal v17-era
+ARN, preserved end-to-end)**, OIDC issuer URL, KMS key, networking
+(VPC, subnets, NAT, route tables), database (RDS), cache (ElastiCache),
+object store (S3), Route53 zone, and ACM certificate all remained
+unchanged. The data plane experienced one rolling node-group refresh
+per EKS minor bump (so two refreshes total across stages 2 and 3) plus
+one launch-template-driven refresh during stage 1; no workload outage
+was observed during the test. Cluster Kubernetes version moved
+1.32 → 1.33 → 1.34, with the original cluster's `aws_eks_cluster.this[0]`
+state entry preserved across all three applies.
 
 ## Verification checklist
 
