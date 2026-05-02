@@ -22,14 +22,32 @@ data "aws_subnet" "private" {
 }
 
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.37"
+  # Vendored fork of terraform-aws-modules/eks/aws ~> 20.37, patched to add
+  # a `name_prefix_separator` variable on the eks-managed-node-group submodule
+  # so v17 -> v20 in-place upgrades can preserve the existing v17-era
+  # node_group_name_prefix / launch_template name_prefix (which had no trailing
+  # separator). See docs/upgrade-eks-20.md and vendored/terraform-aws-eks-v20/.
+  source = "../../vendored/terraform-aws-eks-v20"
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
   # handled by wandb TF prior to eks module support in v18+
   enable_irsa = false
+
+  # v17 -> v20 in-place upgrade compatibility:
+  # v17 created the cluster IAM role and SG with name_prefix = var.cluster_name
+  # (no separator). v20 default would produce "${cluster_name}-cluster-",
+  # which TF sees as a different resource and forces destroy/recreate of the
+  # role -> changes role_arn -> forces cluster replacement. Overriding the
+  # name and dropping the prefix separator keeps the same name_prefix in state
+  # so TF treats the existing AWS resources as still-managed.
+  iam_role_name                          = var.namespace
+  iam_role_use_name_prefix               = true
+  cluster_security_group_name            = var.namespace
+  cluster_security_group_use_name_prefix = true
+  cluster_security_group_description     = "EKS cluster security group." # v17 trailing period; SG description is immutable in AWS
+  prefix_separator                       = ""
 
   vpc_id     = var.network_id
   subnet_ids = var.network_private_subnets
@@ -60,10 +78,16 @@ module "eks" {
   cloudwatch_log_group_retention_in_days = 30
 
   create_kms_key = false
-  cluster_encryption_config = {
+  # Type-unifier-safe conditional: object vs {} can't share a ternary directly
+  # ("Inconsistent conditional result types"). Round-tripping through JSON makes
+  # both branches `string` at the ternary and `any` at the module input, while
+  # preserving the runtime shape v20 gates on via
+  # enable_cluster_encryption_config = length(var.cluster_encryption_config) > 0
+  # (length 2 with KMS, length 0 without). See docs/upgrade-eks-20.md.
+  cluster_encryption_config = jsondecode(var.kms_key_arn != "" ? jsonencode({
     provider_key_arn = var.kms_key_arn
     resources        = ["secrets"]
-  }
+  }) : "{}")
 
   node_security_group_additional_rules = {
     primary_workers_all = {
@@ -85,6 +109,11 @@ module "eks" {
     force_update_version   = local.encrypt_ebs_volume
     cluster_version        = var.cluster_version
     bootstrap_extra_args   = local.system_reserved != "" ? "--kubelet-extra-args '--system-reserved=${local.system_reserved}'" : ""
+
+    # v17 -> v20 in-place upgrade: v17's launch_template / node_group used
+    # name_prefix = "<namespace>-<az>" (no trailing separator). v20 stock hardcodes
+    # "${name}-". Vendored submodule exposes `name_prefix_separator` for this; "".
+    name_prefix_separator = ""
 
     metadata_options = {
       http_put_response_hop_limit = 2
@@ -109,6 +138,10 @@ module "eks" {
       subnet_ids             = [subnet.id]
       name                   = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
       use_name_prefix        = true
+      # Parent module defaults launch_template_name to each.key ("ng-0") if
+      # unset; explicitly pin it to match var.name so the v17 launch_template
+      # name_prefix ("<namespace>-<az>") is preserved on upgrade.
+      launch_template_name   = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
       desired_size           = var.min_nodes
       max_size               = var.max_nodes
       min_size               = var.min_nodes

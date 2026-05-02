@@ -96,9 +96,14 @@ variable "lb_security_group_inbound_id" {
 }
 
 variable "map_accounts" {
-  description = "Additional AWS account numbers to add to the aws-auth configmap. See examples/basic/variables.tf for example format."
+  description = "REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/upgrade-eks-20.md for migration paths. The variable is retained as a tripwire and will be removed in a future release."
   type        = list(string)
   default     = []
+
+  validation {
+    condition     = length(var.map_accounts) == 0
+    error_message = "map_accounts is no longer supported. Enumerate the specific roles or users into map_roles / map_users (which now flow into access_entries), or — if you truly need account-wide trust — manage the aws-auth ConfigMap directly with a kubernetes_config_map_v1_data resource. See docs/upgrade-eks-20.md (Dropped variables) for details."
+  }
 }
 
 variable "map_roles" {
@@ -253,4 +258,10 @@ variable "cluster_autoscaler_image_tag" {
   type        = string
   description = "The tag of the cluster-autoscaler to deploy."
   default     = null
+}
+
+variable "preserve_aws_auth_configmap" {
+  description = "v17 -> v20 in-place upgrade transition flag. When true, the kube-system/aws-auth ConfigMap that the v17 community eks module managed is adopted into wandb-side state via a moved block (rather than destroyed by the v20 apply). Pair with authentication_mode = \"API_AND_CONFIG_MAP\" so both auth tables coexist during the cutover. Set back to the default (false) once access entries are confirmed working; that next apply will cleanly destroy the now-redundant ConfigMap. Fresh v20 installs should leave this at false."
+  type        = bool
+  default     = false
 }

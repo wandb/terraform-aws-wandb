@@ -152,6 +152,8 @@ module "app_eks" {
   k8s_namespace = var.k8s_namespace
   kms_key_arn   = local.default_kms_key
 
+  preserve_aws_auth_configmap = var.preserve_aws_auth_configmap
+
   instance_types = local.kubernetes_instance_types
   disk_size      = local.kubernetes_node_disk_size_gb
   min_nodes      = local.kubernetes_min_nodes_per_az
