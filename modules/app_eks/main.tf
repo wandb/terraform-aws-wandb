@@ -28,6 +28,13 @@ module "eks" {
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
+  # Pinned for v18+/v20 upgrade parity. The wandb-side
+  # aws_iam_openid_connect_provider.eks (below) is the sole manager of the
+  # cluster's OIDC URL; v20 flipped this default to true, which causes a 409
+  # EntityAlreadyExists when both layers race to create the same OIDC
+  # provider. No-op under v17 where the default is already false.
+  enable_irsa = false
+
   vpc_id  = var.network_id
   subnets = var.network_private_subnets
 

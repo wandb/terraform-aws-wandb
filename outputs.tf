@@ -15,6 +15,17 @@ output "cluster_name" {
   value = module.app_eks.cluster_name
 }
 
+# Surfaced so callers can configure kubernetes/helm providers directly from
+# module outputs instead of `data "aws_eks_cluster"`. See
+# modules/app_eks/outputs.tf for the v18+/v20 upgrade rationale.
+output "cluster_endpoint" {
+  value = module.app_eks.cluster_endpoint
+}
+
+output "cluster_certificate_authority_data" {
+  value = module.app_eks.cluster_certificate_authority_data
+}
+
 output "cluster_node_role" {
   value = module.app_eks.node_role
 }
