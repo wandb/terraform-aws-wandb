@@ -971,7 +971,13 @@ install (`namespace = j7m4-0430a`, AWS account `770934259321`, region
 `us-east-2`) running `terraform-aws-modules/eks/aws ~> 17.23` on EKS 1.32.
 The apply sequence covered all four stages (module v17 -> v20 with EKS
 unchanged at 1.32; EKS 1.32 -> 1.33; EKS 1.33 -> 1.34; aws-auth retirement)
-in three apply windows.
+in four apply windows.
+
+For a per-resource breakdown of what was added/changed/destroyed at each
+stage and a full customer-facing impact assessment, see the companion
+[`upgrade-eks-20-test-report.md`](./upgrade-eks-20-test-report.md). The
+summary below captures the headline plan numbers and the specific
+behaviors the runbook depends on.
 
 ### Stage 1 — module v17 -> v20, EKS 1.32 unchanged
 
@@ -1061,30 +1067,35 @@ end-to-end.
 ### Stage 4 — retire the aws-auth ConfigMap
 
 Procedure: flip `var.preserve_aws_auth_configmap` from `true` back to its
-default `false`, re-render, and run one more `terraform apply`. TF
-destroys `kubernetes_config_map.aws_auth_legacy[0]` through the
-kubernetes provider on its own schedule, decoupled from any high-risk
-migration apply. The cluster continues to authenticate kubelet token
-refreshes via the AWS-auto-created access entries (`<namespace>-node`,
-the SSO admin role, and `AWSServiceRoleForAmazonEKS`).
+default `false`, re-render, and run one more `terraform apply`.
 
-Stage 4 has not been exercised in this validation run — left as the
-final cleanup once the operator is satisfied with the access-entries
-auth path. The runbook step 10 covers the procedure.
+| | |
+| --- | --- |
+| `terraform plan` headline | `0 to add, 0 to change, 1 to destroy` (only `kubernetes_config_map.aws_auth_legacy[0]`). |
+| Apply outcome | `Apply complete! Resources: 0 added, 0 changed, 1 destroyed.` |
+| Soak window before this stage | ~24 hours since stage 3 completed (well past one kubelet credential rotation cycle, so any auth-path issues would have surfaced first). |
+| `kubectl -n kube-system get configmap aws-auth` after apply | `Error from server (NotFound)` ✓ |
+| Surviving access entries | SSO admin role (TF-managed via `cluster_creator`), `AWSServiceRoleForAmazonEKS` (auto-created by AWS, untouched by TF), and the wandb-side node role `<namespace>-node` (auto-created by AWS when authentication_mode flipped, untouched by TF). |
+| Data-plane impact | None observed. Both nodes remained `Ready` throughout (their `AGE` reported 23h post-stage-4, confirming no rolling). HTTPS endpoint returned 200 throughout. |
+| `terraform plan` after apply | `No changes`. |
 
-### Cumulative AWS impact (stages 1–3 verified)
+No surgical workarounds. The configured access-entries path was the sole
+auth method afterward.
 
-Across stages 1, 2, and 3, the cluster ID, **role ARN
+### Cumulative AWS impact (all four stages verified)
+
+Across stages 1, 2, 3, and 4, the cluster ID, **role ARN
 (`<account>:role/<namespace><random-suffix>` — the literal v17-era
 ARN, preserved end-to-end)**, OIDC issuer URL, KMS key, networking
 (VPC, subnets, NAT, route tables), database (RDS), cache (ElastiCache),
 object store (S3), Route53 zone, and ACM certificate all remained
 unchanged. The data plane experienced one rolling node-group refresh
-per EKS minor bump (so two refreshes total across stages 2 and 3) plus
-one launch-template-driven refresh during stage 1; no workload outage
-was observed during the test. Cluster Kubernetes version moved
-1.32 → 1.33 → 1.34, with the original cluster's `aws_eks_cluster.this[0]`
-state entry preserved across all three applies.
+per EKS minor bump (two total across stages 2 and 3) plus one
+launch-template-driven refresh during stage 1; stage 4 caused no node
+rolling. No workload outage was observed during the test. Cluster
+Kubernetes version moved `1.32 → 1.33 → 1.34`, with the original
+cluster's `aws_eks_cluster.this[0]` state entry preserved across all
+four applies.
 
 ## Verification checklist
 
