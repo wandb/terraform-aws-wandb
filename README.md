@@ -298,6 +298,45 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 See our upgrade guide [here](./docs/operator-migration/readme.md)
 
+### Upgrading the EKS community module from v17 -> v20
+
+The `terraform-aws-modules/eks/aws` pin moves from `~> 17.23` to `~> 20.37`
+on this branch. v18 (and again v20) reorganized inputs, outputs, and
+internal resource addresses, so a plain `terraform apply` against an
+existing v17-managed cluster wants to destroy and recreate the EKS cluster,
+node groups, IAM roles, and KMS key. To make this an in-place upgrade
+instead — preserving the cluster, its OIDC issuer, and the data plane —
+this branch carries:
+
+- A vendored copy of the v20 community module at
+  [`vendored/terraform-aws-eks-v20/`](./vendored/terraform-aws-eks-v20/)
+  with three additive patches that expose a `name_prefix_separator`
+  variable on the `eks-managed-node-group` submodule. Required because
+  v17 used `name_prefix = "<namespace>-<az>"` (no trailing separator) and
+  stock v20 hardcodes `"${name}-"`. See
+  [`vendored/terraform-aws-eks-v20/README.wandb-fork.md`](./vendored/terraform-aws-eks-v20/README.wandb-fork.md).
+- Five name-preservation inputs on the `module "eks"` invocation in
+  [`modules/app_eks/main.tf`](./modules/app_eks/main.tf) — `iam_role_name`,
+  `iam_role_use_name_prefix`, `cluster_security_group_name`,
+  `cluster_security_group_use_name_prefix`,
+  `cluster_security_group_description`, plus `prefix_separator = ""` —
+  to match v17-era resource names.
+- Twelve `moved {}` blocks in
+  [`modules/app_eks/moved.tf`](./modules/app_eks/moved.tf) and
+  [`modules/app_eks/aws_auth_legacy.tf`](./modules/app_eks/aws_auth_legacy.tf)
+  for the v17 -> v20 address renames.
+- A `var.preserve_aws_auth_configmap` flag that adopts the v17-era
+  `kube-system/aws-auth` ConfigMap into wandb-side state for the
+  authentication-mode cutover, then cleanly destroys it on a follow-up
+  apply once access entries are verified.
+
+The full procedural runbook (with plan diffs to expect, surgical
+workarounds, and rollback) is in
+[`docs/upgrade-eks-20.md`](./docs/upgrade-eks-20.md). It explicitly
+sequences the module bump separately from any EKS Kubernetes-version
+bumps — the module change is its own apply, then 1.32 -> 1.33 -> 1.34 (or
+similar) are subsequent applies.
+
 ### Upgrading from 4.x -> 5.x
 
 5.0.0 introduced autoscaling to the EKS cluster and made the `size` variable the preferred way to set the cluster size.

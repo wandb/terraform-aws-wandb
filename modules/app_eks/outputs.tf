@@ -1,9 +1,9 @@
 output "autoscaling_group_names" {
-  value = { for name, value in module.eks.node_groups : name => lookup(lookup(lookup(value, "resources")[0], "autoscaling_groups")[0], "name") }
+  value = module.eks.eks_managed_node_groups_autoscaling_group_names
 }
 output "cluster_name" {
-  value       = module.eks.cluster_id
-  description = "ID of the created EKS cluster"
+  value       = module.eks.cluster_name
+  description = "Name of the created EKS cluster"
 }
 
 # Re-exported for v18+/v20 upgrade parity. Under v20 `module.eks.cluster_name`
