@@ -113,6 +113,12 @@ variable "public_access" {
   description = "Is this instance accessable a public domain."
 }
 
+variable "preserve_aws_auth_configmap" {
+  type        = bool
+  default     = false
+  description = "v17 -> v20 in-place upgrade transition flag. See modules/app_eks/aws_auth_legacy.tf and docs/upgrade-eks-20.md."
+}
+
 variable "external_dns" {
   type        = bool
   default     = false
@@ -345,9 +351,14 @@ variable "kubernetes_public_access_cidrs" {
 }
 
 variable "kubernetes_map_accounts" {
-  description = "Additional AWS account numbers to add to the aws-auth configmap."
+  description = "REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/upgrade-eks-20.md for migration paths. The variable is retained as a tripwire and will be removed in a future release."
   type        = list(string)
   default     = []
+
+  validation {
+    condition     = length(var.kubernetes_map_accounts) == 0
+    error_message = "kubernetes_map_accounts is no longer supported. Enumerate the specific roles or users into kubernetes_map_roles / kubernetes_map_users (which now flow into access_entries), or — if you truly need account-wide trust — manage the aws-auth ConfigMap directly with a kubernetes_config_map_v1_data resource. See docs/upgrade-eks-20.md (Dropped variables) for details."
+  }
 }
 
 variable "kubernetes_map_roles" {

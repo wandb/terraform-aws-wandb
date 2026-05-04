@@ -298,6 +298,42 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 
 See our upgrade guide [here](./docs/operator-migration/readme.md)
 
+### Upgrading the EKS community module from v17 -> v20
+
+The `terraform-aws-modules/eks/aws` pin moves from `~> 17.23` to `~> 20.37`
+on this branch. v18 (and again v20) reorganized inputs, outputs, and
+internal resource addresses, so a plain `terraform apply` against an
+existing v17-managed cluster wants to destroy and recreate the EKS cluster,
+node groups, IAM roles, and KMS key. To make this an in-place upgrade
+instead — preserving the cluster control plane, its OIDC issuer, IAM
+roles, security groups, and KMS key — this branch carries:
+
+- Five name-preservation inputs on the `module "eks"` invocation in
+  [`modules/app_eks/main.tf`](./modules/app_eks/main.tf) — `iam_role_name`,
+  `iam_role_use_name_prefix`, `cluster_security_group_name`,
+  `cluster_security_group_use_name_prefix`,
+  `cluster_security_group_description`, plus `prefix_separator = ""` —
+  to match v17-era resource names.
+- Twelve `moved {}` blocks in
+  [`modules/app_eks/moved.tf`](./modules/app_eks/moved.tf) and
+  [`modules/app_eks/aws_auth_legacy.tf`](./modules/app_eks/aws_auth_legacy.tf)
+  for the v17 -> v20 address renames.
+- A `var.preserve_aws_auth_configmap` flag, when `true`, adopts the v17-era
+  `kube-system/aws-auth` ConfigMap into wandb-side state for the
+  authentication-mode cutover, then cleanly destroys it on a follow-up
+  apply when set to `false`.
+
+**Notes** The per-AZ `aws_launch_template` and
+`aws_eks_node_group` resources *are* replaced on the upgrade apply due to forced 
+naming changes in v20. Since v20 module sets
+`lifecycle.create_before_destroy = true` on both resources, the
+replacement is a graceful rollover.
+
+Recommended upgrades: 
+* upgrade v17 -> v20 on the current K8S version with `var.preserve_aws_auth_configmap` set to `true`
+* rerun the v20 apply with `var.preserve_aws_auth_configmap` set to `false` after about 1 hour
+* proceed individual EKS upgrades: 1.32 -> 1.33 -> etc one at a time
+
 ### Upgrading from 4.x -> 5.x
 
 5.0.0 introduced autoscaling to the EKS cluster and made the `size` variable the preferred way to set the cluster size.
