@@ -129,14 +129,25 @@ resources that lack official modules.
 
 ### A note on updating EKS cluster version
 
-Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.25` - you'd need to:
+Users can update the EKS cluster version to the latest version offered by AWS using the input variable `eks_cluster_version`. Cluster and nodegroup version updates can only be done in increments of one minor version at a time, so multi-version upgrades must be executed step-wise.
 
-1. update the cluster version in the app_eks module from `1.21` to `1.22`
-2. run `terraform apply`
-3. update the cluster version to `1.23`
-4. run `terraform apply`
-5. update the cluster version to `1.24`
-   ...and so on and so forth.
+#### Recommended pattern: upgrade addons first, then the cluster
+
+Each minor version bump should be a two-apply sequence so that addon and control-plane changes are isolated:
+
+1. **Pre-stage addons for the target version.** Set `eks_addons_upgrade_cluster_version` to the *next* minor version while leaving `eks_cluster_version` at the *current* version. `terraform apply`. The cluster stays put; the addon defaults are looked up from the target row of [`modules/app_eks/eks-addon-compatibility-matrix.md`](modules/app_eks/eks-addon-compatibility-matrix.md) and rolled out.
+2. **Bump the cluster.** Set `eks_cluster_version` to the same target version and unset `eks_addons_upgrade_cluster_version`. `terraform apply`. The control plane and node group move up; addons are already on a compatible version.
+
+Repeat for each subsequent minor version. For example, going from `1.30` → `1.32`:
+
+| Step | `eks_cluster_version` | `eks_addons_upgrade_cluster_version` | Effect |
+| :--- | :--- | :--- | :--- |
+| 1 | `1.30` | `1.31` | Addons move to 1.31 defaults, cluster stays on 1.30 |
+| 2 | `1.31` | `null` | Cluster moves to 1.31, addons unchanged |
+| 3 | `1.31` | `1.32` | Addons move to 1.32 defaults, cluster stays on 1.31 |
+| 4 | `1.32` | `null` | Cluster moves to 1.32, addons unchanged |
+
+You can still pin individual addon versions explicitly via the per-addon `eks_addon_*_version` overrides; those win over both `eks_cluster_version` and `eks_addons_upgrade_cluster_version` lookups.
 
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 

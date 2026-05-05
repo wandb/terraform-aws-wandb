@@ -47,6 +47,12 @@ variable "cluster_version" {
   type        = string
 }
 
+variable "addons_upgrade_cluster_version" {
+  description = "Optional Kubernetes version used to look up default addon versions instead of var.cluster_version. Useful for staging addon updates before/after a cluster upgrade. When null, var.cluster_version is used."
+  type        = string
+  default     = null
+}
+
 variable "cluster_tags" {
   description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
   type        = map(string)
@@ -190,33 +196,39 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 variable "eks_addon_efs_csi_driver_version" {
-  description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the EFS CSI driver version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the EBS CSI driver version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "eks_addon_coredns_version" {
-  description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the CoreDNS addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the kube-proxy addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the VPC CNI addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "eks_addon_metrics_server_version" {
-  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  description = "Override for the metrics-server addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
   type        = string
+  default     = null
 }
 
 variable "external_dns_image_repository" {
