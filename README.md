@@ -151,6 +151,16 @@ You can still pin individual addon versions explicitly via the per-addon `eks_ad
 
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 
+#### VPC CNI version bump for EKS 1.30
+
+The default vpc-cni add-on for EKS "1.30" has been updated from `v1.18.3-eksbuild.3` to `v1.18.5-eksbuild.1` (see `modules/app_eks/add-ons.tf`).
+
+Operators using EKS 1.30 without an explicit `eks_addon_vpc_cni_version` override will see this addon version roll forward on the next `terraform apply`. To preserve the previous version, set:
+
+```hcl
+eks_addon_vpc_cni_version = "v1.18.3-eksbuild.3"
+```
+
 <!-- BEGIN_TF_DOCS -->
 
 ## Requirements

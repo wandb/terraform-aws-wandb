@@ -9,6 +9,9 @@
 locals {
   eks_addon_lookup_version = coalesce(var.addons_upgrade_cluster_version, var.cluster_version)
 
+  # Normalize to major.minor format by stripping patch versions like ".0"
+  eks_addon_lookup_normalized = regex("^\\d+\\.\\d+", local.eks_addon_lookup_version)
+
   eks_addon_default_versions = {
     "1.29" = {
       vpc_cni            = "v1.18.5-eksbuild.1"
@@ -69,12 +72,26 @@ locals {
   }
 
   eks_addon_versions = {
-    vpc_cni            = coalesce(var.eks_addon_vpc_cni_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["vpc_cni"])
-    coredns            = coalesce(var.eks_addon_coredns_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["coredns"])
-    kube_proxy         = coalesce(var.eks_addon_kube_proxy_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["kube_proxy"])
-    aws_ebs_csi_driver = coalesce(var.eks_addon_ebs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["aws_ebs_csi_driver"])
-    aws_efs_csi_driver = coalesce(var.eks_addon_efs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["aws_efs_csi_driver"])
-    metrics_server     = coalesce(var.eks_addon_metrics_server_version, local.eks_addon_default_versions[local.eks_addon_lookup_version]["metrics_server"])
+    vpc_cni            = coalesce(var.eks_addon_vpc_cni_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["vpc_cni"])
+    coredns            = coalesce(var.eks_addon_coredns_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["coredns"])
+    kube_proxy         = coalesce(var.eks_addon_kube_proxy_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["kube_proxy"])
+    aws_ebs_csi_driver = coalesce(var.eks_addon_ebs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_ebs_csi_driver"])
+    aws_efs_csi_driver = coalesce(var.eks_addon_efs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_efs_csi_driver"])
+    metrics_server     = coalesce(var.eks_addon_metrics_server_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["metrics_server"])
+  }
+}
+
+# Validation: Ensure eks_addon_lookup_normalized exists in eks_addon_default_versions
+check "eks_addon_version_key_validation" {
+  assert {
+    condition     = contains(keys(local.eks_addon_default_versions), local.eks_addon_lookup_normalized)
+    error_message = <<-EOM
+      Invalid EKS cluster version for addon lookup: "${local.eks_addon_lookup_version}" (normalized: "${local.eks_addon_lookup_normalized}").
+
+      Supported versions in eks_addon_default_versions: ${join(", ", keys(local.eks_addon_default_versions))}
+
+      Please set var.cluster_version (or var.addons_upgrade_cluster_version) to a supported major.minor version.
+    EOM
   }
 }
 
