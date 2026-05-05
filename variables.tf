@@ -318,6 +318,18 @@ variable "eks_addons_upgrade_cluster_version" {
   description = "Optional Kubernetes version used to look up default addon versions instead of var.eks_cluster_version. This is only useful for performing addon updates before a cluster upgrade."
   type        = string
   default     = null
+
+  # Compare as (major * 1000 + minor) so e.g. "1.10" > "1.9". Skip when null.
+  validation {
+    condition = var.eks_addons_upgrade_cluster_version == null || (
+      tonumber(split(".", coalesce(var.eks_addons_upgrade_cluster_version, "0.0"))[0]) * 1000
+      + tonumber(split(".", coalesce(var.eks_addons_upgrade_cluster_version, "0.0"))[1])
+      >=
+      tonumber(split(".", var.eks_cluster_version)[0]) * 1000
+      + tonumber(split(".", var.eks_cluster_version)[1])
+    )
+    error_message = "eks_addons_upgrade_cluster_version must be >= eks_cluster_version (cannot stage addons for an older Kubernetes version)."
+  }
 }
 
 variable "eks_cluster_tags" {
