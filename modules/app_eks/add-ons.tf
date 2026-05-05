@@ -1,11 +1,12 @@
-### Per-K8s-version default addon versions, sourced from the **def** row of
-### eks-addon-compatibility-matrix.md. The matrix omits the `-eksbuild.N`
-### suffix; we append `-eksbuild.1` (the most common build). To pin a different
-### eksbuild, set the corresponding var.eks_addon_*_version override.
+### Per-K8s-version default addon versions. Each row in
+### local.eks_addon_default_versions reflects the AWS-installed default for
+### that minor K8s version. Values use the `-eksbuild.1` suffix (most common);
+### to pin a different eksbuild, set the corresponding var.eks_addon_*_version
+### override.
 ###
-### The K8s version used for lookup is var.addons_upgrade_cluster_version when
-### set, otherwise var.cluster_version. This lets addon defaults be staged
-### ahead of or behind a cluster upgrade.
+### The K8s version used for the lookup is var.addons_upgrade_cluster_version
+### when set, otherwise var.cluster_version. Setting the override lets addon
+### defaults be staged ahead of a cluster upgrade.
 locals {
   # Normalize to "major.minor" so inputs like "1.30" or "1.30.5" both work.
   # Keys of eks_addon_default_versions are major.minor; variable validation
@@ -132,7 +133,7 @@ resource "aws_iam_role" "oidc" {
 }
 
 ### Addon versions are resolved per cluster version via local.eks_addon_versions
-### (see top of file). Each var.eks_addon_*_version overrides the matrix default.
+### (see top of file). Each var.eks_addon_*_version overrides the table default.
 resource "aws_eks_addon" "aws_efs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni

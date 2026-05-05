@@ -229,37 +229,37 @@ variable "aws_loadbalancer_controller_tags" {
 }
 
 variable "eks_addon_efs_csi_driver_version" {
-  description = "Override for the EFS CSI driver version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the EFS CSI driver version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "Override for the EBS CSI driver version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the EBS CSI driver version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
 
 variable "eks_addon_coredns_version" {
-  description = "Override for the CoreDNS addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the CoreDNS addon version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "Override for the kube-proxy addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the kube-proxy addon version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "Override for the VPC CNI addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the VPC CNI addon version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
 
 variable "eks_addon_metrics_server_version" {
-  description = "Override for the metrics-server addon version. When null, the version is selected by var.cluster_version from the compatibility matrix in eks-addon-compatibility-matrix.md."
+  description = "Override for the metrics-server addon version. When null, the version is looked up in local.eks_addon_default_versions (in add-ons.tf) using var.cluster_version, or var.addons_upgrade_cluster_version when that override is set."
   type        = string
   default     = null
 }
