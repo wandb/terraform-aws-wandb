@@ -7,7 +7,13 @@
 ### set, otherwise var.cluster_version. This lets addon defaults be staged
 ### ahead of or behind a cluster upgrade.
 locals {
-  eks_addon_lookup_version = coalesce(var.addons_upgrade_cluster_version, var.cluster_version)
+  # Normalize to "major.minor" so inputs like "1.30" or "1.30.5" both work.
+  # Keys of eks_addon_default_versions are major.minor; variable validation
+  # (see variables.tf) ensures the normalized value exists in the map.
+  eks_addon_lookup_version = format("%s.%s",
+    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[0],
+    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[1]
+  )
 
   # Normalize to major.minor format by stripping patch versions like ".0"
   eks_addon_lookup_normalized = regex("^\\d+\\.\\d+", local.eks_addon_lookup_version)
@@ -21,6 +27,7 @@ locals {
       aws_efs_csi_driver = "v2.0.3-eksbuild.1"
       metrics_server     = "v0.7.2-eksbuild.1"
     }
+    # 1.30 defaults match the `var.eks_addon_*_version` defaults prior to this cluster-addons version lookup map
     "1.30" = {
       vpc_cni            = "v1.18.5-eksbuild.1"
       coredns            = "v1.11.3-eksbuild.1"

@@ -45,12 +45,45 @@ variable "cluster_version" {
   description = "Indicates AWS EKS cluster version"
   nullable    = false
   type        = string
+
+  validation {
+    condition = can(regex("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", var.cluster_version)) && contains(
+      keys(local.eks_addon_default_versions),
+      format("%s.%s", split(".", var.cluster_version)[0], split(".", var.cluster_version)[1])
+    )
+    error_message = "cluster_version must be a supported EKS Kubernetes version (major.minor or major.minor.patch). Supported: ${join(", ", sort(keys(local.eks_addon_default_versions)))}. Got: '${var.cluster_version}'."
+  }
 }
 
 variable "addons_upgrade_cluster_version" {
   description = "Optional Kubernetes version used to look up default addon versions instead of var.cluster_version. Useful for staging addon updates before/after a cluster upgrade. When null, var.cluster_version is used."
   type        = string
   default     = null
+
+  validation {
+    condition = var.addons_upgrade_cluster_version == null || (
+      can(regex("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", coalesce(var.addons_upgrade_cluster_version, "0.0"))) && contains(
+        keys(local.eks_addon_default_versions),
+        format("%s.%s",
+          split(".", coalesce(var.addons_upgrade_cluster_version, "0.0"))[0],
+          split(".", coalesce(var.addons_upgrade_cluster_version, "0.0"))[1]
+        )
+      )
+    )
+    error_message = "addons_upgrade_cluster_version must be null or a supported EKS Kubernetes version. Supported: ${join(", ", sort(keys(local.eks_addon_default_versions)))}. Got: '${var.addons_upgrade_cluster_version}'."
+  }
+
+  # Compare as (major * 1000 + minor) so e.g. "1.10" > "1.9". Skip when null.
+  validation {
+    condition = var.addons_upgrade_cluster_version == null || (
+      tonumber(split(".", coalesce(var.addons_upgrade_cluster_version, "0.0"))[0]) * 1000
+      + tonumber(split(".", coalesce(var.addons_upgrade_cluster_version, "0.0"))[1])
+      >=
+      tonumber(split(".", var.cluster_version)[0]) * 1000
+      + tonumber(split(".", var.cluster_version)[1])
+    )
+    error_message = "addons_upgrade_cluster_version must be >= cluster_version (cannot stage addons for an older Kubernetes version)."
+  }
 }
 
 variable "cluster_tags" {
