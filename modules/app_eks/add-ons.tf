@@ -1,3 +1,108 @@
+### Per-K8s-version default addon versions. Each row in
+### local.eks_addon_default_versions reflects the AWS-installed default for
+### that minor K8s version. Values use the `-eksbuild.1` suffix (most common);
+### to pin a different eksbuild, set the corresponding var.eks_addon_*_version
+### override.
+###
+### The K8s version used for the lookup is var.addons_upgrade_cluster_version
+### when set, otherwise var.cluster_version. Setting the override lets addon
+### defaults be staged ahead of a cluster upgrade.
+locals {
+  # Normalize to "major.minor" so inputs like "1.30" or "1.30.5" both work.
+  # Keys of eks_addon_default_versions are major.minor; variable validation
+  # (see variables.tf) ensures the normalized value exists in the map.
+  eks_addon_lookup_version = format("%s.%s",
+    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[0],
+    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[1]
+  )
+
+  # Normalize to major.minor format by stripping patch versions like ".0"
+  eks_addon_lookup_normalized = regex("^\\d+\\.\\d+", local.eks_addon_lookup_version)
+
+  eks_addon_default_versions = {
+    "1.29" = {
+      vpc_cni            = "v1.18.5-eksbuild.1"
+      coredns            = "v1.11.1-eksbuild.1"
+      kube_proxy         = "v1.29.0-eksbuild.1"
+      aws_ebs_csi_driver = "v1.28.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.0.3-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    # 1.30 defaults match the `var.eks_addon_*_version` defaults prior to this cluster-addons version lookup map
+    "1.30" = {
+      vpc_cni            = "v1.18.5-eksbuild.1"
+      coredns            = "v1.11.3-eksbuild.1"
+      kube_proxy         = "v1.30.0-eksbuild.1"
+      aws_ebs_csi_driver = "v1.35.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    "1.31" = {
+      vpc_cni            = "v1.19.5-eksbuild.1"
+      coredns            = "v1.11.3-eksbuild.1"
+      kube_proxy         = "v1.31.2-eksbuild.1"
+      aws_ebs_csi_driver = "v1.35.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    "1.32" = {
+      vpc_cni            = "v1.19.5-eksbuild.1"
+      coredns            = "v1.11.3-eksbuild.1"
+      kube_proxy         = "v1.32.3-eksbuild.1"
+      aws_ebs_csi_driver = "v1.42.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    "1.33" = {
+      vpc_cni            = "v1.20.4-eksbuild.1"
+      coredns            = "v1.12.1-eksbuild.1"
+      kube_proxy         = "v1.33.0-eksbuild.1"
+      aws_ebs_csi_driver = "v1.51.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.1.4-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    "1.34" = {
+      vpc_cni            = "v1.21.1-eksbuild.1"
+      coredns            = "v1.12.4-eksbuild.1"
+      kube_proxy         = "v1.34.0-eksbuild.1"
+      aws_ebs_csi_driver = "v1.55.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.1.6-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+    "1.35" = {
+      vpc_cni            = "v1.21.1-eksbuild.1"
+      coredns            = "v1.13.2-eksbuild.1"
+      kube_proxy         = "v1.35.0-eksbuild.1"
+      aws_ebs_csi_driver = "v1.57.0-eksbuild.1"
+      aws_efs_csi_driver = "v2.1.6-eksbuild.1"
+      metrics_server     = "v0.7.2-eksbuild.1"
+    }
+  }
+
+  eks_addon_versions = {
+    vpc_cni            = coalesce(var.eks_addon_vpc_cni_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["vpc_cni"])
+    coredns            = coalesce(var.eks_addon_coredns_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["coredns"])
+    kube_proxy         = coalesce(var.eks_addon_kube_proxy_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["kube_proxy"])
+    aws_ebs_csi_driver = coalesce(var.eks_addon_ebs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_ebs_csi_driver"])
+    aws_efs_csi_driver = coalesce(var.eks_addon_efs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_efs_csi_driver"])
+    metrics_server     = coalesce(var.eks_addon_metrics_server_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["metrics_server"])
+  }
+}
+
+# Validation: Ensure eks_addon_lookup_normalized exists in eks_addon_default_versions
+check "eks_addon_version_key_validation" {
+  assert {
+    condition     = contains(keys(local.eks_addon_default_versions), local.eks_addon_lookup_normalized)
+    error_message = <<-EOM
+      Invalid EKS cluster version for addon lookup: "${local.eks_addon_lookup_version}" (normalized: "${local.eks_addon_lookup_normalized}").
+
+      Supported versions in eks_addon_default_versions: ${join(", ", keys(local.eks_addon_default_versions))}
+
+      Please set var.cluster_version (or var.addons_upgrade_cluster_version) to a supported major.minor version.
+    EOM
+  }
+}
+
 ### IAM policy and role for vpc-cni
 data "aws_iam_policy_document" "oidc_assume_role" {
   statement {
@@ -27,15 +132,17 @@ resource "aws_iam_role" "oidc" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role.json
 }
 
-### add-ons for eks version 1.30
+### Addon versions are resolved per cluster version via local.eks_addon_versions
+### (see top of file). Each var.eks_addon_*_version overrides the table default.
 resource "aws_eks_addon" "aws_efs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
   cluster_name      = var.namespace
   addon_name        = "aws-efs-csi-driver"
-  addon_version     = var.eks_addon_efs_csi_driver_version
-  resolve_conflicts = "OVERWRITE"
+  addon_version     = local.eks_addon_versions["aws_efs_csi_driver"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "aws_ebs_csi_driver" {
@@ -44,8 +151,9 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   ]
   cluster_name      = var.namespace
   addon_name        = "aws-ebs-csi-driver"
-  addon_version     = var.eks_addon_ebs_csi_driver_version
-  resolve_conflicts = "OVERWRITE"
+  addon_version     = local.eks_addon_versions["aws_ebs_csi_driver"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -54,8 +162,9 @@ resource "aws_eks_addon" "coredns" {
   ]
   cluster_name      = var.namespace
   addon_name        = "coredns"
-  addon_version     = var.eks_addon_coredns_version
-  resolve_conflicts = "OVERWRITE"
+  addon_version     = local.eks_addon_versions["coredns"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "kube_proxy" {
@@ -64,8 +173,9 @@ resource "aws_eks_addon" "kube_proxy" {
   ]
   cluster_name      = var.namespace
   addon_name        = "kube-proxy"
-  addon_version     = var.eks_addon_kube_proxy_version
-  resolve_conflicts = "OVERWRITE"
+  addon_version     = local.eks_addon_versions["kube_proxy"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "vpc_cni" {
@@ -74,8 +184,9 @@ resource "aws_eks_addon" "vpc_cni" {
   ]
   cluster_name             = var.namespace
   addon_name               = "vpc-cni"
-  addon_version            = var.eks_addon_vpc_cni_version
-  resolve_conflicts        = "OVERWRITE"
+  addon_version            = local.eks_addon_versions["vpc_cni"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
   service_account_role_arn = aws_iam_role.oidc.arn
 }
 
@@ -85,6 +196,7 @@ resource "aws_eks_addon" "metrics_server" {
   ]
   cluster_name      = var.namespace
   addon_name        = "metrics-server"
-  addon_version     = var.eks_addon_metrics_server_version
-  resolve_conflicts = "OVERWRITE"
+  addon_version     = local.eks_addon_versions["metrics_server"]
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }

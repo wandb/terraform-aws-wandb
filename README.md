@@ -129,14 +129,25 @@ resources that lack official modules.
 
 ### A note on updating EKS cluster version
 
-Users can update the EKS cluster version to the latest version offered by AWS. This can be done using the environment variable `eks_cluster_version`. Note that, cluster and nodegroup version updates can only be done in increments of one version at a time. For example, if your current cluster version is `1.21` and the latest version available is `1.25` - you'd need to:
+Users can update the EKS cluster version to the latest version offered by AWS using the input variable `eks_cluster_version`. Cluster and nodegroup version updates can only be done in increments of one minor version at a time, so multi-version upgrades must be executed step-wise.
 
-1. update the cluster version in the app_eks module from `1.21` to `1.22`
-2. run `terraform apply`
-3. update the cluster version to `1.23`
-4. run `terraform apply`
-5. update the cluster version to `1.24`
-   ...and so on and so forth.
+#### Recommended pattern: upgrade addons first, then the cluster
+
+Each minor version bump should be a two-apply sequence so that addon and control-plane changes are isolated:
+
+1. **Pre-stage addons for the target version.** Set `eks_addons_upgrade_cluster_version` to the *next* minor version while leaving `eks_cluster_version` at the *current* version. `terraform apply`. The cluster stays put; the addon defaults are looked up by the override version from `local.eks_addon_default_versions` in [`modules/app_eks/add-ons.tf`](modules/app_eks/add-ons.tf) and rolled out.
+2. **Bump the cluster.** Set `eks_cluster_version` to the same target version and unset `eks_addons_upgrade_cluster_version`. `terraform apply`. The control plane and node group move up; addons are already on a compatible version.
+
+Repeat for each subsequent minor version. For example, going from `1.30` → `1.32`:
+
+| Step | `eks_cluster_version` | `eks_addons_upgrade_cluster_version` | Effect |
+| :--- | :--- | :--- | :--- |
+| 1 | `1.30` | `1.31` | Addons move to 1.31 defaults, cluster stays on 1.30 |
+| 2 | `1.31` | `null` | Cluster moves to 1.31, addons unchanged |
+| 3 | `1.31` | `1.32` | Addons move to 1.32 defaults, cluster stays on 1.31 |
+| 4 | `1.32` | `null` | Cluster moves to 1.32, addons unchanged |
+
+You can still pin individual addon versions explicitly via the per-addon `eks_addon_*_version` overrides; those win over both `eks_cluster_version` and `eks_addons_upgrade_cluster_version` lookups.
 
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 
@@ -145,21 +156,26 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.95 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | < 3.0.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.23 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.13 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.67.0 |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.13.1 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | ~> 3.0 |
 | <a name="module_app_eks"></a> [app\_eks](#module\_app\_eks) | ./modules/app_eks | n/a |
 | <a name="module_app_lb"></a> [app\_lb](#module\_app\_lb) | ./modules/app_lb | n/a |
@@ -171,12 +187,12 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="module_private_link"></a> [private\_link](#module\_private\_link) | ./modules/private_link | n/a |
 | <a name="module_redis"></a> [redis](#module\_redis) | ./modules/redis | n/a |
 | <a name="module_s3_endpoint"></a> [s3\_endpoint](#module\_s3\_endpoint) | ./modules/endpoint | n/a |
-| <a name="module_wandb"></a> [wandb](#module\_wandb) | wandb/wandb/helm | 1.2.0 |
+| <a name="module_wandb"></a> [wandb](#module\_wandb) | wandb/wandb/helm | 3.0.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_s3_bucket.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_sqs_queue.file_storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/sqs_queue) | data source |
@@ -184,26 +200,28 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_acm_certificate_arn"></a> [acm\_certificate\_arn](#input\_acm\_certificate\_arn) | The ARN of an existing ACM certificate. | `string` | `null` | no |
 | <a name="input_allowed_inbound_cidr"></a> [allowed\_inbound\_cidr](#input\_allowed\_inbound\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
 | <a name="input_allowed_inbound_ipv6_cidr"></a> [allowed\_inbound\_ipv6\_cidr](#input\_allowed\_inbound\_ipv6\_cidr) | CIDRs allowed to access wandb-server. | `list(string)` | n/a | yes |
 | <a name="input_allowed_private_endpoint_cidr"></a> [allowed\_private\_endpoint\_cidr](#input\_allowed\_private\_endpoint\_cidr) | Private CIDRs allowed to access wandb-server. | `list(string)` | `[]` | no |
-| <a name="input_app_wandb_env"></a> [app\_wandb\_env](#input\_app\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
+| <a name="input_aws_loadbalancer_controller_image_repository"></a> [aws\_loadbalancer\_controller\_image\_repository](#input\_aws\_loadbalancer\_controller\_image\_repository) | The image repository of the aws-loadbalancer-controller to deploy. | `string` | `"public.ecr.aws/eks/aws-load-balancer-controller"` | no |
+| <a name="input_aws_loadbalancer_controller_image_tag"></a> [aws\_loadbalancer\_controller\_image\_tag](#input\_aws\_loadbalancer\_controller\_image\_tag) | The tag of the aws-loadbalancer-controller to deploy. | `string` | `null` | no |
 | <a name="input_aws_loadbalancer_controller_tags"></a> [aws\_loadbalancer\_controller\_tags](#input\_aws\_loadbalancer\_controller\_tags) | (Optional) A map of AWS tags to apply to all resources managed by the load balancer controller | `map(string)` | `{}` | no |
 | <a name="input_bucket_kms_key_arn"></a> [bucket\_kms\_key\_arn](#input\_bucket\_kms\_key\_arn) | n/a | `string` | `""` | no |
-| <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `""` | no |
+| <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `string` | `""` | no |
 | <a name="input_bucket_path"></a> [bucket\_path](#input\_bucket\_path) | path of where to store data for the instance-level bucket | `string` | `""` | no |
+| <a name="input_bucket_permissions_mode"></a> [bucket\_permissions\_mode](#input\_bucket\_permissions\_mode) | Defines the bucket permissions mode, which can be one of: strict, restricted, or public. | `string` | `"strict"` | no |
+| <a name="input_bucket_restricted_accounts"></a> [bucket\_restricted\_accounts](#input\_bucket\_restricted\_accounts) | List of allowed accounts when 'bucket\_permissions\_mode' is 'restricted'. | `list(string)` | `[]` | no |
 | <a name="input_clickhouse_endpoint_service_id"></a> [clickhouse\_endpoint\_service\_id](#input\_clickhouse\_endpoint\_service\_id) | The service ID of the VPC endpoint service for Clickhouse | `string` | `""` | no |
-| <a name="input_controller_image_tag"></a> [controller\_image\_tag](#input\_controller\_image\_tag) | Tag of the controller image to deploy | `string` | `"1.14.0"` | no |
-| <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | ######################################### External Bucket                        # ######################################### Most users will not need these settings. They are ment for users who want a bucket and sqs that are in a different account. | `bool` | `true` | no |
+| <a name="input_cluster_autoscaler_image_repository"></a> [cluster\_autoscaler\_image\_repository](#input\_cluster\_autoscaler\_image\_repository) | The image repository of the cluster-autoscaler to deploy. | `string` | `"registry.k8s.io/autoscaling/cluster-autoscaler"` | no |
+| <a name="input_cluster_autoscaler_image_tag"></a> [cluster\_autoscaler\_image\_tag](#input\_cluster\_autoscaler\_image\_tag) | The tag of the cluster-autoscaler to deploy. | `string` | `null` | no |
+| <a name="input_controller_image_tag"></a> [controller\_image\_tag](#input\_controller\_image\_tag) | Tag of the controller image to deploy | `string` | `"1.20.0"` | no |
 | <a name="input_create_elasticache"></a> [create\_elasticache](#input\_create\_elasticache) | Boolean indicating whether to provision an elasticache instance (true) or not (false). | `bool` | `true` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Boolean indicating whether to deploy a VPC (true) or not (false). | `bool` | `true` | no |
 | <a name="input_custom_domain_filter"></a> [custom\_domain\_filter](#input\_custom\_domain\_filter) | A custom domain filter to be used by external-dns instead of the default FQDN. If not set, the local FQDN is used. | `string` | `null` | no |
-| <a name="input_database_binlog_format"></a> [database\_binlog\_format](#input\_database\_binlog\_format) | Specifies the binlog\_format value to set for the database | `string` | `"ROW"` | no |
-| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Aurora | `string` | `"8.0.mysql_aurora.3.07.1"` | no |
-| <a name="input_database_innodb_lru_scan_depth"></a> [database\_innodb\_lru\_scan\_depth](#input\_database\_innodb\_lru\_scan\_depth) | Specifies the innodb\_lru\_scan\_depth value to set for the database | `number` | `128` | no |
-| <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. | `string` | `"db.r5.large"` | no |
+| <a name="input_database_engine_version"></a> [database\_engine\_version](#input\_database\_engine\_version) | Version for MySQL Aurora | `string` | `"8.0"` | no |
+| <a name="input_database_instance_class"></a> [database\_instance\_class](#input\_database\_instance\_class) | Instance type to use by database master instance. Defaults to null and value from deployment-size.tf is used | `string` | `null` | no |
 | <a name="input_database_kms_key_arn"></a> [database\_kms\_key\_arn](#input\_database\_kms\_key\_arn) | n/a | `string` | `""` | no |
 | <a name="input_database_master_username"></a> [database\_master\_username](#input\_database\_master\_username) | Specifies the master\_username value to set for the database | `string` | `"wandb"` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Specifies the name of the database | `string` | `"wandb_local"` | no |
@@ -212,13 +230,32 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_database_sort_buffer_size"></a> [database\_sort\_buffer\_size](#input\_database\_sort\_buffer\_size) | Specifies the sort\_buffer\_size value to set for the database | `number` | `67108864` | no |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | If the instance should have deletion protection enabled. The database / S3 can't be deleted when this value is set to `true`. | `bool` | `true` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain for accessing the Weights & Biases UI. | `string` | n/a | yes |
+| <a name="input_eks_addon_coredns_version"></a> [eks\_addon\_coredns\_version](#input\_eks\_addon\_coredns\_version) | Override for the CoreDNS addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addon_ebs_csi_driver_version"></a> [eks\_addon\_ebs\_csi\_driver\_version](#input\_eks\_addon\_ebs\_csi\_driver\_version) | Override for the EBS CSI driver version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addon_efs_csi_driver_version"></a> [eks\_addon\_efs\_csi\_driver\_version](#input\_eks\_addon\_efs\_csi\_driver\_version) | Override for the EFS CSI driver version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addon_kube_proxy_version"></a> [eks\_addon\_kube\_proxy\_version](#input\_eks\_addon\_kube\_proxy\_version) | Override for the kube-proxy addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addon_metrics_server_version"></a> [eks\_addon\_metrics\_server\_version](#input\_eks\_addon\_metrics\_server\_version) | Override for the metrics-server addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addon_vpc_cni_version"></a> [eks\_addon\_vpc\_cni\_version](#input\_eks\_addon\_vpc\_cni\_version) | Override for the VPC CNI addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
+| <a name="input_eks_addons_upgrade_cluster_version"></a> [eks\_addons\_upgrade\_cluster\_version](#input\_eks\_addons\_upgrade\_cluster\_version) | Optional Kubernetes version used to look up default addon versions instead of var.eks\_cluster\_version. This is only useful for performing addon updates before a cluster upgrade. | `string` | `null` | no |
+| <a name="input_eks_cluster_tags"></a> [eks\_cluster\_tags](#input\_eks\_cluster\_tags) | A map of AWS tags to apply to all resources managed by the EKS cluster | `map(string)` | `{}` | no |
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | EKS cluster kubernetes version | `string` | n/a | yes |
 | <a name="input_eks_policy_arns"></a> [eks\_policy\_arns](#input\_eks\_policy\_arns) | Additional IAM policy to apply to the EKS cluster | `list(string)` | `[]` | no |
-| <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy | `string` | `"cache.t2.medium"` | no |
+| <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The type of the redis cache node to deploy. Defaults to null and value from deployment-size.tf is used | `string` | `null` | no |
 | <a name="input_enable_clickhouse"></a> [enable\_clickhouse](#input\_enable\_clickhouse) | Provision clickhouse resources | `bool` | `false` | no |
+| <a name="input_enable_flow_log"></a> [enable\_flow\_log](#input\_enable\_flow\_log) | Controls whether VPC Flow Logs are enabled | `bool` | `false` | no |
+| <a name="input_enable_helm_operator"></a> [enable\_helm\_operator](#input\_enable\_helm\_operator) | Enable or disable applying and releasing W&B Operator chart | `bool` | `true` | no |
+| <a name="input_enable_helm_wandb"></a> [enable\_helm\_wandb](#input\_enable\_helm\_wandb) | Enable or disable applying and releasing CR chart | `bool` | `true` | no |
+| <a name="input_enable_s3_https_only"></a> [enable\_s3\_https\_only](#input\_enable\_s3\_https\_only) | Controls whether HTTPS-only is enabled for s3 buckets | `bool` | `false` | no |
 | <a name="input_enable_yace"></a> [enable\_yace](#input\_enable\_yace) | deploy yet another cloudwatch exporter to fetch aws resources metrics | `bool` | `true` | no |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | Using external DNS. A `subdomain` must also be specified if this value is true. | `bool` | `false` | no |
+| <a name="input_external_dns_image_repository"></a> [external\_dns\_image\_repository](#input\_external\_dns\_image\_repository) | The image repository of the external-dns to deploy. | `string` | `"registry.k8s.io/external-dns/external-dns"` | no |
+| <a name="input_external_dns_image_tag"></a> [external\_dns\_image\_tag](#input\_external\_dns\_image\_tag) | The tag of the external-dns to deploy. | `string` | `null` | no |
+| <a name="input_external_redis_host"></a> [external\_redis\_host](#input\_external\_redis\_host) | host for the redis instance created externally | `string` | `null` | no |
+| <a name="input_external_redis_params"></a> [external\_redis\_params](#input\_external\_redis\_params) | queryVar params for redis instance created externally | `object({})` | `null` | no |
+| <a name="input_external_redis_port"></a> [external\_redis\_port](#input\_external\_redis\_port) | port for the redis instance created externally | `string` | `null` | no |
 | <a name="input_extra_fqdn"></a> [extra\_fqdn](#input\_extra\_fqdn) | Additional fqdn's must be in the same hosted zone as `domain_name`. | `list(string)` | `[]` | no |
+| <a name="input_k8s_namespace"></a> [k8s\_namespace](#input\_k8s\_namespace) | The Kubernetes namespace where W&B resources will be deployed | `string` | `"default"` | no |
+| <a name="input_keep_flow_log_bucket"></a> [keep\_flow\_log\_bucket](#input\_keep\_flow\_log\_bucket) | Controls whether S3 bucket storing VPC Flow Logs will be kept | `bool` | `true` | no |
 | <a name="input_kms_clickhouse_key_alias"></a> [kms\_clickhouse\_key\_alias](#input\_kms\_clickhouse\_key\_alias) | KMS key alias for AWS KMS Customer managed key used by Clickhouse CMEK. | `string` | `null` | no |
 | <a name="input_kms_clickhouse_key_policy"></a> [kms\_clickhouse\_key\_policy](#input\_kms\_clickhouse\_key\_policy) | The policy that will define the permissions for the clickhouse kms key. | `string` | `""` | no |
 | <a name="input_kms_key_alias"></a> [kms\_key\_alias](#input\_kms\_key\_alias) | KMS key alias for AWS KMS Customer managed key. | `string` | `null` | no |
@@ -227,38 +264,42 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_kms_key_policy_administrator_arn"></a> [kms\_key\_policy\_administrator\_arn](#input\_kms\_key\_policy\_administrator\_arn) | The principal that will be allowed to manage the kms key. | `string` | `""` | no |
 | <a name="input_kubernetes_alb_internet_facing"></a> [kubernetes\_alb\_internet\_facing](#input\_kubernetes\_alb\_internet\_facing) | Indicates whether or not the ALB controlled by the Amazon ALB ingress controller is internet-facing or internal. | `bool` | `true` | no |
 | <a name="input_kubernetes_alb_subnets"></a> [kubernetes\_alb\_subnets](#input\_kubernetes\_alb\_subnets) | List of subnet ID's the ALB will use for ingress traffic. | `list(string)` | `[]` | no |
-| <a name="input_kubernetes_instance_types"></a> [kubernetes\_instance\_types](#input\_kubernetes\_instance\_types) | EC2 Instance type for primary node group. | `list(string)` | <pre>[<br>  "m5.large"<br>]</pre> | no |
-| <a name="input_kubernetes_map_accounts"></a> [kubernetes\_map\_accounts](#input\_kubernetes\_map\_accounts) | Additional AWS account numbers to add to the aws-auth configmap. | `list(string)` | `[]` | no |
-| <a name="input_kubernetes_map_roles"></a> [kubernetes\_map\_roles](#input\_kubernetes\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br>    rolearn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_kubernetes_map_users"></a> [kubernetes\_map\_users](#input\_kubernetes\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_kubernetes_node_count"></a> [kubernetes\_node\_count](#input\_kubernetes\_node\_count) | Number of nodes | `number` | `2` | no |
+| <a name="input_kubernetes_instance_types"></a> [kubernetes\_instance\_types](#input\_kubernetes\_instance\_types) | EC2 Instance type for primary node group. Defaults to null and value from deployment-size.tf is used | `list(string)` | `null` | no |
+| <a name="input_kubernetes_map_accounts"></a> [kubernetes\_map\_accounts](#input\_kubernetes\_map\_accounts) | REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/upgrade-eks-20.md for migration paths. The variable is retained as a tripwire and will be removed in a future release. | `list(string)` | `[]` | no |
+| <a name="input_kubernetes_map_roles"></a> [kubernetes\_map\_roles](#input\_kubernetes\_map\_roles) | Additional IAM roles to add to the aws-auth configmap. | <pre>list(object({<br/>    rolearn  = string<br/>    username = string<br/>    groups   = list(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_kubernetes_map_users"></a> [kubernetes\_map\_users](#input\_kubernetes\_map\_users) | Additional IAM users to add to the aws-auth configmap. | <pre>list(object({<br/>    userarn  = string<br/>    username = string<br/>    groups   = list(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_kubernetes_max_nodes_per_az"></a> [kubernetes\_max\_nodes\_per\_az](#input\_kubernetes\_max\_nodes\_per\_az) | Maximum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used | `number` | `null` | no |
+| <a name="input_kubernetes_min_nodes_per_az"></a> [kubernetes\_min\_nodes\_per\_az](#input\_kubernetes\_min\_nodes\_per\_az) | Minimum number of nodes for the EKS cluster. Defaults to null and value from deployment-size.tf is used | `number` | `null` | no |
+| <a name="input_kubernetes_node_disk_size_gb"></a> [kubernetes\_node\_disk\_size\_gb](#input\_kubernetes\_node\_disk\_size\_gb) | Size of the node root volume in GB. | `number` | `null` | no |
 | <a name="input_kubernetes_public_access"></a> [kubernetes\_public\_access](#input\_kubernetes\_public\_access) | Indicates whether or not the Amazon EKS public API server endpoint is enabled. | `bool` | `false` | no |
 | <a name="input_kubernetes_public_access_cidrs"></a> [kubernetes\_public\_access\_cidrs](#input\_kubernetes\_public\_access\_cidrs) | List of CIDR blocks which can access the Amazon EKS public API server endpoint. | `list(string)` | `[]` | no |
 | <a name="input_license"></a> [license](#input\_license) | Weights & Biases license key. | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | String used for prefix resources. | `string` | n/a | yes |
 | <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | CIDR block for VPC. | `string` | `"10.10.0.0/16"` | no |
-| <a name="input_network_database_subnet_cidrs"></a> [network\_database\_subnet\_cidrs](#input\_network\_database\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.20.0/24",<br>  "10.10.21.0/24"<br>]</pre> | no |
+| <a name="input_network_database_subnet_cidrs"></a> [network\_database\_subnet\_cidrs](#input\_network\_database\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br/>  "10.10.20.0/24",<br/>  "10.10.21.0/24"<br/>]</pre> | no |
 | <a name="input_network_database_subnets"></a> [network\_database\_subnets](#input\_network\_database\_subnets) | A list of the identities of the database subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
-| <a name="input_network_elasticache_subnet_cidrs"></a> [network\_elasticache\_subnet\_cidrs](#input\_network\_elasticache\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.30.0/24",<br>  "10.10.31.0/24"<br>]</pre> | no |
+| <a name="input_network_elasticache_subnet_cidrs"></a> [network\_elasticache\_subnet\_cidrs](#input\_network\_elasticache\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br/>  "10.10.30.0/24",<br/>  "10.10.31.0/24"<br/>]</pre> | no |
 | <a name="input_network_elasticache_subnets"></a> [network\_elasticache\_subnets](#input\_network\_elasticache\_subnets) | A list of the identities of the subnetworks in which elasticache resources will be deployed. | `list(string)` | `[]` | no |
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | The identity of the VPC in which resources will be deployed. | `string` | `""` | no |
-| <a name="input_network_private_subnet_cidrs"></a> [network\_private\_subnet\_cidrs](#input\_network\_private\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.10.0/24",<br>  "10.10.11.0/24"<br>]</pre> | no |
+| <a name="input_network_private_subnet_cidrs"></a> [network\_private\_subnet\_cidrs](#input\_network\_private\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br/>  "10.10.10.0/24",<br/>  "10.10.11.0/24"<br/>]</pre> | no |
 | <a name="input_network_private_subnets"></a> [network\_private\_subnets](#input\_network\_private\_subnets) | A list of the identities of the private subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
-| <a name="input_network_public_subnet_cidrs"></a> [network\_public\_subnet\_cidrs](#input\_network\_public\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br>  "10.10.0.0/24",<br>  "10.10.1.0/24"<br>]</pre> | no |
-| <a name="input_network_public_subnets"></a> [network\_public\_subnets](#input\_network\_public\_subnets) | A list of the identities of the public subnetworks in which resources will be deployed. | `list(string)` | `[]` | no |
-| <a name="input_operator_chart_version"></a> [operator\_chart\_version](#input\_operator\_chart\_version) | Version of the operator chart to deploy | `string` | `"1.3.4"` | no |
+| <a name="input_network_public_subnet_cidrs"></a> [network\_public\_subnet\_cidrs](#input\_network\_public\_subnet\_cidrs) | List of private subnet CIDR ranges to create in VPC. | `list(string)` | <pre>[<br/>  "10.10.0.0/24",<br/>  "10.10.1.0/24"<br/>]</pre> | no |
+| <a name="input_operator_chart_version"></a> [operator\_chart\_version](#input\_operator\_chart\_version) | Version of the operator chart to deploy | `string` | `"1.4.2"` | no |
 | <a name="input_other_wandb_env"></a> [other\_wandb\_env](#input\_other\_wandb\_env) | Extra environment variables for W&B | `map(any)` | `{}` | no |
 | <a name="input_parquet_wandb_env"></a> [parquet\_wandb\_env](#input\_parquet\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
+| <a name="input_preserve_aws_auth_configmap"></a> [preserve\_aws\_auth\_configmap](#input\_preserve\_aws\_auth\_configmap) | v17 -> v20 in-place upgrade transition flag. See modules/app\_eks/aws\_auth\_legacy.tf and docs/upgrade-eks-20.md. | `bool` | `false` | no |
 | <a name="input_private_link_allowed_account_ids"></a> [private\_link\_allowed\_account\_ids](#input\_private\_link\_allowed\_account\_ids) | List of AWS account IDs allowed to access the VPC Endpoint Service | `list(string)` | `[]` | no |
 | <a name="input_private_only_traffic"></a> [private\_only\_traffic](#input\_private\_only\_traffic) | Enable private only traffic from customer private network | `bool` | `false` | no |
 | <a name="input_public_access"></a> [public\_access](#input\_public\_access) | Is this instance accessable a public domain. | `bool` | `false` | no |
-| <a name="input_size"></a> [size](#input\_size) | Deployment size | `string` | `null` | no |
-| <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | SSL policy to use on ALB listener | `string` | `"ELBSecurityPolicy-FS-1-2-Res-2020-10"` | no |
+| <a name="input_size"></a> [size](#input\_size) | Deployment size for the instance | `string` | `"small"` | no |
 | <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | Subdomain for accessing the Weights & Biases UI. Default creates record at Route53 Route. | `string` | `null` | no |
 | <a name="input_system_reserved_cpu_millicores"></a> [system\_reserved\_cpu\_millicores](#input\_system\_reserved\_cpu\_millicores) | (Optional) The amount of 'system-reserved' CPU millicores to pass to the kubelet. For example: 100.  A value of -1 disables the flag. | `number` | `70` | no |
 | <a name="input_system_reserved_ephemeral_megabytes"></a> [system\_reserved\_ephemeral\_megabytes](#input\_system\_reserved\_ephemeral\_megabytes) | (Optional) The amount of 'system-reserved' ephemeral storage in megabytes to pass to the kubelet. For example: 1000.  A value of -1 disables the flag. | `number` | `750` | no |
 | <a name="input_system_reserved_memory_megabytes"></a> [system\_reserved\_memory\_megabytes](#input\_system\_reserved\_memory\_megabytes) | (Optional) The amount of 'system-reserved' memory in megabytes to pass to the kubelet. For example: 100.  A value of -1 disables the flag. | `number` | `100` | no |
 | <a name="input_system_reserved_pid"></a> [system\_reserved\_pid](#input\_system\_reserved\_pid) | (Optional) The amount of 'system-reserved' process ids [pid] to pass to the kubelet. For example: 1000.  A value of -1 disables the flag. | `number` | `500` | no |
+| <a name="input_use_chainguard_redis"></a> [use\_chainguard\_redis](#input\_use\_chainguard\_redis) | Whether CHAINGUARD redis is deployed in the cluster | `bool` | `false` | no |
+| <a name="input_use_ctrlplane_redis"></a> [use\_ctrlplane\_redis](#input\_use\_ctrlplane\_redis) | Whether redis is deployed in the cluster via ctrlplane | `bool` | `false` | no |
+| <a name="input_use_external_redis"></a> [use\_external\_redis](#input\_use\_external\_redis) | Boolean indicating whether to use the redis instance created externally | `bool` | `false` | no |
 | <a name="input_use_internal_queue"></a> [use\_internal\_queue](#input\_use\_internal\_queue) | n/a | `bool` | `false` | no |
 | <a name="input_weave_wandb_env"></a> [weave\_wandb\_env](#input\_weave\_wandb\_env) | Extra environment variables for W&B | `map(string)` | `{}` | no |
 | <a name="input_yace_sa_name"></a> [yace\_sa\_name](#input\_yace\_sa\_name) | n/a | `string` | `"wandb-yace"` | no |
@@ -267,18 +308,21 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | n/a |
 | <a name="output_bucket_path"></a> [bucket\_path](#output\_bucket\_path) | n/a |
 | <a name="output_bucket_queue_name"></a> [bucket\_queue\_name](#output\_bucket\_queue\_name) | n/a |
 | <a name="output_bucket_region"></a> [bucket\_region](#output\_bucket\_region) | n/a |
-| <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | n/a |
+| <a name="output_cluster_certificate_authority_data"></a> [cluster\_certificate\_authority\_data](#output\_cluster\_certificate\_authority\_data) | n/a |
+| <a name="output_cluster_endpoint"></a> [cluster\_endpoint](#output\_cluster\_endpoint) | Surfaced so callers can configure kubernetes/helm providers directly from module outputs instead of `data "aws_eks_cluster"`. See modules/app\_eks/outputs.tf for the v18+/v20 upgrade rationale. |
+| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | n/a |
 | <a name="output_cluster_node_role"></a> [cluster\_node\_role](#output\_cluster\_node\_role) | n/a |
 | <a name="output_database_connection_string"></a> [database\_connection\_string](#output\_database\_connection\_string) | n/a |
 | <a name="output_database_instance_type"></a> [database\_instance\_type](#output\_database\_instance\_type) | n/a |
 | <a name="output_database_password"></a> [database\_password](#output\_database\_password) | n/a |
 | <a name="output_database_username"></a> [database\_username](#output\_database\_username) | n/a |
-| <a name="output_eks_node_count"></a> [eks\_node\_count](#output\_eks\_node\_count) | n/a |
+| <a name="output_eks_max_nodes_per_az"></a> [eks\_max\_nodes\_per\_az](#output\_eks\_max\_nodes\_per\_az) | n/a |
+| <a name="output_eks_min_nodes_per_az"></a> [eks\_min\_nodes\_per\_az](#output\_eks\_min\_nodes\_per\_az) | n/a |
 | <a name="output_eks_node_instance_type"></a> [eks\_node\_instance\_type](#output\_eks\_node\_instance\_type) | n/a |
 | <a name="output_elasticache_connection_string"></a> [elasticache\_connection\_string](#output\_elasticache\_connection\_string) | n/a |
 | <a name="output_kms_clickhouse_key_arn"></a> [kms\_clickhouse\_key\_arn](#output\_kms\_clickhouse\_key\_arn) | The Amazon Resource Name of the KMS key used to encrypt Weave data at rest in Clickhouse. |
@@ -286,9 +330,13 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | The identity of the VPC in which resources are deployed. |
 | <a name="output_network_private_subnets"></a> [network\_private\_subnets](#output\_network\_private\_subnets) | The identities of the private subnetworks deployed within the VPC. |
 | <a name="output_network_public_subnets"></a> [network\_public\_subnets](#output\_network\_public\_subnets) | The identities of the public subnetworks deployed within the VPC. |
+| <a name="output_private_link_availability_zones"></a> [private\_link\_availability\_zones](#output\_private\_link\_availability\_zones) | The Availability Zones where the Private Link NLB endpoints are available |
+| <a name="output_private_link_service_id"></a> [private\_link\_service\_id](#output\_private\_link\_service\_id) | The ID of the VPC Endpoint Service for Private Link |
+| <a name="output_private_link_service_name"></a> [private\_link\_service\_name](#output\_private\_link\_service\_name) | The service name of the VPC Endpoint Service for Private Link |
 | <a name="output_redis_instance_type"></a> [redis\_instance\_type](#output\_redis\_instance\_type) | n/a |
 | <a name="output_standardized_size"></a> [standardized\_size](#output\_standardized\_size) | n/a |
 | <a name="output_url"></a> [url](#output\_url) | The URL to the W&B application |
+| <a name="output_wandb_spec"></a> [wandb\_spec](#output\_wandb\_spec) | n/a |
 
 <!-- END_TF_DOCS -->
 
