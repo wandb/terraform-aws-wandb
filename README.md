@@ -131,23 +131,23 @@ resources that lack official modules.
 
 Users can update the EKS cluster version to the latest version offered by AWS using the input variable `eks_cluster_version`. Cluster and nodegroup version updates can only be done in increments of one minor version at a time, so multi-version upgrades must be executed step-wise.
 
-#### Recommended pattern: upgrade addons first, then the cluster
+#### Recommended pattern: pre-roll addons first, then the cluster
 
 Each minor version bump should be a two-apply sequence so that addon and control-plane changes are isolated:
 
-1. **Pre-stage addons for the target version.** Set `eks_addons_upgrade_cluster_version` to the *next* minor version while leaving `eks_cluster_version` at the *current* version. `terraform apply`. The cluster stays put; the addon defaults are looked up by the override version from `local.eks_addon_default_versions` in [`modules/app_eks/add-ons.tf`](modules/app_eks/add-ons.tf) and rolled out.
-2. **Bump the cluster.** Set `eks_cluster_version` to the same target version and unset `eks_addons_upgrade_cluster_version`. `terraform apply`. The control plane and node group move up; addons are already on a compatible version.
+1. **Pre-roll addons for the target version.** Set `eks_addons_preroll_version` to the *next* minor version while leaving `eks_cluster_version` at the *current* version. `terraform apply`. The cluster stays put; preroll-eligible addons are pulled from `local.eks_addons_preroll_versions` in [`modules/app_eks/add-ons.tf`](modules/app_eks/add-ons.tf). kube-proxy and metrics-server are intentionally excluded from preroll — kube-proxy is locked to the cluster minor by Kubernetes' version-skew policy, and AWS gates `metrics-server` v0.8.x lines on cluster K8s version.
+2. **Bump the cluster.** Set `eks_cluster_version` to the same target version and unset `eks_addons_preroll_version`. `terraform apply`. The control plane and node group move up; preroll-eligible addons are already there, kube-proxy / metrics-server roll forward with the cluster.
 
 Repeat for each subsequent minor version. For example, going from `1.30` → `1.32`:
 
-| Step | `eks_cluster_version` | `eks_addons_upgrade_cluster_version` | Effect |
+| Step | `eks_cluster_version` | `eks_addons_preroll_version` | Effect |
 | :--- | :--- | :--- | :--- |
-| 1 | `1.30` | `1.31` | Addons move to 1.31 defaults, cluster stays on 1.30 |
-| 2 | `1.31` | `null` | Cluster moves to 1.31, addons unchanged |
-| 3 | `1.31` | `1.32` | Addons move to 1.32 defaults, cluster stays on 1.31 |
-| 4 | `1.32` | `null` | Cluster moves to 1.32, addons unchanged |
+| 1 | `1.30` | `1.31` | Preroll-eligible addons move to 1.31 defaults; cluster, kube-proxy, metrics-server stay on 1.30 |
+| 2 | `1.31` | `null` | Cluster moves to 1.31; kube-proxy / metrics-server roll forward |
+| 3 | `1.31` | `1.32` | Preroll-eligible addons move to 1.32 defaults; cluster stays on 1.31 |
+| 4 | `1.32` | `null` | Cluster moves to 1.32 |
 
-You can still pin individual addon versions explicitly via the per-addon `eks_addon_*_version` overrides; those win over both `eks_cluster_version` and `eks_addons_upgrade_cluster_version` lookups.
+You can still pin individual addon versions explicitly via the per-addon `eks_addon_*_version` overrides; those win over both the preroll table and the cluster-version default.
 
 Upgrades must be executed in step-wise fashion from one version to the next. You cannot skip versions when upgrading EKS.
 
@@ -236,7 +236,7 @@ Upgrades must be executed in step-wise fashion from one version to the next. You
 | <a name="input_eks_addon_kube_proxy_version"></a> [eks\_addon\_kube\_proxy\_version](#input\_eks\_addon\_kube\_proxy\_version) | Override for the kube-proxy addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
 | <a name="input_eks_addon_metrics_server_version"></a> [eks\_addon\_metrics\_server\_version](#input\_eks\_addon\_metrics\_server\_version) | Override for the metrics-server addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
 | <a name="input_eks_addon_vpc_cni_version"></a> [eks\_addon\_vpc\_cni\_version](#input\_eks\_addon\_vpc\_cni\_version) | Override for the VPC CNI addon version. When null, the version is looked up by var.eks\_cluster\_version (or var.eks\_addons\_upgrade\_cluster\_version when that override is set) in local.eks\_addon\_default\_versions in modules/app\_eks/add-ons.tf. | `string` | `null` | no |
-| <a name="input_eks_addons_upgrade_cluster_version"></a> [eks\_addons\_upgrade\_cluster\_version](#input\_eks\_addons\_upgrade\_cluster\_version) | Optional Kubernetes version used to look up default addon versions instead of var.eks\_cluster\_version. This is only useful for performing addon updates before a cluster upgrade. | `string` | `null` | no |
+| <a name="input_eks_addons_preroll_version"></a> [eks\_addons\_preroll\_version](#input\_eks\_addons\_preroll\_version) | Optional Kubernetes minor version to roll preroll-eligible addons toward, while the cluster itself stays on var.eks\_cluster\_version. See local.eks\_addons\_preroll\_versions in modules/app\_eks/add-ons.tf for the addons covered. kube-proxy and metrics-server are intentionally excluded from preroll. | `string` | `null` | no |
 | <a name="input_eks_cluster_tags"></a> [eks\_cluster\_tags](#input\_eks\_cluster\_tags) | A map of AWS tags to apply to all resources managed by the EKS cluster | `map(string)` | `{}` | no |
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | EKS cluster kubernetes version | `string` | n/a | yes |
 | <a name="input_eks_policy_arns"></a> [eks\_policy\_arns](#input\_eks\_policy\_arns) | Additional IAM policy to apply to the EKS cluster | `list(string)` | `[]` | no |

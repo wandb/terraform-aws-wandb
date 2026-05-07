@@ -1,104 +1,167 @@
-### Per-K8s-version default addon versions. Each row in
-### local.eks_addon_default_versions reflects the AWS-installed default for
-### that minor K8s version. Values use the `-eksbuild.1` suffix (most common);
-### to pin a different eksbuild, set the corresponding var.eks_addon_*_version
-### override.
+### Addon version resolution.
 ###
-### The K8s version used for the lookup is var.addons_upgrade_cluster_version
-### when set, otherwise var.cluster_version. Setting the override lets addon
-### defaults be staged ahead of a cluster upgrade.
+### Two maps drive defaults:
+###
+###   local.eks_addon_default_versions
+###     Per-K8s-minor map covering ALL addons. Looked up by var.cluster_version.
+###     This is the fallback when no preroll target or per-addon override is set.
+###
+###   local.eks_addons_preroll_versions
+###     Sparse, per-K8s-minor map for addons eligible to roll forward AHEAD of a
+###     cluster bump. Looked up by var.eks_addons_preroll_version. kube-proxy
+###     is intentionally absent (locked to cluster minor by Kubernetes' version
+###     skew policy). metrics-server is absent because AWS gates v0.8.x on
+###     cluster minor. Maintainers may add/remove entries as AWS evolves.
+###
+### Resolution order per addon:
+###   1. var.eks_addon_<name>_version (explicit per-addon override)
+###   2. eks_addons_preroll_versions[<preroll minor>][<addon>] when preroll set
+###   3. eks_addon_default_versions[<cluster minor>][<addon>]
 locals {
-  # Normalize to "major.minor" so inputs like "1.30" or "1.30.5" both work.
-  # Keys of eks_addon_default_versions are major.minor; variable validation
-  # (see variables.tf) ensures the normalized value exists in the map.
-  eks_addon_lookup_version = format("%s.%s",
-    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[0],
-    split(".", coalesce(var.addons_upgrade_cluster_version, var.cluster_version))[1]
-  )
+  # Cluster's K8s minor (e.g. "1.30"). Strips an optional patch suffix.
+  eks_addon_cluster_minor = regex("^\\d+\\.\\d+", var.cluster_version)
 
-  # Normalize to major.minor format by stripping patch versions like ".0"
-  eks_addon_lookup_normalized = regex("^\\d+\\.\\d+", local.eks_addon_lookup_version)
+  # K8s minor we are prerolling toward, or null if no preroll is active.
+  eks_addon_preroll_minor = var.eks_addons_preroll_version == null ? null : regex("^\\d+\\.\\d+", var.eks_addons_preroll_version)
 
+  # Per-K8s-minor curated defaults. Values are AWS's published defaults at
+  # patch time, except 1.30 which mirrors a real customer floor (the minimum
+  # supported starting state). 1.29 is intentionally unsupported. Each cell is
+  # verified installable on its target minor via describe-addon-versions.
   eks_addon_default_versions = {
-    "1.29" = {
-      vpc_cni            = "v1.18.5-eksbuild.1"
-      coredns            = "v1.11.1-eksbuild.1"
-      kube_proxy         = "v1.29.0-eksbuild.1"
-      aws_ebs_csi_driver = "v1.28.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.0.3-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
-    }
-    # 1.30 defaults match the `var.eks_addon_*_version` defaults prior to this cluster-addons version lookup map
     "1.30" = {
-      vpc_cni            = "v1.18.5-eksbuild.1"
-      coredns            = "v1.11.3-eksbuild.1"
-      kube_proxy         = "v1.30.0-eksbuild.1"
-      aws_ebs_csi_driver = "v1.35.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
+      vpc_cni            = "v1.19.3-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.2"
+      kube_proxy         = "v1.30.9-eksbuild.3"
+      aws_ebs_csi_driver = "v1.40.1-eksbuild.1"
+      aws_efs_csi_driver = "v2.1.6-eksbuild.1"
       metrics_server     = "v0.7.2-eksbuild.1"
     }
     "1.31" = {
-      vpc_cni            = "v1.19.5-eksbuild.1"
-      coredns            = "v1.11.3-eksbuild.1"
-      kube_proxy         = "v1.31.2-eksbuild.1"
-      aws_ebs_csi_driver = "v1.35.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.33"
+      kube_proxy         = "v1.31.14-eksbuild.9"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+      metrics_server     = "v0.8.1-eksbuild.6"
     }
     "1.32" = {
-      vpc_cni            = "v1.19.5-eksbuild.1"
-      coredns            = "v1.11.3-eksbuild.1"
-      kube_proxy         = "v1.32.3-eksbuild.1"
-      aws_ebs_csi_driver = "v1.42.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.0.7-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.33"
+      kube_proxy         = "v1.32.13-eksbuild.5"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+      metrics_server     = "v0.8.1-eksbuild.6"
     }
     "1.33" = {
-      vpc_cni            = "v1.20.4-eksbuild.1"
-      coredns            = "v1.12.1-eksbuild.1"
-      kube_proxy         = "v1.33.0-eksbuild.1"
-      aws_ebs_csi_driver = "v1.51.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.1.4-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.12.4-eksbuild.10"
+      kube_proxy         = "v1.33.10-eksbuild.2"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+      metrics_server     = "v0.8.1-eksbuild.6"
     }
     "1.34" = {
-      vpc_cni            = "v1.21.1-eksbuild.1"
-      coredns            = "v1.12.4-eksbuild.1"
-      kube_proxy         = "v1.34.0-eksbuild.1"
-      aws_ebs_csi_driver = "v1.55.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.1.6-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.12.4-eksbuild.10"
+      kube_proxy         = "v1.34.6-eksbuild.2"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+      metrics_server     = "v0.8.1-eksbuild.6"
     }
     "1.35" = {
       vpc_cni            = "v1.21.1-eksbuild.1"
-      coredns            = "v1.13.2-eksbuild.1"
-      kube_proxy         = "v1.35.0-eksbuild.1"
-      aws_ebs_csi_driver = "v1.57.0-eksbuild.1"
-      aws_efs_csi_driver = "v2.1.6-eksbuild.1"
-      metrics_server     = "v0.7.2-eksbuild.1"
+      coredns            = "v1.13.2-eksbuild.4"
+      kube_proxy         = "v1.35.3-eksbuild.2"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+      metrics_server     = "v0.8.1-eksbuild.6"
     }
   }
 
+  # Sparse: only addons explicitly forward-compatible with the next minor.
+  # Key is the K8s minor we are prerolling TO. Each cell must be installable
+  # on the cluster's current minor (preroll target - 1). kube-proxy and
+  # metrics-server are omitted by design.
+  eks_addons_preroll_versions = {
+    "1.31" = {
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.33"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+    }
+    "1.32" = {
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.33"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+    }
+    "1.33" = {
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.11.4-eksbuild.33"  # AWS default[1.33].coredns (v1.12.4) is not installable on 1.32; second hop happens at the cluster bump
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+    }
+    "1.34" = {
+      vpc_cni            = "v1.20.5-eksbuild.1"
+      coredns            = "v1.12.4-eksbuild.10"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+    }
+    "1.35" = {
+      vpc_cni            = "v1.21.1-eksbuild.1"
+      coredns            = "v1.13.2-eksbuild.4"
+      aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
+      aws_efs_csi_driver = "v3.1.0-eksbuild.1"
+    }
+  }
+
+  # Active preroll bucket, or empty if no preroll target set.
+  eks_addon_preroll_active = local.eks_addon_preroll_minor == null ? {} : lookup(local.eks_addons_preroll_versions, local.eks_addon_preroll_minor, {})
+
   eks_addon_versions = {
-    vpc_cni            = coalesce(var.eks_addon_vpc_cni_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["vpc_cni"])
-    coredns            = coalesce(var.eks_addon_coredns_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["coredns"])
-    kube_proxy         = coalesce(var.eks_addon_kube_proxy_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["kube_proxy"])
-    aws_ebs_csi_driver = coalesce(var.eks_addon_ebs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_ebs_csi_driver"])
-    aws_efs_csi_driver = coalesce(var.eks_addon_efs_csi_driver_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["aws_efs_csi_driver"])
-    metrics_server     = coalesce(var.eks_addon_metrics_server_version, local.eks_addon_default_versions[local.eks_addon_lookup_normalized]["metrics_server"])
+    vpc_cni = coalesce(
+      var.eks_addon_vpc_cni_version,
+      lookup(local.eks_addon_preroll_active, "vpc_cni", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["vpc_cni"]
+    )
+    coredns = coalesce(
+      var.eks_addon_coredns_version,
+      lookup(local.eks_addon_preroll_active, "coredns", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["coredns"]
+    )
+    kube_proxy = coalesce(
+      var.eks_addon_kube_proxy_version,
+      lookup(local.eks_addon_preroll_active, "kube_proxy", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["kube_proxy"]
+    )
+    aws_ebs_csi_driver = coalesce(
+      var.eks_addon_ebs_csi_driver_version,
+      lookup(local.eks_addon_preroll_active, "aws_ebs_csi_driver", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["aws_ebs_csi_driver"]
+    )
+    aws_efs_csi_driver = coalesce(
+      var.eks_addon_efs_csi_driver_version,
+      lookup(local.eks_addon_preroll_active, "aws_efs_csi_driver", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["aws_efs_csi_driver"]
+    )
+    metrics_server = coalesce(
+      var.eks_addon_metrics_server_version,
+      lookup(local.eks_addon_preroll_active, "metrics_server", null),
+      local.eks_addon_default_versions[local.eks_addon_cluster_minor]["metrics_server"]
+    )
   }
 }
 
-# Validation: Ensure eks_addon_lookup_normalized exists in eks_addon_default_versions
 check "eks_addon_version_key_validation" {
   assert {
-    condition     = contains(keys(local.eks_addon_default_versions), local.eks_addon_lookup_normalized)
+    condition     = contains(keys(local.eks_addon_default_versions), local.eks_addon_cluster_minor)
     error_message = <<-EOM
-      Invalid EKS cluster version for addon lookup: "${local.eks_addon_lookup_version}" (normalized: "${local.eks_addon_lookup_normalized}").
+      Invalid EKS cluster version for addon lookup: "${var.cluster_version}" (normalized: "${local.eks_addon_cluster_minor}").
 
       Supported versions in eks_addon_default_versions: ${join(", ", keys(local.eks_addon_default_versions))}
 
-      Please set var.cluster_version (or var.addons_upgrade_cluster_version) to a supported major.minor version.
+      Please set var.cluster_version to a supported major.minor version.
     EOM
   }
 }
