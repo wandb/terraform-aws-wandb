@@ -314,21 +314,21 @@ variable "eks_cluster_version" {
   type        = string
 }
 
-variable "eks_addons_upgrade_cluster_version" {
-  description = "Optional Kubernetes version used to look up default addon versions instead of var.eks_cluster_version. This is only useful for performing addon updates before a cluster upgrade."
+variable "eks_addons_preroll_version" {
+  description = "Optional Kubernetes minor version to roll preroll-eligible addons toward, while the cluster itself stays on var.eks_cluster_version. See local.eks_addons_preroll_versions in modules/app_eks/add-ons.tf for the addons covered. kube-proxy and metrics-server are intentionally excluded from preroll."
   type        = string
   default     = null
 
   # Compare as (major * 1000 + minor) so e.g. "1.10" > "1.9". Skip when null.
   validation {
-    condition = var.eks_addons_upgrade_cluster_version == null || (
-      tonumber(split(".", coalesce(var.eks_addons_upgrade_cluster_version, "0.0"))[0]) * 1000
-      + tonumber(split(".", coalesce(var.eks_addons_upgrade_cluster_version, "0.0"))[1])
+    condition = var.eks_addons_preroll_version == null || (
+      tonumber(split(".", coalesce(var.eks_addons_preroll_version, "0.0"))[0]) * 1000
+      + tonumber(split(".", coalesce(var.eks_addons_preroll_version, "0.0"))[1])
       >=
       tonumber(split(".", var.eks_cluster_version)[0]) * 1000
       + tonumber(split(".", var.eks_cluster_version)[1])
     )
-    error_message = "eks_addons_upgrade_cluster_version must be >= eks_cluster_version (cannot stage addons for an older Kubernetes version)."
+    error_message = "eks_addons_preroll_version must be >= eks_cluster_version (cannot stage addons for an older Kubernetes version)."
   }
 }
 
@@ -450,42 +450,43 @@ variable "aws_loadbalancer_controller_tags" {
 ##########################################
 # EKS Cluster Addons                     #
 ##########################################
-# Each addon version defaults to null. When null, the app_eks module looks up
-# the version in its local.eks_addon_default_versions table using
-# var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that
-# override is set). Set a value here to pin a specific version.
+# Each addon version defaults to null. When null, the app_eks module resolves
+# the version via local.eks_addon_versions (default lookup by
+# var.eks_cluster_version, with optional preroll override via
+# var.eks_addons_preroll_version for preroll-eligible addons). Set a value
+# here to pin a specific version.
 variable "eks_addon_efs_csi_driver_version" {
-  description = "Override for the EFS CSI driver version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the EFS CSI driver version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "Override for the EBS CSI driver version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the EBS CSI driver version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
 
 variable "eks_addon_coredns_version" {
-  description = "Override for the CoreDNS addon version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the CoreDNS addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "Override for the kube-proxy addon version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the kube-proxy addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "Override for the VPC CNI addon version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the VPC CNI addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
 
 variable "eks_addon_metrics_server_version" {
-  description = "Override for the metrics-server addon version. When null, the version is looked up by var.eks_cluster_version (or var.eks_addons_upgrade_cluster_version when that override is set) in local.eks_addon_default_versions in modules/app_eks/add-ons.tf."
+  description = "Override for the metrics-server addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
   type        = string
   default     = null
 }
