@@ -98,7 +98,7 @@ locals {
     }
     "1.33" = {
       vpc_cni            = "v1.20.5-eksbuild.1"
-      coredns            = "v1.11.4-eksbuild.33"  # AWS default[1.33].coredns (v1.12.4) is not installable on 1.32; second hop happens at the cluster bump
+      coredns            = "v1.11.4-eksbuild.33" # AWS default[1.33].coredns (v1.12.4) is not installable on 1.32; second hop happens at the cluster bump
       aws_ebs_csi_driver = "v1.59.0-eksbuild.1"
       aws_efs_csi_driver = "v3.1.0-eksbuild.1"
     }
@@ -201,9 +201,9 @@ resource "aws_eks_addon" "aws_efs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "aws-efs-csi-driver"
-  addon_version     = local.eks_addon_versions["aws_efs_csi_driver"]
+  cluster_name                = var.namespace
+  addon_name                  = "aws-efs-csi-driver"
+  addon_version               = local.eks_addon_versions["aws_efs_csi_driver"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }
@@ -212,9 +212,9 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "aws-ebs-csi-driver"
-  addon_version     = local.eks_addon_versions["aws_ebs_csi_driver"]
+  cluster_name                = var.namespace
+  addon_name                  = "aws-ebs-csi-driver"
+  addon_version               = local.eks_addon_versions["aws_ebs_csi_driver"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }
@@ -223,9 +223,9 @@ resource "aws_eks_addon" "coredns" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "coredns"
-  addon_version     = local.eks_addon_versions["coredns"]
+  cluster_name                = var.namespace
+  addon_name                  = "coredns"
+  addon_version               = local.eks_addon_versions["coredns"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }
@@ -234,9 +234,9 @@ resource "aws_eks_addon" "kube_proxy" {
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
-  cluster_name      = var.namespace
-  addon_name        = "kube-proxy"
-  addon_version     = local.eks_addon_versions["kube_proxy"]
+  cluster_name                = var.namespace
+  addon_name                  = "kube-proxy"
+  addon_version               = local.eks_addon_versions["kube_proxy"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }
@@ -245,21 +245,21 @@ resource "aws_eks_addon" "vpc_cni" {
   depends_on = [
     module.eks
   ]
-  cluster_name             = var.namespace
-  addon_name               = "vpc-cni"
-  addon_version            = local.eks_addon_versions["vpc_cni"]
+  cluster_name                = var.namespace
+  addon_name                  = "vpc-cni"
+  addon_version               = local.eks_addon_versions["vpc_cni"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
-  service_account_role_arn = aws_iam_role.oidc.arn
+  service_account_role_arn    = aws_iam_role.oidc.arn
 }
 
 resource "aws_eks_addon" "metrics_server" {
   depends_on = [
     module.eks
   ]
-  cluster_name      = var.namespace
-  addon_name        = "metrics-server"
-  addon_version     = local.eks_addon_versions["metrics_server"]
+  cluster_name                = var.namespace
+  addon_name                  = "metrics-server"
+  addon_version               = local.eks_addon_versions["metrics_server"]
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }

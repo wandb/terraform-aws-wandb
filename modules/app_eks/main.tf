@@ -4,13 +4,34 @@ locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
-  system_reserved = join(",", flatten([
-    var.system_reserved_cpu_millicores >= 0 ? ["cpu=${var.system_reserved_cpu_millicores}m"] : [],
-    var.system_reserved_memory_megabytes >= 0 ? ["memory=${var.system_reserved_memory_megabytes}Mi"] : [],
-    var.system_reserved_ephemeral_megabytes >= 0 ? ["ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi"] : [],
-    var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
+
+  # Pre-indented YAML lines for the systemReserved map. Only the configured
+  # (>= 0) entries are included; compact() drops the empty strings.
+  system_reserved_lines = join("\n", compact([
+    var.system_reserved_cpu_millicores >= 0 ? "        cpu: \"${var.system_reserved_cpu_millicores}m\"" : "",
+    var.system_reserved_memory_megabytes >= 0 ? "        memory: \"${var.system_reserved_memory_megabytes}Mi\"" : "",
+    var.system_reserved_ephemeral_megabytes >= 0 ? "        ephemeral-storage: \"${var.system_reserved_ephemeral_megabytes}Mi\"" : "",
+    var.system_reserved_pid >= 0 ? "        pid: \"${var.system_reserved_pid}\"" : "",
   ]))
-  create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
+
+  # AL2023 nodeadm NodeConfig fragment. Empty list when nothing is configured.
+  system_reserved_nodeconfig = local.system_reserved_lines == "" ? [] : [
+    {
+      content_type = "application/node.eks.aws"
+      content      = <<-EOT
+      ---
+      apiVersion: node.eks.aws/v1alpha1
+      kind: NodeConfig
+      spec:
+        kubelet:
+          config:
+            systemReserved:
+      ${local.system_reserved_lines}
+      EOT
+    }
+  ]
+
+  create_launch_template = (local.encrypt_ebs_volume || length(local.system_reserved_nodeconfig) > 0)
   defaultTags            = var.aws_loadbalancer_controller_tags
   cluster_tags           = var.cluster_tags
 }
@@ -103,7 +124,7 @@ module "eks" {
       source_security_group_id = aws_security_group.primary_workers.id
     }
   }
-  
+
   eks_managed_node_group_defaults = {
     create_launch_template = local.create_launch_template
     create_iam_role        = false
@@ -112,7 +133,8 @@ module "eks" {
     enable_monitoring      = true
     force_update_version   = local.encrypt_ebs_volume
     cluster_version        = var.cluster_version
-    bootstrap_extra_args   = local.system_reserved != "" ? "--kubelet-extra-args '--system-reserved=${local.system_reserved}'" : ""
+    ami_type               = "AL2023_x86_64_STANDARD"
+    cloudinit_pre_nodeadm  = local.system_reserved_nodeconfig
 
     metadata_options = {
       http_put_response_hop_limit = 2
