@@ -5,20 +5,16 @@ This document describes the changes to `modules/app_eks` that accompany bumping
 notes a reviewer should know, and how to handle variables that no longer have a
 direct equivalent.
 
-> **Variant note.** This branch implements the v17 → v20 upgrade against the
-> stock `terraform-aws-modules/eks/aws ~> 20.37` registry module — there is no
-> vendored fork. The tradeoff: the per-AZ `aws_launch_template` and
-> `aws_eks_node_group` resources are _replaced_ on the upgrade apply (because
+> **Variant note.** For the upgrade of the `terraform-aws-modules/eks/aws ~> 20.37` 
+> from v17: the per-AZ `aws_launch_template` and `aws_eks_node_group` resources 
+> are _replaced_ on the upgrade apply (because
 > stock v20 hardcodes a `"-"` separator in `name_prefix` that v17 did not have,
 > and `name_prefix` is `ForceNew`). The replacement is graceful — both
 > resources have `lifecycle.create_before_destroy = true` in v20 — but the
 > apply does roll the data plane through one extra rolling node-roll on top
 > of what a normal EKS K8s minor-version bump would do. See
 > [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates)
-> for the details. A sibling branch (`j7m4/v17to20varPrep`) carries a vendored
-> fork of the v20 module that avoids this replacement at the cost of ~14k
-> lines of vendored Terraform; if you need zero data-plane churn at module-bump
-> time, use that branch instead.
+> for the details. 
 
 ## Why this is a breaking change
 
