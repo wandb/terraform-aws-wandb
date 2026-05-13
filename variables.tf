@@ -399,6 +399,37 @@ variable "kubernetes_map_users" {
   default = []
 }
 
+variable "kubernetes_terraform_owns_cluster_creator_entry" {
+  description = <<-EOT
+    Whether terraform (via the community EKS module) should own the
+    `aws_eks_access_entry` resource that grants
+    `AmazonEKSClusterAdminPolicy` to the IAM principal that applied
+    terraform. In both paths the cluster creator ends up with admin
+    permissions — the variable only controls who manages the entry,
+    not whether the permissions exist.
+
+    Required — no default. Set explicitly per scenario:
+
+    - `false` — for v17 -> v20 in-place upgrades. AWS auto-migrates
+      the legacy cluster-creator binding into an access entry as part
+      of the `CONFIG_MAP` -> `API_AND_CONFIG_MAP` transition; that
+      entry is AWS-owned, not terraform-state-owned. Setting this
+      `true` causes a 409 ResourceInUseException.
+    - `true` — for fresh v20 installs. AWS does not auto-create a
+      cluster-creator access entry for clusters created at
+      `API_AND_CONFIG_MAP` without a `CONFIG_MAP`-only predecessor;
+      this is the only path that gives terraform's in-apply
+      kubernetes/helm providers an admin access entry to authenticate
+      against.
+
+    Forwarded to the community EKS module's
+    `enable_cluster_creator_admin_permissions` input via
+    `modules/app_eks`. See docs/upgrade-eks-20.md for the full
+    rationale.
+  EOT
+  type        = bool
+}
+
 variable "kubernetes_instance_types" {
   description = "EC2 Instance type for primary node group. Defaults to null and value from deployment-size.tf is used"
   type        = list(string)

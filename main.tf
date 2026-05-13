@@ -154,6 +154,8 @@ module "app_eks" {
 
   preserve_aws_auth_configmap = var.preserve_aws_auth_configmap
 
+  terraform_owns_cluster_creator_entry = var.kubernetes_terraform_owns_cluster_creator_entry
+
   instance_types = local.kubernetes_instance_types
   disk_size      = local.kubernetes_node_disk_size_gb
   min_nodes      = local.kubernetes_min_nodes_per_az

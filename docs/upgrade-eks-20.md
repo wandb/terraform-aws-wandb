@@ -220,6 +220,73 @@ State migration (in addition to the moves listed in
   stamped at create time — the wandb-side resource doesn't set them, so they
   go away once. There is no flip-flop on subsequent plans.
 
+### Cluster-creator admin permissions
+
+The community v20 EKS module exposes
+`enable_cluster_creator_admin_permissions`. When `true`, the module
+creates an `aws_eks_access_entry` resource granting
+`AmazonEKSClusterAdminPolicy` to the IAM principal applying terraform.
+
+**The cluster creator ends up with admin permissions in both paths**
+— the variable controls only **who manages the access entry**, not
+whether the permissions exist. In the v17 → v20 path, AWS owns the
+entry (auto-migrated from the legacy `aws-iam-authenticator` binding);
+in the fresh-v20 path, terraform owns the entry (created by the
+community EKS module). Either way, admin access works.
+
+The correct value depends on which path applies:
+
+- **v17 → v20 in-place upgrade — terraform does NOT own the entry
+  (community-module flag `false`).** AWS auto-migrates the legacy
+  cluster-creator binding into a real access entry as part of the
+  `CONFIG_MAP` → `API_AND_CONFIG_MAP` transition. If the community
+  EKS module ALSO tries to create one, the apply 409s with
+  `ResourceInUseException`. Leave the entry AWS-owned;
+  `terraform state list` won't show it.
+- **Fresh v20 install — terraform DOES own the entry
+  (community-module flag `true`).** AWS does NOT auto-create a
+  cluster-creator access entry for clusters created at
+  `API_AND_CONFIG_MAP` without a `CONFIG_MAP`-only predecessor.
+  Without an entry, terraform's in-apply `kubernetes`/`helm`
+  providers fail to authenticate against the freshly-created
+  cluster (`Unauthorized: the server has asked for the client to
+  provide credentials`), and any pod-creating downstream resources
+  fail. Setting `true` makes the community EKS module create the
+  entry as a terraform-managed resource, which AWS does not
+  conflict with on fresh creation.
+
+This module exposes the flag as a **required, no-default** variable
+`kubernetes_terraform_owns_cluster_creator_entry`. The name reflects
+what's actually being toggled (ownership of the entry by terraform
+state) rather than the upstream community module's misleading
+`enable_cluster_creator_admin_permissions` (which suggests the
+permissions themselves are gated). Callers must set it explicitly
+per use case:
+
+```hcl
+module "wandb_infra" {
+  source = "..."
+
+  # Fresh v20 install:
+  kubernetes_terraform_owns_cluster_creator_entry = true
+
+  # v17 → v20 upgrade:
+  # kubernetes_terraform_owns_cluster_creator_entry = false
+}
+```
+
+Forgetting the variable produces a clear `terraform plan` error
+naming the missing input. The non-default contract is intentional —
+silently defaulting either way would break the other scenario, and
+auto-detection (e.g. via `data "aws_eks_cluster"` to check existing
+auth mode) has a real failure case on second apply that flips the
+detected default and triggers a destroy of the access entry.
+
+Named admins continue to flow through `kubernetes_map_roles` /
+`kubernetes_map_users` → `access_entries` in both scenarios. Do not
+duplicate the cluster-creator's ARN in `map_roles` regardless of the
+flag — the same 409 risk applies to that specific entry.
+
 ### Caller-side kubernetes/helm providers
 
 Under v17 the recommended caller pattern was something like:
@@ -771,11 +838,13 @@ cloud`, take a manual snapshot.
      `aws_iam_policy.custom[0]`, four `aws_ec2_tag.cluster_primary_security_group[*]`
      entries, and per-NG `module.user_data.null_resource.validate_cluster_service_cidr`.
      `aws_eks_access_entry.this["cluster_creator"]` and its
-     `aws_eks_access_policy_association` should _not_ appear — this branch
-     sets `enable_cluster_creator_admin_permissions = false` so that AWS
-     owns the cluster-creator entry implicitly. If you see them in the
-     plan, the flag has been flipped back to `true` and the apply will hit
-     the 409 race documented in step 8 below.
+     `aws_eks_access_policy_association` should _not_ appear — for a
+     v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
+     so that AWS owns the cluster-creator entry implicitly (see
+     [Cluster-creator admin permissions](#cluster-creator-admin-permissions)).
+     If you see them in the plan, the variable has been set to `true`
+     (correct for fresh installs but not for upgrades) and the apply
+     will hit the 409 race documented in step 8 below.
    - **No KMS create.** `module.eks.module.kms.aws_kms_key.this[0]` should
      not appear; if it does, `create_kms_key = false` isn't taking effect or
      `var.kms_key_arn` was inadvertently changed.
@@ -840,21 +909,24 @@ cloud`, take a manual snapshot.
 
    Watch for:
    - **`ResourceInUseException` (HTTP 409) on `aws_eks_access_entry.this["cluster_creator"]`.**
-     This branch sets `enable_cluster_creator_admin_permissions = false`
-     (see `modules/app_eks/main.tf`) to prevent the race described below, so
-     under normal usage you should _not_ see this error. If you do, it means
-     someone has either flipped that flag back to `true` or duplicated the
-     cluster-creator's ARN in `map_roles` / `map_users` — fix that and
-     re-apply, or use the fallback import recipe further down.
+     For a v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
+     (see [Cluster-creator admin permissions](#cluster-creator-admin-permissions))
+     to prevent the race described below, so under normal usage you should
+     _not_ see this error. If you do, the variable is set to `true`
+     (correct for fresh installs, incorrect here) or someone duplicated
+     the cluster-creator's ARN in `map_roles` / `map_users` — fix that
+     and re-apply, or use the fallback import recipe further down.
 
-     _Why the flag is false._ When `authentication_mode` includes `"API"`,
-     AWS auto-creates an access entry (with `AmazonEKSClusterAdminPolicy`
-     attached) for the IAM principal that created the cluster. v20's
-     `enable_cluster_creator_admin_permissions = true` would have TF try to
-     create the same entry — AWS wins the race, TF 409s. Setting the flag
-     to `false` lets AWS own that single entry (admin behavior unchanged);
-     all _named_ admins still flow through `map_roles` / `map_users` →
-     `access_entries` and stay TF-managed.
+     _Why the variable is `false` here._ When `authentication_mode` is
+     transitioning from `CONFIG_MAP` to `API_AND_CONFIG_MAP` on an
+     existing cluster, AWS auto-migrates the legacy `aws-iam-authenticator`
+     cluster-creator binding into an access entry (with
+     `AmazonEKSClusterAdminPolicy` attached) for the IAM principal that
+     created the cluster. v20's `enable_cluster_creator_admin_permissions = true`
+     would have TF try to create the same entry — AWS wins the race,
+     TF 409s. Setting the flag to `false` lets AWS own that single entry
+     (admin behavior unchanged); all _named_ admins still flow through
+     `map_roles` / `map_users` → `access_entries` and stay TF-managed.
 
      _Trade-off._ The cluster-creator entry is AWS-managed, not TF-managed.
      `terraform plan` won't show it, and revoking it requires the AWS
