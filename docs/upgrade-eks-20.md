@@ -5,8 +5,8 @@ This document describes the changes to `modules/app_eks` that accompany bumping
 notes a reviewer should know, and how to handle variables that no longer have a
 direct equivalent.
 
-> **Variant note.** For the upgrade of the `terraform-aws-modules/eks/aws ~> 20.37` 
-> from v17: the per-AZ `aws_launch_template` and `aws_eks_node_group` resources 
+> **Variant note.** For the upgrade of the `terraform-aws-modules/eks/aws ~> 20.37`
+> from v17: the per-AZ `aws_launch_template` and `aws_eks_node_group` resources
 > are _replaced_ on the upgrade apply (because
 > stock v20 hardcodes a `"-"` separator in `name_prefix` that v17 did not have,
 > and `name_prefix` is `ForceNew`). The replacement is graceful — both
@@ -14,7 +14,7 @@ direct equivalent.
 > apply does roll the data plane through one extra rolling node-roll on top
 > of what a normal EKS K8s minor-version bump would do. See
 > [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates)
-> for the details. 
+> for the details.
 
 ## Why this is a breaking change
 
@@ -250,7 +250,7 @@ The correct value depends on which path applies:
   Without an entry, terraform's in-apply `kubernetes`/`helm`
   providers fail to authenticate against the freshly-created
   cluster (`Unauthorized: the server has asked for the client to
-  provide credentials`), and any pod-creating downstream resources
+provide credentials`), and any pod-creating downstream resources
   fail. Setting `true` makes the community EKS module create the
   entry as a terraform-managed resource, which AWS does not
   conflict with on fresh creation.
@@ -313,9 +313,9 @@ resource attribute. Terraform deferred `data "aws_eks_cluster"` until after
 the cluster was created in the same apply.
 
 In v20, `module.eks.cluster_name` resolves through a `try()` expression that
-falls back to `var.cluster_name` (which the wandb_infra module sets to
+falls back to `var.cluster_name` (which the wandb*infra module sets to
 `var.namespace`). At plan time the data source's `name` argument is therefore
-_statically known_, Terraform refreshes the data source eagerly, and a
+\_statically known*, Terraform refreshes the data source eagerly, and a
 first-time plan against a not-yet-existent cluster fails:
 
 ```
@@ -679,7 +679,13 @@ they are three separate Terraform applies, in this order:
    `aws_eks_node_group.this[0]`. AWS upgrades the control plane first
    (~20–30 min), then EKS rolls each managed node group to a 1.33-compatible
    AMI. No NG/LT _resource_ replacement at this stage; only the EC2
-   instances inside them roll.
+   instances inside them roll. Addon versions are auto-resolved by the
+   `data.aws_eks_addon_version` data sources in
+   [`modules/app_eks/add-ons.tf`](../modules/app_eks/add-ons.tf) — no
+   separate addon step or `eks_addons_preroll_version` setting is needed
+   for standard upgrades. As of EKS 1.30–1.35, no addon preroll entries
+   are required; see the addon version resolution comments in that file
+   for details.
 
 3. **EKS minor bump #2 (1.33 → 1.34).** Same as step 2, one more minor.
 
@@ -693,8 +699,8 @@ Two constraints make this ordering mandatory rather than just preferred:
 - **v17 of the community module hasn't been validated against modern EKS
   versions.** v17 was developed against EKS 1.21–1.27 (depending on the
   v17.x patch). Setting `cluster_version = "1.34"` while still sourced from
-  v17 typically fails at module-internal user_data / launch template logic
-  before reaching the cluster API. So the module must be on v20 _before_ the
+  v17 typically fails at module-internal user*data / launch template logic
+  before reaching the cluster API. So the module must be on v20 \_before* the
   EKS version moves past what v17 supports.
 
 You can interleave [step 10 of the runbook (retire the aws-auth ConfigMap)](#steps)
@@ -706,307 +712,308 @@ each have only one moving part.
 
 ### Steps
 
-1. **Snapshot state.** Before anything else, copy the current state file
-   somewhere safe so a bad apply is recoverable.
+1.  **Snapshot state.** Before anything else, copy the current state file
+    somewhere safe so a bad apply is recoverable.
 
-   ```bash
-   terraform state pull > eks-v17-pre-upgrade.tfstate
-   ```
+    ```bash
+    terraform state pull > eks-v17-pre-upgrade.tfstate
+    ```
 
-   For S3 backends, also note the current state version ID; for `terraform
+    For S3 backends, also note the current state version ID; for `terraform
 cloud`, take a manual snapshot.
 
-2. **Pull the v20 code on this branch.** The branch carries:
-   - `module "eks"` in `modules/app_eks/main.tf` sourced from
-     `terraform-aws-modules/eks/aws` version `~> 20.37`.
-   - The five name-preservation inputs in that `module "eks"` call:
-     `iam_role_name = var.namespace`, `iam_role_use_name_prefix = true`,
-     `cluster_security_group_name = var.namespace`,
-     `cluster_security_group_use_name_prefix = true`,
-     `cluster_security_group_description = "EKS cluster security group."`,
-     `prefix_separator = ""`.
-   - `enable_irsa = false` on the same `module "eks"` call (the wandb-side
-     `aws_iam_openid_connect_provider.eks` is the sole owner of the cluster's
-     OIDC URL — see [Duplicate OIDC provider](#duplicate-oidc-provider)).
-   - The `cluster_encryption_config` JSON round-trip in `module "eks"` so
-     the type unifier accepts the conditional — see
-     [Encryption config conditional](#encryption-config-conditional).
-   - `cluster_endpoint` and `cluster_certificate_authority_data` re-exports
-     in `outputs.tf` — see [Caller-side kubernetes/helm providers](#caller-side-kuberneteshelm-providers)
-     for the caller-side wiring change that goes with these.
+2.  **Pull the v20 code on this branch.** The branch carries:
+    - `module "eks"` in `modules/app_eks/main.tf` sourced from
+      `terraform-aws-modules/eks/aws` version `~> 20.37`.
+    - The five name-preservation inputs in that `module "eks"` call:
+      `iam_role_name = var.namespace`, `iam_role_use_name_prefix = true`,
+      `cluster_security_group_name = var.namespace`,
+      `cluster_security_group_use_name_prefix = true`,
+      `cluster_security_group_description = "EKS cluster security group."`,
+      `prefix_separator = ""`.
+    - `enable_irsa = false` on the same `module "eks"` call (the wandb-side
+      `aws_iam_openid_connect_provider.eks` is the sole owner of the cluster's
+      OIDC URL — see [Duplicate OIDC provider](#duplicate-oidc-provider)).
+    - The `cluster_encryption_config` JSON round-trip in `module "eks"` so
+      the type unifier accepts the conditional — see
+      [Encryption config conditional](#encryption-config-conditional).
+    - `cluster_endpoint` and `cluster_certificate_authority_data` re-exports
+      in `outputs.tf` — see [Caller-side kubernetes/helm providers](#caller-side-kuberneteshelm-providers)
+      for the caller-side wiring change that goes with these.
 
-3. **Set the upgrade-only variables in your caller.** One flag is needed
-   only during the v17 → v20 transition:
+3.  **Set the upgrade-only variables in your caller.** One flag is needed
+    only during the v17 → v20 transition:
 
-   ```hcl
-   # in your caller's terraform.tfvars (or vars.yaml -> rendered tfvars)
-   preserve_aws_auth_configmap = true   # adopt v17's kube-system/aws-auth ConfigMap
-   ```
+    ```hcl
+    # in your caller's terraform.tfvars (or vars.yaml -> rendered tfvars)
+    preserve_aws_auth_configmap = true   # adopt v17's kube-system/aws-auth ConfigMap
+    ```
 
-   `preserve_aws_auth_configmap = true` opts the caller into the
-   `kubernetes_config_map.aws_auth_legacy[0]` resource via
-   [`modules/app_eks/aws_auth_legacy.tf`](../modules/app_eks/aws_auth_legacy.tf).
-   Without this, the v17-managed ConfigMap would be marked for destroy
-   (because v20 doesn't manage it) and TF would `DELETE` it from the cluster
-   during apply — risking auth interruption for nodes joining or refreshing
-   tokens during the window. With it set, the ConfigMap is adopted at the
-   wandb-side address; data is left alone via
-   `lifecycle.ignore_changes = [data, binary_data]`.
+    `preserve_aws_auth_configmap = true` opts the caller into the
+    `kubernetes_config_map.aws_auth_legacy[0]` resource via
+    [`modules/app_eks/aws_auth_legacy.tf`](../modules/app_eks/aws_auth_legacy.tf).
+    Without this, the v17-managed ConfigMap would be marked for destroy
+    (because v20 doesn't manage it) and TF would `DELETE` it from the cluster
+    during apply — risking auth interruption for nodes joining or refreshing
+    tokens during the window. With it set, the ConfigMap is adopted at the
+    wandb-side address; data is left alone via
+    `lifecycle.ignore_changes = [data, binary_data]`.
 
-4. **Pre-flight capacity check.** The graceful NG/LT replacement
-   (see [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates))
-   briefly doubles EC2 capacity per AZ during apply. Verify:
-   - **EC2 quota.** For each AZ's instance type, current usage + same-again
-     should not exceed the EC2 service quota. For default `m5.large` and 2
-     nodes per AZ across 3 AZs, that's 12 instances peak vs 6 steady-state.
-     Check via `aws service-quotas get-service-quota --service-code ec2
+4.  **Pre-flight capacity check.** The graceful NG/LT replacement
+    (see [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates))
+    briefly doubles EC2 capacity per AZ during apply. Verify:
+    - **EC2 quota.** For each AZ's instance type, current usage + same-again
+      should not exceed the EC2 service quota. For default `m5.large` and 2
+      nodes per AZ across 3 AZs, that's 12 instances peak vs 6 steady-state.
+      Check via `aws service-quotas get-service-quota --service-code ec2
 --quota-code <relevant>`.
-   - **Subnet IP capacity.** Each new node consumes one ENI's worth of IPs
-     (plus pod-level secondary IPs for VPC-CNI). Confirm each private
-     subnet has 2× steady-state headroom. `aws ec2 describe-subnets
+    - **Subnet IP capacity.** Each new node consumes one ENI's worth of IPs
+      (plus pod-level secondary IPs for VPC-CNI). Confirm each private
+      subnet has 2× steady-state headroom. `aws ec2 describe-subnets
 --filters Name=vpc-id,Values=<vpc-id> --query 'Subnets[*].
 {Subnet:SubnetId,Available:AvailableIpAddressCount}'`.
-   - **PodDisruptionBudgets.** Workloads that should not see eviction
-     beyond N concurrent unavailable should have a PDB declaring that.
-     The drain phase honors PDBs.
+    - **PodDisruptionBudgets.** Workloads that should not see eviction
+      beyond N concurrent unavailable should have a PDB declaring that.
+      The drain phase honors PDBs.
 
-5. **`terraform init -upgrade`.** Picks up the new module version, the v5
-   AWS provider, and any new module-level providers v20 declares.
+5.  **`terraform init -upgrade`.** Picks up the new module version, the v5
+    AWS provider, and any new module-level providers v20 declares.
 
-   ```bash
-   terraform init -upgrade
-   ```
+    ```bash
+    terraform init -upgrade
+    ```
 
-6. **First plan and read it carefully.**
+6.  **First plan and read it carefully.**
 
-   ```bash
-   terraform plan -no-color > /tmp/v20-stage1.txt
-   ```
+    ```bash
+    terraform plan -no-color > /tmp/v20-stage1.txt
+    ```
 
-   Expected diff:
-   - **In-place updates** for the cluster, cluster IAM role, cluster SG,
-     CloudWatch log group. The cluster's update is tag-only; the IAM role's
-     adds `sts:TagSession` to its assume-role policy; the rest are tag
-     updates and minor field normalization. **None should be marked
-     `forces replacement`.**
-   - **`aws_eks_cluster.this[0]` must NOT be `must be replaced`.** If it
-     is, the most common cause is a missed name override in step 2 — the
-     cluster IAM role gets a different `name_prefix` and TF treats it as a
-     different resource, which cascades to a cluster recreate. Re-read the
-     `iam_role_name` / `prefix_separator` lines in `modules/app_eks/main.tf`
-     before continuing.
-   - **`aws_iam_role.this[0]` and `aws_security_group.cluster[0]` must NOT
-     be `must be replaced`** either. They each share a `name_prefix` knob
-     with the cluster; if either shows replacement, the corresponding
-     override (see step 2) is missing.
-   - **Expected replacements (graceful via CBD)**: `aws_eks_node_group.this[0]`
-     and `aws_launch_template.this[0]` for _each_ node group key. For a
-     standard 3-AZ deployment that's 6 forced replacements total. Each
-     pair lands as a CBD swap at apply time — see
-     [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates).
-     In the plan output these show as `# (must be replaced)` with
-     `created_before_destroy = true`.
-   - **Renames** ("have moved") for everything in
-     [`modules/app_eks/moved.tf`](../modules/app_eks/moved.tf): cluster IAM
-     role, its `AmazonEKSClusterPolicy` attachment, the cluster SG ingress
-     rule, all node groups, all launch templates. Also from
-     [`modules/app_eks/aws_auth_legacy.tf`](../modules/app_eks/aws_auth_legacy.tf):
-     the `kube-system/aws-auth` ConfigMap from `module.eks.kubernetes_config_map.aws_auth[0]`
-     to `kubernetes_config_map.aws_auth_legacy[0]`. The NG/LT moves don't
-     prevent the replacement above, but they keep state attached to the
-     v20 address so CBD can run.
-   - **One acceptable extra replacement**:
-     `aws_security_group_rule.cluster["ingress_nodes_443"]` (because its
-     `source_security_group_id` migrates from the v17 worker SG to the v20
-     node SG). Sub-second gap during apply; pods continue running because
-     the rule governs new auth handshakes, not in-flight kubelet sessions.
-   - **Destroys** for v17-only orphans v20 doesn't carry forward:
-     `aws_iam_role.workers[0]` plus its four policy attachments;
-     `aws_security_group.workers[0]` plus its four rules; the deprecated
-     attachments `cluster_AmazonEKSServicePolicy[0]`,
-     `cluster_AmazonEKSVPCResourceControllerPolicy[0]`,
-     `cluster_elb_sl_role_creation[0]`, `cluster_deny_log_group[0]`;
-     `aws_iam_policy.cluster_deny_log_group[0]`,
-     `aws_iam_policy.cluster_elb_sl_role_creation[0]`;
-     `aws_security_group_rule.cluster_egress_internet[0]`;
-     `local_file.kubeconfig[0]`. **Do NOT see** `kubernetes_config_map.aws_auth[0]`
-     in this list — if you do, step 3 wasn't applied and you should set the
-     variable before continuing.
-   - **Creates** for v20-shape resources:
-     `aws_security_group.node[0]` and its 11 rules, `time_sleep.this[0]`,
-     `aws_iam_policy.cluster_encryption[0]` (only when `var.kms_key_arn != ""`),
-     `aws_iam_policy.custom[0]`, four `aws_ec2_tag.cluster_primary_security_group[*]`
-     entries, and per-NG `module.user_data.null_resource.validate_cluster_service_cidr`.
-     `aws_eks_access_entry.this["cluster_creator"]` and its
-     `aws_eks_access_policy_association` should _not_ appear — for a
-     v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
-     so that AWS owns the cluster-creator entry implicitly (see
-     [Cluster-creator admin permissions](#cluster-creator-admin-permissions)).
-     If you see them in the plan, the variable has been set to `true`
-     (correct for fresh installs but not for upgrades) and the apply
-     will hit the 409 race documented in step 8 below.
-   - **No KMS create.** `module.eks.module.kms.aws_kms_key.this[0]` should
-     not appear; if it does, `create_kms_key = false` isn't taking effect or
-     `var.kms_key_arn` was inadvertently changed.
+    Expected diff:
+    - **In-place updates** for the cluster, cluster IAM role, cluster SG,
+      CloudWatch log group. The cluster's update is tag-only; the IAM role's
+      adds `sts:TagSession` to its assume-role policy; the rest are tag
+      updates and minor field normalization. **None should be marked
+      `forces replacement`.**
+    - **`aws_eks_cluster.this[0]` must NOT be `must be replaced`.** If it
+      is, the most common cause is a missed name override in step 2 — the
+      cluster IAM role gets a different `name_prefix` and TF treats it as a
+      different resource, which cascades to a cluster recreate. Re-read the
+      `iam_role_name` / `prefix_separator` lines in `modules/app_eks/main.tf`
+      before continuing.
+    - **`aws_iam_role.this[0]` and `aws_security_group.cluster[0]` must NOT
+      be `must be replaced`** either. They each share a `name_prefix` knob
+      with the cluster; if either shows replacement, the corresponding
+      override (see step 2) is missing.
+    - **Expected replacements (graceful via CBD)**: `aws_eks_node_group.this[0]`
+      and `aws_launch_template.this[0]` for _each_ node group key. For a
+      standard 3-AZ deployment that's 6 forced replacements total. Each
+      pair lands as a CBD swap at apply time — see
+      [Accepted replacement of node groups and launch templates](#accepted-replacement-of-node-groups-and-launch-templates).
+      In the plan output these show as `# (must be replaced)` with
+      `created_before_destroy = true`.
+    - **Renames** ("have moved") for everything in
+      [`modules/app_eks/moved.tf`](../modules/app_eks/moved.tf): cluster IAM
+      role, its `AmazonEKSClusterPolicy` attachment, the cluster SG ingress
+      rule, all node groups, all launch templates. Also from
+      [`modules/app_eks/aws_auth_legacy.tf`](../modules/app_eks/aws_auth_legacy.tf):
+      the `kube-system/aws-auth` ConfigMap from `module.eks.kubernetes_config_map.aws_auth[0]`
+      to `kubernetes_config_map.aws_auth_legacy[0]`. The NG/LT moves don't
+      prevent the replacement above, but they keep state attached to the
+      v20 address so CBD can run.
+    - **One acceptable extra replacement**:
+      `aws_security_group_rule.cluster["ingress_nodes_443"]` (because its
+      `source_security_group_id` migrates from the v17 worker SG to the v20
+      node SG). Sub-second gap during apply; pods continue running because
+      the rule governs new auth handshakes, not in-flight kubelet sessions.
+    - **Destroys** for v17-only orphans v20 doesn't carry forward:
+      `aws_iam_role.workers[0]` plus its four policy attachments;
+      `aws_security_group.workers[0]` plus its four rules; the deprecated
+      attachments `cluster_AmazonEKSServicePolicy[0]`,
+      `cluster_AmazonEKSVPCResourceControllerPolicy[0]`,
+      `cluster_elb_sl_role_creation[0]`, `cluster_deny_log_group[0]`;
+      `aws_iam_policy.cluster_deny_log_group[0]`,
+      `aws_iam_policy.cluster_elb_sl_role_creation[0]`;
+      `aws_security_group_rule.cluster_egress_internet[0]`;
+      `local_file.kubeconfig[0]`. **Do NOT see** `kubernetes_config_map.aws_auth[0]`
+      in this list — if you do, step 3 wasn't applied and you should set the
+      variable before continuing.
+    - **Creates** for v20-shape resources:
+      `aws_security_group.node[0]` and its 11 rules, `time_sleep.this[0]`,
+      `aws_iam_policy.cluster_encryption[0]` (only when `var.kms_key_arn != ""`),
+      `aws_iam_policy.custom[0]`, four `aws_ec2_tag.cluster_primary_security_group[*]`
+      entries, and per-NG `module.user_data.null_resource.validate_cluster_service_cidr`.
+      `aws_eks_access_entry.this["cluster_creator"]` and its
+      `aws_eks_access_policy_association` should _not_ appear — for a
+      v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
+      so that AWS owns the cluster-creator entry implicitly (see
+      [Cluster-creator admin permissions](#cluster-creator-admin-permissions)).
+      If you see them in the plan, the variable has been set to `true`
+      (correct for fresh installs but not for upgrades) and the apply
+      will hit the 409 race documented in step 8 below.
+    - **No KMS create.** `module.eks.module.kms.aws_kms_key.this[0]` should
+      not appear; if it does, `create_kms_key = false` isn't taking effect or
+      `var.kms_key_arn` was inadvertently changed.
 
-   Stop and diagnose if your plan shows replacements on `aws_eks_cluster`,
-   `aws_iam_role.this`, `aws_security_group.cluster`, the KMS key, or the
-   wandb-side OIDC provider — those would be unrecoverable in a single
-   apply and indicate a configuration error.
+    Stop and diagnose if your plan shows replacements on `aws_eks_cluster`,
+    `aws_iam_role.this`, `aws_security_group.cluster`, the KMS key, or the
+    wandb-side OIDC provider — those would be unrecoverable in a single
+    apply and indicate a configuration error.
 
-7. **Hand-check the destroys.** Confirm the destroyed worker IAM role
-   (`aws_iam_role.workers[0]`) is **not** the role attached to the v17 node
-   groups — it should not be. The node groups in this codebase use
-   `aws_iam_role.node` (defined in `modules/app_eks/iam-roles.tf`), which is
-   a sibling of `module.eks` and therefore unaffected. Run:
+7.  **Hand-check the destroys.** Confirm the destroyed worker IAM role
+    (`aws_iam_role.workers[0]`) is **not** the role attached to the v17 node
+    groups — it should not be. The node groups in this codebase use
+    `aws_iam_role.node` (defined in `modules/app_eks/iam-roles.tf`), which is
+    a sibling of `module.eks` and therefore unaffected. Run:
 
-   ```bash
-   aws eks describe-nodegroup --cluster-name <namespace> --nodegroup-name <ng-0-name> \
-     --query 'nodegroup.nodeRole'
-   ```
+    ```bash
+    aws eks describe-nodegroup --cluster-name <namespace> --nodegroup-name <ng-0-name> \
+      --query 'nodegroup.nodeRole'
+    ```
 
-   and verify the ARN matches `aws_iam_role.node`, not the doomed
-   `module.eks.aws_iam_role.workers[0]`.
+    and verify the ARN matches `aws_iam_role.node`, not the doomed
+    `module.eks.aws_iam_role.workers[0]`.
 
-8. **Apply, monitoring the data plane.**
+8.  **Apply, monitoring the data plane.**
 
-   ```bash
-   terraform apply
-   ```
+    ```bash
+    terraform apply
+    ```
 
-   Optional: stage the apply with two `-target` flags first for a checkpoint
-   after the cluster/role/SG state moves and in-place updates land but
-   before the helm releases reconcile against the v20 module addresses:
+    Optional: stage the apply with two `-target` flags first for a checkpoint
+    after the cluster/role/SG state moves and in-place updates land but
+    before the helm releases reconcile against the v20 module addresses:
 
-   ```bash
-   terraform apply \
-     -target=module.app_eks.module.eks \
-     -target=module.app_eks.kubernetes_config_map.aws_auth_legacy
-   # then, after the targeted apply lands cleanly:
-   terraform apply
-   ```
+    ```bash
+    terraform apply \
+      -target=module.app_eks.module.eks \
+      -target=module.app_eks.kubernetes_config_map.aws_auth_legacy
+    # then, after the targeted apply lands cleanly:
+    terraform apply
+    ```
 
-   The second `-target` is required: the `moved {}` block in
-   `modules/app_eks/aws_auth_legacy.tf` re-homes the ConfigMap from
-   `module.eks.kubernetes_config_map.aws_auth[0]` (inside the first target's
-   subtree) to `kubernetes_config_map.aws_auth_legacy[0]` (outside it), and
-   TF refuses any plan whose targets don't include both ends of a `moved`
-   block.
+    The second `-target` is required: the `moved {}` block in
+    `modules/app_eks/aws_auth_legacy.tf` re-homes the ConfigMap from
+    `module.eks.kubernetes_config_map.aws_auth[0]` (inside the first target's
+    subtree) to `kubernetes_config_map.aws_auth_legacy[0]` (outside it), and
+    TF refuses any plan whose targets don't include both ends of a `moved`
+    block.
 
-   **In a separate terminal during the apply**, watch the data plane:
+    **In a separate terminal during the apply**, watch the data plane:
 
-   ```bash
-   # Watch nodes — should see new ones come up, then old ones drain & terminate.
-   watch -n 5 'kubectl get nodes -o wide --sort-by=.metadata.creationTimestamp'
+    ```bash
+    # Watch nodes — should see new ones come up, then old ones drain & terminate.
+    watch -n 5 'kubectl get nodes -o wide --sort-by=.metadata.creationTimestamp'
 
-   # Watch evictions — confirms PDBs are honoring drains.
-   kubectl get events -A --field-selector reason=Evicted -w
+    # Watch evictions — confirms PDBs are honoring drains.
+    kubectl get events -A --field-selector reason=Evicted -w
 
-   # HTTPS endpoint should stay up throughout.
-   while true; do curl -sSI -o /dev/null -w "%{http_code} %{time_total}s\n" \
-     https://<your-fqdn>/; sleep 5; done
-   ```
+    # HTTPS endpoint should stay up throughout.
+    while true; do curl -sSI -o /dev/null -w "%{http_code} %{time_total}s\n" \
+      https://<your-fqdn>/; sleep 5; done
+    ```
 
-   Watch for:
-   - **`ResourceInUseException` (HTTP 409) on `aws_eks_access_entry.this["cluster_creator"]`.**
-     For a v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
-     (see [Cluster-creator admin permissions](#cluster-creator-admin-permissions))
-     to prevent the race described below, so under normal usage you should
-     _not_ see this error. If you do, the variable is set to `true`
-     (correct for fresh installs, incorrect here) or someone duplicated
-     the cluster-creator's ARN in `map_roles` / `map_users` — fix that
-     and re-apply, or use the fallback import recipe further down.
+    Watch for:
+    - **`ResourceInUseException` (HTTP 409) on `aws_eks_access_entry.this["cluster_creator"]`.**
+      For a v17 → v20 upgrade you set `kubernetes_terraform_owns_cluster_creator_entry = false`
+      (see [Cluster-creator admin permissions](#cluster-creator-admin-permissions))
+      to prevent the race described below, so under normal usage you should
+      _not_ see this error. If you do, the variable is set to `true`
+      (correct for fresh installs, incorrect here) or someone duplicated
+      the cluster-creator's ARN in `map_roles` / `map_users` — fix that
+      and re-apply, or use the fallback import recipe further down.
 
-     _Why the variable is `false` here._ When `authentication_mode` is
-     transitioning from `CONFIG_MAP` to `API_AND_CONFIG_MAP` on an
-     existing cluster, AWS auto-migrates the legacy `aws-iam-authenticator`
-     cluster-creator binding into an access entry (with
-     `AmazonEKSClusterAdminPolicy` attached) for the IAM principal that
-     created the cluster. v20's `enable_cluster_creator_admin_permissions = true`
-     would have TF try to create the same entry — AWS wins the race,
-     TF 409s. Setting the flag to `false` lets AWS own that single entry
-     (admin behavior unchanged); all _named_ admins still flow through
-     `map_roles` / `map_users` → `access_entries` and stay TF-managed.
+      _Why the variable is `false` here._ When `authentication_mode` is
+      transitioning from `CONFIG_MAP` to `API_AND_CONFIG_MAP` on an
+      existing cluster, AWS auto-migrates the legacy `aws-iam-authenticator`
+      cluster-creator binding into an access entry (with
+      `AmazonEKSClusterAdminPolicy` attached) for the IAM principal that
+      created the cluster. v20's `enable_cluster_creator_admin_permissions = true`
+      would have TF try to create the same entry — AWS wins the race,
+      TF 409s. Setting the flag to `false` lets AWS own that single entry
+      (admin behavior unchanged); all _named_ admins still flow through
+      `map_roles` / `map_users` → `access_entries` and stay TF-managed.
 
-     _Trade-off._ The cluster-creator entry is AWS-managed, not TF-managed.
-     `terraform plan` won't show it, and revoking it requires the AWS
-     console or `aws eks delete-access-entry` rather than a TF diff. AWS
-     deletes it automatically when the cluster is destroyed.
+      _Trade-off._ The cluster-creator entry is AWS-managed, not TF-managed.
+      `terraform plan` won't show it, and revoking it requires the AWS
+      console or `aws eks delete-access-entry` rather than a TF diff. AWS
+      deletes it automatically when the cluster is destroyed.
 
-     _Fallback (only if a caller insists on TF-managing the cluster-creator
-     entry)._ Set `enable_cluster_creator_admin_permissions = true` and
-     accept the 409 on first apply, then import AWS's auto-created entry
-     and its policy association before re-running:
+      _Fallback (only if a caller insists on TF-managing the cluster-creator
+      entry)._ Set `enable_cluster_creator_admin_permissions = true` and
+      accept the 409 on first apply, then import AWS's auto-created entry
+      and its policy association before re-running:
 
-     ```bash
-     SSO_ARN='arn:aws:iam::<account>:role/aws-reserved/sso.amazonaws.com/<region>/AWSReservedSSO_<...>'
-     CLUSTER='<your-cluster-name>'
+      ```bash
+      SSO_ARN='arn:aws:iam::<account>:role/aws-reserved/sso.amazonaws.com/<region>/AWSReservedSSO_<...>'
+      CLUSTER='<your-cluster-name>'
 
-     terraform import \
-       'module.app_eks.module.eks.aws_eks_access_entry.this["cluster_creator"]' \
-       "${CLUSTER}:${SSO_ARN}"
+      terraform import \
+        'module.app_eks.module.eks.aws_eks_access_entry.this["cluster_creator"]' \
+        "${CLUSTER}:${SSO_ARN}"
 
-     terraform import \
-       'module.app_eks.module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]' \
-       "${CLUSTER}#${SSO_ARN}#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-     ```
+      terraform import \
+        'module.app_eks.module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]' \
+        "${CLUSTER}#${SSO_ARN}#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+      ```
 
-     The principal ARN is the IAM role of whoever ran the _original_ v17
-     `terraform apply` that created the cluster; for an SSO setup it looks
-     like the example above. AWS also auto-creates an access entry for the
-     wandb-side `aws_iam_role.node` and for `AWSServiceRoleForAmazonEKS` —
-     those are not in TF's plan and don't need importing.
+      The principal ARN is the IAM role of whoever ran the _original_ v17
+      `terraform apply` that created the cluster; for an SSO setup it looks
+      like the example above. AWS also auto-creates an access entry for the
+      wandb-side `aws_iam_role.node` and for `AWSServiceRoleForAmazonEKS` —
+      those are not in TF's plan and don't need importing.
 
-   - **`NodeCreationFailure`** on any node group rolling its launch template —
-     see [Node IAM role](#node-iam-role) for the IAM-attachment race that can
-     manifest if a partial apply was used.
-   - **Stuck pod evictions** during the NG/LT replacement. If a PDB is too
-     restrictive (e.g. `minAvailable: 100%`), the drain blocks indefinitely
-     and the apply hangs on `aws_eks_node_group.this[0]: Still destroying...`
-     for hours. Resolution: relax the PDB temporarily (`kubectl edit pdb
+    - **`NodeCreationFailure`** on any node group rolling its launch template —
+      see [Node IAM role](#node-iam-role) for the IAM-attachment race that can
+      manifest if a partial apply was used.
+    - **Stuck pod evictions** during the NG/LT replacement. If a PDB is too
+      restrictive (e.g. `minAvailable: 100%`), the drain blocks indefinitely
+      and the apply hangs on `aws_eks_node_group.this[0]: Still destroying...`
+      for hours. Resolution: relax the PDB temporarily (`kubectl edit pdb
 -n <ns> <name>`) so drain can complete, or accept a forceful eviction
-     once the new NG has demonstrated it can host the workload.
-   - **`OptInRequired`** or other access-entry errors that aren't 409s —
-     these mean the cluster's `authentication_mode` flip didn't land yet;
-     run the apply again.
+      once the new NG has demonstrated it can host the workload.
+    - **`OptInRequired`** or other access-entry errors that aren't 409s —
+      these mean the cluster's `authentication_mode` flip didn't land yet;
+      run the apply again.
 
-9. **Re-plan to confirm convergence.** Immediately after the apply:
+9.  **Re-plan to confirm convergence.** Immediately after the apply:
 
-   ```bash
-   terraform plan
-   ```
+    ```bash
+    terraform plan
+    ```
 
-   should show zero changes. The most common non-zero cases on a second plan
-   are:
-   - Tag drift on the OIDC provider (see [Duplicate OIDC provider](#duplicate-oidc-provider)).
-   - Provider-config drift on `kubernetes`/`helm` if the caller is still
-     using a v17-style `data "aws_eks_cluster"` (see
-     [Caller-side kubernetes/helm providers](#caller-side-kuberneteshelm-providers)).
-   - A pending update on `kubernetes_config_map.aws_auth_legacy[0]` — fine
-     if it's tag-only, suspicious if it touches `data` (means the
-     `lifecycle.ignore_changes` isn't working, which is a wandb-side bug).
+    should show zero changes. The most common non-zero cases on a second plan
+    are:
+    - Tag drift on the OIDC provider (see [Duplicate OIDC provider](#duplicate-oidc-provider)).
+    - Provider-config drift on `kubernetes`/`helm` if the caller is still
+      using a v17-style `data "aws_eks_cluster"` (see
+      [Caller-side kubernetes/helm providers](#caller-side-kuberneteshelm-providers)).
+    - A pending update on `kubernetes_config_map.aws_auth_legacy[0]` — fine
+      if it's tag-only, suspicious if it touches `data` (means the
+      `lifecycle.ignore_changes` isn't working, which is a wandb-side bug).
 
 10. **Sanity-check the data plane.**
 
-    ```bash
-    kubectl get nodes
-    kubectl -n kube-system get pods
-    kubectl auth can-i --list --as <a-mapped-role-arn>   # access-entry sanity
-    aws eks describe-cluster --name <namespace> \
-      --query 'cluster.{Status:status,Version:version,RoleArn:roleArn}'
-    ```
+        ```bash
+        kubectl get nodes
+        kubectl -n kube-system get pods
+        kubectl auth can-i --list --as <a-mapped-role-arn>   # access-entry sanity
+        aws eks describe-cluster --name <namespace> \
+          --query 'cluster.{Status:status,Version:version,RoleArn:roleArn}'
+        ```
 
-    Verify:
-    - All nodes are `Ready` and have AGE consistent with the apply window
-      (NOT older — old nodes should have been replaced).
-    - The cluster `RoleArn` matches the v17-era ARN you snapshotted in
-      step 1. If it changed, something replaced the cluster — stop and
-      diagnose before doing anything else.
-    - No pods stuck in `Evicted` / `Pending`. `kubectl get pods -A | grep
--vE 'Running|Completed'` should be empty.
+        Verify:
+        - All nodes are `Ready` and have AGE consistent with the apply window
+          (NOT older — old nodes should have been replaced).
+        - The cluster `RoleArn` matches the v17-era ARN you snapshotted in
+          step 1. If it changed, something replaced the cluster — stop and
+          diagnose before doing anything else.
+        - No pods stuck in `Evicted` / `Pending`. `kubectl get pods -A | grep
 
-    The full data-plane bridge check (pods can reach RDS / ElastiCache / ALB)
-    is in the [Verification checklist](#verification-checklist).
+    -vE 'Running|Completed'` should be empty.
+
+        The full data-plane bridge check (pods can reach RDS / ElastiCache / ALB)
+        is in the [Verification checklist](#verification-checklist).
 
 11. **Retire the aws-auth ConfigMap (separate apply).** Once the access-entry
     path has been observed working — kubelet token refreshes succeed, role
@@ -1203,12 +1210,16 @@ deployment with one NG per AZ, expect 7 forced replacements (6 NG/LT pairs
 
 ### Stage 2 / Stage 3 — EKS K8s minor bump (e.g. 1.32 → 1.33 → 1.34)
 
-|                                   |                                                                                                                        |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `aws_eks_cluster.this[0]`         | **in-place version update**                                                                                            |
-| Each `aws_eks_node_group.this[0]` | **in-place update** (AWS rolls AMIs, ~5–8m per NG, parallel across AZs)                                                |
-| `module.eks.time_sleep.this[0]`   | **REPLACED** (TF-internal helper; trigger is the cluster_version string; harmless)                                     |
-| Add-ons                           | **in-place version updates** auto-resolved to next-minor-compatible versions via `data "aws_eks_addon_version"` blocks |
+No addon pre-roll is needed. Just bump `eks_cluster_version` and apply.
+The `data.aws_eks_addon_version` data sources automatically resolve the
+latest compatible addon versions for the new cluster minor.
+
+|                                   |                                                                                                                   |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `aws_eks_cluster.this[0]`         | **in-place version update**                                                                                       |
+| Each `aws_eks_node_group.this[0]` | **in-place update** (AWS rolls AMIs, ~5–8m per NG, parallel across AZs)                                           |
+| `module.eks.time_sleep.this[0]`   | **REPLACED** (TF-internal helper; trigger is the cluster_version string; harmless)                                |
+| Add-ons                           | **in-place version updates** auto-resolved by `data.aws_eks_addon_version` data sources for the new cluster minor |
 
 Plan headline shape: `1 to add, 8-10 to change, 1 to destroy`, 1 forced
 replacement (the `time_sleep` only). Total apply duration: ~12–18 minutes
@@ -1242,7 +1253,7 @@ nodes don't roll, pods don't migrate.
 - [ ] On a freshly created cluster, the cluster-creator principal has
       `AmazonEKSClusterAdminPolicy` via the AWS-auto-created access entry
       (`aws eks list-associated-access-policies --cluster-name <namespace>
-    --principal-arn <creator-arn>`), and `map_roles` / `map_users` are
+  --principal-arn <creator-arn>`), and `map_roles` / `map_users` are
       represented one-to-one as TF-managed `access_entries`.
 - [ ] Pods on the new node groups can reach RDS, ElastiCache, and the ALB —
       proves the `primary_workers` SG bridging is wired correctly.
@@ -1251,7 +1262,7 @@ nodes don't roll, pods don't migrate.
       `ami_type = "AL2023_x86_64_STANDARD"` — AL2 nodes after a successful
       upgrade apply indicate the CBD replacement did not complete.
 - [ ] On AL2023 nodes, `kubectl get --raw
-    /api/v1/nodes/<node>/proxy/configz` shows the configured
+  /api/v1/nodes/<node>/proxy/configz` shows the configured
       `systemReserved` values under `kubeletconfig.systemReserved`. These are
       delivered via `cloudinit_pre_nodeadm` / nodeadm, not `bootstrap_extra_args`.
 - [ ] First `terraform apply` from a clean workspace (no prior state, fresh
@@ -1266,12 +1277,12 @@ nodes don't roll, pods don't migrate.
       changes — in particular no churn on the OIDC provider tags and no
       pending update on the kubernetes/helm provider configs.
 - [ ] **NG/LT swap was graceful.** During the upgrade apply, `kubectl get
-    nodes -o wide` showed both old and new nodes coexisting briefly (new
+  nodes -o wide` showed both old and new nodes coexisting briefly (new
       nodes Ready before old nodes terminated). HTTPS endpoint to the ALB
       returned 200 throughout. No pods reported `OutOfPods`, `Evicted`, or
       stuck `Pending`.
 - [ ] **Cluster identity preserved.** `aws eks describe-cluster --name
-    <namespace>` returned the same `roleArn`, `endpoint`,
+  <namespace>` returned the same `roleArn`, `endpoint`,
       `identity.oidc.issuer`, and `arn` as the v17-era values from the
       pre-upgrade state snapshot.
 - [ ] First `terraform plan` after step 5 (init) of the upgrade runbook
@@ -1282,6 +1293,6 @@ nodes don't roll, pods don't migrate.
       block in `modules/app_eks/aws_auth_legacy.tf` is doing its job.
 - [ ] After step 11 (`preserve_aws_auth_configmap = false` and apply), the
       cluster's kube-system/aws-auth ConfigMap is gone (`kubectl -n kube-system
-    get configmap aws-auth` returns NotFound), and access entries are the
+  get configmap aws-auth` returns NotFound), and access entries are the
       sole auth path. Run for at least one kubelet credential rotation
       (~1 hour) before considering the migration complete.

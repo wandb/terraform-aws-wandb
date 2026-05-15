@@ -408,42 +408,41 @@ variable "aws_loadbalancer_controller_tags" {
 # EKS Cluster Addons                     #
 ##########################################
 # Each addon version defaults to null. When null, the root module resolves the
-# version via local.eks_addon_versions in modules/app_eks/add-ons.tf (default
-# lookup by var.eks_cluster_version, with optional preroll override via
-# var.eks_addons_preroll_version for preroll-eligible addons). Set a value
-# here to pin a specific version.
+# version via data.aws_eks_addon_version in modules/app_eks/add-ons.tf (auto-resolved
+# from the AWS EKS API for the cluster's K8s minor). Set a value here to pin a specific
+# version.
 variable "eks_addon_efs_csi_driver_version" {
-  description = "Override for the EFS CSI driver version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the EFS CSI driver version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "Override for the EBS CSI driver version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the EBS CSI driver version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
 
 variable "eks_addon_coredns_version" {
-  description = "Override for the CoreDNS addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the CoreDNS addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "Override for the kube-proxy addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the kube-proxy addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "Override for the VPC CNI addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the VPC CNI addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
 
 variable "eks_addon_metrics_server_version" {
-  description = "Override for the metrics-server addon version. When null, the version is resolved via local.eks_addon_versions in modules/app_eks/add-ons.tf (default lookup by var.eks_cluster_version, with optional preroll override via var.eks_addons_preroll_version for preroll-eligible addons)."
+  description = "Override for the metrics-server addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
   default     = null
 }
