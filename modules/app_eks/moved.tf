@@ -39,8 +39,21 @@ moved {
 }
 
 # Node groups: module.node_groups submodule -> per-key module.eks_managed_node_group.
-# Keys follow `ng-${idx}` from `data.aws_subnet.private` in main.tf — adjust
-# if the deployment has a different number of private subnets.
+#
+# Why ng-0..ng-5 (6 entries)?
+#   The EKS module creates one node group per private subnet (one per AZ) via
+#   `for idx, subnet in data.aws_subnet.private : "ng-${idx}"` in main.tf.
+#   AWS currently supports up to 6 AZs in a single region (us-east-1), so we
+#   enumerate ng-0 through ng-5 to cover the worst case. Most regions have
+#   3–4 AZs, so typical deployments only use ng-0..ng-3 or fewer. Moved blocks
+#   whose keys don't exist in state are silently ignored by Terraform, making
+#   extra entries harmless.
+#
+# Why static enumeration instead of a loop?
+#   Terraform moved blocks are a static language construct — they do not
+#   support for_each, count, or any form of dynamic generation. Each address
+#   mapping must be written out as a literal block. If a deployment ever uses
+#   more than 6 private subnets, add ng-6+ blocks here manually.
 #
 # The aws_eks_node_group and aws_launch_template at each new address are
 # replaced on the upgrade apply (name_prefix drift; see file header).
@@ -71,4 +84,31 @@ moved {
 moved {
   from = module.eks.module.node_groups.aws_launch_template.workers["ng-2"]
   to   = module.eks.module.eks_managed_node_group["ng-2"].aws_launch_template.this[0]
+}
+
+moved {
+  from = module.eks.module.node_groups.aws_eks_node_group.workers["ng-3"]
+  to   = module.eks.module.eks_managed_node_group["ng-3"].aws_eks_node_group.this[0]
+}
+moved {
+  from = module.eks.module.node_groups.aws_launch_template.workers["ng-3"]
+  to   = module.eks.module.eks_managed_node_group["ng-3"].aws_launch_template.this[0]
+}
+
+moved {
+  from = module.eks.module.node_groups.aws_eks_node_group.workers["ng-4"]
+  to   = module.eks.module.eks_managed_node_group["ng-4"].aws_eks_node_group.this[0]
+}
+moved {
+  from = module.eks.module.node_groups.aws_launch_template.workers["ng-4"]
+  to   = module.eks.module.eks_managed_node_group["ng-4"].aws_launch_template.this[0]
+}
+
+moved {
+  from = module.eks.module.node_groups.aws_eks_node_group.workers["ng-5"]
+  to   = module.eks.module.eks_managed_node_group["ng-5"].aws_eks_node_group.this[0]
+}
+moved {
+  from = module.eks.module.node_groups.aws_launch_template.workers["ng-5"]
+  to   = module.eks.module.eks_managed_node_group["ng-5"].aws_launch_template.this[0]
 }
