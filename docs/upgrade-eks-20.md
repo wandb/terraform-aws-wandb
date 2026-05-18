@@ -1251,10 +1251,11 @@ nodes don't roll, pods don't migrate.
       `aws_security_group_rule.cluster["ingress_nodes_443"]`, and
       `module.eks.time_sleep.this[0]`.
 - [ ] On a freshly created cluster, the cluster-creator principal has
-      `AmazonEKSClusterAdminPolicy` via the AWS-auto-created access entry
-      (`aws eks list-associated-access-policies --cluster-name <namespace>
-  --principal-arn <creator-arn>`), and `map_roles` / `map_users` are
-      represented one-to-one as TF-managed `access_entries`.
+      `AmazonEKSClusterAdminPolicy` via the Terraform-managed
+      `aws_eks_access_entry.this["cluster_creator"]` path
+      (when `kubernetes_terraform_owns_cluster_creator_entry = true`), and
+      `map_roles` / `map_users` are represented one-to-one as TF-managed
+      `access_entries`.
 - [ ] Pods on the new node groups can reach RDS, ElastiCache, and the ALB —
       proves the `primary_workers` SG bridging is wired correctly.
 - [ ] All nodes are AL2023 (`kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}'`
