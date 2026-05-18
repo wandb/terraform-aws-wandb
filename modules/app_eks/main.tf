@@ -74,6 +74,18 @@ module "eks" {
   vpc_id     = var.network_id
   subnet_ids = var.network_private_subnets
 
+  # Set explicitly to make intention clear. The EKS submodule defaults
+  # this to `null`, which the AWS provider resolves to `true` on create
+  # — so the effect is the same. However, this is a create-only EKS API
+  # attribute that the DescribeCluster API does not faithfully return
+  # for existing clusters (it reports `false` regardless), which causes
+  # drift on `terraform import`. The EKS community module does not yet
+  # include it in `ignore_changes` (unlike the similarly-behaved
+  # `bootstrap_cluster_creator_admin_permissions`). See FAQ.md for the
+  # full story and recovery options when an interrupted apply requires
+  # terraform import.
+  bootstrap_self_managed_addons = true
+
   authentication_mode = "API_AND_CONFIG_MAP"
   # Cluster-creator access entry — required, no default. The choice depends
   # on whether this is an in-place upgrade from v17 or a fresh v20 install:

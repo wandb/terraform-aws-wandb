@@ -162,3 +162,43 @@ And manually rotating keys:[https://docs.aws.amazon.com/kms/latest/developerguid
 #### Are there any service quotas w.r.t AWS?
 
 > All the default limits specified under the Service Quotas section here: https://docs.aws.amazon.com/general/latest/gr/eks.html would be the default for W&B services as well.
+
+#### What happens if a `terraform apply` is interrupted mid-way?
+
+If a `terraform apply` is interrupted (timeout, process kill, network drop), partial
+resources will exist in AWS but not in terraform state. Recovery requires
+`terraform import` of the resources that were created but not recorded.
+
+**EKS cluster import caveat — `bootstrap_self_managed_addons` drift:**
+
+The `aws_eks_cluster` resource has a create-only parameter
+`bootstrap_self_managed_addons`. On a normal `terraform apply`, the AWS provider
+records the value it set during creation (defaulting to `true`). On
+`terraform import`, however, the EKS DescribeCluster API reports `false` for
+existing clusters regardless of the value that was set at creation time — the
+API does not preserve this create-only field. This causes terraform to detect
+drift between the imported state (`false`) and the configured value (`true`),
+which **forces cluster replacement** on the next plan.
+
+The upstream EKS community module already uses `ignore_changes` for the
+similarly-behaved `bootstrap_cluster_creator_admin_permissions`, but has not
+yet done so for `bootstrap_self_managed_addons`.
+
+**Our mitigation:**
+
+- The wandb v20 module sets `bootstrap_self_managed_addons = true` explicitly
+  (rather than relying on the `null` → API-default → `true` path). This
+  prevents drift on **fresh** applies.
+- For the **import** path (interrupted-apply recovery), there is currently no
+  durable fix within terraform's module system — `lifecycle` blocks cannot be
+  injected from a calling module. The options are:
+  1. **Destroy and recreate** the deployment from scratch instead of importing.
+  2. **Manually patch** the cached EKS module after `terraform init` by adding
+     `bootstrap_self_managed_addons` to the `ignore_changes` list in
+     `.terraform/modules/*/main.tf` (resource `aws_eks_cluster.this`). Note
+     this patch is overwritten by `terraform init -upgrade`.
+  3. **Fork the EKS community module** with the `ignore_changes` entry and
+     point the wandb v20 module source at the fork.
+
+This limitation only affects interrupted applies that require `terraform import`
+of the EKS cluster resource. Normal applies and re-applies are unaffected.
