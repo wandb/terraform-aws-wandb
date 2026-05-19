@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.0.0](https://github.com/wandb/terraform-aws-wandb/compare/v7.18.2...v8.0.0) (2026-05-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade aws-eks TF module from v17->v20 (#380)
+
+### Bug Fixes
+
+* Upgrade aws-eks TF module from v17->v20 ([#380](https://github.com/wandb/terraform-aws-wandb/issues/380)) ([73c280d](https://github.com/wandb/terraform-aws-wandb/commit/73c280d2691e1d6878c0d60f7357b675ea35f5e7))
+
 ### [7.18.2](https://github.com/wandb/terraform-aws-wandb/compare/v7.18.1...v7.18.2) (2026-01-13)
 
 
