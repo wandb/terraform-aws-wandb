@@ -113,6 +113,12 @@ variable "public_access" {
   description = "Is this instance accessable a public domain."
 }
 
+variable "preserve_aws_auth_configmap" {
+  type        = bool
+  default     = false
+  description = "This will preserve existing connections to the cluster during EKS module v17 -> v20 for convenience and is NOT REQUIRED. See modules/app_eks/aws_auth_legacy.tf and docs/v8-upgrade-guide.md."
+}
+
 variable "external_dns" {
   type        = bool
   default     = false
@@ -314,6 +320,24 @@ variable "eks_cluster_version" {
   type        = string
 }
 
+variable "eks_addons_preroll_version" {
+  description = "Optional Kubernetes minor version to roll preroll-eligible addons toward, while the cluster itself stays on var.eks_cluster_version. Only addons with an entry in local.eks_addons_preroll_versions (in modules/app_eks/add-ons.tf) are affected. kube-proxy and metrics-server are intentionally excluded from preroll. This is an escape hatch for rare cases where AWS documents a hard addon prerequisite before a cluster upgrade — most upgrades need no preroll (just bump eks_cluster_version and apply)."
+  type        = string
+  default     = null
+
+  # Compare as (major * 1000 + minor) so e.g. "1.10" > "1.9". Skip when null.
+  validation {
+    condition = var.eks_addons_preroll_version == null || (
+      tonumber(split(".", coalesce(var.eks_addons_preroll_version, "0.0"))[0]) * 1000
+      + tonumber(split(".", coalesce(var.eks_addons_preroll_version, "0.0"))[1])
+      >=
+      tonumber(split(".", var.eks_cluster_version)[0]) * 1000
+      + tonumber(split(".", var.eks_cluster_version)[1])
+    )
+    error_message = "eks_addons_preroll_version must be >= eks_cluster_version (cannot stage addons for an older Kubernetes version)."
+  }
+}
+
 variable "eks_cluster_tags" {
   description = "A map of AWS tags to apply to all resources managed by the EKS cluster"
   type        = map(string)
@@ -345,9 +369,14 @@ variable "kubernetes_public_access_cidrs" {
 }
 
 variable "kubernetes_map_accounts" {
-  description = "Additional AWS account numbers to add to the aws-auth configmap."
+  description = "REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/v8-upgrade-guide.md for migration paths. The variable is retained as a tripwire and will be removed in a future release."
   type        = list(string)
   default     = []
+
+  validation {
+    condition     = length(var.kubernetes_map_accounts) == 0
+    error_message = "kubernetes_map_accounts is no longer supported. Enumerate the specific roles or users into kubernetes_map_roles / kubernetes_map_users (which now flow into access_entries), or — if you truly need account-wide trust — manage the aws-auth ConfigMap directly with a kubernetes_config_map_v1_data resource. See docs/v8-upgrade-guide.md (Dropped variables) for details."
+  }
 }
 
 variable "kubernetes_map_roles" {
@@ -368,6 +397,38 @@ variable "kubernetes_map_users" {
     groups   = list(string)
   }))
   default = []
+}
+
+variable "kubernetes_legacy_cluster_creator_admin" {
+  description = <<-EOT
+    Whether the cluster-creator admin access entry is a legacy
+    AWS-managed resource carried over from a prior v17 installation.
+    In both paths the cluster creator ends up with admin permissions
+    — the variable only controls who manages the entry, not whether
+    the permissions exist.
+
+    Required — no default. Set explicitly per scenario:
+
+    - `true` — for terraform-aws-wandb v7 -> v8 in-place upgrades.
+      AWS auto-migrates the legacy cluster-creator binding into an
+      access entry as part of the `CONFIG_MAP` ->
+      `API_AND_CONFIG_MAP` transition; that entry is AWS-owned, not
+      terraform-state-owned. Setting this `false` causes terraform
+      to try creating its own entry, resulting in a 409
+      ResourceInUseException.
+    - `false` — for fresh terraform-aws-wandb v8+ installs. AWS does
+      not auto-create a cluster-creator access entry for clusters
+      created at `API_AND_CONFIG_MAP` without a `CONFIG_MAP`-only
+      predecessor; terraform must create the entry itself to
+      bootstrap the in-apply kubernetes/helm providers.
+
+    Forwarded to the community EKS module's
+    `enable_cluster_creator_admin_permissions` input (inverted) via
+    `modules/app_eks`. See docs/v8-upgrade-guide.md for the full
+    rationale.
+  EOT
+  type        = bool
+  nullable    = false
 }
 
 variable "kubernetes_instance_types" {
@@ -432,40 +493,43 @@ variable "aws_loadbalancer_controller_tags" {
 ##########################################
 # EKS Cluster Addons                     #
 ##########################################
+# Each addon version defaults to null. When null, the app_eks module resolves
+# the version via local.eks_addon_versions (data source lookup for the cluster's
+# K8s minor). Set a value here to pin a specific version.
 variable "eks_addon_efs_csi_driver_version" {
-  description = "The version of the EFS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the EFS CSI driver version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v2.0.7-eksbuild.1"
+  default     = null
 }
 
 variable "eks_addon_ebs_csi_driver_version" {
-  description = "The version of the EBS CSI driver to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the EBS CSI driver version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v1.35.0-eksbuild.1"
+  default     = null
 }
 
 variable "eks_addon_coredns_version" {
-  description = "The version of the CoreDNS addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the CoreDNS addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v1.11.3-eksbuild.1"
+  default     = null
 }
 
 variable "eks_addon_kube_proxy_version" {
-  description = "The version of the kube-proxy addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html."
+  description = "Override for the kube-proxy addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v1.30.0-eksbuild.1"
+  default     = null
 }
 
 variable "eks_addon_vpc_cni_version" {
-  description = "The version of the VPC CNI addon to install. Check the docs for more information about the compatibility https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html.s"
+  description = "Override for the VPC CNI addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v1.18.3-eksbuild.3"
+  default     = null
 }
 
 variable "eks_addon_metrics_server_version" {
-  description = "The version of the metrics-server addon to install. Check compatibility with `aws eks describe-addon-versions --region $REGION --kubernetes-version $EKS_CLUSTER_VERSION`"
+  description = "Override for the metrics-server addon version. When null, the version is auto-resolved from the AWS EKS API via data.aws_eks_addon_version in modules/app_eks/add-ons.tf."
   type        = string
-  default     = "v0.7.2-eksbuild.1"
+  default     = null
 }
 
 ##########################################

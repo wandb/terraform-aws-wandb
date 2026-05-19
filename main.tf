@@ -152,6 +152,10 @@ module "app_eks" {
   k8s_namespace = var.k8s_namespace
   kms_key_arn   = local.default_kms_key
 
+  preserve_aws_auth_configmap = var.preserve_aws_auth_configmap
+
+  legacy_cluster_creator_admin = var.kubernetes_legacy_cluster_creator_admin
+
   instance_types = local.kubernetes_instance_types
   disk_size      = local.kubernetes_node_disk_size_gb
   min_nodes      = local.kubernetes_min_nodes_per_az
@@ -183,8 +187,9 @@ module "app_eks" {
   create_elasticache_security_group = var.create_elasticache
   elasticache_security_group_id     = var.create_elasticache ? module.redis[0].security_group_id : null
 
-  cluster_version = var.eks_cluster_version
-  cluster_tags    = var.eks_cluster_tags
+  cluster_version            = var.eks_cluster_version
+  eks_addons_preroll_version = var.eks_addons_preroll_version
+  cluster_tags               = var.eks_cluster_tags
 
   cluster_endpoint_public_access       = var.kubernetes_public_access
   cluster_endpoint_public_access_cidrs = var.kubernetes_public_access_cidrs

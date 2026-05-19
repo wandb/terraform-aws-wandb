@@ -4,13 +4,34 @@ locals {
   mysql_port         = 3306
   redis_port         = 6379
   encrypt_ebs_volume = true
-  system_reserved = join(",", flatten([
-    var.system_reserved_cpu_millicores >= 0 ? ["cpu=${var.system_reserved_cpu_millicores}m"] : [],
-    var.system_reserved_memory_megabytes >= 0 ? ["memory=${var.system_reserved_memory_megabytes}Mi"] : [],
-    var.system_reserved_ephemeral_megabytes >= 0 ? ["ephemeral-storage=${var.system_reserved_ephemeral_megabytes}Mi"] : [],
-    var.system_reserved_pid >= 0 ? ["pid=${var.system_reserved_pid}"] : []
+
+  # Pre-indented YAML lines for the systemReserved map. Only the configured
+  # (>= 0) entries are included; compact() drops the empty strings.
+  system_reserved_lines = join("\n", compact([
+    var.system_reserved_cpu_millicores >= 0 ? "        cpu: \"${var.system_reserved_cpu_millicores}m\"" : "",
+    var.system_reserved_memory_megabytes >= 0 ? "        memory: \"${var.system_reserved_memory_megabytes}Mi\"" : "",
+    var.system_reserved_ephemeral_megabytes >= 0 ? "        ephemeral-storage: \"${var.system_reserved_ephemeral_megabytes}Mi\"" : "",
+    var.system_reserved_pid >= 0 ? "        pid: \"${var.system_reserved_pid}\"" : "",
   ]))
-  create_launch_template = (local.encrypt_ebs_volume || local.system_reserved != "")
+
+  # AL2023 nodeadm NodeConfig fragment. Empty list when nothing is configured.
+  system_reserved_nodeconfig = local.system_reserved_lines == "" ? [] : [
+    {
+      content_type = "application/node.eks.aws"
+      content      = <<-EOT
+      ---
+      apiVersion: node.eks.aws/v1alpha1
+      kind: NodeConfig
+      spec:
+        kubelet:
+          config:
+            systemReserved:
+      ${local.system_reserved_lines}
+      EOT
+    }
+  ]
+
+  create_launch_template = (local.encrypt_ebs_volume || length(local.system_reserved_nodeconfig) > 0)
   defaultTags            = var.aws_loadbalancer_controller_tags
   cluster_tags           = var.cluster_tags
 }
@@ -23,56 +44,147 @@ data "aws_subnet" "private" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 17.23"
+  version = "~> 20.37"
 
   cluster_name    = var.namespace
   cluster_version = var.cluster_version
 
-  vpc_id  = var.network_id
-  subnets = var.network_private_subnets
+  # v17 -> v20 upgrade compatibility with wandb TF:
+  # Historically, the wandb-side has been manager of cluster's OIDC URL
+  # See: aws_iam_openid_connect_provider.eks below
+  # v20 flipped enable_irsa default to true, so we get an OIDC
+  # creation race condition when enable—irsa is true
+  enable_irsa = false
 
-  map_accounts = var.map_accounts
-  map_roles    = var.map_roles
-  map_users    = var.map_users
+  # v17 -> v20 in-place upgrade compatibility:
+  # v17 creates the cluster IAM role and SG with different naming heuristics
+  # that with v20. This would cause:
+  # * destroy / recreation of role
+  # * which changes the role_arn
+  # * which forces cluster replacement
+  # By taking over the naming format in TF state will keep AWS resources as
+  # managed.
+  iam_role_name                          = var.namespace
+  iam_role_use_name_prefix               = true
+  cluster_security_group_name            = var.namespace
+  cluster_security_group_use_name_prefix = true
+  cluster_security_group_description     = "EKS cluster security group." # v17 trailing period; SG description is immutable in AWS
+  prefix_separator                       = ""
 
-  cluster_enabled_log_types            = ["api", "audit", "controllerManager", "scheduler"]
-  cluster_endpoint_private_access      = true
-  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cluster_log_retention_in_days        = 30
+  vpc_id     = var.network_id
+  subnet_ids = var.network_private_subnets
 
-  cluster_encryption_config = var.kms_key_arn != "" ? [
+  # Set explicitly to make intention clear. The EKS submodule defaults
+  # this to `null`, which the AWS provider resolves to `true` on create
+  # — so the effect is the same. However, this is a create-only EKS API
+  # attribute that the DescribeCluster API does not faithfully return
+  # for existing clusters (it reports `false` regardless), which causes
+  # drift on `terraform import`. The EKS community module does not yet
+  # include it in `ignore_changes` (unlike the similarly-behaved
+  # `bootstrap_cluster_creator_admin_permissions`). See FAQ.md for the
+  # full story and recovery options when an interrupted apply requires
+  # terraform import.
+  bootstrap_self_managed_addons = true
+
+  authentication_mode = "API_AND_CONFIG_MAP"
+  # Cluster-creator access entry — required, no default. The choice depends
+  # on whether this is an in-place upgrade from v17 or a fresh v20 install:
+  #
+  # - v17 -> v20 in-place upgrade (`true`): AWS auto-migrates the legacy
+  #   aws-iam-authenticator cluster-creator binding into a real access
+  #   entry during the `CONFIG_MAP` -> `API_AND_CONFIG_MAP` transition.
+  #   Setting this `false` would cause the community module to also create
+  #   the entry and 409 against AWS's auto-migrated resource.
+  # - Fresh v20 install (`false`): AWS does NOT auto-create the
+  #   cluster-creator entry for clusters created at `API_AND_CONFIG_MAP`
+  #   without a `CONFIG_MAP`-only predecessor. Setting this `false` lets
+  #   the community module create it, bootstrapping the in-apply
+  #   kubernetes/helm providers.
+  #
+  # Named admins continue to flow through map_roles / map_users ->
+  # access_entries in both cases. Do not duplicate the cluster-creator's
+  # ARN in map_roles regardless of this setting — same 409 risk for that
+  # specific entry. See docs/v8-upgrade-guide.md.
+  enable_cluster_creator_admin_permissions = !var.legacy_cluster_creator_admin
+  access_entries = merge(
     {
-      provider_key_arn = var.kms_key_arn
-      resources        = ["secrets"]
+      for r in var.map_roles : r.username => {
+        principal_arn       = r.rolearn
+        kubernetes_groups   = r.groups
+        policy_associations = {}
+      }
+    },
+    {
+      for u in var.map_users : u.username => {
+        principal_arn       = u.userarn
+        kubernetes_groups   = u.groups
+        policy_associations = {}
+      }
     }
-  ] : null
+  )
 
-  # node_security_group_enable_recommended_rules = false
-  worker_additional_security_group_ids = [aws_security_group.primary_workers.id]
-  node_groups_defaults = {
-    create_launch_template               = local.create_launch_template,
-    disk_encrypted                       = local.encrypt_ebs_volume,
-    disk_kms_key_id                      = var.kms_key_arn,
-    disk_type                            = "gp3"
-    disk_size                            = var.disk_size,
-    enable_monitoring                    = true
-    force_update_version                 = local.encrypt_ebs_volume,
-    iam_role_arn                         = aws_iam_role.node.arn,
-    instance_types                       = var.instance_types,
-    kubelet_extra_args                   = local.system_reserved != "" ? "--system-reserved=${local.system_reserved}" : "",
-    metadata_http_put_response_hop_limit = 2
-    metadata_http_tokens                 = "required",
-    version                              = var.cluster_version,
+  cluster_enabled_log_types              = ["api", "audit", "controllerManager", "scheduler"]
+  cluster_endpoint_private_access        = true
+  cluster_endpoint_public_access         = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs   = var.cluster_endpoint_public_access_cidrs
+  cloudwatch_log_group_retention_in_days = 30
+
+  create_kms_key = false
+
+  cluster_encryption_config = {
+    provider_key_arn = var.kms_key_arn
+    resources        = ["secrets"]
   }
 
-  node_groups = {
+  node_security_group_additional_rules = {
+    primary_workers_all = {
+      description              = "Allow traffic from primary_workers security group"
+      protocol                 = "-1"
+      from_port                = 0
+      to_port                  = 0
+      type                     = "ingress"
+      source_security_group_id = aws_security_group.primary_workers.id
+    }
+  }
+
+  eks_managed_node_group_defaults = {
+    create_launch_template = local.create_launch_template
+    create_iam_role        = false
+    iam_role_arn           = aws_iam_role.node.arn
+    instance_types         = var.instance_types
+    enable_monitoring      = true
+    force_update_version   = local.encrypt_ebs_volume
+    cluster_version        = var.cluster_version
+    ami_type               = "AL2023_x86_64_STANDARD"
+    cloudinit_pre_nodeadm  = local.system_reserved_nodeconfig
+
+    metadata_options = {
+      http_put_response_hop_limit = 2
+      http_tokens                 = "required"
+    }
+
+    block_device_mappings = {
+      xvda = {
+        device_name = "/dev/xvda"
+        ebs = {
+          volume_size = var.disk_size
+          volume_type = "gp3"
+          encrypted   = local.encrypt_ebs_volume
+          kms_key_id  = var.kms_key_arn != "" ? var.kms_key_arn : null
+        }
+      }
+    }
+  }
+
+  eks_managed_node_groups = {
     for idx, subnet in data.aws_subnet.private : "ng-${idx}" => {
-      subnets          = [subnet.id]
-      name_prefix      = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
-      desired_capacity = var.min_nodes
-      max_capacity     = var.max_nodes
-      min_capacity     = var.min_nodes
+      subnet_ids             = [subnet.id]
+      name                   = "${var.namespace}-${regex(".*[[:digit:]]([[:alpha:]])", subnet.availability_zone)[0]}"
+      use_name_prefix        = true
+      desired_size           = var.min_nodes
+      max_size               = var.max_nodes
+      min_size               = var.min_nodes
+      vpc_security_group_ids = [aws_security_group.primary_workers.id]
     }
   }
 
