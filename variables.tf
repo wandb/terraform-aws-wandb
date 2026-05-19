@@ -428,6 +428,7 @@ variable "kubernetes_legacy_cluster_creator_admin" {
     rationale.
   EOT
   type        = bool
+  nullable    = false
 }
 
 variable "kubernetes_instance_types" {
