@@ -90,22 +90,22 @@ module "eks" {
   # Cluster-creator access entry — required, no default. The choice depends
   # on whether this is an in-place upgrade from v17 or a fresh v20 install:
   #
-  # - v17 -> v20 in-place upgrade (`false`): AWS auto-migrates the legacy
+  # - v17 -> v20 in-place upgrade (`true`): AWS auto-migrates the legacy
   #   aws-iam-authenticator cluster-creator binding into a real access
   #   entry during the `CONFIG_MAP` -> `API_AND_CONFIG_MAP` transition.
-  #   Setting this `true` would cause the community module to also create
+  #   Setting this `false` would cause the community module to also create
   #   the entry and 409 against AWS's auto-migrated resource.
-  # - Fresh v20 install (`true`): AWS does NOT auto-create the
+  # - Fresh v20 install (`false`): AWS does NOT auto-create the
   #   cluster-creator entry for clusters created at `API_AND_CONFIG_MAP`
-  #   without a `CONFIG_MAP`-only predecessor. Setting this `true` lets
+  #   without a `CONFIG_MAP`-only predecessor. Setting this `false` lets
   #   the community module create it, bootstrapping the in-apply
   #   kubernetes/helm providers.
   #
   # Named admins continue to flow through map_roles / map_users ->
   # access_entries in both cases. Do not duplicate the cluster-creator's
   # ARN in map_roles regardless of this setting — same 409 risk for that
-  # specific entry. See docs/upgrade-eks-20.md.
-  enable_cluster_creator_admin_permissions = var.terraform_owns_cluster_creator_entry
+  # specific entry. See docs/v8-upgrade-guide.md.
+  enable_cluster_creator_admin_permissions = !var.legacy_cluster_creator_admin
   access_entries = merge(
     {
       for r in var.map_roles : r.username => {

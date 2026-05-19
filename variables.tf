@@ -116,7 +116,7 @@ variable "public_access" {
 variable "preserve_aws_auth_configmap" {
   type        = bool
   default     = false
-  description = "This will preserve existing connections to the cluster during EKS module v17 -> v20 for convenience and is NOT REQUIRED. See modules/app_eks/aws_auth_legacy.tf and docs/upgrade-eks-20.md."
+  description = "This will preserve existing connections to the cluster during EKS module v17 -> v20 for convenience and is NOT REQUIRED. See modules/app_eks/aws_auth_legacy.tf and docs/v8-upgrade-guide.md."
 }
 
 variable "external_dns" {
@@ -369,13 +369,13 @@ variable "kubernetes_public_access_cidrs" {
 }
 
 variable "kubernetes_map_accounts" {
-  description = "REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/upgrade-eks-20.md for migration paths. The variable is retained as a tripwire and will be removed in a future release."
+  description = "REMOVED. AWS account numbers for the aws-auth ConfigMap. EKS module v20 uses access entries, which require a per-principal ARN — account-wide trust is no longer expressible. See docs/v8-upgrade-guide.md for migration paths. The variable is retained as a tripwire and will be removed in a future release."
   type        = list(string)
   default     = []
 
   validation {
     condition     = length(var.kubernetes_map_accounts) == 0
-    error_message = "kubernetes_map_accounts is no longer supported. Enumerate the specific roles or users into kubernetes_map_roles / kubernetes_map_users (which now flow into access_entries), or — if you truly need account-wide trust — manage the aws-auth ConfigMap directly with a kubernetes_config_map_v1_data resource. See docs/upgrade-eks-20.md (Dropped variables) for details."
+    error_message = "kubernetes_map_accounts is no longer supported. Enumerate the specific roles or users into kubernetes_map_roles / kubernetes_map_users (which now flow into access_entries), or — if you truly need account-wide trust — manage the aws-auth ConfigMap directly with a kubernetes_config_map_v1_data resource. See docs/v8-upgrade-guide.md (Dropped variables) for details."
   }
 }
 
@@ -399,32 +399,32 @@ variable "kubernetes_map_users" {
   default = []
 }
 
-variable "kubernetes_terraform_owns_cluster_creator_entry" {
+variable "kubernetes_legacy_cluster_creator_admin" {
   description = <<-EOT
-    Whether terraform (via the community EKS module) should own the
-    `aws_eks_access_entry` resource that grants
-    `AmazonEKSClusterAdminPolicy` to the IAM principal that applied
-    terraform. In both paths the cluster creator ends up with admin
-    permissions — the variable only controls who manages the entry,
-    not whether the permissions exist.
+    Whether the cluster-creator admin access entry is a legacy
+    AWS-managed resource carried over from a prior v17 installation.
+    In both paths the cluster creator ends up with admin permissions
+    — the variable only controls who manages the entry, not whether
+    the permissions exist.
 
     Required — no default. Set explicitly per scenario:
 
-    - `false` — for v17 -> v20 in-place upgrades. AWS auto-migrates
-      the legacy cluster-creator binding into an access entry as part
-      of the `CONFIG_MAP` -> `API_AND_CONFIG_MAP` transition; that
-      entry is AWS-owned, not terraform-state-owned. Setting this
-      `true` causes a 409 ResourceInUseException.
-    - `true` — for fresh v20 installs. AWS does not auto-create a
-      cluster-creator access entry for clusters created at
-      `API_AND_CONFIG_MAP` without a `CONFIG_MAP`-only predecessor;
-      this is the only path that gives terraform's in-apply
-      kubernetes/helm providers an admin access entry to authenticate
-      against.
+    - `true` — for terraform-aws-wandb v7 -> v8 in-place upgrades.
+      AWS auto-migrates the legacy cluster-creator binding into an
+      access entry as part of the `CONFIG_MAP` ->
+      `API_AND_CONFIG_MAP` transition; that entry is AWS-owned, not
+      terraform-state-owned. Setting this `false` causes terraform
+      to try creating its own entry, resulting in a 409
+      ResourceInUseException.
+    - `false` — for fresh terraform-aws-wandb v8+ installs. AWS does
+      not auto-create a cluster-creator access entry for clusters
+      created at `API_AND_CONFIG_MAP` without a `CONFIG_MAP`-only
+      predecessor; terraform must create the entry itself to
+      bootstrap the in-apply kubernetes/helm providers.
 
     Forwarded to the community EKS module's
-    `enable_cluster_creator_admin_permissions` input via
-    `modules/app_eks`. See docs/upgrade-eks-20.md for the full
+    `enable_cluster_creator_admin_permissions` input (inverted) via
+    `modules/app_eks`. See docs/v8-upgrade-guide.md for the full
     rationale.
   EOT
   type        = bool

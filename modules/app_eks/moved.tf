@@ -19,7 +19,7 @@
 # replace is planned, so v20's `lifecycle.create_before_destroy = true` on
 # both `aws_eks_node_group.this` and `aws_launch_template.this` kicks in:
 # new NG/LT is created and healthy before the old one is torn down. See
-# docs/upgrade-eks-20.md for the operator runbook.
+# docs/v8-upgrade-guide.md for the operator runbook.
 
 # Cluster IAM role: renamed cluster -> this
 moved {
