@@ -704,7 +704,7 @@ Two constraints make this ordering mandatory rather than just preferred:
   before reaching the cluster API. So the module must be on v20 \_before* the
   EKS version moves past what v17 supports.
 
-You can interleave [step 10 of the runbook (retire the aws-auth ConfigMap)](#steps)
+You can interleave [step 11 of the runbook (retire the aws-auth ConfigMap)](`#steps`)
 between any of these stages — it depends only on stage 1 completing and the
 access-entry auth path being verified, not on any EKS version bump. The
 recommended sequence is to retire aws-auth _after_ the EKS version moves are
