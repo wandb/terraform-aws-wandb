@@ -8,6 +8,7 @@ resource "aws_kms_key" "key" {
   deletion_window_in_days = var.key_deletion_window
   description             = "AWS KMS Customer-managed key to encrypt Weights & Biases resources"
   key_usage               = "ENCRYPT_DECRYPT"
+  enable_key_rotation     = true
 
   policy = var.key_policy != "" ? var.key_policy : jsonencode({
     "Version" : "2012-10-17",
