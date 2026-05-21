@@ -42,6 +42,11 @@ module "file_storage" {
 locals {
   bucket_queue_name = local.use_internal_queue ? null : module.file_storage.bucket_queue_name
   main_bucket_name  = var.bucket_name != "" ? var.bucket_name : module.file_storage.bucket_name
+  computed_private_subnet_cidrs = slice(
+    var.network_private_subnet_cidrs,
+    0,
+    local.deployment_size[var.size].priv_subnet_count
+  )
 }
 
 module "networking" {
@@ -53,7 +58,7 @@ module "networking" {
   enable_s3_https_only = var.enable_s3_https_only
 
   cidr                           = var.network_cidr
-  private_subnet_cidrs           = var.network_private_subnet_cidrs
+  private_subnet_cidrs           = local.computed_private_subnet_cidrs
   public_subnet_cidrs            = var.network_public_subnet_cidrs
   database_subnet_cidrs          = var.network_database_subnet_cidrs
   create_elasticache_subnet      = var.create_elasticache
@@ -62,8 +67,9 @@ module "networking" {
 }
 
 locals {
-  network_id                   = var.create_vpc ? module.networking.vpc_id : var.network_id
-  network_private_subnets      = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
+  network_id              = var.create_vpc ? module.networking.vpc_id : var.network_id
+  network_private_subnets = var.create_vpc ? module.networking.private_subnets : var.network_private_subnets
+  # If the VPC is not created here, do not use the computed list of subnet cidrs because the ones provided should be correct:
   network_private_subnet_cidrs = var.create_vpc ? module.networking.private_subnet_cidrs : var.network_private_subnet_cidrs
 
   network_database_subnets = var.create_vpc ? module.networking.database_subnets : var.network_database_subnets
