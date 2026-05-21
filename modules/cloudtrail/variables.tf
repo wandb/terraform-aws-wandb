@@ -1,54 +1,47 @@
 variable "cloudtrail_bucket_name" {
-  description = "Name of the S3 bucket for storing CloudTrail logs specific to S3 events"
+  description = "The name of the S3 bucket for CloudTrail logs"
   type        = string
-  default     = "cloudtrail-s3-events-logs-bucket"
 }
 
-variable "multi_region_trail" {
-  description = "Enable multi-region CloudTrail logging"
+variable "force_destroy" {
+  description = "Flag to determine if the bucket should be forcefully deleted"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "log_lifecycle" {
+  description = "Lifecycle configuration for CloudTrail logs"
+  type = object({
+    transition_days = number
+    expiration_days = number
+  })
 }
 
 variable "include_global_service_events" {
-  description = "Include global service events in CloudTrail logs"
+  description = "Whether to include global service events in the CloudTrail"
+  type        = bool
+  default     = false
+}
+
+variable "multi_region_trail" {
+  description = "Whether to enable CloudTrail across multiple regions"
   type        = bool
   default     = true
 }
 
 variable "enable_log_file_validation" {
-  description = "Enable CloudTrail log file validation"
+  description = "Whether to enable log file validation in CloudTrail"
   type        = bool
   default     = true
 }
 
-variable "log_lifecycle" {
-  description = "Configuration for lifecycle policies on the CloudTrail logs bucket"
-  type = object({
-    transition_days = number
-    expiration_days = number
-  })
-  default = {
-    transition_days = 90
-    expiration_days = 730
-  }
-}
-
-variable "force_destroy" {
-  description = "Whether to allow a force destroy of the S3 bucket and its contents. You must set this to true and apply the change before destroying the module."
-  type        = bool
-  default     = false
+variable "namespace" {
+  description = "The namespace for this specific deployment"
+  type        = string
 }
 
 variable "tags" {
-  description = "Tags to apply to all resources"
+  description = "A map of tags to be applied to resources"
   type        = map(string)
-  default = {
-    Environment = "production"
-  }
-}
-
-variable "namespace" {
-  type        = string
-  description = "(Required) The name prefix for all resources created."
+  default     = {}
 }
