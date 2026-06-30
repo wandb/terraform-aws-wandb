@@ -13,9 +13,9 @@ jobs:
   kubernetes:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
         with:
           python-version: "3.10"
           check-latest: true
@@ -34,14 +34,14 @@ jobs:
         run: python scripts/set_variable_default.py cluster_version ${{ steps.eks.outputs.LATEST_VERSION }} modules/app_eks/variables.tf
 
       - name: Update terraform docs
-        uses: terraform-docs/gh-actions@main
+        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # main
         with:
           working-dir: .
           output-file: README.md
           output-method: inject
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@38e0b6e68b4c852a5500a94740f0e535e0d7ba54 # v4
         with:
           title: "fix: Set EKS default version to ${{ steps.eks.outputs.LATEST_VERSION }}"
           commit-message: "fix: Set EKS default version to ${{ steps.eks.outputs.LATEST_VERSION }}"
@@ -51,9 +51,9 @@ jobs:
   mysql:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
         with:
           python-version: "3.10"
           check-latest: true
@@ -72,14 +72,14 @@ jobs:
         run: python scripts/set_variable_default.py engine_version ${{ steps.mysql.outputs.LATEST_VERSION }} modules/database/variables.tf
 
       - name: Update terraform docs
-        uses: terraform-docs/gh-actions@main
+        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # main
         with:
           working-dir: .
           output-file: README.md
           output-method: inject
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@38e0b6e68b4c852a5500a94740f0e535e0d7ba54 # v4
         with:
           title: "fix: Set MySQL default version to ${{ steps.mysql.outputs.LATEST_VERSION }}"
           commit-message: "fix: Set MySQL default version to ${{ steps.mysql.outputs.LATEST_VERSION }}"
