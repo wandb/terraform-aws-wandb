@@ -114,9 +114,33 @@ variable "innodb_lru_scan_depth" {
   default     = 128
 }
 
+variable "innodb_autoinc_lock_mode" {
+  description = "Specifies the innodb_autoinc_lock_mode value to set for the database"
+  type        = string
+  default     = "2"
+}
+
+variable "innodb_print_all_deadlocks" {
+  description = "Specifies the innodb_print_all_deadlocks value to set for the database"
+  type        = string
+  default     = "off"
+}
+
 # Cluster parametes
 variable "binlog_row_image" {
   description = "Value for binlog_row_image"
   type        = string
   default     = "minimal"
+}
+
+variable "binlog_row_value_options" {
+  description = "Value for binlog_row_value_options"
+  type        = string
+  default     = "PARTIAL_JSON"
+}
+
+variable "innodb_io_capacity" {
+  description = "Specifies the innodb_io_capacity value to set for the database"
+  type        = number
+  default     = null
 }
