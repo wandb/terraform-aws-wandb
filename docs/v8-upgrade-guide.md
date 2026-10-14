@@ -189,7 +189,7 @@ enable_irsa = false
 (`main.tf` of `terraform-aws-modules/eks/aws`) — it does not affect cluster
 auth, access entries, or any other behavior. The wandb-side OIDC provider
 remains the sole owner, and every downstream consumer
-(`modules/app_eks/iam-roles.tf` for IRSA, `add-ons.tf`, the `lb_controller` /
+(`add-ons.tf`, the `lb_controller` /
 `external_dns` / `cluster_autoscaler` submodules' `oidc_provider` inputs) is
 already wired to `aws_iam_openid_connect_provider.eks`, not to the community
 module's copy.
